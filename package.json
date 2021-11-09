@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev:demo": "webpack serve -c ./logical/demo/webpack.config.js"
+    "dev:demo": "cd demo/vue && npm run serve"
   },
   "author": "",
   "license": "ISC",
