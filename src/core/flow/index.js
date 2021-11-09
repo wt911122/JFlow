@@ -157,88 +157,40 @@ class JFlow {
 
     }
 
-    _createEventHandler() {
+    _createEventHandler() { 
         const canvas = this.canvas;
-        canvas.addEventListener('wheel', this._onZoom.bind(this) );
-        canvas.addEventListener('pointerdown', this._onPressStart.bind(this) );
-        canvas.addEventListener('pointermove', this._onPressMove.bind(this) );
-        canvas.addEventListener('pointerup', this._onPressUp.bind(this) );
-        // canvas.addEventListener('click', this._onClick.bind(this));
-        document.addEventListener('pointerup', this._onPressUp.bind(this));
-        
+        const zoomHandler = this._onZoom.bind(this);
+        const pressStartHandler = this._onPressStart.bind(this);
+        const pressMoveHandler = this._onPressMove.bind(this);
+        const pressUpHandler = this._onPressUp.bind(this);
+        const pressUpDocument = this._onPressUpDocument.bind(this);
+        canvas.addEventListener('wheel', zoomHandler );
+        canvas.addEventListener('pointerdown', pressStartHandler );
+        canvas.addEventListener('pointermove', pressMoveHandler );
+        canvas.addEventListener('pointerup', pressUpHandler );
+        document.addEventListener('pointerup', pressUpDocument);
+        let destroyListener;
+        const destroyPlainEventListener = () => {
+            canvas.removeEventListener('wheel', zoomHandler );
+            canvas.removeEventListener('pointerdown', pressStartHandler );
+            canvas.removeEventListener('pointermove', pressMoveHandler );
+            canvas.removeEventListener('pointerup', pressUpHandler );
+            document.removeEventListener('pointerup', pressUpDocument);
+        }
+        destroyListener = destroyPlainEventListener;
+
         if(this.allowDrop) {
-            canvas.addEventListener('dragover', event => {
-                event.preventDefault();
-                if(this._lastDragState.processing) return;
-                this._lastDragState.processing = true;
-                const { offsetX, offsetY } = event
-                Object.assign(this._target.status, {
-                    dragovering: true,
-                })
-                this._targetLockOn([offsetX, offsetY])
-                
-                if(this._target.isLinkDirty || this._target.isInstanceDirty) {
-                    requestAnimationFrame(() => {
-                        this._render();    
-                        this._target.isLinkDirty = false; 
-                        this._target.isInstanceDirty = false;
-                        this._lastDragState.processing = false;
-                    })
-                } else {
-                    this._lastDragState.processing = false;
-                }
-                
-
-            });
-            canvas.addEventListener('drop', (event) => {
-                // event.preventDefault();
-                const { offsetX, offsetY, clientX, clientY } = event
-                const payload = this.consumeMessage();
-                const instance = payload.instance;
-
-                // const { target, targetLink } = this._lastDragState;
-                // const {
-                //     point,
-                //     stack,
-                //     linkStack,
-                //     belongs,
-                // } = this._targetLockOn([offsetX, offsetY]);
-                const {
-                    link,
-                    instance: target,
-                } = this._target;
-
-                if(link) {
-                    const {
-                        point, belongs
-                    } = this._target.cache;
-                    instance.anchor = point;
-                    belongs.addInstanceToLink(link, instance)
-                } else if(target) {
-                    console.log(target)
-                    target.bubbleEvent(new JFlowEvent('drop', {
-                        event,
-                        instance,
-                        jflow: this,
-                        target,
-                    }))
-                }
-                
-                requestAnimationFrame(() => {
-                    this.recalculate();
-                    this._render();     
-                    instance.bubbleEvent(new JFlowEvent('droped', {
-                        event,
-                        instance,
-                        jflow: this,
-                        target,
-                    }))
-                    Object.assign(this._target.status, {
-                        dragovering: false,
-                    })
-                })
-            })
+            const dragoverHandler = this._onDragover.bind(this);
+            const dropHandler = this._onDrop.bind(this);
+            canvas.addEventListener('dragover', dragoverHandler);
+            canvas.addEventListener('drop', dropHandler);
+            destroyListener = () => {
+                destroyPlainEventListener();
+                canvas.removeEventListener('dragover', dragoverHandler);
+                canvas.removeEventListener('drop', dropHandler);
+            }
         } 
+        this.destroy = destroyListener;
     }
 
     _targetLockOn(offsetPoint) {
@@ -288,33 +240,70 @@ class JFlow {
             })
         }
         return this._target;
-
-        // this._target = {
-        //     instance: target,
-        //     link: targetLink,
-        //     moving: movingtarget,
-        //     isInstanceDirty: target === this._target.instance,
-        //     isLinkDirty: targetLink === this._target.link,
-        //     isMovingDirty: movingtarget === this._target.moving,
-        //     meta: {
-        //         x: offsetPoint[0],
-        //         y: offsetPoint[1],
-        //     }
-        //     point,
-        //     belongs
-        // }
-
-        // return {
-        //     belongs,
-        //     movingtarget,
-        //     target, 
-        //     targetLink,
-        //     point,
-        //     stack,
-        //     linkStack,
-        // }
     }
 
+    _onDragover(event) {
+        event.preventDefault();
+        if(this._lastDragState.processing) return;
+        this._lastDragState.processing = true;
+        const { offsetX, offsetY } = event
+        Object.assign(this._target.status, {
+            dragovering: true,
+        })
+        this._targetLockOn([offsetX, offsetY])
+        
+        if(this._target.isLinkDirty || this._target.isInstanceDirty) {
+            requestAnimationFrame(() => {
+                this._render();    
+                this._target.isLinkDirty = false; 
+                this._target.isInstanceDirty = false;
+                this._lastDragState.processing = false;
+            })
+        } else {
+            this._lastDragState.processing = false;
+        } 
+    }
+
+    _onDrop(event) {
+        const { offsetX, offsetY, clientX, clientY } = event
+        const payload = this.consumeMessage();
+        const instance = payload.instance;
+
+        const {
+            link,
+            instance: target,
+        } = this._target;
+
+        if(link) {
+            const {
+                point, belongs
+            } = this._target.cache;
+            instance.anchor = point;
+            belongs.addInstanceToLink(link, instance)
+        } else if(target) {
+            console.log(target)
+            target.bubbleEvent(new JFlowEvent('drop', {
+                event,
+                instance,
+                jflow: this,
+                target,
+            }))
+        }
+        
+        requestAnimationFrame(() => {
+            this.recalculate();
+            this._render();     
+            instance.bubbleEvent(new JFlowEvent('droped', {
+                event,
+                instance,
+                jflow: this,
+                target,
+            }))
+            Object.assign(this._target.status, {
+                dragovering: false,
+            })
+        })
+    }
 
     _onZoom(event) {
         if(this._zooming) return;
@@ -416,11 +405,11 @@ class JFlow {
         
     }
 
-    _onPressUp(event) {
+    _onPressUp(event, isDocument) {
         const meta = this._target.meta;
         if(meta.initialX === meta.x
             && meta.initialY === meta.y
-            && this._target.instance) {
+            && this._target.instance && !isDocument) {
             const t = this._target.instance;
             t.bubbleEvent(new JFlowEvent('click', {
                 event,
@@ -459,6 +448,10 @@ class JFlow {
         })
     }
 
+    _onPressUpDocument(event) {
+        this._onPressUp(event, true);
+    }
+
     _onClick(event) {
         const { offsetX, offsetY } = event;
         const point = this._calculatePointBack([offsetX, offsetY]);
@@ -477,7 +470,7 @@ class JFlow {
         this.position.offsetY = this.position.y - y * scale;
     }
 
-    _calculatePoint(p) {
+    calculateToRealWorld(p) {
         const scale = this.scale;
         const position = this.position;
         return [p[0] * scale + position.offsetX, p[1] * scale + position.offsetY]

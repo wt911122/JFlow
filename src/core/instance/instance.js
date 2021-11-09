@@ -139,6 +139,14 @@ class Instance extends EventTarget{
             this._belongs.bubbleEvent(customEvent);
         }
     }
+
+    calculateToRealWorld(point) {
+        if(this._belongs && this._belongs.calculateToRealWorld) {
+            return this._belongs.calculateToRealWorld(point);
+        } else {
+            return point;
+        }
+    }
 }
 
 export default Instance;

@@ -8,23 +8,28 @@
             <div draggable="true" :class="$style.circle" type="Point" @dragstart="onDragStartPoint">Circle</div>
         </div>
       </div>
-      <j-jflow ref="jflow" :class="$style.wrapper" :configs="configs">
-            <l-start name="start"></l-start>
-            <l-assignment name="assignment" />
-            <l-block name="block" subTitle="调用接口">
-                <template #header>
-                    <l-header1 />
-                </template>
-                <template #content>
-                    <j-selector :configs="{ width: 280 }"/>
-                </template>
-            </l-block>
-            <l-end name="end"></l-end>
+      <div style="position: relative;">
+        <j-jflow ref="jflow" :class="$style.wrapper" :configs="configs">
+                <l-start name="start"></l-start>
+                <l-assignment name="assignment" />
+                <l-block name="block" subTitle="调用接口">
+                    <template #header>
+                        <l-header1 />
+                    </template>
+                    <template #content>
+                        <j-selector @click="onClick" :configs="{ width: 280 }"/>
+                    </template>
+                </l-block>
+                <l-end name="end"></l-end>
 
-            <jBezierLink from="start" to="assignment" />
-            <jBezierLink from="assignment" to="block" />
-            <jBezierLink from="block" to="end" />
-      </j-jflow>
+                <jBezierLink from="start" to="assignment" />
+                <jBezierLink from="assignment" to="block" />
+                <jBezierLink from="block" to="end" />
+        </j-jflow>
+        <div ref="hoverblock" :style="`transform: translate(${offsetX}px, ${offsetY}px)`" :class="$style.hoverblock" v-if="isHover">
+            HOVER!!!
+        </div>
+      </div>
   </div>
 </template>
 
@@ -59,6 +64,9 @@ export default {
                     linkLength: 50,
                 }),
           },
+          isHover: false,
+          offsetX: 0,
+          offsetY: 0
       }
   },
   methods: {
@@ -82,6 +90,16 @@ export default {
                     color: 'hotpink',
                 })
             })
+      },
+      onClick(e) {
+          console.log(e)
+          const { currentTarget } = e;
+          const p = [ 0, currentTarget.height/2 ];
+          const gp = currentTarget.calculateToRealWorld(p)
+          const [ offsetX, offsetY ] = gp;
+          this.isHover = !this.isHover;
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
       }
   }
 }
@@ -142,5 +160,14 @@ export default {
     -o-user-drag: none;
     -ms-user-drag: none;
     user-drag: none;
+}
+.hoverblock{
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border: 3px solid gold;
+    left: 0;
+    top: 0;
+    transform: translate(0, 0);
 }
 </style>

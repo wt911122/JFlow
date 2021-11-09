@@ -105,6 +105,21 @@ class Group extends Rectangle {
 
         return Rectangle.prototype.isHit.call(this, point);
     }
+
+    calculateToRealWorld(point) {
+        const [cx, cy] = point;
+        const height = this.height;
+        const width = this.width;
+        const padding = this.padding;
+        const spanV = height / 2 + this.offsetY - padding
+        const spanH = width / 2 + this.offesetX - padding
+        const anchor = this.anchor;
+        const p = [cx + anchor[0] - spanH, cy + anchor[1] - spanV];
+        if(this._belongs && this._belongs.calculateToRealWorld) {
+            return this._belongs.calculateToRealWorld(p);
+        }
+
+    }
 }
 Object.assign(Group.prototype, StackMixin);
 Object.assign(Group.prototype, LayoutMixin);
