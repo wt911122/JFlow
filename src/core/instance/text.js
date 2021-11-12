@@ -25,8 +25,8 @@ class Text extends Rectangle {
             fontBoundingBoxDescent
         } = ctx.measureText(this.content);
         
-        this.width = actualBoundingBoxLeft + actualBoundingBoxRight;
-        const height = fontBoundingBoxAscent + fontBoundingBoxDescent;
+        this.width = this.indent + Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight);
+        const height = Math.abs(fontBoundingBoxAscent) + Math.abs(fontBoundingBoxDescent);
         if(this.lineHeight) {
             this.height = this.lineHeight;
         } else {
@@ -43,9 +43,9 @@ class Text extends Rectangle {
         
 
         // ctx.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
-        // ctx.fillStyle = this.color;
+        // ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         // ctx.fill();     
-        ctx.fillText(this.content, this.anchor[0] + this.indent, this.anchor[1]);
+        ctx.fillText(this.content, this.anchor[0] + this.indent / 2, this.anchor[1]);
         ctx.restore();
     }
 }

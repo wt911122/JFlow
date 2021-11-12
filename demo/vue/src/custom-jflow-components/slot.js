@@ -22,9 +22,11 @@ class Slot extends Group{
                 links: [],
             }
         });
-        
-        rectangle.addEventListener('drop', (event) => {
+        const dropHandler = (event) => {
             const instance = event.detail.instance;
+            if(instance._belongs) {
+                instance._belongs.removeFromStack(instance);
+            }
             this.addToStack(instance);
             rectangle.visible = false;
             this.recalculate();
@@ -32,7 +34,9 @@ class Slot extends Group{
                 instance,
                 bubbles: true,
             })
-        })
+        };
+        rectangle.addEventListener('drop', dropHandler);
+        rectangle.addEventListener('mouseup', dropHandler);
     }
 
 

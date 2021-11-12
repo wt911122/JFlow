@@ -51,3 +51,5 @@ export default {
         
     }
 }
+
+// export { * as JFlowInstance } from './components/JFlowInstance'; 

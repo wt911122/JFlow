@@ -1,7 +1,8 @@
 <template>
     <j-group 
         @mouseenter="onMouseEnter"
-        @mouseleave="onMouseLeave" :name="this.name" :configs="configs">
+        @mouseleave="onMouseLeave" 
+        :name="node.name" :configs="configs">
         <j-text ref="start" :configs="{
             font: '12px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji',
             textColor,
@@ -19,7 +20,7 @@
 import { LinearLayout } from '@joskii/jflow';
 export default {
     props: {
-        name: String,
+        node: Object,
     },
     data() {
         return {

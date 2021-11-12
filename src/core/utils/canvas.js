@@ -35,6 +35,8 @@ caheCanvasctx.scale(scale, scale);
 
 export function requestCacheCanvas(render) {
     caheCanvasctx.clearRect(0,0,5,5);
+    caheCanvasctx.save();
     render(caheCanvasctx);
+    caheCanvasctx.restore();
     caheCanvasctx.clearRect(0,0,5,5);
 }

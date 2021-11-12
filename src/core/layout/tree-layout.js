@@ -5,6 +5,7 @@
     + no link blocks 
         top to bottom, no overlap
  */
+import JFlowEvent from '../events'; 
 
 function getInstanceHeight(instance) {
     const rect = instance.getBoundingRect();
@@ -85,16 +86,33 @@ class TreeLayout {
         const currentAnchor = instance.anchor;
         const d = dist2(nowAnchor, currentAnchor);
         if(d > 1000) {
-            const {
-                toInstances
-            } = jflow.removeLinkOnInstance(instance);
-            if(instance === this.root) {
-                this.root = toInstances[0];
-            }
-            instance.anchor = nowAnchor;
-            
-            jflow.recalculate();
-            jflow.reflow();
+            console.log(instance)
+            instance.dispatchEvent(new JFlowEvent('outOfFlow', {
+                anchor: nowAnchor,
+                instance,
+                jflow,
+                reflowCallback: () => {
+                    const {
+                        toInstances
+                    } = jflow.removeLinkOnInstance(instance);
+                    jflow.recalculate();
+                    jflow.reflow();
+                    jflow._render();
+                }
+            }))
+            /* 
+                在具体支持的逻辑实现中处理这种事件好了
+                示例代码：
+                const {
+                    toInstances
+                } = jflow.removeLinkOnInstance(instance);
+                if(instance === this.root) {
+                    this.root = toInstances[0];
+                }
+                instance.anchor = nowAnchor;
+                jflow.recalculate();
+                jflow.reflow();
+            */
             return true;
         }
         return false;

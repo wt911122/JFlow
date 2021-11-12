@@ -2,8 +2,9 @@ import Vue from 'vue'
 import { JFlowVuePlugin } from '@joskii/jflow';
 import App from './App.vue'
 import Variable from './custom-jflow-components/variable';
-import Slot from './custom-jflow-components/slot';
+import Slot from './custom-jflow-components/slot2';
 import Selector from './custom-jflow-components/selector';
+import Instance from './custom-jflow-components/instance';
 import { setupDevtools } from './vue-devtools-plugin';
 
 Vue.use({
@@ -16,7 +17,7 @@ Vue.use(JFlowVuePlugin, {
     custom: {
         Variable,
         Slot,
-        Selector
+        Selector,
     }
 });
 new Vue({

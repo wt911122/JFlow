@@ -15,6 +15,10 @@ export default {
     },
     created() {
         this._jflowInstance = new JFlow(this.configs);
+        Object.keys(this.$listeners).map(event => {
+            const func = this.$listeners[event].bind(this);
+            this._jflowInstance.addEventListener(event, func);
+        })
     },
     mounted() {
         this._jflowInstance.$mount(this.$el);

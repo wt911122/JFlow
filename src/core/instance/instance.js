@@ -4,6 +4,7 @@ const ishitKey = Symbol('ishit');
 class Instance extends EventTarget{
     constructor(configs = {}) {
         super();
+        Object.assign(this, configs);
         this.anchor = configs.anchor || [0, 0];
         // this.belongs = undefined;
         this.visible = true;
@@ -57,7 +58,12 @@ class Instance extends EventTarget{
         this[ishitKey] = ishit; // validation could be checked here such as only allowing non numerical values
     }
     setConfig(configs) {
-        Object.assign(this, configs)
+        Object.keys(configs).forEach(k => {
+            if(configs[k] !== undefined && configs[k] !== null) {
+                this[k] = configs[k]
+            }
+        })
+        
     }
 
     render() {

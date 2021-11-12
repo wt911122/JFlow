@@ -24,6 +24,14 @@ export default {
             type: String,
         }
     },
+     watch: {
+        configs(val, oldVal) {
+            if(JSON.stringify(val) === JSON.stringify(oldVal)){
+                return;
+            }
+            this._jflowInstance.setConfig(val);
+        }
+    },
     created() {
         this._jflowInstance =  new Group(this.configs);
         Object.keys(this.$listeners).map(event => {

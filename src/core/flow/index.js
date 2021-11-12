@@ -8,8 +8,9 @@ import Point from '../instance/point';
 import JFlowEvent from '../events';
 
 
-class JFlow {
+class JFlow extends EventTarget{
     constructor(configs) {
+        super();
         this.uniqueName = 'jflow';
         this.initStack(configs);
         this.initLayout(configs);
@@ -273,35 +274,56 @@ class JFlow {
             link,
             instance: target,
         } = this._target;
-
-        if(link) {
-            const {
-                point, belongs
-            } = this._target.cache;
+        const {
+            point, belongs
+        } = this._target.cache;
+        if(link) {   
+            // 丢在线上
             instance.anchor = point;
-            belongs.addInstanceToLink(link, instance)
+            link.dispatchEvent(new JFlowEvent('drop', {
+                event,
+                instance,
+                link,
+                jflow: this,
+                belongs,
+                point
+            }))
+            // belongs.addInstanceToLink(link, instance)
         } else if(target) {
-            console.log(target)
+            // 丢在 instance 上
             target.bubbleEvent(new JFlowEvent('drop', {
                 event,
                 instance,
                 jflow: this,
                 target,
+                point
+            }))
+        } else {
+            // 丢在主图上
+            // instance.anchor = point;
+            // this.addToStack(instance);
+            this.dispatchEvent(new JFlowEvent('drop', {
+                event,
+                instance,
+                jflow: this,
+                target,
+                point,
+                reflowCallback: (jflowinstance) => {
+                    jflowinstance.anchor = point;
+                    this.recalculate();
+                    this.reflow();
+                }
             }))
         }
         
         requestAnimationFrame(() => {
             this.recalculate();
-            this._render();     
-            instance.bubbleEvent(new JFlowEvent('droped', {
-                event,
-                instance,
-                jflow: this,
-                target,
-            }))
+            this._target.instance = null;
+            this._target.link = null;
             Object.assign(this._target.status, {
-                dragovering: false,
+               dragovering: false,
             })
+            this._render();
         })
     }
 
@@ -355,7 +377,14 @@ class JFlow {
         Object.assign(this._target.status, {
             dragging: true,
             processing: false,
-        })
+        });
+        if(this._target.moving) {
+            this._target.moving.dispatchEvent(new JFlowEvent('pressStart', {
+                event,
+                instance: this._target.moving,
+                jflow: this,
+            }))
+        }
     }
 
     _onPressMove(event) {
@@ -427,10 +456,48 @@ class JFlow {
                 const {
                     point, belongs
                 } = this._target.cache;
+                const link = this._target.link;
                 const instance = this._target.moving;
-                instance.anchor = point;
-                belongs.addInstanceToLink(this._target.link, instance);
-                this.recalculate();
+                // instance.anchor = point;
+                // belongs.addInstanceToLink(this._target.link, instance);
+                // belongs.dispatchEvent(new JFlowEvent('drop', {
+                //     event,
+                //     instance,
+                //     link: ,
+                //     jflow: this,
+                //     target,
+                // }))
+                link.dispatchEvent(new JFlowEvent('drop', {
+                    event,
+                    instance,
+                    link,
+                    jflow: this,
+                    belongs,
+                    reflowCallback: () => {
+                        belongs.recalculate();
+                        belongs.reflow();
+                        this._render();
+                    }
+                }));
+                this._target.link = null;
+                this._target.instance = null;
+                // link.dispatchEvent(new JFlowEvent('dragover', {
+                //     event,
+                //     instance,
+                //     link,
+                //     jflow: this,
+                //     belongs,
+                // }))
+                // this.recalculate();
+            }
+            if(this._target.instance && this._target.moving) {
+                this._target.instance.bubbleEvent(new JFlowEvent('pressEnd', {
+                    event,
+                    instance: this._target.moving,
+                    jflow: this,
+                    target: this._target.instance,
+                    bubbles: true
+                }));
             }
             this._target.moving = null;
             this._target.isMovingDirty = false;

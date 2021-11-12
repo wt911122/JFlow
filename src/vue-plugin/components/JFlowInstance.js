@@ -19,6 +19,9 @@ export default function (nameNode) {
         },
         watch: {
             configs(val, oldVal) {
+                if(JSON.stringify(val) === JSON.stringify(oldVal)){
+                    return;
+                }
                 const diffed = diff(val, oldVal);
                 const reflowKeys = Object.keys(diffed).filter(k => {
                     const lk = k.toLowerCase();
@@ -26,7 +29,7 @@ export default function (nameNode) {
                 });
                 this._jflowInstance.setConfig(val);
                 if(reflowKeys.length) {
-                    this._jflowInstance.recalculate();
+                    this._jflowInstance._belongs.recalculate();
                 } 
                 this._jflowInstance._jflow._render();
             }

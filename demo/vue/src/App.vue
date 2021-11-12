@@ -9,22 +9,37 @@
         </div>
       </div>
       <div style="position: relative;">
-        <j-jflow ref="jflow" :class="$style.wrapper" :configs="configs">
-                <l-start name="start"></l-start>
-                <l-assignment name="assignment" />
-                <l-block name="block" subTitle="调用接口">
-                    <template #header>
-                        <l-header1 />
-                    </template>
-                    <template #content>
-                        <j-selector @click="onClick" :configs="{ width: 280 }"/>
-                    </template>
-                </l-block>
-                <l-end name="end"></l-end>
+        <j-jflow ref="jflow" 
+            :class="$style.wrapper" 
+            :configs="configs"
+            @drop="onDrop"
+            @pressEnd="onPressEnd">
+                <template v-for="(astblock, idx) in ast.body">
+                    <logic-node 
+                        :key="astblock.name" 
+                        :node="astblock"
+                        @outOfFlow="onOutOfFlow($event, astblock, idx)"
+                        @pressStart="onPressStart($event, astblock, idx)">
+                    </logic-node>
+                </template>
 
-                <jBezierLink from="start" to="assignment" />
-                <jBezierLink from="assignment" to="block" />
-                <jBezierLink from="block" to="end" />
+                <template v-for="(astblock, idx) in ast.body">
+                    <jBezierLink
+                        v-if="ast.body[idx + 1]"
+                        :key="`${astblock.name}-${ast.body[idx + 1].name}`"
+                        :from="astblock.name"
+                        :to="ast.body[idx + 1].name"
+                        @drop="onDropToLink($event, idx+1, astblock, ast.body[idx + 1])">
+                    </jBezierLink>
+                </template>
+                <template v-for="(prepareAstBlock, idx) in prepareBody">
+                    <logic-node 
+                        :key="prepareAstBlock.astblock.name" 
+                        :initialAnchor="prepareAstBlock.anchor"
+                        :node="prepareAstBlock.astblock"
+                        @pressStart="onPressStart($event, prepareAstBlock, idx)">
+                    </logic-node>
+                </template>
         </j-jflow>
         <div ref="hoverblock" :style="`transform: translate(${offsetX}px, ${offsetY}px)`" :class="$style.hoverblock" v-if="isHover">
             HOVER!!!
@@ -35,11 +50,10 @@
 
 <script>
 import { LinearLayout, TreeLayout, Rectangle, Point } from '@joskii/jflow';
-import Start from './logic-components/start.vue';
-import End from './logic-components/end.vue';
-import Assignment from './logic-components/assignment.vue';
-import Block from './logic-components/block.vue';
-import Header1 from './logic-components/header1.vue';
+import './logic-components/assignment.vue'; // resolve Circular dependencies with logic-node!!!
+import logicNode from './logic-components/logic-node';
+import start from './logic-components/start.vue';
+import end from './logic-components/end.vue';
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -49,59 +63,127 @@ function getRandomColor() {
     return color;
 }
 export default {
-  components: {
-      'l-start': Start,
-      'l-end': End,
-      'l-assignment': Assignment,
-      'l-block': Block,
-      'l-header1': Header1,
-  },
-  data() {
-      return {
-          configs: {
-                allowDrop: true,
-                layout: new TreeLayout({
-                    linkLength: 50,
-                }),
-          },
-          isHover: false,
-          offsetX: 0,
-          offsetY: 0
-      }
-  },
-  methods: {
-      onDragStartRectangle() {
-            const jflowInstance = this.$refs.jflow.getInstance();
-            jflowInstance.sendMessage({ 
-                instance: new Rectangle({
-                    content: 'Rectangle',
-                    width: 80,
-                    height: 280,
-                    color: 'green',
-                }) 
-            })
-      },
-      onDragStartPoint() {
-            const jflowInstance = this.$refs.jflow.getInstance();
-            jflowInstance.sendMessage({ 
-               instance: new Point({
-                    content: 'circle',
-                    radius: 40,
-                    color: 'hotpink',
+    components: {
+        logicNode,
+        'l-start': start,
+        'l-end': end
+    },
+    data() {
+        return {
+                configs: {
+                    allowDrop: true,
+                    layout: new TreeLayout({
+                        linkLength: 50,
+                    }),
+                },
+                isHover: false,
+                offsetX: 0,
+                offsetY: 0,
+                currentTarget: null,
+                prepareBody: [],
+                ast: {
+                    body: [
+                        {
+                            type: 'start',
+                            name: 'start',
+                        },
+                        {
+                            type: 'variable',
+                            content: 'aaaa',
+                            name: 'logic1',
+                        },
+                        {
+                            type: 'assignment',
+                            name: 'logic2',
+                        },
+                        {
+                            type: 'end',
+                            name: 'end',
+                        },
+                    ]
+                }
+        }
+    },
+    computed: {
+        inflowInstances() {
+            return this.ast.body.filter(b => !b.outflow)
+        }
+    },
+    mounted() {
+        console.log(this.$refs.jflow.getInstance())
+    },
+    methods: {
+        onDragStartRectangle() {
+                const jflowInstance = this.$refs.jflow.getInstance();
+                jflowInstance.sendMessage({ 
+                    instance: {
+                        type: 'text',
+                        content: 'dddd',
+                        name: 'logic4sa'
+                    }
                 })
+        },
+        onDragStartPoint() {
+                const jflowInstance = this.$refs.jflow.getInstance();
+                jflowInstance.sendMessage({ 
+                    instance: {
+                        type: 'variable',
+                        content: 'vvvvvv',
+                        name: 'logiceee'
+                    }
+                })
+        },
+        onOutOfFlow(e, astblock, idx) {
+            this.ast.body.splice(idx, 1);
+            this.prepareBody.push({
+                astblock,
+                anchor: e.detail.anchor,
+            });
+            this.$nextTick(() => {
+                e.detail.reflowCallback();
             })
-      },
-      onClick(e) {
-          console.log(e)
-          const { currentTarget } = e;
-          const p = [ 0, currentTarget.height/2 ];
-          const gp = currentTarget.calculateToRealWorld(p)
-          const [ offsetX, offsetY ] = gp;
-          this.isHover = !this.isHover;
+        },
+        onDrop(e) {
+            const astblock = e.detail.instance;
+            this.prepareBody.push({
+                astblock,
+                anchor: e.detail.point,
+            });
+        },
+        onClick(e) {
+            const { currentTarget } = e;
+            const p = [ 0, currentTarget.height/2 ];
+            const gp = currentTarget.calculateToRealWorld(p)
+            const [ offsetX, offsetY ] = gp;
+            this.isHover = !this.isHover;
             this.offsetX = offsetX;
             this.offsetY = offsetY;
-      }
-  }
+        },
+        onPressStart(e, astblock, idx ) {
+            this.currentTarget = astblock;
+        },
+        onPressEnd() {
+            this.currentTarget = null;
+        },
+        onDropToLink(e, idx, fromblock, toblock) {
+            if(this.currentTarget) {
+                const currentIdx = this.prepareBody.findIndex(b => b === this.currentTarget);
+                const [ prepareAstBlock ] = this.prepareBody.splice(currentIdx, 1);
+                const insertIdx = this.ast.body.findIndex(b => b === fromblock);
+                
+                this.ast.body.splice(insertIdx + 1, 0, prepareAstBlock.astblock);
+                this.currentTarget = null;
+                this.$nextTick(() => {
+                    e.detail.reflowCallback();
+                })
+            } else {
+                const {
+                    belongs, link, instance
+                } = e.detail;
+                this.ast.body.splice(idx, 0, instance);
+            }
+        },
+    }
 }
 </script>
 

@@ -44,6 +44,7 @@ const StackMixin = {
     },
 
     removeFromStack(target) {
+        this.removeLinkOnInstance(target);
         const index = this._stack.findIndex(i => i === target);
         this._stack.splice(index, 1);
         this.recalculate()

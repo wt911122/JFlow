@@ -1,17 +1,15 @@
 <template>
-    <j-group :name="node.name" :configs="configs">
+    <j-group
+        :name="node.name" 
+        :configs="groupConfig"
+        v-on="$listeners">
         <j-text :configs="{
             font: '12px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji',
             textColor: '#585c63',
-            content: '结束',
-        }">
-        </j-text>
-        <j-rectangle :configs="{
-            color: '#faaaaa',
-            width: 20,
-            height: 20,
-            borderRadius: 2,
-        }"></j-rectangle>
+            content: node.content,
+            lineHeight: 26,
+            indent: 10,
+        }"/>
     </j-group>
 </template>
 
@@ -20,23 +18,24 @@ import { LinearLayout } from '@joskii/jflow';
 export default {
     props: {
         node: Object,
+        initialAnchor: Array,
     },
-    data() {
-        return {
-            configs: {
+    computed: {
+        groupConfig() {
+            return  {
                 layout: new LinearLayout({
-                    direction: 'vertical',
+                    direction: 'horizontal',
                     gap: 0,
                 }),
-                borderColor: 'transparent',
-                borderWidth: 0,
-                hoverStyle: 'translate',
-                color: 'transparent',
+                borderColor: '#517cff',
+                borderWidth: 2,
+                borderRadius: 5,
                 hasShrink: false,
                 lock: true,
+                anchor: this.initialAnchor, 
             }
         }
-    }
+    },
 }
 </script>
 
