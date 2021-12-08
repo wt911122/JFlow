@@ -29,9 +29,11 @@ export default {
     },
      watch: {
         configs(val, oldVal) {
+            debugger
             if(JSON.stringify(val) === JSON.stringify(oldVal)){
                 return;
             }
+            debugger
             this._jflowInstance.setConfig(val);
         },
         '$listeners' (val, oldVal) {

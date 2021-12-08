@@ -30,16 +30,14 @@ export default {
                 if(!this.$scopedSlots[type]) {
                     return
                 }
-                const [vnode] = this.$scopedSlots[type]({ configs });
-                if(meta) {
-                    meta.getJflowInstance = function() {
-                        // 只支持一个元素
-                        let instance = vnode.componentInstance;
-                        while(instance && !instance._jflowInstance)  {
-                            instance = instance.$children[0];
-                        }
-                        return instance._jflowInstance;
+                const [vnode] = this.$scopedSlots[type]({ configs, meta });
+                meta.getJflowInstance = function() {
+                    // 只支持一个元素
+                    let instance = vnode.componentInstance;
+                    while(instance && !instance._jflowInstance)  {
+                        instance = instance.$children[0];
                     }
+                    return instance._jflowInstance;
                 }
                 vnode.key = configs.id;
                 return vnode;
@@ -50,9 +48,10 @@ export default {
                     return null;
                 }
                 const [vnode] = this.$scopedSlots[type]({ configs: meta });
-                vnode.key = `${meta.from}-${meta.to}`
+                vnode.key = `${meta.from}-${meta.to}-${meta.part}`
                 return vnode
             })
+            debugger
             return createElement('div', [...vnodes, ...vlinks]);
         }
         
@@ -82,18 +81,14 @@ export default {
             this._jflowInstance.$mount(this.$el);
             this._jflowInstance.addEventListener('drop', (e) => {
                 const astblock = e.detail.instance;
-                this.nodes.push({
+                const node = {
                     type: astblock.type,
-                    configs: {
-                        ...astblock,  
-                        initialAnchor: e.detail.point,
-                    },
-                    meta: null,
-                });
+                    configs: astblock,
+                    meta: {},
+                };
+                this.nodes.push(node);
                 this.$nextTick(() => {
-                    console.log(JSON.stringify(this._jflowInstance.bounding_box));
-                    this._jflowInstance._getBoundingGroupRect();
-                    console.log(JSON.stringify(this._jflowInstance.bounding_box));
+                    node.meta.getJflowInstance().anchor = e.detail.point
                     this.renderJFlow();
                 })
             })
@@ -117,7 +112,6 @@ export default {
             const freeNodes = []
             this.nodes.forEach(n => {
                 if(!layoutNodes.find(ln => ln.configs.id === n.configs.id)){
-                    debugger
                     freeNodes.push(n)
                 }
             })

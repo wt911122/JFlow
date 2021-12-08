@@ -84,7 +84,7 @@ AstNode.prototype.reflowPreCalculate = function(level = 0, sequence = 0, layoutM
             c_spanY += sy;
             level += sy;
         });
-        const nextSequeence = sequence + c_spanX;
+        const nextSequeence = sequence + Math.max(c_spanX, 1);
         level = this.level;
         this.alternate.forEach((a, idx) => {
             const { spanX: sx, spanY: sy } = a.reflowPreCalculate(level + 1, nextSequeence, layoutMapping);
@@ -94,7 +94,7 @@ AstNode.prototype.reflowPreCalculate = function(level = 0, sequence = 0, layoutM
         });
         spanX = Math.max(1, c_spanX + a_spanX);
         spanY += Math.max(c_spanY, a_spanY);
-
+        level = this.level + spanY - 1;
         if(this.Endpoint) {
             const { spanY: sy } = this.Endpoint.reflowPreCalculate(level + 1, sequence, layoutMapping);
             spanY += sy;
@@ -103,7 +103,7 @@ AstNode.prototype.reflowPreCalculate = function(level = 0, sequence = 0, layoutM
 
     this.spanX = spanX;
     this.spanY = spanY;
-    console.log(this.type, this.spanX, this.spanY, this.level, this.sequence)
+    console.log(this.source.id, this.spanX, this.spanY, this.level, this.sequence)
 
     return {
         spanX, spanY, level, sequence
@@ -143,6 +143,7 @@ AstNode.prototype.makeLink = function(flowLinkStack, isroot) {
             flowLinkStack.push({
                 from: last.id,
                 to: b.id,
+                part: 'body',
                 meta: {
                     from: last,
                     to: b
@@ -158,6 +159,7 @@ AstNode.prototype.makeLink = function(flowLinkStack, isroot) {
             flowLinkStack.push({
                 from: lastc.id,
                 to: c.id,
+                part: 'consequent',
                 meta: {
                     from: lastc,
                     to: c
@@ -166,12 +168,25 @@ AstNode.prototype.makeLink = function(flowLinkStack, isroot) {
             c = c.makeLink(flowLinkStack)
             lastc = c;
         });
+        if(this.Endpoint) {
+            // 顺序不可调整！！！会影响连线
+            flowLinkStack.push({
+                from: lastc.id,
+                to: this.Endpoint.id,
+                part: 'consequent',
+                meta: {
+                    from: lastc,
+                    to: this.Endpoint
+                }
+            })
+        }
 
         let lasta = this;
         this.alternate.forEach(a => {
             flowLinkStack.push({
                 from: lasta.id,
                 to: a.id,
+                part: 'alternate',
                 meta: {
                     from: lasta,
                     to: a
@@ -182,16 +197,9 @@ AstNode.prototype.makeLink = function(flowLinkStack, isroot) {
         });
         if(this.Endpoint) {
             flowLinkStack.push({
-                from: lastc.id,
-                to: this.Endpoint.id,
-                meta: {
-                    from: lastc,
-                    to: this.Endpoint
-                }
-            })
-            flowLinkStack.push({
                 from: lasta.id,
                 to: this.Endpoint.id,
+                part: 'alternate',
                 meta: {
                     from: lasta,
                     to: this.Endpoint
@@ -211,7 +219,7 @@ function dist2(v, w) {
 class LowcodeLayout {
     constructor(configs) {
         this.linkLength = configs.linkLength || 18;
-        this.gap = configs.gap || 10;
+        this.gap = configs.gap || 30;
         this.reOrder(configs.ast);
         this.static = true;
     }
@@ -229,11 +237,23 @@ class LowcodeLayout {
         this.root.makeLink(this.flowLinkStack, true);
     }
 
+    alignLinkOrder(linkStack, out) {
+        // TODO 可以优化
+        this.flowLinkStack.forEach(link => {
+            const id = `${link.from}-${link.to}-${link.part}`;
+            const instance = linkStack.find(linkInstance => linkInstance.key === id);
+            if(instance) {
+                out.push(instance);
+            }
+        });
+    }
+
     staticCheck(instance, jflow) {
         const finded = jflow._linkStack.find(l => l.from === instance || l.to === instance);
         if(!finded) {
             return false;
         }
+        debugger
         const nowAnchor = instance.anchor.slice();
         jflow.reflow();
         if(jflow._linkStack.length < 2) return;
@@ -245,7 +265,7 @@ class LowcodeLayout {
                 anchor: nowAnchor,
                 instance,
                 jflow,
-        
+                point: nowAnchor,
             }))
             return true;
         }

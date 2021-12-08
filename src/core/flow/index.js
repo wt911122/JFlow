@@ -1,6 +1,7 @@
 import { createCanvas } from '../utils/canvas';
 import { bounding_box } from '../utils/functions';
 import StackMixin from '../instance/stackMixin';
+import InstanceStack from '../instance/stack';
 import LayoutMixin from '../instance/layoutMixin';
 import MessageMixin from '../instance/messageMixin';
 import { setUniqueId, getUniqueId } from '../utils/functions';
@@ -586,7 +587,13 @@ class JFlow extends EventTarget{
         this._stack.forEach(instance => {
             instance._intersections = [];
         });
-        this._linkStack.render(this.ctx);
+        let linkStack = this._linkStack;
+        if(this._layout.alignLinkOrder) {
+            const p = new InstanceStack();
+            this._layout.alignLinkOrder(linkStack, p);
+            linkStack = p;
+        }
+        linkStack.render(this.ctx);
         this._stack.render(this.ctx);
         
     }

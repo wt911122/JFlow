@@ -4,6 +4,7 @@ class BaseLink extends Instance{
         super();
         this.from   = configs.from; // Instance
         this.to     = configs.to;   // Instance
+        this.key    = configs.key;
         this._cachePoints = null;
         this.defaultStyle = 'black';
         this.hoverStyle = 'cornflowerblue';

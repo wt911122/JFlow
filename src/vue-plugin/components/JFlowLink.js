@@ -27,9 +27,11 @@ export default function (nameNode, isLink) {
             debugger
             const fromInstance = this.getInstanceByName(this.from);
             const toInstance = this.getInstanceByName(this.to);
+            const key = this.$vnode.key;
             if(fromInstance && toInstance) {
                 this._jflowInstance =  new JFlowInstance[nameNode]({
                     ...this.configs,
+                    key,
                     from: fromInstance,
                     to: toInstance,
                 });
