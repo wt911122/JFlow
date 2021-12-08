@@ -56,12 +56,23 @@ export function distToSegmentSquared(p, v, w) {
 
 
 export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECTION.TOP) {
+    const isSameDirection = start_dir === end_dir;
     const isVerticalStart = [DIRECTION.TOP, DIRECTION.BOTTOM].includes(start_dir);   
     const isVerticalEnd = [DIRECTION.TOP, DIRECTION.BOTTOM].includes(end_dir);
     const arrowspan = [DIRECTION.TOP, DIRECTION.LEFT].includes(end_dir) ? -5 : 5;
     const endX = isVerticalEnd ? p2[0] : p2[0] + arrowspan;
     const endY = isVerticalEnd ? p2[1] + arrowspan : p2[1];
-
+    if(isSameDirection) {
+        let span = Math.abs(isVerticalStart ? (endY - p1[1]) : (endX - p1[0]))
+        const symb = [DIRECTION.RIGHT, DIRECTION.BOTTOM].includes(end_dir)
+        span = symb ? span : - span;
+        const cp1 = isVerticalStart ? [p1[0], p1[1] + span] : [p1[0] + span, p1[1]];
+        const cp2 = isVerticalEnd ? [endX, endY + span] : [endX + span, endY];
+        return [ 
+            ...cp1,
+            ...cp2,
+            endX, endY ];
+    }
     const spanStart = isVerticalStart ? (endY - p1[1]) / 2 : (endX - p1[0]) / 2
     const spanEnd = isVerticalEnd ? (p1[1] - endY) / 2 : (p1[0] - endX) / 2
     

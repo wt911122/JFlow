@@ -1,4 +1,5 @@
-import JFlowComponent from './components/JFlow';
+// import JFlowComponent from './components/JFlow';
+import JFlowComponent from './components-template/JFlow';
 import JFlowInstance from './components/JFlowInstance';
 import JFlowLink from './components/JFlowLink';
 import JFLowGroup from './components/JFlowGroup';
@@ -34,7 +35,7 @@ const components = [
 ];
 const componentPrefix = 'j';
 export default {
-    install: (Vue, options) => {
+    install: (Vue, options = {}) => {
         let prefixToUse = componentPrefix;
         if(options && options.prefix){
             prefixToUse = options.prefix;

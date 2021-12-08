@@ -72,11 +72,12 @@ export default {
     methods: {
         onDrop($event) {
             console.log($event)
-            const instance = 
-            $event.detail.bubbles = false;
+            // const instance = $event.detail.instance;
+            // $event.detail.bubbles = false;
             this.dropInstance = {
-                anchor: $eve
+                node: $event.detail.instance,
             }
+            // console.log(this.dropInstance)
         },
         onHover() {
             // this.

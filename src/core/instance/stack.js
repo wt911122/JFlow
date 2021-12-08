@@ -4,8 +4,6 @@ class InstanceStack extends Array {
     }
 
     render(ctx) {
-        // TODO 拖动的元素调整到最后 
-        // let topInstance = null;
         let movingTarget;
         this.forEach(instance => {
             if(instance._isMoving) {
@@ -38,7 +36,7 @@ class InstanceStack extends Array {
         while(i >= 0) {
             const instance = this[i];
             
-            if(instance.visible) {
+            if(instance.visible && !instance.ignoreHit) {
                 if(condition && condition(instance)) {
                     i--
                     continue;
@@ -62,7 +60,7 @@ class InstanceStack extends Array {
     getBoundingRectPoints() {
         const points = [];
         this.forEach(instance => {
-            if(instance.visible && !instance.outOfFlow) {
+            if(instance.visible) {
                 points.splice(points.length, 0, ...instance.getBoundingRect());
             }
         });

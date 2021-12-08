@@ -1,6 +1,6 @@
-import Instance from './instance';
-import { DIRECTION } from '../utils/constance';
-class Rectangle extends Instance {
+import Node from './node';
+import { DIRECTION, oppositeDirection } from '../utils/constance';
+class Rectangle extends Node {
     constructor(configs = {}) {
         super(configs);
         this.type =             'Rectangle';
@@ -113,29 +113,39 @@ class Rectangle extends Instance {
         }
         return [x, y];
     }
-
-
-    calculateIntersectionInFourDimension(point) {
+  
+    calculateIntersectionInFourDimension(point, end) {
         const [x1, y1] = point;
         const [x2, y2] = this.anchor;
         const w = this.width/2;
         const h = this.height/2;
+        const allIntersections = {
+            [DIRECTION.RIGHT]:  [x2+w, y2],
+            [DIRECTION.LEFT]:   [x2-w, y2],
+            [DIRECTION.BOTTOM]: [x2, y2+h],
+            [DIRECTION.TOP]:    [x2, y2-h],
+        }
         const vecx = x2 - x1;
         const vecy = y2 - y1;
         const theta1 = h/w;
         const theta2 = Math.abs(vecy/vecx);
         const dirx = x1 > x2;
         const diry = y1 > y2;
-        if(theta2 > theta1) {
-            return {
-                p: [x2, diry?y2+h:y2-h],
-                dir: diry ? DIRECTION.BOTTOM : DIRECTION.TOP,
-            }
-        } else {
-            return {
-                p: [dirx?x2+w:x2-w, y2],
-                dir: dirx ? DIRECTION.RIGHT : DIRECTION.LEFT,
-            }
+        let interDir = (theta2 > theta1 
+            ? (diry ? DIRECTION.BOTTOM : DIRECTION.TOP) 
+            : (dirx ? DIRECTION.RIGHT : DIRECTION.LEFT));
+
+        interDir = this.checkLinked(interDir, end);
+        // if(!interDir) {
+        //     debugger
+        // }
+        // let endDir = interDir;
+        // if(end === 'to') {
+        //     endDir = oppositeDirection(endDir)
+        // }
+        return {
+            p: allIntersections[interDir],
+            dir: interDir,
         }
     }
 }

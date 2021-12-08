@@ -1,7 +1,7 @@
-import Instance from './instance';
+import BaseLink from './base-link';
 import { distToSegmentSquared } from '../utils/functions';
 import { APPROXIMATE } from '../utils/constance';
-class Link extends Instance {
+class Link extends BaseLink {
     constructor(configs) {
         super(configs);
         this.from   = configs.from; // Instance
@@ -13,7 +13,7 @@ class Link extends Instance {
     }
 
     getColor() {
-        if(this.status.hover) {
+        if(this._isTargeting) {
             return this.hoverStyle;
         }
         return this.defaultStyle;

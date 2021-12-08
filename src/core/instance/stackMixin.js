@@ -27,7 +27,7 @@ const StackMixin = {
     addToStack(instance) {
         instance._belongs = this;
         this._stack.push(instance);
-        this.recalculate()
+        // this.recalculate()
     },
 
     replaceFromStack(target, instance) {
@@ -35,7 +35,7 @@ const StackMixin = {
         this._stack.splice(index, 1, instance);
         target._belongs = null;
         instance._belongs = this;
-        this.recalculate()
+        // this.recalculate()
     },
 
     addToLinkStack(link) {
@@ -44,16 +44,21 @@ const StackMixin = {
     },
 
     removeFromStack(target) {
-        this.removeLinkOnInstance(target);
+        // this.removeLinkOnInstance(target);
         const index = this._stack.findIndex(i => i === target);
         this._stack.splice(index, 1);
-        this.recalculate()
+        // this.recalculate()
     },
     removeFromLinkStack(target) {
         const index = this._linkStack.findIndex(i => i === target);
         this._linkStack.splice(index, 1);
     },
-
+   
+    emptyLink() {
+        this._linkStack = new InstanceStack();
+    },
+    /* 
+        还是丢给实现方去处理，这个不属于框架自带的通用逻辑
     removeLinkOnInstance(target) {
         const fromInstances = [];
         const toInstances = [];
@@ -89,7 +94,7 @@ const StackMixin = {
             toInstances,
             removelinks,
         }
-    },
+    }, */ 
 
     addInstanceToLink(targetLink, instance) {
         this.addToStack(instance);

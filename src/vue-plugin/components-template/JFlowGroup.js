@@ -23,9 +23,6 @@ export default {
                 return {};
             },
         },
-        name: {
-            type: String,
-        }
     },
      watch: {
         configs(val, oldVal) {
@@ -61,15 +58,12 @@ export default {
         }
     },
     created() {
-        this._jflowInstance =  new Group(this.configs);
+        this._jflowInstance = new Group(this.configs);
         Object.keys(this.$listeners).map(event => {
             const func = this.$listeners[event].bind(this);
             this._jflowInstance.addEventListener(event, func);
         })
-        this.addToBelongStack(this._jflowInstance, this.name);
-    },
-    mounted(){
-        this._jflowInstance.recalculate();
+        this.addToBelongStack(this._jflowInstance);
     },
     destroyed() {
         this.removeFromBelongStack(this._jflowInstance);

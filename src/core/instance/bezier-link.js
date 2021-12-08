@@ -1,14 +1,9 @@
-import Instance from './instance';
+import BaseLink from './base-link';
 import { bezierPoints, distToBezierSegmentSquared, getBezierAngle } from '../utils/functions';
 import { APPROXIMATE } from '../utils/constance';
-class BezierLink extends Instance {
+class BezierLink extends BaseLink {
     constructor(configs) {
         super(configs);
-        this.from   = configs.from; // Instance
-        this.to     = configs.to;   // Instance
-        this._cachePoints = null;
-        this.defaultStyle = 'black';
-        this.hoverStyle = 'cornflowerblue';
     }
 
     getColor() {
@@ -19,8 +14,8 @@ class BezierLink extends Instance {
     }
 
     _calculateAnchorPoints() {
-        const start = this.from.calculateIntersectionInFourDimension(this.to.getCenter());
-        const end = this.to.calculateIntersectionInFourDimension(this.from.getCenter());
+        const start = this.from.calculateIntersectionInFourDimension(this.to.getCenter(), 'from');
+        const end = this.to.calculateIntersectionInFourDimension(this.from.getCenter(), 'to');
         const p1 = start.p;
         const p2 = end.p;
         const points = bezierPoints(p1, p2, start.dir, end.dir);

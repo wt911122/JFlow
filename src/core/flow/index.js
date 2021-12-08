@@ -166,6 +166,9 @@ class JFlow extends EventTarget{
         const pressUpHandler = this._onPressUp.bind(this);
         const pressUpDocument = this._onPressUpDocument.bind(this);
         canvas.addEventListener('wheel', zoomHandler );
+        canvas.addEventListener('contextmenu', e => {
+            e.preventDefault();
+        });
         canvas.addEventListener('pointerdown', pressStartHandler );
         canvas.addEventListener('pointermove', pressMoveHandler );
         canvas.addEventListener('pointerup', pressUpHandler );
@@ -308,22 +311,22 @@ class JFlow extends EventTarget{
                 jflow: this,
                 target,
                 point,
-                reflowCallback: (jflowinstance) => {
-                    jflowinstance.anchor = point;
-                    this.recalculate();
-                    this.reflow();
-                }
+                // reflowCallback: (jflowinstance) => {
+                //     instance.anchor = point;
+                //     this.recalculate();
+                //     this.reflow();
+                // }
             }))
         }
         
         requestAnimationFrame(() => {
-            this.recalculate();
+            // this.recalculate();
             this._target.instance = null;
             this._target.link = null;
             Object.assign(this._target.status, {
                dragovering: false,
             })
-            this._render();
+            // this._render();
         })
     }
 
@@ -359,8 +362,8 @@ class JFlow extends EventTarget{
         this.scale = newScale;
         this.position.x += pX * deltaWidth;
 		this.position.y += pY * deltaHeight;
-        this.position.offsetX = this.position.x - x * newScale;
-        this.position.offsetY = this.position.y - y * newScale;
+        this.position.offsetX = this.position.x; // - x * newScale;
+        this.position.offsetY = this.position.y; // - y * newScale;
         requestAnimationFrame(() => {
             this._render();
             this._zooming = false;
@@ -368,7 +371,8 @@ class JFlow extends EventTarget{
     }
 
     _onPressStart(event) { 
-        const { offsetX, offsetY, deltaY } = event
+        const { offsetX, offsetY, deltaY, buttons } = event
+        if(buttons !== 1) return;
         this._targetLockOn([offsetX, offsetY]);
         Object.assign(this._target.meta, {
             initialX: offsetX,
@@ -388,6 +392,7 @@ class JFlow extends EventTarget{
     }
 
     _onPressMove(event) {
+        console.log('_onPressMove')
         const {
             dragging, processing
         } = this._target.status;
@@ -435,6 +440,7 @@ class JFlow extends EventTarget{
     }
 
     _onPressUp(event, isDocument) {
+        console.log('_onPressUp')
         const meta = this._target.meta;
         if(meta.initialX === meta.x
             && meta.initialY === meta.y
@@ -446,6 +452,7 @@ class JFlow extends EventTarget{
                 jflow: this,
                 bubbles: true,
             }))
+            this._render();
         } else if(this._target.moving) {
             let checkresult = false;
             if(this._layout.static) {
@@ -473,11 +480,12 @@ class JFlow extends EventTarget{
                     link,
                     jflow: this,
                     belongs,
-                    reflowCallback: () => {
-                        belongs.recalculate();
-                        belongs.reflow();
-                        this._render();
-                    }
+                    // reflowCallback: () => {
+                    //     debugger
+                    //     belongs.recalculate();
+                    //     belongs.reflow();
+                    //     this._render();
+                    // }
                 }));
                 this._target.link = null;
                 this._target.instance = null;
@@ -490,14 +498,22 @@ class JFlow extends EventTarget{
                 // }))
                 // this.recalculate();
             }
-            if(this._target.instance && this._target.moving) {
-                this._target.instance.bubbleEvent(new JFlowEvent('pressEnd', {
-                    event,
-                    instance: this._target.moving,
-                    jflow: this,
-                    target: this._target.instance,
-                    bubbles: true
-                }));
+            if(this._target.moving) {
+                if(this._target.instance) {
+                    this._target.instance.bubbleEvent(new JFlowEvent('pressEnd', {
+                        event,
+                        instance: this._target.moving,
+                        jflow: this,
+                        target: this._target.instance,
+                        bubbles: true
+                    }));
+                } else {
+                    this.dispatchEvent(new JFlowEvent('pressEnd', {
+                        event,
+                        instance: this._target.moving,
+                        jflow: this,
+                    }))
+                }
             }
             this._target.moving = null;
             this._target.isMovingDirty = false;
@@ -533,8 +549,8 @@ class JFlow extends EventTarget{
         }
         this.position.x += deltaX;
 		this.position.y += deltaY;
-        this.position.offsetX = this.position.x - x * scale;
-        this.position.offsetY = this.position.y - y * scale;
+        this.position.offsetX = this.position.x // - x * scale;
+        this.position.offsetY = this.position.y // - y * scale;
     }
 
     calculateToRealWorld(p) {
@@ -567,6 +583,9 @@ class JFlow extends EventTarget{
 
     _render() {
         this._resetTransform();
+        this._stack.forEach(instance => {
+            instance._intersections = [];
+        });
         this._linkStack.render(this.ctx);
         this._stack.render(this.ctx);
         
@@ -580,7 +599,7 @@ export default JFlow;
 export { default as JFlowEvent } from '../events';
 export { default as Point } from '../instance/point';
 export { default as Rectangle } from '../instance/rectangle';
-export { default as Group } from '../instance/group2';
+export { default as Group } from '../instance/group';
 export { default as Text } from '../instance/text';
 export { default as Icon } from '../instance/image';
 export { default as Link } from '../instance/link';
@@ -588,3 +607,4 @@ export { default as PolylineLink } from '../instance/polyline-link';
 export { default as BezierLink } from '../instance/bezier-link';
 export { default as LinearLayout} from '../layout/linear-layout';
 export { default as TreeLayout } from '../layout/tree-layout';
+export { default as Lowcodelayout } from '../layout/low-code-layout';

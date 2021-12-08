@@ -14,30 +14,14 @@
             :configs="configs"
             @drop="onDrop"
             @pressEnd="onPressEnd">
-                <template v-for="(astblock, idx) in graph.body">
-                    <logic-node 
-                        :key="astblock.name" 
-                        :node="astblock"
-                        @outOfFlow="onOutOfFlow($event, astblock, idx)"
-                        @pressStart="onPressStart($event, astblock, idx)">
-                    </logic-node>
+                <template #start="">
+                    <j-start></j-start>
                 </template>
-
-                <!-- <template v-for="link in graph.links">
-                    <jLink
-                        :key="`${link.from}-${link.to}`"
-                        :from="link.from"
-                        :to="link.to"
-                        @drop="onDropToLink($event, link)">
-                    </jLink>
-                </template> -->
-                <template v-for="(prepareAstBlock, idx) in prepareBody">
-                    <logic-node 
-                        :key="prepareAstBlock.astblock.name" 
-                        :initialAnchor="prepareAstBlock.anchor"
-                        :node="prepareAstBlock.astblock"
-                        @pressStart="onPressStart($event, prepareAstBlock, idx)">
-                    </logic-node>
+                <template #assignment>
+                    <j-assignment></j-assignment>
+                </template>
+                <template #end>
+                    <j-end></j-end>
                 </template>
         </j-jflow>
         <div ref="hoverblock" :style="`transform: translate(${offsetX}px, ${offsetY}px)`" :class="$style.hoverblock" v-if="isHover">

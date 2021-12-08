@@ -1,7 +1,7 @@
-import Instance from './instance';
+import Node from './node';
 import { DIRECTION } from '../utils/constance';
 
-class Point extends Instance {
+class Point extends Node {
     constructor(configs) {
         super(configs);
         this.type =             'Point';
@@ -18,6 +18,8 @@ class Point extends Instance {
         ctx.arc(this.anchor[0], this.anchor[1], this.radius, 0, 2 * Math.PI);
         ctx.fillStyle = this.color;
         ctx.fill();   
+        ctx.strokeStyle = this.strokeColor;
+        ctx.stroke();
         if(this.content) {
             ctx.font = this.font;
             ctx.textAlign = this.textAlign;
@@ -62,23 +64,38 @@ class Point extends Instance {
         return [x2 - ratio * vecx, y2 - ratio * vecy];
     }
 
-    calculateIntersectionInFourDimension(point) {
+    calculateIntersectionInFourDimension(point, end) {
         const [x1, y1] = point;
         const [x2, y2] = this.anchor;
         const r = this.radius;
         const vecx = x2 - x1;
         const vecy = y2 - y1;
+        const allIntersections = {
+            [DIRECTION.RIGHT]:  [x2 + r, y2],
+            [DIRECTION.LEFT]:   [x2 - r, y2],
+            [DIRECTION.BOTTOM]: [x2, y2+r],
+            [DIRECTION.TOP]:    [x2, y2-r],
+        }
         // console.log(Math.abs(vecx) > Math.abs(vecy), vecx, r)
-        if(Math.abs(vecx) > Math.abs(vecy)) {
-            return {
-                p: [x2 + (vecx<0?r:-r), y2],
-                dir: vecx<0 ? DIRECTION.RIGHT : DIRECTION.LEFT,
-            }
-        } else {
-            return {
-                p: [x2, y2+(vecy<0?r:-r)],
-                dir: vecy<0 ? DIRECTION.BOTTOM : DIRECTION.TOP,
-            }
+        // if() {
+        //     return {
+        //         p: [x2 + (vecx<0?r:-r), y2],
+        //         dir: vecx<0 ? DIRECTION.RIGHT : DIRECTION.LEFT,
+        //     }
+        // } else {
+        //     return {
+        //         p: [x2, y2+(vecy<0?r:-r)],
+        //         dir: vecy<0 ? DIRECTION.BOTTOM : DIRECTION.TOP,
+        //     }
+        // }
+        let interDir = (Math.abs(vecy) > Math.abs(vecx)
+            ? (vecy < 0 ? DIRECTION.BOTTOM : DIRECTION.TOP) 
+            : (vecx < 0 ? DIRECTION.RIGHT : DIRECTION.LEFT));
+
+        interDir = this.checkLinked(interDir, end);
+        return {
+            p: allIntersections[interDir],
+            dir: interDir,
         }
     }
 

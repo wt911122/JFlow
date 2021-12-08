@@ -24,7 +24,6 @@ export default function (nameNode, isLink) {
             return null;
         },
         created() {
-            debugger
             const fromInstance = this.getInstanceByName(this.from);
             const toInstance = this.getInstanceByName(this.to);
             if(fromInstance && toInstance) {
@@ -42,7 +41,6 @@ export default function (nameNode, isLink) {
         },
         methods: {
             resetLink() {
-                debugger
                 const fromInstance = this.getInstanceByName(this.from);
                 const toInstance = this.getInstanceByName(this.to);
                 this._jflowInstance.from = fromInstance;

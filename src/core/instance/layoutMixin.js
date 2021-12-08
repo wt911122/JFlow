@@ -11,9 +11,10 @@ const LayoutMixin = {
         if(this._getBoundingGroupRect){
             this._getBoundingGroupRect();
         }
-        if(this._belongs) {
-            this._belongs.recalculate();
-        }
+        // 这个地方到底是手动还是自动？自动时机再试试看好了
+        // if(this._belongs) {
+        //     this._belongs.recalculate();
+        // }
     },
     staticCheck(instance) {
         if(this._layout) {

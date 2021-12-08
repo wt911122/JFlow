@@ -2,6 +2,11 @@ import JFlow from '../../core/flow';
 import StackMixin from './StackMixin';
 export default {
     mixins: [StackMixin],
+    provide(){
+        return {
+            renderJFlow: this.renderJFlow,
+        }
+    },
     props: {
         configs: {
             type: Object,
@@ -26,6 +31,9 @@ export default {
     methods: {
         getInstance() {
             return this._jflowInstance;
+        },
+        renderJFlow() {
+            this._jflowInstance._render();
         }
     }
 }

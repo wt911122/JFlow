@@ -13,9 +13,6 @@ export default function (nameNode) {
                     return {};
                 },
             },
-            name: {
-                type: String,
-            }
         },
         watch: {
             configs(val, oldVal) {
@@ -65,7 +62,7 @@ export default function (nameNode) {
         created() { 
             this._jflowInstance =  new bulder(this.configs);
             this.bindListeners();
-            this.addToStack(this._jflowInstance, this.name);
+            this.addToStack(this._jflowInstance);
         },
         destroyed() {
             this.removeFromStack(this._jflowInstance);
