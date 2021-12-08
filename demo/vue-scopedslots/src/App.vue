@@ -20,8 +20,10 @@
                 <template #end="{ configs }">
                     <j-end :node="{ name: configs.id }"></j-end>
                 </template>
-                <template #variable="{ configs }">
-                    <j-variable @pressStart="onPressStart(configs)" :node="{ name: configs.id, content: configs.content }" :initialAnchor="configs.initialAnchor"></j-variable>
+                <template #variable="{ configs, meta }">
+                    <j-variable :node="{ name: configs.id, content: configs.content }" 
+                    @pressStart="onPressStart(configs)" 
+                    @outOfFlow="onOutOfFlow($event, meta)"></j-variable>
                 </template>
                 <template #endpoint="{ configs }">
                     <j-endpoint :node="{ name: configs.id }"></j-endpoint>
@@ -107,18 +109,18 @@ export default {
                             content: 'ggggggg',
                             id: 'logic6',
                             consequent: [
-                                {
-                                    type: 'variable',
-                                    content: 'jkhvvvv',
-                                    id: 'logic77',
-                                },
+                                // {
+                                //     type: 'variable',
+                                //     content: 'jkhvvvv',
+                                //     id: 'logic77',
+                                // },
                             ], 
                             alternate: [
-                                {
-                                    type: 'variable',
-                                    content: 'yuuo',
-                                    id: 'logic88',
-                                },
+                                // {
+                                //     type: 'variable',
+                                //     content: 'yuuo',
+                                //     id: 'logic88',
+                                // },
                             ]
                         },
                     ]
@@ -130,7 +132,7 @@ export default {
             ]
         };
         const layout = new Lowcodelayout({
-            linkLength: 50,
+            linkLength: 30,
             ast,
         });
         return {
@@ -176,43 +178,15 @@ export default {
                 }
             })
         },
-        onOutOfFlow(e, astblock) {
+        onOutOfFlow(e, meta) {
+            const type = meta.parentIterateType;
+            const idx = meta.idx;
             debugger
-            const idx = this.graph.body.findIndex(b => b === astblock);
-            const [out] = this.graph.body.splice(idx, 1);
-            const fromInstances = [];
-            const toInstances = [];
-            const removelinks = [];
-            const target = out.name;
-            const newLinks = [];
-            this.graph.links.forEach(l => {
-                if(l.from === target){
-                    toInstances.push(l.to);
-                } else if(l.to === target){
-                    fromInstances.push(l.from);
-                } else {
-                    newLinks.push(l);
-                }
-            })
-            
-            // 暂且全连接吧
-            fromInstances.forEach(f => {
-                toInstances.forEach(t => {
-                    const finded = newLinks.find(l => l.from === f && l.to === t);
-                    if(!finded) {
-                        newLinks.push({
-                            from: f,
-                            to: t,
-                        })
-                    }
-                });
-            });
-            this.graph.links = newLinks;
-            debugger
-            this.prepareBody.push({
-                astblock: out,
-                anchor: e.detail.anchor,
-            });
+            const astnode = meta.parent.source[type].splice(idx, 1);
+            this.configs.layout.reOrder(this.ast);
+            meta.getJflowInstance().anchor = e.detail.point;
+            this.$refs.jflow.reflow();
+           
         },
         onDrop(e) {
             const astblock = e.detail.instance;
@@ -255,7 +229,7 @@ export default {
             let type;
             let topNode;
             if(toParent === linkConfigs.meta.from) {
-                type = toParentIterateType;
+                type = linkConfigs.part;
                 idx = toIdx;
                 topNode = linkConfigs.meta.from.source;
             } else if(linkConfigs.meta.to.type === 'endpoint'
