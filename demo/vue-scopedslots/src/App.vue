@@ -25,11 +25,22 @@
                     @pressStart="onPressStart(configs)" 
                     @outOfFlow="onOutOfFlow($event, meta)"></j-variable>
                 </template>
+                <template #IfStatement="{ configs, meta }">
+                    <j-ifstatement :node="{ name: configs.id, content: configs.content }" 
+                    @pressStart="onPressStart(configs)" 
+                    @outOfFlow="onOutOfFlow($event, meta)"></j-ifstatement>
+                </template>
+                <template #SwitchStatement="{ configs, meta }" >
+                    <j-switch :node="{ name: configs.id, content: configs.id, cases: configs.cases }" 
+                    @pressStart="onPressStart(configs)" 
+                    @outOfFlow="onOutOfFlow($event, meta)"/>
+                </template>
                 <template #endpoint="{ configs }">
                     <j-endpoint :node="{ name: configs.id }"></j-endpoint>
                 </template>
                 <template #plainlink="{ configs }">
                     <jBezierLink
+                        :configs="configs"
                         :from="configs.from"
                         :to="configs.to"
                         @drop="onDropToLink($event, configs)">
@@ -48,9 +59,11 @@ import { LinearLayout, Lowcodelayout, Rectangle, Point } from '@joskii/jflow';
 // import './logic-components/assignment.vue'; // resolve Circular dependencies with logic-node!!!
 // import logicNode from './logic-components/logic-node';
 import variable from './components/variable.vue';
+import ifStatement from './components/ifstatement.vue';
 import start from './components/start.vue';
 import end from './components/end.vue';
 import endPoint from './components/endpoint.vue';
+import switchComp from './components/switch.vue'; 
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -84,16 +97,19 @@ export default {
         'j-start': start,
         'j-end': end,
         'j-endpoint': endPoint,
+        'j-switch': switchComp,
+        'j-ifstatement': ifStatement,
     },
     data() {
         const ast = {
+            type: 'Root',
             body: [
                 {
                     type: 'start',
                     id: 'start',
                 }, 
                 {
-                    type: 'variable',
+                    type: 'IfStatement',
                     content: 'aaaa',
                     id: 'logic1',
                     consequent: [
@@ -105,31 +121,69 @@ export default {
                     ], 
                     alternate: [
                         {
-                            type: 'variable',
+                            type: 'IfStatement',
                             content: 'ggggggg',
                             id: 'logic6',
                             consequent: [
-                                // {
-                                //     type: 'variable',
-                                //     content: 'jkhvvvv',
-                                //     id: 'logic77',
-                                // },
+                                {
+                                    type: 'variable',
+                                    content: 'jkhvvvv',
+                                    id: 'logic77',
+                                },
                             ], 
                             alternate: [
-                                // {
-                                //     type: 'variable',
-                                //     content: 'yuuo',
-                                //     id: 'logic88',
-                                // },
+                                {
+                                    type: 'variable',
+                                    content: 'yuuo',
+                                    id: 'logic88',
+                                },
                             ]
                         },
                     ]
-                },  
+                },
+                {
+                    type: 'SwitchStatement',
+                    id: 'swtch1',
+                    cases: [
+                        {
+                            type: 'SwitchCase',
+                            id: 'switchcase11',
+                            content: 'switchcase11',
+                            alternate: [
+                                {
+                                    type: 'variable',
+                                    content: 'yuuo',
+                                    id: 'sc1111122',
+                                },
+                            ]
+                        },
+                        {
+                            type: 'SwitchCase',
+                            id: 'switchcase12',
+                            content: 'switchcase12',
+                            alternate: [
+                                {
+                                    type: 'variable',
+                                    content: 'asdfag',
+                                    id: 'sc12344455',
+                                },
+                            ],
+                            consequent: [
+                                {
+                                    type: 'variable',
+                                    content: 'dfhsdfg',
+                                    id: 'sc125444',
+                                },
+                            ],
+                        }
+                    ]
+                },
                 {
                     type: 'end',
                     id: 'end',
                 },
-            ]
+            ],
+            playground: [],
         };
         const layout = new Lowcodelayout({
             linkLength: 30,
@@ -162,9 +216,12 @@ export default {
             const jflowInstance = this.$refs.jflow.getInstance();
             jflowInstance.sendMessage({ 
                 instance: {
-                    type: 'variable',
-                    content: 'dddd',
-                    id: `logic-rec${uniqueId ++}`,
+                    type: 'IfStatement',
+                    content: `IfStatement-rec${uniqueId ++}`,
+                    id: `IfStatement-rec${uniqueId ++}`,
+                    consequent: [], 
+                    alternate: [],
+                    
                 }
             })
         },
@@ -182,17 +239,25 @@ export default {
             const type = meta.parentIterateType;
             const idx = meta.idx;
             debugger
-            const astnode = meta.parent.source[type].splice(idx, 1);
+            const [astnode] = meta.parent.source[type].splice(idx, 1);
+            this.ast.playground.push(astnode);
             this.configs.layout.reOrder(this.ast);
-            meta.getJflowInstance().anchor = e.detail.point;
             this.$refs.jflow.reflow();
+            debugger
+            meta.getJflowInstance().anchor = e.detail.point;
+
            
         },
         onDrop(e) {
+            debugger
             const astblock = e.detail.instance;
-            this.prepareBody.push({
-                astblock,
-                anchor: e.detail.point,
+            this.ast.playground.push(astblock);
+            this.configs.layout.reOrder(this.ast);
+            this.$refs.jflow.reflow(() => {
+                const meta = this.configs.layout.findLayoutNode(astblock);
+                if(meta) {
+                     meta.getJflowInstance().anchor = e.detail.point;
+                }
             });
         },
         onClick(e) {
@@ -206,6 +271,7 @@ export default {
         },
         onPressStart(configs) {
             console.log('pressStart')
+            console.log(configs);
             this.currentTarget = configs;
         },
         onPressEnd() {
@@ -214,58 +280,13 @@ export default {
         },
         onDropToLink(e, linkConfigs) {
             console.log(e, linkConfigs);
-            const {
-                parent: fromParent,
-                idx: fromIdx,
-                parentIterateType: fromParentIterateType,
-            } = linkConfigs.meta.from;
-
-            const {
-                parent: toParent,
-                idx: toIdx,
-                parentIterateType: toParentIterateType,
-            } = linkConfigs.meta.to;
-            let idx;
-            let type;
-            let topNode;
-            if(toParent === linkConfigs.meta.from) {
-                type = linkConfigs.part;
-                idx = toIdx;
-                topNode = linkConfigs.meta.from.source;
-            } else if(linkConfigs.meta.to.type === 'endpoint'
-                && linkConfigs.meta.from.type === 'endpoint'){
-                type = 'alternate';
-                idx = toParent.source.alternate.length;
-                topNode = toParent.source;
-            }else if(linkConfigs.meta.from.type === 'endpoint'){
-                type = toParentIterateType;
-                idx = toIdx;
-                topNode = toParent.source;
-            } else {
-                type = fromParentIterateType;
-                idx = fromIdx + 1;
-                topNode = fromParent.source;
-            } 
-            
-            debugger
             let node = e.detail.instance;
             if(this.currentTarget) {
+                node.removeFromLayoutSource();
                 node = this.currentTarget;
             }
 
-            switch (type) {
-                case 'body':
-                    topNode.body.splice(idx, 0, node)
-                    break;
-                case 'consequent':
-                    topNode.consequent.splice(idx, 0, node)
-                    break;
-                case 'alternate':
-                    topNode.alternate.splice(idx, 0, node)
-                    break;
-                default:
-                    break;
-            }
+            linkConfigs.meta.from.linkSource(node, linkConfigs);
             debugger
             this.configs.layout.reOrder(this.ast);
             this.$refs.jflow.reflow();
