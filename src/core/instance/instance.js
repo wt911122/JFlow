@@ -18,6 +18,9 @@ class Instance extends EventTarget{
         this._belongs = undefined;
         this[ishitKey] = false; 
 
+        /** layout 抽象节点关联属性 */
+        this._layoutNode = undefined;
+
         /**
             通用样式属性
          */
@@ -38,7 +41,7 @@ class Instance extends EventTarget{
     }
 
     get _isMoving() {
-        return this === this._jflow._target.moving;
+        return this === this._jflow._getMovingTarget();
     }
 
     get _isHit() {
@@ -83,6 +86,10 @@ class Instance extends EventTarget{
         throw 'require calculateIntersection implement'
     }
 
+    getIntersectionsInFourDimension() {
+        throw 'require getIntersectionsInFourDimension implement'
+    }
+
     getCenter() {
         return this.anchor;
     }
@@ -119,6 +126,14 @@ class Instance extends EventTarget{
             return this._belongs.calculateToRealWorld(point);
         } else {
             return point;
+        }
+    }
+
+    removeFromLayoutSource() {
+        
+        if(this._layoutNode) {
+            debugger
+            this._layoutNode.remove();
         }
     }
 }

@@ -5,6 +5,7 @@ export default {
     provide(){
         return {
             renderJFlow: this.renderJFlow,
+            addNameToRootStack: this.addNameToRootStack
         }
     },
     props: {
@@ -26,7 +27,6 @@ export default {
             return createElement('div');
         } else {
             const vnodes = this.nodes.map(({ type, configs, meta }) => {
-                console.log(this.$scopedSlots[type])
                 if(!this.$scopedSlots[type]) {
                     return
                 }
@@ -37,6 +37,8 @@ export default {
                     while(instance && !instance._jflowInstance)  {
                         instance = instance.$children[0];
                     }
+                    // TODO 优化下这里的逻辑
+                    instance._jflowInstance._layoutNode = meta;
                     return instance._jflowInstance;
                 }
                 vnode.key = configs.id;
@@ -51,7 +53,7 @@ export default {
                 vnode.key = `${meta.from}-${meta.to}-${meta.part}`
                 return vnode
             })
-            debugger
+
             return createElement('div', [...vnodes, ...vlinks]);
         }
         
@@ -79,19 +81,19 @@ export default {
         this.links = this._jflowInstance._layout.flowLinkStack.slice();
         this.$nextTick(() => {
             this._jflowInstance.$mount(this.$el);
-            this._jflowInstance.addEventListener('drop', (e) => {
-                const astblock = e.detail.instance;
-                const node = {
-                    type: astblock.type,
-                    configs: astblock,
-                    meta: {},
-                };
-                this.nodes.push(node);
-                this.$nextTick(() => {
-                    node.meta.getJflowInstance().anchor = e.detail.point
-                    this.renderJFlow();
-                })
-            })
+            // this._jflowInstance.addEventListener('drop', (e) => {
+            //     const astblock = e.detail.instance;
+            //     const node = {
+            //         type: astblock.type,
+            //         configs: astblock,
+            //         meta: {},
+            //     };
+            //     this.nodes.push(node);
+            //     this.$nextTick(() => {
+            //         node.meta.getJflowInstance().anchor = e.detail.point
+            //         this.renderJFlow();
+            //     })
+            // })
         });
         Object.keys(this.$listeners).map(event => {
             console.log(event)
@@ -101,7 +103,7 @@ export default {
     },
     
     methods: {
-        reflow() {
+        reflow(preCallback) {
             const layoutNodes = this._jflowInstance._layout.flowStack.map(meta => {
                 return {
                     type: meta.type,
@@ -116,9 +118,11 @@ export default {
                 }
             })
             this.nodes = layoutNodes.concat(freeNodes);
-            
             this.links = this._jflowInstance._layout.flowLinkStack.slice();
             this.$nextTick(() => {
+                if(preCallback) {
+                    preCallback();
+                }
                 this._jflowInstance.recalculate();
                 this._jflowInstance._render();
             })
@@ -128,6 +132,12 @@ export default {
         },
         renderJFlow() {
             this._jflowInstance._render();
+        },
+        addNameToRootStack(instance, name) {
+             this.stack.push({
+                name,
+                instance,
+            });
         }
     }
 }

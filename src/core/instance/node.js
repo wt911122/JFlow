@@ -4,22 +4,21 @@ class Node extends Instance {
     constructor(configs = {}) {
         super(configs);
         // for layout
-        this._intersections = [];
+        // this._intersections = [];
         this.anchor =   configs.anchor || [0, 0];
         this.margin =   configs.margin || 5;
     }
 
     // end: from | to
     // from 逆时针, to 顺时针
-    checkLinked(interDir, end) {
-        if(this._intersections.find(i => i === interDir)) {
-            interDir = nextDirection(interDir, end === 'to');
-        } else {
-            this._intersections.push(interDir)
-        }
-        return interDir;
-        return interDir
-    }
+    // checkLinked(interDir, end) {
+    //     if(this._intersections.find(i => i === interDir)) {
+    //         interDir = nextDirection(interDir, end === 'to');
+    //     } else {
+    //         this._intersections.push(interDir)
+    //     }
+    //     return interDir;
+    // }
 
     renderFocus(ctx) {
         const points = this.getBoundingRect();

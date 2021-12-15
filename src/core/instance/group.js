@@ -102,6 +102,22 @@ class Group extends Rectangle {
         return Rectangle.prototype.isHit.call(this, point);
     }
 
+    calculateToCoordination(point) {
+        const [cx, cy] = point;
+        const height = this.height;
+        const width = this.width;
+        const padding = this.padding;
+        const spanV = height / 2 + this.offsetY - padding
+        const spanH = width / 2 + this.offsetX - padding
+        const anchor = this.anchor;
+        const p = [cx + anchor[0] - spanH, cy + anchor[1] - spanV];
+        if(this._belongs && this._belongs.calculateToCoordination) {
+            return this._belongs.calculateToCoordination(p);
+        } else {
+            return p;
+        }
+    }
+
     calculateToRealWorld(point) {
         const [cx, cy] = point;
         const height = this.height;

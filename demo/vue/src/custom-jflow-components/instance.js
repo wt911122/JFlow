@@ -5,11 +5,10 @@ export default {
     },
     render(c) {
         const component = this.instance.component;
-        debugger
         return c(component, {
             props: {
                 configs: this.instance
             }
-        })
+        }, )
     }
 }

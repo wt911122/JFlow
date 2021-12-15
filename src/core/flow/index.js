@@ -48,7 +48,7 @@ class JFlow extends EventTarget{
             moving: null,
             isInstanceDirty: false, 
             isLinkDirty: false, 
-            isMovingDirty: false, 
+            // isMovingDirty: false, 
             cache: {
                 stack: null,
                 belongs: null,
@@ -198,12 +198,12 @@ class JFlow extends EventTarget{
         this.destroy = destroyListener;
     }
 
-    _targetLockOn(offsetPoint) {
+    _targetLockOn(offsetPoint, event) {
         let point = this._calculatePointBack(offsetPoint);
         this._currentp = point;
         let stack = this._stack;
         const target = stack.checkHit(point, (instance) => {
-            return this._target.status.dragging && (instance === this._target.moving)
+            return this._target.status.dragging && (instance === this._getMovingTarget())
         });
         let linkStack = this._linkStack;
         let belongs = this;
@@ -231,7 +231,7 @@ class JFlow extends EventTarget{
             y: offsetPoint[1],
         });
 
-        if(!this._target.status.dragging && !this._target.status.dragovering) {
+        if(event === 'pressStart' && !this._target.status.dragging && !this._target.status.dragovering) {
             let movingtarget = target;
             while (movingtarget && movingtarget._belongs.lock && movingtarget !== this) {
                 movingtarget = movingtarget._belongs;
@@ -239,12 +239,23 @@ class JFlow extends EventTarget{
             if(movingtarget === this) {
                 movingtarget = target;
             }
+            if(movingtarget) {
+                if(movingtarget._layoutNode && movingtarget._layoutNode.isLocked) {
+                    movingtarget = movingtarget._layoutNode.getNodes()
+                } else {
+                    movingtarget = [movingtarget];
+                }
+            } 
             Object.assign(this._target, {
                 moving: movingtarget,
-                isMovingDirty: movingtarget === this._target.moving,
+                // isMovingDirty: movingtarget[0] === this._target.moving[0],
             })
         }
         return this._target;
+    }
+
+    _getMovingTarget() {
+        return this._target.moving && this._target.moving[0];
     }
 
     _onDragover(event) {
@@ -281,6 +292,7 @@ class JFlow extends EventTarget{
         const {
             point, belongs
         } = this._target.cache;
+        debugger
         if(link) {   
             // 丢在线上
             instance.anchor = point;
@@ -374,7 +386,7 @@ class JFlow extends EventTarget{
     _onPressStart(event) { 
         const { offsetX, offsetY, deltaY, buttons } = event
         if(buttons !== 1) return;
-        this._targetLockOn([offsetX, offsetY]);
+        this._targetLockOn([offsetX, offsetY], 'pressStart');
         Object.assign(this._target.meta, {
             initialX: offsetX,
             initialY: offsetY,
@@ -384,16 +396,17 @@ class JFlow extends EventTarget{
             processing: false,
         });
         if(this._target.moving) {
-            this._target.moving.dispatchEvent(new JFlowEvent('pressStart', {
+            const moving = this._getMovingTarget();
+            moving.dispatchEvent(new JFlowEvent('pressStart', {
                 event,
-                instance: this._target.moving,
+                instance: moving,
                 jflow: this,
             }))
         }
     }
 
     _onPressMove(event) {
-        console.log('_onPressMove')
+        // console.log('_onPressMove')
         const {
             dragging, processing
         } = this._target.status;
@@ -421,8 +434,10 @@ class JFlow extends EventTarget{
         const deltaY = offsetY - y;
 
         if(movingtarget) {
-            movingtarget.anchor[0] += deltaX / this.scale;
-            movingtarget.anchor[1] += deltaY / this.scale;
+            movingtarget.forEach(t => {
+                t.anchor[0] += deltaX / this.scale;
+                t.anchor[1] += deltaY / this.scale;
+            })
         } else {
             this._recalculatePosition(deltaX, deltaY);    
         }
@@ -457,7 +472,7 @@ class JFlow extends EventTarget{
         } else if(this._target.moving) {
             let checkresult = false;
             if(this._layout.static) {
-                checkresult = this.staticCheck(this._target.moving);
+                checkresult = this.staticCheck(this._getMovingTarget());
             }
 
             if(!checkresult && this._target.link) {
@@ -465,7 +480,7 @@ class JFlow extends EventTarget{
                     point, belongs
                 } = this._target.cache;
                 const link = this._target.link;
-                const instance = this._target.moving;
+                const instance = this._getMovingTarget();
                 // instance.anchor = point;
                 // belongs.addInstanceToLink(this._target.link, instance);
                 // belongs.dispatchEvent(new JFlowEvent('drop', {
@@ -503,7 +518,7 @@ class JFlow extends EventTarget{
                 if(this._target.instance) {
                     this._target.instance.bubbleEvent(new JFlowEvent('pressEnd', {
                         event,
-                        instance: this._target.moving,
+                        instance: this._getMovingTarget(),
                         jflow: this,
                         target: this._target.instance,
                         bubbles: true
@@ -511,13 +526,13 @@ class JFlow extends EventTarget{
                 } else {
                     this.dispatchEvent(new JFlowEvent('pressEnd', {
                         event,
-                        instance: this._target.moving,
+                        instance: this._getMovingTarget(),
                         jflow: this,
                     }))
                 }
             }
             this._target.moving = null;
-            this._target.isMovingDirty = false;
+            // this._target.isMovingDirty = false;
             this._render();
         }
         Object.assign(this._target.meta, {
@@ -584,15 +599,15 @@ class JFlow extends EventTarget{
 
     _render() {
         this._resetTransform();
-        this._stack.forEach(instance => {
-            instance._intersections = [];
-        });
+        // this._stack.forEach(instance => {
+        //     instance._intersections = [];
+        // });
         let linkStack = this._linkStack;
-        if(this._layout.alignLinkOrder) {
-            const p = new InstanceStack();
-            this._layout.alignLinkOrder(linkStack, p);
-            linkStack = p;
-        }
+        // if(this._layout.alignLinkOrder) {
+        //     const p = new InstanceStack();
+        //     this._layout.alignLinkOrder(linkStack, p);
+        //     linkStack = p;
+        // }
         linkStack.render(this.ctx);
         this._stack.render(this.ctx);
         

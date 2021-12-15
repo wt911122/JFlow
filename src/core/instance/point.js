@@ -64,6 +64,17 @@ class Point extends Node {
         return [x2 - ratio * vecx, y2 - ratio * vecy];
     }
 
+    getIntersectionsInFourDimension() {
+        const [x2, y2] = this.anchor;
+        const r = this.radius;
+        return {
+            [DIRECTION.RIGHT]:  [x2 + r, y2],
+            [DIRECTION.LEFT]:   [x2 - r, y2],
+            [DIRECTION.BOTTOM]: [x2, y2+r],
+            [DIRECTION.TOP]:    [x2, y2-r],
+        }
+    }
+
     calculateIntersectionInFourDimension(point, end) {
         const [x1, y1] = point;
         const [x2, y2] = this.anchor;

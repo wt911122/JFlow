@@ -14,8 +14,24 @@ class BezierLink extends BaseLink {
     }
 
     _calculateAnchorPoints() {
-        const start = this.from.calculateIntersectionInFourDimension(this.to.getCenter(), 'from');
-        const end = this.to.calculateIntersectionInFourDimension(this.from.getCenter(), 'to');
+        let start;
+        let end;
+        if(this.fromDir !== undefined) {
+            start = {
+                dir: this.fromDir,
+                p: this.from.getIntersectionsInFourDimension()[this.fromDir],
+            }
+        } 
+        if(this.toDir !== undefined) {
+            end = {
+                dir: this.toDir,
+                p: this.to.getIntersectionsInFourDimension()[this.toDir],
+            }
+        }
+        
+        
+        // const start = this.from.calculateIntersectionInFourDimension(this.to.getCenter(), 'from');
+        // const end = this.to.calculateIntersectionInFourDimension(this.from.getCenter(), 'to');
         const p1 = start.p;
         const p2 = end.p;
         const points = bezierPoints(p1, p2, start.dir, end.dir);

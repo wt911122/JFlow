@@ -113,10 +113,32 @@ class Rectangle extends Node {
         }
         return [x, y];
     }
+
+    getIntersectionsInFourDimension() {
+        let p2 = this.anchor;
+        if(this._belongs && this._belongs.calculateToCoordination) {
+            p2 = this._belongs.calculateToCoordination(p2);
+        }
+        
+        const [x2, y2] = p2;
+        const w = this.width/2;
+        const h = this.height/2;
+        return {
+            [DIRECTION.RIGHT]:  [x2+w, y2],
+            [DIRECTION.LEFT]:   [x2-w, y2],
+            [DIRECTION.BOTTOM]: [x2, y2+h],
+            [DIRECTION.TOP]:    [x2, y2-h],
+        }
+    }
   
     calculateIntersectionInFourDimension(point, end) {
         const [x1, y1] = point;
-        const [x2, y2] = this.anchor;
+        let p2 = this.anchor;
+        if(this._belongs && this._belongs.calculateToCoordination) {
+            p2 = this._belongs.calculateToCoordination(p2);
+        }
+        
+        const [x2, y2] = p2;
         const w = this.width/2;
         const h = this.height/2;
         const allIntersections = {
@@ -135,7 +157,15 @@ class Rectangle extends Node {
             ? (diry ? DIRECTION.BOTTOM : DIRECTION.TOP) 
             : (dirx ? DIRECTION.RIGHT : DIRECTION.LEFT));
 
+        if(this._belongs && this._belongs.calculateToCoordination) {
+            console.log(JSON.stringify(this._intersections));
+            console.log(interDir)
+        }
         interDir = this.checkLinked(interDir, end);
+        if(this._belongs && this._belongs.calculateToCoordination) {
+            console.log(interDir)
+        }
+        
         // if(!interDir) {
         //     debugger
         // }

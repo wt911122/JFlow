@@ -10,13 +10,9 @@ export default {
     },
     data() {
         return {
-            stack: [],
+            stack: [], // 主要是为了连线
         }
     },
-    // mounted() {
-    //     this._jflowInstance.recalculate();
-    //     this._jflowInstance.reflow();
-    // },
     methods: {
         getInstanceByName(name) {
             const obj = this.stack.find(i => i.name === name);
@@ -45,7 +41,6 @@ export default {
             this._jflowInstance.removeFromLinkStack(link);
             // this.$nextTick(this.onStackChangeHandler)
         },
-
         onStackChangeHandler() {
             this._jflowInstance.recalculate();
             this._jflowInstance.reflow();

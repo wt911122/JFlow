@@ -5,7 +5,7 @@ export default function (nameNode) {
         ? JFlowInstance[nameNode] 
         : nameNode;
     return {
-        inject: ['addToStack', 'removeFromStack'],
+        inject: ['addToStack', 'removeFromStack','addNameToRootStack'],
         props: {
             configs: {
                 type: Object,

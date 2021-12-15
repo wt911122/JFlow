@@ -11,6 +11,9 @@ export default {
         },
         renderJFlow: {
             from: 'renderJFlow',
+        },
+        addNameToRootStack: {
+            from: 'addNameToRootStack',
         }
     },
     render: function (createElement) {
@@ -29,11 +32,9 @@ export default {
     },
      watch: {
         configs(val, oldVal) {
-            debugger
             if(JSON.stringify(val) === JSON.stringify(oldVal)){
                 return;
             }
-            debugger
             this._jflowInstance.setConfig(val);
         },
         '$listeners' (val, oldVal) {
@@ -68,7 +69,9 @@ export default {
             const func = this.$listeners[event].bind(this);
             this._jflowInstance.addEventListener(event, func);
         })
+        // console.log(this.name, this.)
         this.addToBelongStack(this._jflowInstance, this.name);
+        this.addNameToRootStack(this._jflowInstance, this.name);
     },
     mounted(){
         this._jflowInstance.recalculate();
