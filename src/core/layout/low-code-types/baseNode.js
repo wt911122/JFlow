@@ -428,7 +428,82 @@ class ForEachStatement extends BaseNode {
 }
 
 class WhileStatement extends BaseNode {
-    
+    constructor(source) {
+        super(source);
+        this.body = (source.body || []).map(mapFunc('body').bind(this));
+        console.log(this.body)
+        this.isLocked = true
+    }
+
+    reflowPreCalculate(level = 0, sequence = 0, callback) {
+        let spanX = 1;
+        let spanY = 1;
+        this.level = level;
+        this.sequence = sequence;
+        if(callback) {
+            callback(level, sequence, this);
+        }
+        const nextSequeence = sequence + 1;
+        // level--;
+        this.body.forEach((b) => {
+            const { spanX: sx, spanY: sy } = b.reflowPreCalculate(level + 1, nextSequeence, callback);
+            spanX = Math.max(sx, spanX);
+            spanY += sy;
+            level += sy;
+        });
+
+        this.spanX = spanX + 1;
+        this.spanY = spanY;
+        return {
+            spanX, spanY, level, sequence
+        }
+    }
+
+    makeLink(callback) {
+        let last = this;
+        // const lastIdx = this.body.length - 1;
+        this.body.forEach((b, idx) => {
+            callback({
+                from: last.id,
+                to: b.id,
+                part: 'body',
+                fromDir: last === this ? DIRECTION.RIGHT: DIRECTION.BOTTOM,
+                toDir: DIRECTION.TOP,
+                meta: {
+                    from: last,
+                    to: b
+                }
+            })
+            
+            b = b.makeLink(callback);
+            last = b;
+        });
+        console.log(last === this)
+        callback({
+            from: last.id,
+            to: this.id,
+            part: 'body',
+            fromDir: last === this ? DIRECTION.RIGHT : DIRECTION.BOTTOM,
+            anticlock: last === this,
+            toDir: DIRECTION.BOTTOM,
+            meta: {
+                from: last,
+                to: this
+            }
+        });
+        return this;
+    }
+
+    traverse(callback) {
+        callback(this);
+        this.body.forEach(n => {
+            n.traverse(callback);
+        });
+    }
+
+    linkSource(source, linkMeta) {
+        this.source[linkMeta.part].unshift(source);
+    }
 }
 
 class SwitchCase extends BaseNode {
@@ -517,6 +592,7 @@ function mapFunc(type)  {
 function makeAST(source) {
     const type = source.type;
     const Constructor = TYPE_MAPPING[type] || TYPE_MAPPING.other;
+    console.log(type)
     const node = new Constructor(source);
     return node;
 }

@@ -55,7 +55,7 @@ export function distToSegmentSquared(p, v, w) {
 
 
 
-export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECTION.TOP) {
+export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECTION.TOP, anticlock = false) {
     const isSameDirection = start_dir === end_dir;
     const isVerticalStart = [DIRECTION.TOP, DIRECTION.BOTTOM].includes(start_dir);   
     const isVerticalEnd = [DIRECTION.TOP, DIRECTION.BOTTOM].includes(end_dir);
@@ -64,6 +64,7 @@ export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECT
     const endY = isVerticalEnd ? p2[1] + arrowspan : p2[1];
     if(isSameDirection) {
         let span = Math.abs(isVerticalStart ? (endY - p1[1]) : (endX - p1[0]))
+        span = Math.min(span, 50);
         const symb = [DIRECTION.RIGHT, DIRECTION.BOTTOM].includes(end_dir)
         span = symb ? span : - span;
         const cp1 = isVerticalStart ? [p1[0], p1[1] + span] : [p1[0] + span, p1[1]];
@@ -73,9 +74,12 @@ export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECT
             ...cp2,
             endX, endY ];
     }
-    const spanStart = isVerticalStart ? (endY - p1[1]) / 2 : (endX - p1[0]) / 2
-    const spanEnd = isVerticalEnd ? (p1[1] - endY) / 2 : (p1[0] - endX) / 2
-    
+    let spanStart = (anticlock ? -5 : 1) * (isVerticalStart ? (endY - p1[1]) / 2 : (endX - p1[0]) / 2)
+    let spanEnd = (anticlock ? -4 : 1) * (isVerticalEnd ? (p1[1] - endY) / 2 : (p1[0] - endX) / 2)
+    let u1 = spanStart / Math.abs(spanStart);
+    spanStart = u1 * Math.min(Math.abs(spanStart), 50);
+    let u2 = spanEnd / Math.abs(spanEnd);
+    spanEnd = u2 * Math.min(Math.abs(spanEnd), 50);
     const cp1 = isVerticalStart ? [p1[0], p1[1] + spanStart] : [p1[0] + spanStart, p1[1]];
     const cp2 = isVerticalEnd ? [endX, endY + spanEnd] : [endX + spanEnd, endY];
     return [ 
@@ -83,6 +87,10 @@ export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECT
         ...cp2,
         endX, endY ];
 }
+
+// export function bezierPoints(p1, p2, start_vec, end_vec) {
+
+// }
 
 export function distToBezierSegmentSquared(p, points) {
     const b = new Bezier(...points);

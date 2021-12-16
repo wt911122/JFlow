@@ -35,7 +35,6 @@ class LowcodeLayout {
         this.flowLinkStack = [];
 
         this.root = makeAST(this.ast)// new AstNode(this.ast, this.flowStack, true);
-        debugger
         this.root.traverse((node) => {
             this.flowStack.push({
                 type: node.type,
@@ -49,7 +48,6 @@ class LowcodeLayout {
             horizontal: {},
         };
         const playgroundLayoutMapping = {}
-        // this.root.reflowPreCalculate(0,0, this.layoutMapping, true);
         this.root.reflowBodyPreCalculate(0, 0, (level, sequence, node) => {
             if(!node.isroot) {
                 if(!layoutMapping.vertical[level]){
@@ -89,22 +87,10 @@ class LowcodeLayout {
 
         this.layoutMapping = layoutMapping;
         this.playgroundLayoutMapping = playgroundLayoutMapping;
-        // this.root.makeLink(this.flowLinkStack, true);
         this.root.makeLink((configs) => {
             this.flowLinkStack.push(configs)
         })
     }
-
-    // alignLinkOrder(linkStack, out) {
-    //     // TODO 可以优化
-    //     this.flowLinkStack.forEach(link => {
-    //         const id = `${link.from}-${link.to}-${link.part}`;
-    //         const instance = linkStack.find(linkInstance => linkInstance.key === id);
-    //         if(instance) {
-    //             out.push(instance);
-    //         }
-    //     });
-    // }
 
     staticCheck(instance, jflow) {
 
@@ -115,7 +101,6 @@ class LowcodeLayout {
         if(!finded) {
             return false;
         }
-        debugger
         const nowAnchor = instance.anchor.slice();
         jflow.reflow();
         if(jflow._linkStack.length < 2) return;
@@ -149,9 +134,6 @@ class LowcodeLayout {
             const rows = Object.keys(column)
             rows.forEach(rowNumber => {
                 const ast = column[rowNumber];
-                if(!ast.getJflowInstance) {
-                    debugger
-                }
                 const instance = ast.getJflowInstance();
                 const { width } = instance.getBoundingDimension();
                 rowWidth = Math.max(width, rowWidth);

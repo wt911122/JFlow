@@ -132,7 +132,6 @@ class Instance extends EventTarget{
     removeFromLayoutSource() {
         
         if(this._layoutNode) {
-            debugger
             this._layoutNode.remove();
         }
     }

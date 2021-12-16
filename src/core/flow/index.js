@@ -292,7 +292,6 @@ class JFlow extends EventTarget{
         const {
             point, belongs
         } = this._target.cache;
-        debugger
         if(link) {   
             // 丢在线上
             instance.anchor = point;
@@ -628,5 +627,5 @@ export { default as Link } from '../instance/link';
 export { default as PolylineLink } from '../instance/polyline-link';
 export { default as BezierLink } from '../instance/bezier-link';
 export { default as LinearLayout} from '../layout/linear-layout';
-export { default as TreeLayout } from '../layout/tree-layout';
+// export { default as TreeLayout } from '../layout/tree-layout';
 export { default as Lowcodelayout } from '../layout/low-code-layout';

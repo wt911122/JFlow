@@ -58,15 +58,6 @@ export default {
         }
         
     },
-    created() {
-        // console.log(this);
-        // this._jflowInstance = new JFlow(this.configs);
-        // debugger
-        // Object.keys(this.$listeners).map(event => {
-        //     const func = this.$listeners[event].bind(this);
-        //     this._jflowInstance.addEventListener(event, func);
-        // })
-    },
     mounted() {
         console.log(this);
         this._jflowInstance = new JFlow(this.configs);

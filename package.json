@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev:demo": "cd demo/vue && npm run serve"
+    "dev:demo": "cd demo/vue-scopedslots && npm run serve"
   },
   "author": "",
   "license": "ISC",

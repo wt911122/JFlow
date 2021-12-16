@@ -31,7 +31,6 @@ export default {
                 borderRadius: 5,
                 hasShrink: false,
                 lock: true,
-                anchor: this.initialAnchor, 
             }
         }
     },

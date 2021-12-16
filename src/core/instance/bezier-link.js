@@ -4,6 +4,7 @@ import { APPROXIMATE } from '../utils/constance';
 class BezierLink extends BaseLink {
     constructor(configs) {
         super(configs);
+        this.anticlock     = configs.anticlock;
     }
 
     getColor() {
@@ -34,7 +35,7 @@ class BezierLink extends BaseLink {
         // const end = this.to.calculateIntersectionInFourDimension(this.from.getCenter(), 'to');
         const p1 = start.p;
         const p2 = end.p;
-        const points = bezierPoints(p1, p2, start.dir, end.dir);
+        const points = bezierPoints(p1, p2, start.dir, end.dir, this.anticlock);
 
         this._cachePoints = [...p1, ...points]
     }

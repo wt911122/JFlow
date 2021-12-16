@@ -35,6 +35,11 @@
                     @pressStart="onPressStart(configs)" 
                     @outOfFlow="onOutOfFlow($event, meta)"/>
                 </template>
+                <template #WhileStatement="{ configs, meta }">
+                    <j-whilestatement :node="{ name: configs.id, content: configs.content }" 
+                    @pressStart="onPressStart(configs)" 
+                    @outOfFlow="onOutOfFlow($event, meta)"></j-whilestatement>
+                </template>
                 <template #endpoint="{ configs }">
                     <j-endpoint :node="{ name: configs.id }"></j-endpoint>
                 </template>
@@ -64,6 +69,7 @@ import start from './components/start.vue';
 import end from './components/end.vue';
 import endPoint from './components/endpoint.vue';
 import switchComp from './components/switch.vue'; 
+import whileComp from './components/whilestatement.vue';
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -99,6 +105,7 @@ export default {
         'j-endpoint': endPoint,
         'j-switch': switchComp,
         'j-ifstatement': ifStatement,
+        'j-whilestatement': whileComp,
     },
     data() {
         const ast = {
@@ -179,6 +186,18 @@ export default {
                     ]
                 },
                 {
+                    type: 'WhileStatement',
+                    id: 'while1',
+                    content: 'while1',
+                    body: [
+                        // {
+                        //     type: 'variable',
+                        //     content: 'dfhsdfg',
+                        //     id: 'whiel1body1',
+                        // },
+                    ]
+                },
+                {
                     type: 'end',
                     id: 'end',
                 },
@@ -238,18 +257,13 @@ export default {
         onOutOfFlow(e, meta) {
             const type = meta.parentIterateType;
             const idx = meta.idx;
-            debugger
             const [astnode] = meta.parent.source[type].splice(idx, 1);
             this.ast.playground.push(astnode);
             this.configs.layout.reOrder(this.ast);
             this.$refs.jflow.reflow();
-            debugger
-            meta.getJflowInstance().anchor = e.detail.point;
-
-           
+            meta.getJflowInstance().anchor = e.detail.point;    
         },
         onDrop(e) {
-            debugger
             const astblock = e.detail.instance;
             this.ast.playground.push(astblock);
             this.configs.layout.reOrder(this.ast);
@@ -287,12 +301,8 @@ export default {
             }
 
             linkConfigs.meta.from.linkSource(node, linkConfigs);
-            debugger
             this.configs.layout.reOrder(this.ast);
             this.$refs.jflow.reflow();
-
-
-
         },
     }
 }
