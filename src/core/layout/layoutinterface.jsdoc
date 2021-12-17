@@ -1,0 +1,23 @@
+/**
+ * 布局接口
+ *
+ * @interface Layout
+ */
+
+/**
+ * 重排
+ *
+ * @function
+ * @name Layout#reflow
+ * @param {Group|JFlow} group   - 栈对象
+ */
+
+/**
+ * 对象布局位置检查
+ *
+ * @function
+ * @name Layout#staticCheck
+ * @param {Node} instance   - 目标节点对象
+ * @param {JFlow} jflow     - JFlow对象
+ * @return {Boolean}
+ */

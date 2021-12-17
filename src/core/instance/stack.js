@@ -1,8 +1,15 @@
+/**
+ * 绘图栈
+ * @extends Array
+ */
 class InstanceStack extends Array {
     constructor() {
         super();
     }
-
+    /**
+     * 绘制当前栈
+     * @param {Context2d} ctx - canvas context2d
+     */
     render(ctx) {
         let movingTarget;
         this.forEach(instance => {
@@ -31,6 +38,18 @@ class InstanceStack extends Array {
         }
     }
 
+    /**
+     * 碰撞对象过滤条件
+     * @name InstanceFilter
+     * @function
+     * @param {Instance} instance - 当前对象
+    */
+    /**
+     * 碰撞检测
+     * @param {number[]} point - 碰撞点
+     * @param {InstanceFilter} condition - 碰撞对象过滤条件
+     * @return {Instance}
+     */
     checkHit(point, condition){
         let i = this.length - 1;
         while(i >= 0) {
@@ -56,7 +75,10 @@ class InstanceStack extends Array {
 
         return null;
     }
-
+    /**
+     * 获取当前层栈的最小外接矩形
+     * @return {number[][]} - 外接矩形坐标
+     */
     getBoundingRectPoints() {
         const points = [];
         this.forEach(instance => {

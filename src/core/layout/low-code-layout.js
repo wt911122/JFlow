@@ -1,16 +1,3 @@
-/**
-    lowcode layout
-    type: 
-        ifStatement,
-        switchStatement,
-        forEachStatement,
-        whileStatement,
-        plainBlock
-    
-    function resolveSource(source, flowStack) {
-        const root = new BaseNode(source)
-    }
- */
 import JFlowEvent from '../events'; 
 import { DIRECTION } from '../utils/constance';
 import { makeAST } from './low-code-types/baseNode';
@@ -21,6 +8,21 @@ function sqr(x) {
 function dist2(v, w) {
     return sqr(v[0] - w[0]) + sqr(v[1] - w[1]);
 }
+
+/**
+    lowcode layout
+
+    type: 
+        + IfStatement,
+        + SwitchStatement,
+        + SwitchCase,
+        + ForEachStatement,
+        + WhileStatement,
+        + Root,
+        + other,
+    
+    * @implements {Layout}
+ */
 class LowcodeLayout {
     constructor(configs) {
         this.linkLength = configs.linkLength || 18;
@@ -28,7 +30,10 @@ class LowcodeLayout {
         this.reOrder(configs.ast);
         this.static = true;
     }
-
+    /**
+     * 从 ast 计算布局
+     * @param {AstNode} ast - ASL 树
+     */
     reOrder(ast) {
         this.ast = ast;
         this.flowStack = [];

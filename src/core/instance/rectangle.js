@@ -1,6 +1,17 @@
 import Node from './node';
 import { DIRECTION, oppositeDirection } from '../utils/constance';
+/**
+ * 矩形单元
+ * @extends Node
+ */
 class Rectangle extends Node {
+    /**
+     * 创建矩形节点.
+     * @param {Configs} configs - 配置
+     * @param {number} configs.width - 宽
+     * @param {number} configs.height - 高
+     * @param {number} configs.borderRadius - 圆角矩形半径
+     */
     constructor(configs = {}) {
         super(configs);
         this.type =             'Rectangle';

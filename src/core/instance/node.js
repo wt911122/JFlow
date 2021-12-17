@@ -1,6 +1,17 @@
 import Instance from './instance';
 import { nextDirection } from '../utils/constance';
+
+/**
+ * 节点基类
+ * @extends Instance
+ */
 class Node extends Instance {
+    /**
+     * 创建节点.
+     * @param {Configs} configs - 配置
+     * @param {number[]} configs.anchor - 起始位置
+     * @param {number} configs.margin   - focus 状态下外层指示器的 margin
+     */
     constructor(configs = {}) {
         super(configs);
         // for layout
@@ -19,7 +30,11 @@ class Node extends Instance {
     //     }
     //     return interDir;
     // }
-
+    
+    /**
+     * 绘制 focus 状态下外层指示器
+     * @param {Context2d} ctx 
+     */
     renderFocus(ctx) {
         const points = this.getBoundingRect();
         if(points.length !== 4) return;

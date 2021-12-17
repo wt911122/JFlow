@@ -1,7 +1,15 @@
 import Node from './node';
 import { DIRECTION } from '../utils/constance';
-
+/**
+ * 圆形节点
+ * @extends Node
+ */
 class Point extends Node {
+    /**
+     * 创建圆形节点.
+     * @param {Configs} configs - 配置
+     * @param {number} configs.radius - 半径
+     */
     constructor(configs) {
         super(configs);
         this.type =             'Point';

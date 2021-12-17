@@ -1,5 +1,11 @@
 import JFlow from '../../core/flow';
 import StackMixin from '../components/StackMixin';
+/**
+ * JFlow {@link JFlow} 的 vue 封装 
+ * @vue-prop {JflowConfigs} configs - 传给 JFlow 的配置
+ * @vue-event {drop} dropEvent - 同 JFlow 上的 {@link JFlow#event:drop} 事件
+ * @vue-event {pressEnd} pressEndEvent- 同 JFlow 上的 {@link JFlow#event:pressEnd} 事件
+ */
 export default {
     mixins: [StackMixin],
     provide(){
@@ -24,7 +30,7 @@ export default {
     },
     render: function (createElement) {
         if(!this.nodes.length) {
-            return createElement('div');
+            return createElement('div', this.$slots.default);
         } else {
             const vnodes = this.nodes.map(({ type, configs, meta }) => {
                 if(!this.$scopedSlots[type]) {
@@ -58,9 +64,12 @@ export default {
         }
         
     },
+    created() {
+        this._jflowInstance = new JFlow(this.configs);
+    },
     mounted() {
         console.log(this);
-        this._jflowInstance = new JFlow(this.configs);
+        // this._jflowInstance = new JFlow(this.configs);
         this.nodes = this._jflowInstance._layout.flowStack.map(meta => {
             return {
                 type: meta.type,
@@ -94,6 +103,15 @@ export default {
     },
     
     methods: {
+        /**
+         * 绘制之前，vnode渲染之后
+         * @name preCallback
+         * @function
+         */
+        /**
+         * 重排
+         * @param {preCallback} preCallback - JFlow 绘制之前，vnode渲染之后
+         */
         reflow(preCallback) {
             const layoutNodes = this._jflowInstance._layout.flowStack.map(meta => {
                 return {
@@ -116,11 +134,19 @@ export default {
                 }
                 this._jflowInstance.recalculate();
                 this._jflowInstance._render();
+                console.log(this._jflowInstance.bounding_box)
             })
         },
+        /**
+         * 获取单签 JFlow 实例
+         * @return {Jflow} - JFlow对象
+         */
         getInstance() {
             return this._jflowInstance;
         },
+        /**
+         * 手动触发绘制
+         */
         renderJFlow() {
             this._jflowInstance._render();
         },

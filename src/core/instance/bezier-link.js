@@ -1,19 +1,31 @@
 import BaseLink from './base-link';
 import { bezierPoints, distToBezierSegmentSquared, getBezierAngle } from '../utils/functions';
 import { APPROXIMATE } from '../utils/constance';
+/**
+ * 贝塞尔曲线
+ * @extends BaseLink
+ */
 class BezierLink extends BaseLink {
+     /**
+     * 创建贝塞尔曲线.
+     * @param {Configs} configs - 配置
+     * @param {Boolean} configs.anticlock   - 进出方向反转
+     **/
     constructor(configs) {
         super(configs);
         this.anticlock     = configs.anticlock;
     }
-
+    /**
+     * 根据当前状态获取颜色，当前单元是否被选中
+     * @return {String} 颜色
+     */
     getColor() {
         if(this._isTargeting) {
             return this.hoverStyle;
         }
         return this.defaultStyle;
     }
-
+    
     _calculateAnchorPoints() {
         let start;
         let end;

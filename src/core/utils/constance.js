@@ -1,7 +1,16 @@
+/**
+ * 方向
+ * @readonly
+ * @enum {number}
+ */
 export const DIRECTION = {
+    /** RIGHT */
     RIGHT: 0,
+    /** BOTTOM */
     BOTTOM: 1,
+    /** LEFT */
     LEFT: 2,
+    /** TOP */
     TOP: 3
 }
 

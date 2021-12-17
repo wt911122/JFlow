@@ -1,24 +1,36 @@
 /**
-    
+    线性布局
+
+    排列方向
     direction:
         + vertical 从上至下排布
         + horizontal 从左至右排布
+    
     不重叠，中线对齐
     只针对当前的 group
 
-
+    对齐方式
     alignment: 
         + start 主轴左侧对齐
         + center 主轴对齐
         + end   主轴右侧对齐
+    
+ * @implements {Layout}
  */
 
 class LinearLayout {
     constructor(configs = {}) {
+        /**
+         * 通用样式属性
+         * @property {string} direction     - 排列方向 默认 vertical
+         * @property {number} gap           - 边距
+         * @property {string} alignment     - 对齐方式 默认 center
+         */
         this.direction =     configs.direction || 'vertical';
         this.gap =           configs.gap || 5;
         this.alignment =     configs.alignment || 'center';
     }
+
 
     reflow(group) {
         const stack = group._stack.filter(instance => instance.visible && !instance.outOfFlow);

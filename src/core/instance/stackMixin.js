@@ -2,12 +2,20 @@ import InstanceStack from './stack';
 // import Link from './link';
 import Link from './polyline-link';
 import { setUniqueId, getUniqueId } from '../utils/functions';
-
+/**
+ * 对象栈 mixin 用于方便控制节点栈和连线栈
+ *
+ * @mixin
+ */
 const StackMixin = {
     instances: [],
     links: [],
     _stack: null,
     _linkStack: null,
+    /**
+     * 初始化对象栈
+     * @param {JflowConfigs} configs - 配置
+     */
     initStack({ data }) {
         this._stack = new InstanceStack();
         this._linkStack = new InstanceStack();
@@ -23,13 +31,20 @@ const StackMixin = {
             link._belongs = this;
         });
     },
-
+    /**
+     * 加入节点对象
+     * @param {Node} instance - 节点对象
+     */
     addToStack(instance) {
         instance._belongs = this;
         this._stack.push(instance);
         // this.recalculate()
     },
-
+    /**
+     * 替换对象
+     * @param {Instance} target - 被替换的对象
+     * @param {Instance} instance - 替换对象
+     */
     replaceFromStack(target, instance) {
         const index = this._stack.findIndex(i => i === target);
         this._stack.splice(index, 1, instance);
@@ -37,18 +52,28 @@ const StackMixin = {
         instance._belongs = this;
         // this.recalculate()
     },
-
+    /**
+     * 加入连线对象
+     * @param {BaseLink} instance - 连线对象
+     */
     addToLinkStack(link) {
         link._belongs = this;
         this._linkStack.push(link);
     },
-
+    /**
+     * 删除节点对象
+     * @param {Node} target - 节点对象
+     */
     removeFromStack(target) {
         // this.removeLinkOnInstance(target);
         const index = this._stack.findIndex(i => i === target);
         this._stack.splice(index, 1);
         // this.recalculate()
     },
+    /**
+     * 删除连线对象
+     * @param {Node} target - 连线对象
+     */
     removeFromLinkStack(target) {
         const index = this._linkStack.findIndex(i => i === target);
         this._linkStack.splice(index, 1);

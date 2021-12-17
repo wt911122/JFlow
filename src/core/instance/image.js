@@ -4,7 +4,19 @@ import LayoutMixin from './layoutMixin';
 import { bounding_box } from '../utils/functions';
 import { DIRECTION } from '../utils/constance';
 
+/**
+ * 图片单元
+ * @description 图片单元可以绘制图片，图片加载后会自动重新绘制
+ * @extends Rectangle
+ */
 class Icon extends Rectangle {
+      /**
+        * 创建一个图片单元
+        * @param {Configs} configs - 配置
+        * @param {number} configs.image   - 图片地址
+        * @param {number} configs.imageWidth   - 图片宽度
+        * @param {number} configs.imageHeight   - 图片高度
+        **/
     constructor(configs) {
         super(configs)
         this.borderWidth = 0;

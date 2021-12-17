@@ -3,12 +3,46 @@ import StackMixin from './stackMixin';
 import LayoutMixin from './layoutMixin';
 import { bounding_box } from '../utils/functions';
 import { DIRECTION } from '../utils/constance';
-
+/**
+ * @typedef GroupConfigs
+ * @type {object}
+ * @property {number} borderWidth      - 边的宽度 默认是 2
+ * @property {string} borderColor      - 边的颜色 默认 black
+ * @property {string} hoverStyle       - 悬停颜色 默认 transparent
+ * @property {string} content          - 内容
+ * @property {string} color            - 填充颜色 默认 white
+ * @property {string} font             - 字体 默认 28px serif
+ * @property {string} textColor        - 字体颜色 默认 white
+ * @property {string} textAlign        - 字体左右对齐 默认 center
+ * @property {string} textBaseline     - 字体垂直对齐 默认 center
+ * @property {number} width            - 设定宽度，则宽度不随内部元素变宽而变宽
+ * @property {number} height           - 设定高度，则宽度不随内部元素变高而变高
+ * @property {number} padding          - padding
+ * @property {number} lock              - lock 后，内部元素不能被拖动
+ */
+/**
+ * 组单元
+ * @description 组单元包含绘图栈，能够包裹内部单元，具有独立的坐标系，目前为中心对齐的坐标系
+ * @extends Rectangle
+ * @mixes LayoutMixin
+ * @mixes StackMixin
+ */
 class Group extends Rectangle {
+    /**
+     * 创建一个组
+     * @param {GroupConfigs} configs - 配置
+
+     **/
     constructor(configs) {
         super(configs)
         this.initStack(configs);
         this.initLayout(configs);
+         /**
+         * @property {number} definedWidth     - 设定宽度 
+         * @property {number} definedHeight    - 设定高度 
+         * @property {number} padding          - 内边距
+         * @property {boolean} lock            - 布局锁定状态
+         */
         this.definedWidth =     configs.width;
         this.definedHeight =    configs.height;
         this.type =             'Group';
@@ -101,7 +135,11 @@ class Group extends Rectangle {
 
         return Rectangle.prototype.isHit.call(this, point);
     }
-
+    /**
+     * 反算回 canvas 顶层坐标
+     * @param {Number[]} point
+     * @return {Number[]} 世界坐标
+     */
     calculateToCoordination(point) {
         const [cx, cy] = point;
         const height = this.height;

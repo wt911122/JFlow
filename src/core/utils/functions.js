@@ -3,6 +3,11 @@ import {
 } from 'bezier-js';
 import { DIRECTION } from './constance';
 
+/**
+ * 根据点计算最小外接矩形
+ * @param {number[][]} points - 点集合
+ * @return {Object} demension 宽高，坐标
+ */
 export function bounding_box(points) {
     let min_x = Infinity; 
     let min_y = Infinity; 
@@ -52,7 +57,6 @@ export function distToSegmentSquared(p, v, w) {
     t = Math.max(0, Math.min(1, t));
     return dist2(p, [ v[0] + t * (w[0] - v[0]), v[1] + t * (w[1] - v[1]) ]);
 }
-
 
 
 export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECTION.TOP, anticlock = false) {

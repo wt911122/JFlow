@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>JFlow Mixin: MessageMixin</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.journal.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">JFlow</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="module-JFlow.html">JFlow</a></li><li><a href="module-JFlowGroup.html">JFlowGroup</a></li><li><a href="module-JFlowLink.html">JFlowLink</a></li><li><a href="module-JFlowNode.html">JFlowNode</a></li><li><a href="module-JFlowVuePlugin.html">JFlowVuePlugin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="BaseLink.html">BaseLink</a></li><li><a href="BezierLink.html">BezierLink</a></li><li><a href="Group.html">Group</a></li><li><a href="Icon.html">Icon</a></li><li><a href="Instance.html">Instance</a></li><li><a href="InstanceStack.html">InstanceStack</a></li><li><a href="JFlow.html">JFlow</a></li><li><a href="LinearLayout.html">LinearLayout</a></li><li><a href="LowcodeLayout.html">LowcodeLayout</a></li><li><a href="Node.html">Node</a></li><li><a href="Point.html">Point</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="Text.html">Text</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="LayoutMixin.html">LayoutMixin</a></li><li><a href="MessageMixin.html">MessageMixin</a></li><li><a href="StackMixin.html">StackMixin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="events.list.html" class="dropdown-toggle" data-toggle="dropdown">Events<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="BaseLink.html#event:drop">BaseLink#event:drop</a></li><li><a href="BaseLink.html#event:mouseenter">BaseLink#event:mouseenter</a></li><li><a href="BaseLink.html#event:mouseleave">BaseLink#event:mouseleave</a></li><li><a href="BaseLink.html#event:pressEnd">BaseLink#event:pressEnd</a></li><li><a href="BaseLink.html#event:pressStart">BaseLink#event:pressStart</a></li><li><a href="BezierLink.html#event:drop">BezierLink#event:drop</a></li><li><a href="BezierLink.html#event:mouseenter">BezierLink#event:mouseenter</a></li><li><a href="BezierLink.html#event:mouseleave">BezierLink#event:mouseleave</a></li><li><a href="BezierLink.html#event:pressEnd">BezierLink#event:pressEnd</a></li><li><a href="BezierLink.html#event:pressStart">BezierLink#event:pressStart</a></li><li><a href="Group.html#event:click">Group#event:click</a></li><li><a href="Group.html#event:drop">Group#event:drop</a></li><li><a href="Group.html#event:mouseenter">Group#event:mouseenter</a></li><li><a href="Group.html#event:mouseleave">Group#event:mouseleave</a></li><li><a href="Group.html#event:pressEnd">Group#event:pressEnd</a></li><li><a href="Group.html#event:pressStart">Group#event:pressStart</a></li><li><a href="Icon.html#event:click">Icon#event:click</a></li><li><a href="Icon.html#event:drop">Icon#event:drop</a></li><li><a href="Icon.html#event:mouseenter">Icon#event:mouseenter</a></li><li><a href="Icon.html#event:mouseleave">Icon#event:mouseleave</a></li><li><a href="Icon.html#event:pressEnd">Icon#event:pressEnd</a></li><li><a href="Icon.html#event:pressStart">Icon#event:pressStart</a></li><li><a href="Instance.html#event:mouseenter">Instance#event:mouseenter</a></li><li><a href="Instance.html#event:mouseleave">Instance#event:mouseleave</a></li><li><a href="Instance.html#event:pressEnd">Instance#event:pressEnd</a></li><li><a href="Instance.html#event:pressStart">Instance#event:pressStart</a></li><li><a href="JFlow.html#event:drop">JFlow#event:drop</a></li><li><a href="JFlow.html#event:pressEnd">JFlow#event:pressEnd</a></li><li><a href="Node.html#event:click">Node#event:click</a></li><li><a href="Node.html#event:drop">Node#event:drop</a></li><li><a href="Node.html#event:mouseenter">Node#event:mouseenter</a></li><li><a href="Node.html#event:mouseleave">Node#event:mouseleave</a></li><li><a href="Node.html#event:pressEnd">Node#event:pressEnd</a></li><li><a href="Node.html#event:pressStart">Node#event:pressStart</a></li><li><a href="Point.html#event:click">Point#event:click</a></li><li><a href="Point.html#event:drop">Point#event:drop</a></li><li><a href="Point.html#event:mouseenter">Point#event:mouseenter</a></li><li><a href="Point.html#event:mouseleave">Point#event:mouseleave</a></li><li><a href="Point.html#event:pressEnd">Point#event:pressEnd</a></li><li><a href="Point.html#event:pressStart">Point#event:pressStart</a></li><li><a href="Rectangle.html#event:click">Rectangle#event:click</a></li><li><a href="Rectangle.html#event:drop">Rectangle#event:drop</a></li><li><a href="Rectangle.html#event:mouseenter">Rectangle#event:mouseenter</a></li><li><a href="Rectangle.html#event:mouseleave">Rectangle#event:mouseleave</a></li><li><a href="Rectangle.html#event:pressEnd">Rectangle#event:pressEnd</a></li><li><a href="Rectangle.html#event:pressStart">Rectangle#event:pressStart</a></li><li><a href="Text.html#event:click">Text#event:click</a></li><li><a href="Text.html#event:drop">Text#event:drop</a></li><li><a href="Text.html#event:mouseenter">Text#event:mouseenter</a></li><li><a href="Text.html#event:mouseleave">Text#event:mouseleave</a></li><li><a href="Text.html#event:pressEnd">Text#event:pressEnd</a></li><li><a href="Text.html#event:pressStart">Text#event:pressStart</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="interfaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Interfaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Layout.html">Layout</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#bounding_box">bounding_box</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#DIRECTION">DIRECTION</a></li><li><a href="global.html#InstanceFilter">InstanceFilter</a></li><li><a href="global.html#preCallback">preCallback</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#requestCacheCanvas">requestCacheCanvas</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	<h1 class="page-title">Mixin: MessageMixin</h1>
+<section>
+
+<header>
+    
+        <h2>
+        MessageMixin
+        </h2>
+        
+    
+</header>
+
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>消息 mixin 用于给Jflow传递消息</p></div>
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<hr>
+<dt>
+    <h4 class="name" id=".consumeMessage"><span class="type-signature">&lt;static> </span>consumeMessage()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>接收消息</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>msg - 消息体</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".sendMessage"><span class="type-signature">&lt;static> </span>sendMessage(msg)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>发送消息</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>消息体</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a>
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : false,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

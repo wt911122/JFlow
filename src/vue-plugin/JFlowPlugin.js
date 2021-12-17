@@ -34,7 +34,19 @@ const components = [
     })),
 ];
 const componentPrefix = 'j';
+
+/**
+ * @module JFlowVuePlugin 
+ */
 export default {
+    /**
+     * 安装 JFlowVuePlugin
+     * @function
+     * @param {Vue} Vue - Vue
+     * @param {Object} options - Vue plugin 配置
+     * @param {string} options.prefix - 组件前缀，默认是 j
+     * @param {Object} options.custom - 自定义组件，形式为 { key: {@link:Instance} }
+     */
     install: (Vue, options = {}) => {
         let prefixToUse = componentPrefix;
         if(options && options.prefix){

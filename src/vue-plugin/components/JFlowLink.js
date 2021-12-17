@@ -1,5 +1,15 @@
 import * as JFlowInstance from '../../core/flow';
+
 export default function (nameNode, isLink) {
+    /**
+     * JFlow {@link BaseLink} 的 vue 封装 
+     * @module JFlowLink
+     *
+     * @vue-prop {Configs} configs - 传给 Instance 的配置
+     * @vue-event {drop} dropEvent -  {@link BaseLink#event:drop} 事件
+     * @vue-event {pressEnd} pressEndEvent - {@link BaseLink#event:pressEnd} 事件
+     * @vue-event {pressStart} pressStartEvent - {@link BaseLink#event:pressStart} 事件
+     */
     return {
         inject: [ 'addToLinkStack', 'removeFromLinkStack', 'getInstanceByName' ],
         props: {

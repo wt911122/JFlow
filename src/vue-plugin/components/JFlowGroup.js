@@ -1,5 +1,13 @@
 import { Group } from '../../core/flow';
 import StackMixin from './StackMixin';
+/**
+ * JFlow {@link Group} 的 vue 封装 
+ * @vue-prop {GroupConfigs} configs - 传给 Group 的配置
+ * @vue-event {drop} dropEvent -  {@link Group#event:drop} 事件
+ * @vue-event {pressEnd} pressEndEvent - {@link Group#event:pressEnd} 事件
+ * @vue-event {click} click - {@link Group#event:click} 事件
+ * @vue-event {pressStart} pressStartEvent - {@link Group#event:pressStart} 事件
+ */
 export default {
     mixins: [StackMixin],
     inject: {

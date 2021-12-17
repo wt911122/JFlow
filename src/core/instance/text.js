@@ -1,7 +1,18 @@
 import Rectangle from './rectangle';
 import { DIRECTION } from '../utils/constance';
 import { requestCacheCanvas } from '../utils/canvas';
+/**
+ * 文字对象
+ * @description 可以绘制文字
+ * @extends Rectangle
+ */
 class Text extends Rectangle {
+    /**
+     * 创建一个文字对象
+     * @param {Configs} configs - 配置
+     * @param {number} configs.lineHeight   - 行高
+     * @param {number} configs.indent   - 缩进
+     **/
     constructor(configs) {
         super(configs);
         this.type =             'Text';

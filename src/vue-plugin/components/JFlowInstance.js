@@ -4,6 +4,16 @@ export default function (nameNode) {
     const bulder =  typeof nameNode === 'string' 
         ? JFlowInstance[nameNode] 
         : nameNode;
+    /**
+     * JFlow {@link Node} 的 vue 封装 
+     * @module JFlowNode
+     *
+     * @vue-prop {Configs} configs - 传给 Instance 的配置
+     * @vue-event {drop} dropEvent -  {@link Node#event:drop} 事件
+     * @vue-event {click} click - {@link Node#event:click} 事件
+     * @vue-event {pressStart} pressStartEvent - {@link Node#event:pressStart} 事件
+     * @vue-event {pressEnd} pressEndEvent - {@link Node#event:pressEnd} 事件
+     */
     return {
         inject: ['addToStack', 'removeFromStack','addNameToRootStack'],
         props: {

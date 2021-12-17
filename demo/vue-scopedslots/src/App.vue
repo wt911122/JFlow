@@ -2,10 +2,10 @@
   <div id="app" :class="$style.body">
       <div :class="$style.sidebar">
         <div>
-            <div draggable="true" :class="$style.rect" type="Rectangle" @dragstart="onDragStartRectangle">Rectangle</div>
+            <div draggable="true" :class="$style.part" type="IfStatement" @dragstart="onDragStartRectangle">IfStatement</div>
         </div>
         <div>
-            <div draggable="true" :class="$style.circle" type="Point" @dragstart="onDragStartPoint">Circle</div>
+            <div draggable="true" :class="$style.part" type="variable" @dragstart="onDragStartPoint">Variable</div>
         </div>
       </div>
       <div style="position: relative;">
@@ -56,10 +56,14 @@
             HOVER!!!
         </div>
       </div>
+      <div :class="$style.ast">
+          <pre v-html="prettyJson(ast)"></pre>
+      </div>
   </div>
 </template>
 
 <script>
+import { prettyPrintJson } from 'pretty-print-json';
 import { LinearLayout, Lowcodelayout, Rectangle, Point } from '@joskii/jflow';
 // import './logic-components/assignment.vue'; // resolve Circular dependencies with logic-node!!!
 // import logicNode from './logic-components/logic-node';
@@ -231,6 +235,9 @@ export default {
         console.log(this.$refs.jflow.getInstance())
     },
     methods: {
+        prettyJson() {
+            return prettyPrintJson.toHtml(this.ast);
+        },
         onDragStartRectangle() {
             const jflowInstance = this.$refs.jflow.getInstance();
             jflowInstance.sendMessage({ 
@@ -348,6 +355,15 @@ export default {
     line-height: 50px;
 }
 
+.sidebar > div > .part {
+    width: 80px;
+    height: 50px;
+    border: 2px solid #517cff;
+    border-radius: 8ox;
+    text-align: center;
+    line-height: 50px;
+}
+
 .sidebar > div > .circle {
     width: 80px;
     height: 80px;
@@ -355,6 +371,10 @@ export default {
     background-color: hotpink;
     text-align: center;
     line-height: 80px;
+}
+.ast {
+    flex: 1;
+    border: 2px solid gold;
 }
 .hide{
     -webkit-user-drag: none;

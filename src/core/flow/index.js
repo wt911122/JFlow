@@ -7,21 +7,48 @@ import MessageMixin from '../instance/messageMixin';
 import { setUniqueId, getUniqueId } from '../utils/functions';
 import Point from '../instance/point';
 import JFlowEvent from '../events';
+/**
+ * @typedef JflowConfigs
+ * @type {object}
+ * @property {Boolean} allowDrop      - 是否允许 dragdrop
+ * @property {Object} layout          - 布局对象
+ */
 
-
+/** 
+ * JFlow 对象
+ * JFlow 是 canvas 上面封装的一个顶层对象，具有处理事件和绘制的功能
+ * @mixes LayoutMixin
+ * @mixes StackMixin
+ * @mixes MessageMixin
+ */
 class JFlow extends EventTarget{
+    /**
+     * 创建一个JFlow对象
+     * @param {JflowConfigs} configs - 配置项
+     */
     constructor(configs) {
         super();
         this.uniqueName = 'jflow';
         this.initStack(configs);
         this.initLayout(configs);
+        /**
+         * @property {Context2d} ctx        - Context2d 对象
+         * @property {Element} canvas       - canvas 元素
+         * @property {number} dpr           - 设备DPR
+         * @property {number} padding       - 内边距
+         */
+        // TODO 引入 plugin 拓展
         this.plugins = [];
         this.ctx = null;
         this.canvas = null;
         this.dpr = 1;
         this.padding = 20;
         /**
-            for zoom and pinch
+         * for zoom and pinch
+         * @property {Context2d} position       - 平移位置
+         * @property {Element} scale            - 当前缩放比
+         * @property {number} maxZoom           - 最大缩放比
+         * @property {number} minZoom           - 最小缩放比
          */
         this.position = null;
 		this.scale = null;
@@ -67,9 +94,6 @@ class JFlow extends EventTarget{
             }
         }
 
-        /**
-            for focus
-         */
         this._lastFocus = {
             instance: null,
             processing: false,
@@ -81,7 +105,10 @@ class JFlow extends EventTarget{
     use(plugin) {
         this.plugins.push(plugin)
     }
-
+    /**
+     * 在 Document 元素上初始化实例
+     * @param {Element} dom 
+     */
     $mount(dom) {
         const { 
             canvas, 
@@ -99,6 +126,8 @@ class JFlow extends EventTarget{
         this.canvasMeta = {
             width: raw_width,
             height: raw_height,
+            actual_width: c_width,
+            actual_height: c_height
         }
         this.dpr = dpr;
         this._createEventHandler();
@@ -106,7 +135,6 @@ class JFlow extends EventTarget{
 
         const padding = this.padding;
         const { width: p_width, height: p_height, x, y } = this.bounding_box;
-       
         const contentBox = {
             x: padding,
             y: padding,
@@ -133,12 +161,60 @@ class JFlow extends EventTarget{
         this.position = position;
         this._render();
     }
+    // _resetPosition() {
+    //     const padding = this.padding;
+    //     const {
+    //         c_width,
+    //         c_height,
+    //     } =  this.canvasMeta;
+    //     const { width: p_width, height: p_height, x, y } = this.bounding_box;
+    //     console.log(this.bounding_box)
+    //     const contentBox = {
+    //         x: padding,
+    //         y: padding,
+    //         width: c_width - padding * 2,
+    //         height: c_height - padding * 2,
+    //     }
+    //     const position = { x: 0, y: 0, offsetX: 0, offsetY: 0 };
+    //     const w_ratio = contentBox.width / p_width;
+    //     const h_ratio = contentBox.height / p_height;
+    //     const align = w_ratio <= h_ratio ? 'x' : 'y';
+    //     const scaleRatio = Math.min(w_ratio, h_ratio);
+    //     this.scale = scaleRatio;
+    //     if(scaleRatio > this.maxZoom) {
+    //         this.maxZoom = scaleRatio;
+    //     }
+    //     if(scaleRatio < this.minZoom) {
+    //         this.minZoom = scaleRatio;
+    //     }
+    //     // this.initScale = scaleRatio;
+    //     position.x = align === 'x' ? contentBox.x : (contentBox.width - p_width * scaleRatio) / 2 + padding
+    //     position.y = align === 'y' ? contentBox.y : (contentBox.height - p_height * scaleRatio) / 2 + padding
+    //     position.offsetX = position.x - x * scaleRatio;
+    //     position.offsetY = position.y - y * scaleRatio;
+    //     this.position = position;
+    // }
     
     _getBoundingGroupRect() {
         const points = this._stack.getBoundingRectPoints();
-        this.bounding_box = bounding_box(points);
+        if(this.bounding_box) {
+            this.bounding_box = bounding_box(points);
+            const {
+                x: nowx,
+                y: nowy,
+            } = this.bounding_box;
+            const scale = this.scale;
+            this.position.x = this.position.offsetX + nowx * scale;
+            this.position.y = this.position.offsetY + nowy * scale;
+        } else {
+            this.bounding_box = bounding_box(points);
+        }
     }
 
+    /**
+     * 设置当前聚焦元素
+     * @param {Instance} instance 
+     */
     $setFocus(instance) {
         if(this._lastFocus.processing) return;
         this._lastFocus.processing = true;
@@ -293,7 +369,18 @@ class JFlow extends EventTarget{
             point, belongs
         } = this._target.cache;
         if(link) {   
-            // 丢在线上
+            /**
+            * 丢在线上事件
+            *
+            * @event BaseLink#drop
+            * @type {object}
+            * @property {Event} event           - 原始事件 
+            * @property {Object} instance     - 拖动的对象 
+            * @property {BaseLink} link         - 目标连线 
+            * @property {JFlow} jflow           - 当前JFlow对象 
+            * @property {Group|JFlow} belongs   - 连线所在的绘图栈的对象
+            * @property {number[]} point        - 已经计算到绘图栈对应坐标系下的坐标
+            */
             instance.anchor = point;
             link.dispatchEvent(new JFlowEvent('drop', {
                 event,
@@ -305,7 +392,17 @@ class JFlow extends EventTarget{
             }))
             // belongs.addInstanceToLink(link, instance)
         } else if(target) {
-            // 丢在 instance 上
+            /**
+            * 丢在节点上事件
+            *
+            * @event Node#drop
+            * @type {object}
+            * @property {Event} event           - 原始事件 
+            * @property {Object} instance       - 拖动的对象 
+            * @property {JFlow} jflow           - 当前JFlow对象 
+            * @property {Node} target           - 目标节点
+            * @property {number[]} point        - 已经计算到绘图栈对应坐标系下的坐标
+            */
             target.bubbleEvent(new JFlowEvent('drop', {
                 event,
                 instance,
@@ -317,6 +414,16 @@ class JFlow extends EventTarget{
             // 丢在主图上
             // instance.anchor = point;
             // this.addToStack(instance);
+            /**
+            * 丢在主图上事件
+            *
+            * @event JFlow#drop
+            * @type {object}
+            * @property {Event} event           - 原始事件 
+            * @property {Object} instance       - 拖动的对象 
+            * @property {JFlow} jflow           - 当前JFlow对象 
+            * @property {number[]} point        - 已经计算到绘图栈对应坐标系下的坐标
+            */
             this.dispatchEvent(new JFlowEvent('drop', {
                 event,
                 instance,
@@ -374,8 +481,8 @@ class JFlow extends EventTarget{
         this.scale = newScale;
         this.position.x += pX * deltaWidth;
 		this.position.y += pY * deltaHeight;
-        this.position.offsetX = this.position.x; // - x * newScale;
-        this.position.offsetY = this.position.y; // - y * newScale;
+        this.position.offsetX = this.position.x - x * newScale;
+        this.position.offsetY = this.position.y - y * newScale;
         requestAnimationFrame(() => {
             this._render();
             this._zooming = false;
@@ -396,6 +503,15 @@ class JFlow extends EventTarget{
         });
         if(this._target.moving) {
             const moving = this._getMovingTarget();
+            /**
+             * 开始拖动对象事件
+             *
+             * @event Instance#pressStart
+             * @type {object}
+             * @property {Event} event           - 原始事件 
+             * @property {Instance} instance       - 拖动的对象 
+             * @property {JFlow} jflow           - 当前JFlow对象 
+             */
             moving.dispatchEvent(new JFlowEvent('pressStart', {
                 event,
                 instance: moving,
@@ -461,6 +577,16 @@ class JFlow extends EventTarget{
             && meta.initialY === meta.y
             && this._target.instance && !isDocument) {
             const t = this._target.instance;
+            /**
+             * 点击事件
+             *
+             * @event Node#click
+             * @type {object}
+             * @property {Event} event          - 原始事件 
+             * @property {Instance} target      - 点击的对象 
+             * @property {JFlow} jflow          - 当前JFlow对象 
+             * @property {Boolean} bubbles      - 冒泡
+             */
             t.bubbleEvent(new JFlowEvent('click', {
                 event,
                 target: t,
@@ -489,6 +615,17 @@ class JFlow extends EventTarget{
                 //     jflow: this,
                 //     target,
                 // }))
+                /**
+                 * 拖动到线上事件
+                 *
+                 * @event BaseLink#drop
+                 * @type {object}
+                 * @property {Event} event           - 原始事件 
+                 * @property {Object} instance     - 拖动的对象 
+                 * @property {BaseLink} link         - 目标连线 
+                 * @property {JFlow} jflow           - 当前JFlow对象 
+                 * @property {Group|JFlow} belongs   - 连线所在的绘图栈的对象
+                 */
                 link.dispatchEvent(new JFlowEvent('drop', {
                     event,
                     instance,
@@ -515,6 +652,17 @@ class JFlow extends EventTarget{
             }
             if(this._target.moving) {
                 if(this._target.instance) {
+                    /**
+                     * 拖动后放置到 Instance 上的事件
+                     *
+                     * @event Instance#pressEnd
+                     * @type {object}
+                     * @property {Event} event           - 原始事件 
+                     * @property {Instance} instance     - 拖动的对象 
+                     * @property {JFlow} jflow           - 当前JFlow对象 
+                     * @property {Instance} target       - 拖动到的对象
+                     * @property {boolean} bubbles       - 冒泡
+                     */
                     this._target.instance.bubbleEvent(new JFlowEvent('pressEnd', {
                         event,
                         instance: this._getMovingTarget(),
@@ -523,6 +671,15 @@ class JFlow extends EventTarget{
                         bubbles: true
                     }));
                 } else {
+                    /**
+                     * 拖动后放置到主图上的事件
+                     *
+                     * @event JFlow#pressEnd
+                     * @type {object}
+                     * @property {Event} event           - 原始事件 
+                     * @property {Instance} instance       - 拖动的对象 
+                     * @property {JFlow} jflow           - 当前JFlow对象 
+                     */
                     this.dispatchEvent(new JFlowEvent('pressEnd', {
                         event,
                         instance: this._getMovingTarget(),
@@ -554,7 +711,6 @@ class JFlow extends EventTarget{
         const { offsetX, offsetY } = event;
         const point = this._calculatePointBack([offsetX, offsetY]);
         const target = this._stack.checkHit(point);
-        console.log(target)
     }
 
     _recalculatePosition(deltaX, deltaY, scale) {
@@ -564,8 +720,8 @@ class JFlow extends EventTarget{
         }
         this.position.x += deltaX;
 		this.position.y += deltaY;
-        this.position.offsetX = this.position.x // - x * scale;
-        this.position.offsetY = this.position.y // - y * scale;
+        this.position.offsetX = this.position.x - x * scale;
+        this.position.offsetY = this.position.y - y * scale;
     }
 
     calculateToRealWorld(p) {
@@ -595,7 +751,9 @@ class JFlow extends EventTarget{
         ctx.scale(this.dpr, this.dpr);
         ctx.transform(scale, 0, 0, scale, position.offsetX, position.offsetY);
     }
-
+     /**
+     * 绘制画布
+     */
     _render() {
         this._resetTransform();
         // this._stack.forEach(instance => {

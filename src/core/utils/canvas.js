@@ -1,5 +1,21 @@
 
-
+/**
+ * @typedef {Object} CanvasMeta
+ * @property {Element} canvas - canvas 元素
+ * @property {number} width - 画布宽度
+ * @property {number} height - 画布高度
+ * @property {number} raw_width - 画布元素宽度
+ * @property {number} raw_height - 画布元素高度
+ * @property {number} left - 画布距离左端距离
+ * @property {number} top - 画布距离顶端距离
+ * @property {Context2d} ctx - Context2d
+ * @property {number} scale - 当前的像素设备比
+ */
+/**
+ * 创建一个 canvas 元素
+ * @param  {Element} wrapper - dom元素
+ * @return {CanvasMeta}
+ */
 export function createCanvas(wrapper) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -33,6 +49,17 @@ const caheCanvasctx = caheCanvas.getContext('2d');
 const scale = window.devicePixelRatio;
 caheCanvasctx.scale(scale, scale);
 
+/**
+ * 对象绘制
+ * @name render
+ * @function
+ * @param {Context2d} ctx - 绘图对象
+*/
+
+/**
+ * 在离线canvas上绘制元素
+ * @param  {render} render - 绘图函数
+ */
 export function requestCacheCanvas(render) {
     caheCanvasctx.clearRect(0,0,5,5);
     caheCanvasctx.save();
