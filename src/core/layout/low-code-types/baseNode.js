@@ -22,6 +22,7 @@ class BaseNode {
         this.spanX = 1;
         this.spanY = 1;
         if(callback) {
+            console.log(level, sequence, this.id)
             callback(level, sequence, this);
         }
         return {
@@ -158,17 +159,17 @@ class IfStatement extends BaseNode {
         if(callback) {
             callback(level, sequence, this);
         }
-        let c_spanX = 0;
+        let c_spanX = 1;
         let c_spanY = 0;
         let a_spanX = 0;
         let a_spanY = 0;
-        this.consequent.forEach((c, idx) => {
+        this.consequent.forEach((c, idx) => {   
             const { spanX: sx, spanY: sy } = c.reflowPreCalculate(level + 1, sequence, callback);
             c_spanX = Math.max(c_spanX, sx);
             c_spanY += sy;
             level += sy;
         });
-        const nextSequeence = sequence + Math.max(c_spanX, 1);
+        const nextSequeence = sequence + c_spanX;
         level = this.level;
         this.alternate.forEach((a, idx) => {
             const { spanX: sx, spanY: sy } = a.reflowPreCalculate(level + 1, nextSequeence, callback);
@@ -295,7 +296,7 @@ class SwitchStatement extends BaseNode {
             callback(level, sequence, this);
         }
 
-        let c_spanX = 0;
+        let c_spanX = 1;
         let c_spanY = 0;
         if(this.cases.length) {
             const consequent = this.cases[this.cases.length - 1].consequent;
@@ -312,7 +313,7 @@ class SwitchStatement extends BaseNode {
         let s_spanX = c_spanX;
         let s_spanY = 0;
         this.cases.forEach((c, idx) => {
-            const nextSequeence = sequence + Math.max(s_spanX, 1);
+            const nextSequeence = sequence + s_spanX;
             let a_spanX = 0;
             let a_spanY = 0;
             level = this.level;
