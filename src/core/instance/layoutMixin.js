@@ -13,6 +13,9 @@ const LayoutMixin = {
     initLayout(configs) {
         this._layout = configs.layout;
     },
+    /**
+     * 向上层递归重排
+     */
     recalculateUp() {
         this.recalculate();
         if(this._belongs) {

@@ -12,6 +12,7 @@
         <j-jflow ref="jflow" 
             :class="$style.wrapper" 
             :configs="configs"
+            @click="onClickNoWhere"
             @drop="onDrop"
             @pressEnd="onPressEnd">
                 <template #start="{ configs }">
@@ -43,6 +44,14 @@
                 <template #endpoint="{ configs }">
                     <j-endpoint :node="{ name: configs.id }"></j-endpoint>
                 </template>
+                <template #CallLogic="{ configs, meta }" >
+                    <j-calllogic 
+                        :node="{ name: configs.id, content: configs.content, params: configs.params, }"
+                        @toggle-select="onToggleSelect($event, configs)"
+                        @pressStart="onPressStart(configs)" 
+                        @outOfFlow="onOutOfFlow($event, meta)">
+                    </j-calllogic>
+                </template>
                 <template #plainlink="{ configs }">
                     <jBezierLink
                         :configs="configs"
@@ -52,8 +61,14 @@
                     </jBezierLink>
                 </template>
         </j-jflow>
-        <div ref="hoverblock" :style="`transform: translate(${offsetX}px, ${offsetY}px)`" :class="$style.hoverblock" v-if="isHover">
-            HOVER!!!
+        <div ref="hoverblock" 
+            :style="`transform: translate(${offsetX}px, ${offsetY}px)`" 
+            :class="$style.hoverblock"
+             v-if="isHover">
+            <ul>
+                <li v-for="l in logics" :key="l.content"
+                    @click="onSelectLogic(l)">{{l.content}}</li>
+            </ul>
         </div>
       </div>
       <div :class="$style.ast">
@@ -74,6 +89,7 @@ import end from './components/end.vue';
 import endPoint from './components/endpoint.vue';
 import switchComp from './components/switch.vue'; 
 import whileComp from './components/whilestatement.vue';
+import CallLogicComp from './components/callLogic.vue';
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -110,6 +126,7 @@ export default {
         'j-switch': switchComp,
         'j-ifstatement': ifStatement,
         'j-whilestatement': whileComp,
+        'j-calllogic': CallLogicComp,
     },
     data() {
         const ast = {
@@ -150,6 +167,12 @@ export default {
                                 },
                             ]
                         },
+                        {
+                            type: 'CallLogic',
+                            id: 'CallLogic1',
+                            content: '',
+                            params: [],
+                        }
                     ]
                 },
                 {
@@ -223,7 +246,34 @@ export default {
             offsetY: 0,
             currentTarget: null,
             prepareBody: [],
-            
+            logics: [{
+                content: 'aaa',
+                params: [{
+                    content: 'p1',
+                }],
+            }, {
+                content: 'vvvv',
+                params: [{
+                    content: 'p1',
+                }, {
+                    content: 'p2',
+                }],
+            }, {
+                content: 'sadasdf',
+                params: [{
+                    content: 'p1',
+                }],
+            },{
+                content: 'ggggg',
+                params: [{
+                    content: 'p1',
+                },{
+                    content: 'p2',
+                },{
+                    content: 'p3',
+                }],
+            }],
+            currentEditingTarget: null,
         }
     },
     computed: {
@@ -311,6 +361,27 @@ export default {
             this.configs.layout.reOrder(this.ast);
             this.$refs.jflow.reflow();
         },
+        onToggleSelect(event, configs) {
+            const [offsetX, offsetY] = event;
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+            this.isHover = !this.isHover;
+            if(this.isHover) {
+                this.currentEditingTarget = configs
+            } else {
+                this.currentEditingTarget = null;
+            } 
+        },
+        onSelectLogic(c) {
+            this.isHover = false
+            console.log(this.currentEditingTarget)
+            this.currentEditingTarget.content = c.content;
+            this.currentEditingTarget.params = c.params;
+        },
+        onClickNoWhere() {
+            this.isHover = false
+            this.currentEditingTarget = null;
+        }
     }
 }
 </script>
@@ -386,11 +457,18 @@ export default {
 }
 .hoverblock{
     position: absolute;
+    background: #fff;
     width: 300px;
     height: 300px;
     border: 3px solid gold;
     left: 0;
     top: 0;
     transform: translate(0, 0);
+}
+.hoverblock > ul > li{
+    cursor: pointer;
+}
+.hoverblock > ul > li:hover{
+    background: #eee;
 }
 </style>
