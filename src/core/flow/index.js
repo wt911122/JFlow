@@ -450,6 +450,7 @@ class JFlow extends EventTarget{
     }
 
     _onZoom(event) {
+        event.preventDefault();
         if(this._zooming) return;
         this._zooming = true;
         const { offsetX, offsetY, deltaY } = event
@@ -571,29 +572,50 @@ class JFlow extends EventTarget{
     }
 
     _onPressUp(event, isDocument) {
+        event.preventDefault();
+        event.stopPropagation();
         console.log('_onPressUp')
         const meta = this._target.meta;
+        // if(meta.initialX === undefined && isDocument) {
+        //     this.dispatchEvent(new JFlowEvent('click', {
+        //         event,
+        //         jflow: this,
+        //     }));
+        //     return;
+        // }
         if(meta.initialX === meta.x
-            && meta.initialY === meta.y
-            && this._target.instance && !isDocument) {
-            const t = this._target.instance;
-            /**
-             * 点击事件
-             *
-             * @event Node#click
-             * @type {object}
-             * @property {Event} event          - 原始事件 
-             * @property {Instance} target      - 点击的对象 
-             * @property {JFlow} jflow          - 当前JFlow对象 
-             * @property {Boolean} bubbles      - 冒泡
-             */
-            t.bubbleEvent(new JFlowEvent('click', {
-                event,
-                target: t,
-                jflow: this,
-                bubbles: true,
-            }))
-            this._render();
+            && meta.initialY === meta.y) {
+                if(this._target.instance && !isDocument) {
+                    const t = this._target.instance;
+                    /**
+                    * 点击事件
+                    *
+                    * @event Node#click
+                    * @type {object}
+                    * @property {Event} event          - 原始事件 
+                    * @property {Instance} target      - 点击的对象 
+                    * @property {JFlow} jflow          - 当前JFlow对象 
+                    * @property {Boolean} bubbles      - 冒泡
+                    */
+                    t.bubbleEvent(new JFlowEvent('click', {
+                        event,
+                        target: t,
+                        jflow: this,
+                        bubbles: true,
+                    }))
+                    this._clearTarget();
+                    this._render();
+                    return;
+                } else {
+                    this.dispatchEvent(new JFlowEvent('click', {
+                        event,
+                        jflow: this,
+                    }));
+                    this._clearTarget();
+                    this._render();
+                    return
+                }
+            
         } else if(this._target.moving) {
             let checkresult = false;
             if(this._layout.static) {
@@ -691,6 +713,10 @@ class JFlow extends EventTarget{
             // this._target.isMovingDirty = false;
             this._render();
         }
+        this._clearTarget();
+    }
+
+    _clearTarget(){
         Object.assign(this._target.meta, {
             x: undefined,
             y: undefined,
@@ -700,7 +726,12 @@ class JFlow extends EventTarget{
         Object.assign(this._target.status, {
             dragging: false,
             processing: false,
-        })
+        });
+        Object.assign(this._target, {
+            instance: null,
+            link: null,
+            moving: null,
+        });
     }
 
     _onPressUpDocument(event) {

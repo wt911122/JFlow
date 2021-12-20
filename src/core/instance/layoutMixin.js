@@ -13,6 +13,12 @@ const LayoutMixin = {
     initLayout(configs) {
         this._layout = configs.layout;
     },
+    recalculateUp() {
+        this.recalculate();
+        if(this._belongs) {
+            this._belongs.recalculateUp();
+        }
+    },
     /**
      * 重新计算布局，相当于浏览器里面重排，并重算当前布局下的最小外接矩形
      */
