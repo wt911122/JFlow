@@ -4,12 +4,13 @@
         :configs="groupConfig"
         v-on="$listeners">
         <j-text :configs="{
-            font: '12px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji',
+            fontSize: '12px',
             textColor: '#585c63',
-            content: node.name,
+            content: node.content,
             lineHeight: 26,
-            indent: 10,
-        }"/>
+            editable: true
+        }"
+        @change="onContentChange"/>
     </j-group>
 </template>
 
@@ -29,12 +30,22 @@ export default {
                 borderColor: '#517cff',
                 borderWidth: 2,
                 borderRadius: 5,
+                padding: 10,
                 hasShrink: false,
                 lock: true,
                 anchor: this.initialAnchor, 
             }
         }
     },
+    methods: {
+        onContentChange(event){
+            console.log(event.detail)
+            this.$emit('change', {
+                val: event.detail.val,
+                oldVal: event.detail.oldVal,
+            });
+        }
+    }
 }
 </script>
 

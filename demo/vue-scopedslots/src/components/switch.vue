@@ -4,7 +4,7 @@
         :configs="configs"
         v-on="$listeners">
         <j-text :configs="{
-            font: '12px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji',
+            fontSize: '12px',
             textColor,
             content: node.content,
         }">

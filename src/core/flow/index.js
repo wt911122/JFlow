@@ -122,6 +122,7 @@ class JFlow extends EventTarget{
         } = createCanvas(dom);
         this.reflow();
         this.ctx = ctx;
+        this.DOMwrapper = dom;
         this.canvas = canvas;
         this.canvasMeta = {
             width: raw_width,
@@ -242,6 +243,7 @@ class JFlow extends EventTarget{
         const pressMoveHandler = this._onPressMove.bind(this);
         const pressUpHandler = this._onPressUp.bind(this);
         const pressUpDocument = this._onPressUpDocument.bind(this);
+        const contextmenuHandler = this._onContextMenu.bind(this);
         canvas.addEventListener('wheel', zoomHandler );
         canvas.addEventListener('contextmenu', e => {
             e.preventDefault();
@@ -249,6 +251,7 @@ class JFlow extends EventTarget{
         canvas.addEventListener('pointerdown', pressStartHandler );
         canvas.addEventListener('pointermove', pressMoveHandler );
         canvas.addEventListener('pointerup', pressUpHandler );
+        canvas.addEventListener('contextmenu', contextmenuHandler)
         document.addEventListener('pointerup', pressUpDocument);
         let destroyListener;
         const destroyPlainEventListener = () => {
@@ -491,8 +494,9 @@ class JFlow extends EventTarget{
     }
 
     _onPressStart(event) { 
-        const { offsetX, offsetY, deltaY, buttons } = event
-        if(buttons !== 1) return;
+        console.log('pressStart', event )
+        const { offsetX, offsetY, deltaY, button } = event
+        if(button !== 0) return;
         this._targetLockOn([offsetX, offsetY], 'pressStart');
         Object.assign(this._target.meta, {
             initialX: offsetX,
@@ -574,7 +578,8 @@ class JFlow extends EventTarget{
     _onPressUp(event, isDocument) {
         event.preventDefault();
         event.stopPropagation();
-        console.log('_onPressUp')
+        const { button } = event
+        if(button !== 0) return;
         const meta = this._target.meta;
         // if(meta.initialX === undefined && isDocument) {
         //     this.dispatchEvent(new JFlowEvent('click', {
@@ -742,6 +747,25 @@ class JFlow extends EventTarget{
         const { offsetX, offsetY } = event;
         const point = this._calculatePointBack([offsetX, offsetY]);
         const target = this._stack.checkHit(point);
+    }
+
+    _onContextMenu(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const { offsetX, offsetY } = event;
+        const {
+            link,
+            instance
+        } = this._targetLockOn([offsetX, offsetY]);
+        if(instance || link) {
+            const target = (instance || link);
+            target.bubbleEvent(new JFlowEvent('contextclick', {
+                event,
+                jflow: this,
+                target,
+                bubbles: true
+            }));
+        }
     }
 
     _recalculatePosition(deltaX, deltaY, scale) {

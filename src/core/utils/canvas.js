@@ -27,6 +27,7 @@ export function createCanvas(wrapper) {
     canvas.height = Math.floor(height * scale);
 
     if(wrapper) {
+        wrapper.style.position = 'relative';
         wrapper.append(canvas);
     }
     return {

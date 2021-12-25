@@ -24,7 +24,8 @@
                 <template #variable="{ configs, meta }">
                     <j-variable :node="{ name: configs.id, content: configs.content }" 
                     @pressStart="onPressStart(configs)" 
-                    @outOfFlow="onOutOfFlow($event, meta)"></j-variable>
+                    @outOfFlow="onOutOfFlow($event, meta)"
+                    @change="onChangeContent($event, configs)"></j-variable>
                 </template>
                 <template #IfStatement="{ configs, meta }">
                     <j-ifstatement :node="{ name: configs.id, content: configs.content }" 
@@ -381,6 +382,9 @@ export default {
         onClickNoWhere() {
             this.isHover = false
             this.currentEditingTarget = null;
+        },
+        onChangeContent($event, configs){
+            configs.content = $event.val;
         }
     }
 }

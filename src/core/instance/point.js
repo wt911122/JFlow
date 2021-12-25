@@ -28,13 +28,13 @@ class Point extends Node {
         ctx.fill();   
         ctx.strokeStyle = this.strokeColor;
         ctx.stroke();
-        if(this.content) {
-            ctx.font = this.font;
-            ctx.textAlign = this.textAlign;
-            ctx.textBaseline = this.textBaseline;
-            ctx.fillStyle = this.textColor;
-            ctx.fillText(this.content, this.anchor[0], this.anchor[1]);
-        }   
+        // if(this.content) {
+        //     ctx.font = this.font;
+        //     ctx.textAlign = this.textAlign;
+        //     ctx.textBaseline = this.textBaseline;
+        //     ctx.fillStyle = this.textColor;
+        //     ctx.fillText(this.content, this.anchor[0], this.anchor[1]);
+        // }   
         if(this._isTargeting) {
             this.renderFocus(ctx);
         }

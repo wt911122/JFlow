@@ -47,18 +47,20 @@ class Instance extends EventTarget{
          * @property {string} hoverStyle       - 悬停颜色 默认 transparent
          * @property {string} content          - 内容
          * @property {string} color            - 填充颜色 默认 white
-         * @property {string} font             - 字体 默认 28px serif
+         * @property {string} fontFamily       - 字体 默认 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
+         * @property {string} fontSize         - 字体大小 默认 28px
          * @property {string} textColor        - 字体颜色 默认 white
          * @property {string} textAlign        - 字体左右对齐 默认 center
          * @property {string} textBaseline     - 字体垂直对齐 默认 center
          */
         this.borderWidth =      configs.borderWidth !== undefined ? configs.borderWidth : 2;
-        this.borderColor =      configs.borderColor || 'black';
+        this.borderColor =      configs.borderColor;
         this.hoverStyle =       configs.hoverStyle || 'transparent';
         this.content =          configs.content || '';
         this.color =            configs.color || 'white';
         this.strokeColor =      configs.strokeColor || 'white';
-        this.font =             configs.font || '28px serif';
+        this.fontFamily =       configs.fontFamily = '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji'
+        this.fontSize =         configs.fontSize || '28px';
         this.textColor =        configs.textColor || 'white';
         this.textAlign =        configs.textAlign || 'center';
         this.textBaseline =     configs.textBaseline || 'middle';
@@ -215,6 +217,10 @@ class Instance extends EventTarget{
         } else {
             return point;
         }
+    }
+
+    calculateToRealWorldWithScalar(length){
+        return this._jflow.scale * length;
     }
 
     /**

@@ -23,4 +23,4 @@ export function oppositeDirection(direction) {
     return (direction + 2) % 4
 }
 
-export const APPROXIMATE = 2;
+export const APPROXIMATE = 6;

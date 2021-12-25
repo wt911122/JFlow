@@ -3,14 +3,14 @@
         <j-group :configs="headerConfigs">
             <j-icon :configs="imageConfig" />
             <j-text :configs="{
-                font: '16px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji',
+                fontSize: '16px',
                 textColor: '#585c63',
                 content: '调用逻辑',
             }" />
         </j-group>
         <j-group @click="onClick" :configs="contentConfigs">
             <j-text :configs="{
-                font: '12px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji',
+                fontSize: '12px',
                 textColor: '#585c63',
                 content: node.content || '请选择接口' ,
                 lineHeight: 26,
@@ -19,7 +19,7 @@
         </j-group>
         <template v-if="node.params && node.params.length">
             <j-text :configs="{
-                font: '16px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji',
+                fontSize: '16px',
                 textColor: '#585c63',
                 content: '参数',
             }" />
@@ -27,7 +27,7 @@
                 <j-text v-for="param in node.params" 
                     :key="param.content"
                     :configs="{
-                    font: '16px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji',
+                    fontSize: '16px',
                     textColor: '#585c63',
                     content: param.content,
                 }" />
