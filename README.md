@@ -2,7 +2,7 @@
 JFlow 的目标是设计一套架在 canvas 上的轻量级流程图引擎，支持 vue 开发者与 canvas 高级开发人员共同开发。
 
 [文档地址](https://wt911122.github.io/JFlow/)
-
+[DEMO](https://wt911122.github.io/JFlow/vue-demo.html)
 ## Features
 目前的实现包含了：
 + 可自由缩放移动的画布
@@ -124,5 +124,4 @@ export default {
 ```
 
 #### 布局与具名插槽
-
-[DEMO](https://wt911122.github.io/JFlow/vue-demo.html)
+[例子](https://github.com/wt911122/JFlow/blob/master/demo/vue-scopedslots/src/App.vue)
