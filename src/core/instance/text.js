@@ -2,7 +2,7 @@ import Rectangle from './rectangle';
 import { DIRECTION } from '../utils/constance';
 import { requestCacheCanvas } from '../utils/canvas';
 import JFlowEvent from '../events';
-function createInputElement(params) {
+function createInputElement() {
     const input = document.createElement('input');
     input.setAttribute('style',`
         position: absolute;
@@ -43,7 +43,6 @@ class Text extends Rectangle {
         requestCacheCanvas((ctx) => {
             this.renderShadowText(ctx);
         });
-        console.log(this.width, this.height, this.content);
         this._makeEditable();
     }
 
@@ -54,13 +53,14 @@ class Text extends Rectangle {
                 const p = [ 0, -this.height/2 ];
                 const fontSize = +/(\d+)/.exec(this.fontSize)[1];
                 const [offsetX, offsetY] = this.calculateToRealWorld(p);
-                const inputElement = createInputElement();
+                let inputElement = createInputElement();
                 const wrapper = this._jflow.DOMwrapper;
                 const oldVal = this.content;
                 inputElement.style.transform =`translate(${offsetX}px, ${offsetY}px)`;
                 inputElement.style.width = this.calculateToRealWorldWithScalar(this.width) + 'px';
                 inputElement.style.height = this.calculateToRealWorldWithScalar(this.height) + 'px';
                 inputElement.style.fontFamily = this.fontFamily;
+                wrapper.style.fontSize = `${fontSize * this._jflow.scale}px`;
                 inputElement.style.fontSize = `${fontSize * this._jflow.scale}px`;
                 inputElement.style.lineHeight = `${this.lineHeight * this._jflow.scale}px`;
                 inputElement.style.textIndent = `${this.indent * this._jflow.scale}px`;
@@ -71,7 +71,7 @@ class Text extends Rectangle {
                     this._jflow._render();
                     inputElement.style.outline = "none";  
                 });
-                const blurHandler = () => {
+                let blurHandler = () => {
                     if(this.acceptPatten){
                         
                     } else {
@@ -82,15 +82,20 @@ class Text extends Rectangle {
                             val,
                         }))
                         this.content = oldVal;
-                        inputElement.remove();
+                        inputElement.removeEventListener('blur', blurHandler)
+                        wrapper.removeChild(inputElement);
+                        inputElement = null;
+                        blurHandler = null;
                     }
                 };
                 inputElement.addEventListener('blur', blurHandler);
-                inputElement.addEventListener('keyup', (e) => {
+                const keyUpHandler = (e) => {
                     if (e.key === 'Enter' || e.keyCode === 13) {
+                        inputElement.removeEventListener('keyup', keyUpHandler)
                         blurHandler();
                     }
-                })
+                };
+                inputElement.addEventListener('keyup', keyUpHandler)
                 wrapper.append(inputElement);
                 inputElement.focus();
             })
@@ -117,6 +122,7 @@ class Text extends Rectangle {
         } else {
             this.height = height;
         }
+        
     }
 
     setConfig(configs) {

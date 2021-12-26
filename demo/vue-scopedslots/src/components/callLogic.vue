@@ -18,12 +18,12 @@
             }" />
         </j-group>
         <template v-if="node.params && node.params.length">
-            <j-text :configs="{
-                fontSize: '16px',
-                textColor: '#585c63',
-                content: '参数',
-            }" />
             <j-group ref="paramGroup" :configs="paramsConfigs">
+                <j-text :configs="{
+                    fontSize: '16px',
+                    textColor: '#585c63',
+                    content: '参数',
+                }" />
                 <j-text v-for="param in node.params" 
                     :key="param.content"
                     :configs="{
@@ -105,11 +105,13 @@ export default {
         }
     },
     watch: {
-        'node.params'() {
+        'node.params'(val) {
             this.$nextTick(() => {
-                const instance = this.$refs.paramGroup._jflowInstance;
-                instance.recalculateUp();
-                instance._jflow._render();  
+                if(this.$refs.paramGroup) {
+                    const instance = this.$refs.paramGroup._jflowInstance;
+                    instance.recalculateUp();
+                    instance._jflow._render();  
+                }  
             })
         }
     },

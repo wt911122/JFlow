@@ -38,8 +38,9 @@ export default function (nameNode) {
                     return !(lk.endsWith('color') || k.endsWith('style'));
                 });
                 this._jflowInstance.setConfig(val);
+                console.log(reflowKeys.length, val)
                 if(reflowKeys.length) {
-                    this._jflowInstance._belongs.recalculate();
+                    this._jflowInstance._belongs.recalculateUp();
                 } 
                 this._jflowInstance._jflow._render();
             },
