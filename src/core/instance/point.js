@@ -26,8 +26,11 @@ class Point extends Node {
         ctx.arc(this.anchor[0], this.anchor[1], this.radius, 0, 2 * Math.PI);
         ctx.fillStyle = this.color;
         ctx.fill();   
-        ctx.strokeStyle = this.strokeColor;
-        ctx.stroke();
+        if(this.borderColor) {
+            ctx.lineWidth = this.borderWidth;
+            ctx.strokeStyle = this.borderColor;
+            ctx.stroke();
+        }
         // if(this.content) {
         //     ctx.font = this.font;
         //     ctx.textAlign = this.textAlign;
@@ -111,7 +114,7 @@ class Point extends Node {
             ? (vecy < 0 ? DIRECTION.BOTTOM : DIRECTION.TOP) 
             : (vecx < 0 ? DIRECTION.RIGHT : DIRECTION.LEFT));
 
-        interDir = this.checkLinked(interDir, end);
+        // interDir = this.checkLinked(interDir, end);
         return {
             p: allIntersections[interDir],
             dir: interDir,

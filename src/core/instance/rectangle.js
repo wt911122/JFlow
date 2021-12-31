@@ -172,7 +172,7 @@ class Rectangle extends Node {
             console.log(JSON.stringify(this._intersections));
             console.log(interDir)
         }
-        interDir = this.checkLinked(interDir, end);
+        // interDir = this.checkLinked(interDir, end);
         if(this._belongs && this._belongs.calculateToCoordination) {
             console.log(interDir)
         }

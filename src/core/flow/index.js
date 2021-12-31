@@ -820,8 +820,9 @@ class JFlow extends EventTarget{
         //     this._layout.alignLinkOrder(linkStack, p);
         //     linkStack = p;
         // }
-        linkStack.render(this.ctx);
+        
         this._stack.render(this.ctx);
+        linkStack.render(this.ctx);
         
     }
 }
@@ -840,5 +841,6 @@ export { default as Link } from '../instance/link';
 export { default as PolylineLink } from '../instance/polyline-link';
 export { default as BezierLink } from '../instance/bezier-link';
 export { default as LinearLayout} from '../layout/linear-layout';
-// export { default as TreeLayout } from '../layout/tree-layout';
+// export { default as TreeLayout } from '../ler-layouta;yout/tree-layout';
 export { default as Lowcodelayout } from '../layout/low-code-layout';
+export { default as ERLayout } from '../layout/er-layout/er-layout';
