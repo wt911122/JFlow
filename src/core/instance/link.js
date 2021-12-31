@@ -33,6 +33,7 @@ class Link extends BaseLink {
 
     render(ctx) {
         const { startX, startY, endX, endY } = this._calculateAnchorPoints();
+        console.log(startX, startY, endX, endY)
         const controlPoints = this.controlPoints;
         var dx = endX - startX;
         var dy = endY - startY;

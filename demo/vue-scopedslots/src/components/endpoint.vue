@@ -3,7 +3,7 @@
         :name="node.name" 
         :configs="{
             color: '#fff',
-            strokeColor: '#000',
+            borderColor: '#000',
             borderWidth: 1,
             radius: 5,
             ignoreHit: true,

@@ -59,37 +59,66 @@ export function distToSegmentSquared(p, v, w) {
 }
 
 
-export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECTION.TOP, anticlock = false) {
-    const isSameDirection = start_dir === end_dir;
-    const isVerticalStart = [DIRECTION.TOP, DIRECTION.BOTTOM].includes(start_dir);   
-    const isVerticalEnd = [DIRECTION.TOP, DIRECTION.BOTTOM].includes(end_dir);
+// export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECTION.TOP, anticlock = false) {
+//     const isSameDirection = start_dir === end_dir;
+//     const isVerticalStart = [DIRECTION.TOP, DIRECTION.BOTTOM].includes(start_dir);   
+//     const isVerticalEnd = [DIRECTION.TOP, DIRECTION.BOTTOM].includes(end_dir);
+//     const arrowspan = [DIRECTION.TOP, DIRECTION.LEFT].includes(end_dir) ? -5 : 5;
+//     const endX = isVerticalEnd ? p2[0] : p2[0] + arrowspan;
+//     const endY = isVerticalEnd ? p2[1] + arrowspan : p2[1];
+//     if(isSameDirection) {
+//         let span = Math.abs(isVerticalStart ? (endY - p1[1]) : (endX - p1[0]))
+//         span = Math.min(span, 50);
+//         const symb = [DIRECTION.RIGHT, DIRECTION.BOTTOM].includes(end_dir)
+//         span = symb ? span : - span;
+//         const cp1 = isVerticalStart ? [p1[0], p1[1] + span] : [p1[0] + span, p1[1]];
+//         const cp2 = isVerticalEnd ? [endX, endY + span] : [endX + span, endY];
+//         return [ 
+//             ...cp1,
+//             ...cp2,
+//             endX, endY ];
+//     }
+//     let spanStart = (anticlock ? -5 : 1) * (isVerticalStart ? (endY - p1[1]) / 2 : (endX - p1[0]) / 2)
+//     let spanEnd = (anticlock ? -4 : 1) * (isVerticalEnd ? (p1[1] - endY) / 2 : (p1[0] - endX) / 2)
+//     let u1 = spanStart / Math.abs(spanStart);
+//     spanStart = u1 * Math.min(Math.abs(spanStart), 50);
+//     let u2 = spanEnd / Math.abs(spanEnd);
+//     spanEnd = u2 * Math.min(Math.abs(spanEnd), 50);
+//     const cp1 = isVerticalStart ? [p1[0], p1[1] + spanStart] : [p1[0] + spanStart, p1[1]];
+//     const cp2 = isVerticalEnd ? [endX, endY + spanEnd] : [endX + spanEnd, endY];
+//     return [ 
+//         ...cp1,
+//         ...cp2,
+//         endX, endY ];
+// }
+function _resolveControlPoint(p, dir, spanx, spany){
+    if(dir === DIRECTION.TOP){
+        return [p[0], p[1]-spany]
+    }
+    if(dir === DIRECTION.BOTTOM){
+        return [p[0], p[1]+spany]
+    }
+    if(dir === DIRECTION.LEFT){
+        return [p[0]-spanx, p[1]]
+    }
+    if(dir === DIRECTION.RIGHT){
+        return [p[0]+spanx, p[1]]
+    }
+}
+
+export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECTION.TOP) {
+    const spanx = Math.max(Math.abs((p1[0] - p2[0])/2), 0);
+    const spany = Math.max(Math.abs((p1[1] - p2[1])/2), 0);
+    const cp1 = _resolveControlPoint(p1, start_dir, spanx, spany);
+    const cp2 = _resolveControlPoint(p2, end_dir, spanx, spany);
     const arrowspan = [DIRECTION.TOP, DIRECTION.LEFT].includes(end_dir) ? -5 : 5;
+    const isVerticalEnd = [DIRECTION.TOP, DIRECTION.BOTTOM].includes(end_dir);
     const endX = isVerticalEnd ? p2[0] : p2[0] + arrowspan;
     const endY = isVerticalEnd ? p2[1] + arrowspan : p2[1];
-    if(isSameDirection) {
-        let span = Math.abs(isVerticalStart ? (endY - p1[1]) : (endX - p1[0]))
-        span = Math.min(span, 50);
-        const symb = [DIRECTION.RIGHT, DIRECTION.BOTTOM].includes(end_dir)
-        span = symb ? span : - span;
-        const cp1 = isVerticalStart ? [p1[0], p1[1] + span] : [p1[0] + span, p1[1]];
-        const cp2 = isVerticalEnd ? [endX, endY + span] : [endX + span, endY];
-        return [ 
-            ...cp1,
-            ...cp2,
-            endX, endY ];
-    }
-    let spanStart = (anticlock ? -5 : 1) * (isVerticalStart ? (endY - p1[1]) / 2 : (endX - p1[0]) / 2)
-    let spanEnd = (anticlock ? -4 : 1) * (isVerticalEnd ? (p1[1] - endY) / 2 : (p1[0] - endX) / 2)
-    let u1 = spanStart / Math.abs(spanStart);
-    spanStart = u1 * Math.min(Math.abs(spanStart), 50);
-    let u2 = spanEnd / Math.abs(spanEnd);
-    spanEnd = u2 * Math.min(Math.abs(spanEnd), 50);
-    const cp1 = isVerticalStart ? [p1[0], p1[1] + spanStart] : [p1[0] + spanStart, p1[1]];
-    const cp2 = isVerticalEnd ? [endX, endY + spanEnd] : [endX + spanEnd, endY];
     return [ 
         ...cp1,
         ...cp2,
-        endX, endY ];
+        endX, endY];
 }
 
 export function polylinePoints(p1, p2, start_dir = DIRECTION.RIGHT, end_dir = DIRECTION.TOP) {
