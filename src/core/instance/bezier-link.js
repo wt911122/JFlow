@@ -1,6 +1,7 @@
 import BaseLink from './base-link';
 import { bezierPoints, distToBezierSegmentSquared, getBezierAngle } from '../utils/functions';
 import { APPROXIMATE } from '../utils/constance';
+import { dist2 } from '../utils/functions';
 /**
  * 贝塞尔曲线
  * @extends BaseLink
@@ -34,12 +35,16 @@ class BezierLink extends BaseLink {
                 dir: this.fromDir,
                 p: this.from.getIntersectionsInFourDimension()[this.fromDir],
             }
-        } 
+        } else {
+            start = this.from.calculateIntersectionInFourDimension(this.to.getCenter(), 'from');
+        }
         if(this.toDir !== undefined) {
             end = {
                 dir: this.toDir,
                 p: this.to.getIntersectionsInFourDimension()[this.toDir],
             }
+        } else {
+            end = this.to.calculateIntersectionInFourDimension(this.from.getCenter(), 'to');
         }
         
         
@@ -51,6 +56,49 @@ class BezierLink extends BaseLink {
 
         this._cachePoints = [...p1, ...points]
     }
+
+    // _calculateAnchorPoints() {
+    //     const dmsfrom = this.from.getIntersectionsInFourDimension();
+    //     const dmsto = this.to.getIntersectionsInFourDimension();
+    //     const meta = {
+    //         fromDir: null,
+    //         fromP: null,
+    //         toDir: null,
+    //         toP: null,
+    //         distMin: Infinity
+    //     }
+    //     Object.keys(dmsfrom).forEach(df => {
+    //         let pf = dmsfrom[df];
+    //         // if(this.from._belongs && this.from._belongs.calculateToCoordination) {
+    //         //     debugger
+    //         //     pf = this.from._belongs.calculateToCoordination(pf);
+    //         // }
+    //         Object.keys(dmsto).forEach(dt => {
+    //             let pt = dmsto[dt];
+    //             // if(this.to._belongs && this.to._belongs.calculateToCoordination) {
+    //             //     pt = this.to._belongs.calculateToCoordination(pt);
+    //             // }
+    //             const dist = dist2(pf, pt);
+    //             if(dist < meta.distMin) {
+    //                 Object.assign(meta, {
+    //                     distMin: dist,
+    //                     fromDir: df,
+    //                     fromP: pf,
+    //                     toDir: dt,
+    //                     toP: pt,
+    //                 })
+    //             }
+    //         })
+    //     });
+    //     console.log(meta)
+    //     const points = bezierPoints(
+    //         meta.fromP,
+    //         meta.toP,
+    //         meta.fromDir,
+    //         meta.toDir);
+
+    //     this._cachePoints = [...meta.fromP, ...points]
+    // }
 
     render(ctx) {
         this._calculateAnchorPoints();

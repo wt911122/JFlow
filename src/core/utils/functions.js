@@ -43,7 +43,7 @@ export function bounding_box(points) {
 function sqr(x) {
     return x * x;
 }
-function dist2(v, w) {
+export function dist2(v, w) {
     return sqr(v[0] - w[0]) + sqr(v[1] - w[1]);
 }
 
@@ -90,6 +90,10 @@ export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECT
         ...cp1,
         ...cp2,
         endX, endY ];
+}
+
+export function polylinePoints(p1, p2, start_dir = DIRECTION.RIGHT, end_dir = DIRECTION.TOP) {
+
 }
 
 // export function bezierPoints(p1, p2, start_vec, end_vec) {
