@@ -53,6 +53,7 @@ class Rectangle extends Node {
             } else {
                 ctx.strokeStyle = this.borderColor;
             }
+            ctx.lineWidth = this.borderWidth
             ctx.stroke();
         }
         // if(this.content) {
