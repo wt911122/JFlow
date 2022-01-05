@@ -1,4 +1,4 @@
-import Rectangle from './rectangle';
+import Rectangle from './shapes/rectangle';
 import StackMixin from './stackMixin';
 import LayoutMixin from './layoutMixin';
 import { bounding_box } from '../utils/functions';

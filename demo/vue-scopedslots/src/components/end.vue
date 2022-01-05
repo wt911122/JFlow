@@ -2,15 +2,21 @@
     <j-group :name="node.name" :configs="configs">
         <j-text :configs="{
             fontSize: '12px',
-            textColor: '#585c63',
-            content: '结束',
+            textColor: '#000',
+            content: 'End',
         }">
         </j-text>
         <j-rectangle :configs="{
-            color: '#faaaaa',
-            width: 20,
-            height: 20,
-            borderRadius: 2,
+            color: '#FAAAAA',
+            width: 36,
+            height: 36,
+            borderRadius: 8,
+            borderWidth: 2,
+            borderColor: '#F55656',
+            shadowBlur: 8,
+            shadowColor: 'rgba(0, 0, 0, 0.1)',
+            shadowOffsetY: 2,
+            shadowOffsetX: 0,
         }"></j-rectangle>
     </j-group>
 </template>

@@ -1,4 +1,4 @@
-import Rectangle from './rectangle';
+import Rectangle from './shapes/rectangle';
 import { DIRECTION } from '../utils/constance';
 import { requestCacheCanvas } from '../utils/canvas';
 import JFlowEvent from '../events';
@@ -32,6 +32,12 @@ class Text extends Rectangle {
     constructor(configs) {
         super(configs);
         this.type =             'Text';
+        this.content =          configs.content || '';
+        this.fontFamily =       configs.fontFamily = '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji'
+        this.fontSize =         configs.fontSize || '28px';
+        this.textColor =        configs.textColor || 'white';
+        this.textAlign =        configs.textAlign || 'center';
+        this.textBaseline =     configs.textBaseline || 'middle';
         this.lineHeight =       configs.lineHeight ;
         this.indent =           configs.indent || 0;
         this.backgroundColor =  configs.backgroundColor;

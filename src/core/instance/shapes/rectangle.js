@@ -1,5 +1,5 @@
-import Node from './node';
-import { DIRECTION, oppositeDirection } from '../utils/constance';
+import Node from '../node';
+import { DIRECTION, oppositeDirection } from '../../utils/constance';
 /**
  * 矩形单元
  * @extends Node
@@ -45,17 +45,21 @@ class Rectangle extends Node {
         } else {
             ctx.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
         }
-        ctx.fillStyle = this.color;
-        ctx.fill();     
-        if(this.borderWidth){
-            if(this.status.hover) {
-                ctx.strokeStyle = this.hoverStyle;
-            } else {
-                ctx.strokeStyle = this.borderColor;
-            }
+            
+        if(this.borderWidth && this.borderColor){
+            ctx.strokeStyle = this.borderColor;
             ctx.lineWidth = this.borderWidth
             ctx.stroke();
         }
+        if(this.shadowColor) {
+            console.log(this.shadowColor, this.shadowBlur)
+            ctx.shadowColor = this.shadowColor;
+            ctx.shadowBlur = this.shadowBlur;
+            ctx.shadowOffsetX = this.shadowOffsetX;
+            ctx.shadowOffsetY = this.shadowOffsetY;
+        }
+        ctx.fillStyle = this.color;
+        ctx.fill(); 
         // if(this.content) {
         //     ctx.font = this.font;
         //     ctx.textAlign = this.textAlign;

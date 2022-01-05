@@ -1,5 +1,5 @@
 <template>
-    <j-group
+    <j-diamond-group
         :name="node.name" 
         :configs="groupConfig"
         :rootLink="true"
@@ -9,9 +9,8 @@
             textColor: '#585c63',
             content: node.name,
             lineHeight: 26,
-            indent: 10,
         }"/>
-    </j-group>
+    </j-diamond-group>
 </template>
 
 <script>
@@ -28,6 +27,9 @@ export default {
                     gap: 0,
                 }),
                 borderColor: '#517cff',
+                paddingTop: 2,
+                paddingBottom: 2,
+                padding: 10,
                 borderWidth: 2,
                 borderRadius: 5,
                 hasShrink: false,

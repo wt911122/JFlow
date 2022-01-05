@@ -6,6 +6,8 @@ import JFLowGroup from './components/JFlowGroup';
 const JFLOW_NODES = [
     'Point',
     'Rectangle',
+    'Capsule',
+    'Diamond',
     'Text',
     'Icon',
 ];
@@ -13,6 +15,10 @@ const JFLOW_LINKS = [
     'Link',
     'PolylineLink',
     'BezierLink'
+]
+const JFLOW_GROUPS = [
+    'CapsuleGroup',
+    'DiamondGroup',
 ]
 
 const components = [
@@ -22,8 +28,12 @@ const components = [
     },
     {
         name: 'Group',
-        component: JFLowGroup,
+        component: JFLowGroup('Group'),
     },
+    ...JFLOW_GROUPS.map(name => ({
+        name,
+        component: JFLowGroup(name)
+    })),
     ...JFLOW_NODES.map(name => ({
         name,
         component: JFlowInstance(name)

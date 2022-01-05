@@ -5,7 +5,6 @@ import InstanceStack from '../instance/stack';
 import LayoutMixin from '../instance/layoutMixin';
 import MessageMixin from '../instance/messageMixin';
 import { setUniqueId, getUniqueId } from '../utils/functions';
-import Point from '../instance/point';
 import JFlowEvent from '../events';
 /**
  * @typedef JflowConfigs
@@ -832,9 +831,13 @@ Object.assign(JFlow.prototype, LayoutMixin);
 
 export default JFlow;
 export { default as JFlowEvent } from '../events';
-export { default as Point } from '../instance/point';
-export { default as Rectangle } from '../instance/rectangle';
-export { default as Group } from '../instance/group';
+export { default as Point } from '../instance/shapes/point';
+export { default as Rectangle } from '../instance/shapes/rectangle';
+export { default as Group } from '../instance/shapes/rectangle-group';
+export { default as Capsule } from '../instance/shapes/capsule';
+export { default as CapsuleGroup } from '../instance/shapes/capsule-group';
+export { default as Diamond } from '../instance/shapes/diamond';
+export { default as DiamondGroup } from '../instance/shapes/diamond-group';
 export { default as Text } from '../instance/text';
 export { default as Icon } from '../instance/image';
 export { default as Link } from '../instance/link';

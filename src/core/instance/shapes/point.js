@@ -1,5 +1,5 @@
-import Node from './node';
-import { DIRECTION } from '../utils/constance';
+import Node from '../node';
+import { DIRECTION } from '../../utils/constance';
 /**
  * 圆形节点
  * @extends Node
@@ -26,18 +26,11 @@ class Point extends Node {
         ctx.arc(this.anchor[0], this.anchor[1], this.radius, 0, 2 * Math.PI);
         ctx.fillStyle = this.color;
         ctx.fill();   
-        if(this.borderColor) {
+        if(this.borderWidth && this.borderColor) {
             ctx.lineWidth = this.borderWidth;
             ctx.strokeStyle = this.borderColor;
             ctx.stroke();
         }
-        // if(this.content) {
-        //     ctx.font = this.font;
-        //     ctx.textAlign = this.textAlign;
-        //     ctx.textBaseline = this.textBaseline;
-        //     ctx.fillStyle = this.textColor;
-        //     ctx.fillText(this.content, this.anchor[0], this.anchor[1]);
-        // }   
         if(this._isTargeting) {
             this.renderFocus(ctx);
         }

@@ -1,5 +1,5 @@
 <template>
-    <j-group
+    <j-capsule-group
         :name="node.name" 
         :configs="groupConfig"
         v-on="$listeners">
@@ -10,7 +10,7 @@
             lineHeight: 26,
             indent: 10,
         }"/>
-    </j-group>
+    </j-capsule-group>
 </template>
 
 <script>
@@ -28,6 +28,8 @@ export default {
                     gap: 0,
                 }),
                 borderColor: '#517cff',
+                shadowColor: '#517cff',
+                shadowBlur: 15,
                 borderWidth: 2,
                 borderRadius: 5,
                 hasShrink: false,

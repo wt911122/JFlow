@@ -1,18 +1,22 @@
 <template>
     <j-group 
         :name="node.name" 
-        @mouseenter="onMouseEnter"
-        @mouseleave="onMouseLeave" 
         :configs="configs">
         <j-text ref="start" :configs="{
             fontSize: '12px',
-            textColor,
-            content: '开始',
+            textColor: '#000',
+            content: 'Start',
         }">
         </j-text>
         <j-point :configs="{
-            color: '#99dbc5',
-            radius: 11,
+            color: '#99DBC5',
+            radius: 20,
+            borderColor: '#33B88C',
+            borderWidth: 2,
+            shadowBlur: 8,
+            shadowColor: 'rgba(0, 0, 0, 0.1)',
+            shadowOffsetY: 2,
+            shadowOffsetX: 0,
         }"></j-point>
     </j-group>
 </template>
@@ -25,7 +29,6 @@ export default {
     },
     data() {
         return {
-            textColor: '#585c63',
             configs: {
                 layout: new LinearLayout({
                     direction: 'vertical',
@@ -37,17 +40,9 @@ export default {
                 color: 'transparent',
                 hasShrink: false,
                 lock: true,
-            }
+            },
         }
     },
-    methods: {
-        onMouseEnter(){
-            this.textColor = 'red'
-        },
-        onMouseLeave() {
-             this.textColor = '#585c63'
-        }
-    }
 }
 </script>
 

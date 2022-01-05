@@ -6,14 +6,12 @@ const ishitKey = Symbol('ishit');
  * @typedef Configs
  * @type {object}
  * @property {number} borderWidth      - 边的宽度 默认是 2
- * @property {string} borderColor      - 边的颜色 默认 black
- * @property {string} hoverStyle       - 悬停颜色 默认 transparent
- * @property {string} content          - 内容
+ * @property {string} borderColor      - 边框颜色 默认 black
  * @property {string} color            - 填充颜色 默认 white
- * @property {string} font             - 字体 默认 28px serif
- * @property {string} textColor        - 字体颜色 默认 white
- * @property {string} textAlign        - 字体左右对齐 默认 center
- * @property {string} textBaseline     - 字体垂直对齐 默认 center
+ * @property {string} shadowColor      - 阴影颜色
+ * @property {string} shadowBlur       - 阴影扩散范围
+ * @property {string} shadowOffsetX    - 阴影偏移 X
+ * @property {string} shadowOffsetX    - 阴影偏移 Y
  */
 
 /** 图中的最小单元 */
@@ -27,12 +25,10 @@ class Instance extends EventTarget{
         Object.assign(this, configs);
         // this.anchor = configs.anchor || [0, 0];
         // this.belongs = undefined;
+        /** 
+         * @property {number} visible      - 元素可见 默认 true
+         */
         this.visible = true;
-        this.status = {
-            hover: false,
-            focus: false,
-            moving: false,
-        }
         // this._jflow = undefined;
         this._belongs = undefined;
         this[ishitKey] = false; 
@@ -43,27 +39,22 @@ class Instance extends EventTarget{
         /**
          * 通用样式属性
          * @property {number} borderWidth      - 边的宽度 默认是 2
-         * @property {string} borderColor      - 边的颜色 默认 black
-         * @property {string} hoverStyle       - 悬停颜色 默认 transparent
-         * @property {string} content          - 内容
+         * @property {string} borderColor      - 边框颜色 默认 black
          * @property {string} color            - 填充颜色 默认 white
-         * @property {string} fontFamily       - 字体 默认 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
-         * @property {string} fontSize         - 字体大小 默认 28px
-         * @property {string} textColor        - 字体颜色 默认 white
-         * @property {string} textAlign        - 字体左右对齐 默认 center
-         * @property {string} textBaseline     - 字体垂直对齐 默认 center
+         * @property {string} shadowColor      - 阴影颜色
+         * @property {string} shadowBlur       - 阴影扩散范围
+         * @property {string} shadowOffsetX    - 阴影偏移 X
+         * @property {string} shadowOffsetX    - 阴影偏移 Y
          */
         this.borderWidth =      configs.borderWidth !== undefined ? configs.borderWidth : 2;
         this.borderColor =      configs.borderColor;
-        this.hoverStyle =       configs.hoverStyle || 'transparent';
-        this.content =          configs.content || '';
+        // this.hoverStyle =       configs.hoverStyle || 'transparent';
         this.color =            configs.color || 'white';
-        this.strokeColor =      configs.strokeColor || 'white';
-        this.fontFamily =       configs.fontFamily = '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji'
-        this.fontSize =         configs.fontSize || '28px';
-        this.textColor =        configs.textColor || 'white';
-        this.textAlign =        configs.textAlign || 'center';
-        this.textBaseline =     configs.textBaseline || 'middle';
+        this.shadowColor =      configs.shadowColor;
+        this.shadowBlur  =      configs.shadowBlur || 5;
+        this.shadowOffsetX =    configs.shadowOffsetX || 0;
+        this.shadowOffsetY =    configs.shadowOffsetY || 0;
+
     }
     /**
      * @property {boolean} _isTargeting - 当前单元选中状态
