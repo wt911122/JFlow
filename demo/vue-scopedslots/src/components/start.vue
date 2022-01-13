@@ -37,6 +37,7 @@ export default {
                 borderColor: 'transparent',
                 borderWidth: 0,
                 hoverStyle: 'transparent',
+                paddingBottom: 10,
                 color: 'transparent',
                 hasShrink: false,
                 lock: true,

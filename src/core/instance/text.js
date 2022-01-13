@@ -43,6 +43,7 @@ class Text extends Rectangle {
         this.backgroundColor =  configs.backgroundColor;
         this.editable =         configs.editable;
         this.acceptPatten =     configs.acceptPatten;
+        this.minWidth =         configs.minWidth || 0;
         this.editStatus = {
             editting: false,
         }
@@ -56,7 +57,8 @@ class Text extends Rectangle {
     _makeEditable() {
         if(this.editable) {
             this.addEventListener('click', (event) => {
-                const p = [ 0, -this.height/2 ];
+                
+                const p = [ -this.width / 2, -this.height/2 ];
                 const fontSize = +/(\d+)/.exec(this.fontSize)[1];
                 const [offsetX, offsetY] = this.calculateToRealWorld(p);
                 let inputElement = createInputElement();
@@ -78,6 +80,7 @@ class Text extends Rectangle {
                     inputElement.style.outline = "none";  
                 });
                 let blurHandler = () => {
+                    console.log('blurHandler')
                     if(this.acceptPatten){
                         
                     } else {
@@ -88,6 +91,7 @@ class Text extends Rectangle {
                             val,
                         }))
                         this.content = oldVal;
+                        console.log(val);
                         inputElement.removeEventListener('blur', blurHandler)
                         wrapper.removeChild(inputElement);
                         inputElement = null;
@@ -97,11 +101,13 @@ class Text extends Rectangle {
                 inputElement.addEventListener('blur', blurHandler);
                 const keyUpHandler = (e) => {
                     if (e.key === 'Enter' || e.keyCode === 13) {
-                        inputElement.removeEventListener('keyup', keyUpHandler)
+                        e.preventDefault();
+                        inputElement.removeEventListener('keypress', keyUpHandler)
+                        console.log('enter pressed')
                         blurHandler();
                     }
                 };
-                inputElement.addEventListener('keyup', keyUpHandler)
+                inputElement.addEventListener('keypress', keyUpHandler)
                 wrapper.append(inputElement);
                 inputElement.focus();
             })
@@ -120,8 +126,9 @@ class Text extends Rectangle {
             fontBoundingBoxAscent,
             fontBoundingBoxDescent
         } = ctx.measureText(this.content);
+        this._textWidth = this.indent + Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight);
 
-        this.width = this.indent + Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight);
+        this.width = Math.max(this.minWidth, this._textWidth);
         const height = Math.abs(fontBoundingBoxAscent) + Math.abs(fontBoundingBoxDescent);
         if(this.lineHeight) {
             this.height = this.lineHeight;
@@ -147,48 +154,59 @@ class Text extends Rectangle {
         if(this._isMoving){
             ctx.globalAlpha = 0.5;
         }
-        this.renderShadowText(ctx);
+        // this.renderShadowText(ctx);
 
 
-        const {
-            borderRadius: radius, anchor, width, height
-        } = this;
-        if(this.backgroundColor || this.borderColor){
-            ctx.save();
-            ctx.beginPath();
-            if(this.borderRadius) {
-                const x = this.anchor[0] - this.width / 2;
-                const y = this.anchor[1] - this.height / 2;
-                ctx.moveTo(x + radius, y);
-                ctx.lineTo(x + width - radius, y);
-                ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-                ctx.lineTo(x + width, y + height - radius);
-                ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-                ctx.lineTo(x + radius, y + height);
-                ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-                ctx.lineTo(x, y + radius);
-                ctx.quadraticCurveTo(x, y, x + radius, y);
-                ctx.closePath();
-            } else {
-                ctx.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
-            }
-            if (this.backgroundColor){
-                ctx.fillStyle = this.backgroundColor;
-                ctx.fill();
-            }
-            if(this.borderColor) {
-                ctx.strokeStyle = this.borderColor;
-                ctx.stroke();
-            }
-            ctx.restore();
-        }
+        // const {
+        //     borderRadius: radius, anchor, width, height
+        // } = this;
+        // if(this.backgroundColor || this.borderColor){
+        //     ctx.save();
+        //     ctx.beginPath();
+        //     if(this.borderRadius) {
+        //         const x = this.anchor[0] - this.width / 2;
+        //         const y = this.anchor[1] - this.height / 2;
+        //         ctx.moveTo(x + radius, y);
+        //         ctx.lineTo(x + width - radius, y);
+        //         ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        //         ctx.lineTo(x + width, y + height - radius);
+        //         ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        //         ctx.lineTo(x + radius, y + height);
+        //         ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        //         ctx.lineTo(x, y + radius);
+        //         ctx.quadraticCurveTo(x, y, x + radius, y);
+        //         ctx.closePath();
+        //     } else {
+        //         ctx.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
+        //     }
+        //     if (this.backgroundColor){
+        //         ctx.fillStyle = this.backgroundColor;
+        //         ctx.fill();
+        //     }
+        //     if(this.borderColor) {
+        //         ctx.strokeStyle = this.borderColor;
+        //         ctx.stroke();
+        //     }
+        //     ctx.restore();
+        // }
 
         ctx.beginPath();
-
+        ctx.font = `${this.fontSize} ${this.fontFamily}`;
+        ctx.textAlign = this.textAlign;
+        ctx.textBaseline = this.textBaseline;
+        ctx.fillStyle = this.textColor;
+        if(this.textAlign === 'left'){
+            const hw = this.width / 2;
+            ctx.fillText(this.content, this.anchor[0] - hw + this.indent / 2, this.anchor[1]);
+        } else if(this.textAlign === 'right') {
+            const hw = this.width / 2;
+            ctx.fillText(this.content, this.anchor[0] + hw, this.anchor[1]);
+        } else {
+            ctx.fillText(this.content, this.anchor[0] + this.indent / 2, this.anchor[1]);
+        }
         // ctx.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
         // ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         // ctx.fill();
-        ctx.fillText(this.content, this.anchor[0] + this.indent / 2, this.anchor[1]);
         ctx.restore();
     }
 }

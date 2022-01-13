@@ -52,7 +52,6 @@ class Rectangle extends Node {
             ctx.stroke();
         }
         if(this.shadowColor) {
-            console.log(this.shadowColor, this.shadowBlur)
             ctx.shadowColor = this.shadowColor;
             ctx.shadowBlur = this.shadowBlur;
             ctx.shadowOffsetX = this.shadowOffsetX;
@@ -68,9 +67,9 @@ class Rectangle extends Node {
         //     ctx.fillText(this.content, this.anchor[0], this.anchor[1]);
         // } 
        
-        if(this._isTargeting) {
-            this.renderFocus(ctx);
-        }
+        // if(this._isTargeting) {
+        //     this.renderFocus(ctx);
+        // }
 
         ctx.restore();
     }

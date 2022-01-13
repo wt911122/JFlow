@@ -23,6 +23,10 @@ export default function (nameNode) {
                     return {};
                 },
             },
+            visible: {
+                type: Boolean,
+                default: true,
+            },
             name: {
                 type: String,
             }
@@ -39,10 +43,10 @@ export default function (nameNode) {
                 });
                 this._jflowInstance.setConfig(val);
                 console.log(reflowKeys.length, val)
-                if(reflowKeys.length) {
-                    this._jflowInstance._belongs.recalculateUp();
-                } 
-                this._jflowInstance._jflow._render();
+                // if(reflowKeys.length) {
+                //     this._jflowInstance._belongs.recalculateUp();
+                // } 
+                // this._jflowInstance._jflow._render();
             },
             '$listeners' (val, oldVal) {
                 let news = [];
@@ -68,6 +72,11 @@ export default function (nameNode) {
                 deletes.forEach((v) => {
                     this._jflowInstance.removeEventListener(v.event, v.handler);
                 });
+            },
+            visible(val) {
+                this._jflowInstance.visible = val;
+                // this._jflowInstance._belongs.recalculateUp();
+                // this._jflowInstance._jflow._render();
             }
         },
         render: function (createElement) {
@@ -75,8 +84,12 @@ export default function (nameNode) {
         },
         created() { 
             this._jflowInstance =  new bulder(this.configs);
+            this._jflowInstance.visible = this.visible;
             this.bindListeners();
             this.addToStack(this._jflowInstance, this.name);
+        },
+        updated() {
+            this._jflowInstance.recalculateUp();
         },
         destroyed() {
             this.removeFromStack(this._jflowInstance);

@@ -19,20 +19,20 @@ class InstanceStack extends Array {
             }
             if(instance.visible) {
                 ctx.save();
-                if(instance.reflow && !instance._reflowed) {
-                    instance.reflow();
-                    instance._reflowed = true;
-                }
+                // if(instance.reflow && !instance._reflowed) {
+                //     instance.reflow();
+                //     instance._reflowed = true;
+                // }
                 instance.render(ctx);
                 ctx.restore();
             }
         });
         if(movingTarget) {
             ctx.save();
-            if(movingTarget.reflow && !movingTarget._reflowed) {
-                movingTarget.reflow();
-                movingTarget._reflowed = true;
-            }
+            // if(movingTarget.reflow && !movingTarget._reflowed) {
+            //     movingTarget.reflow();
+            //     movingTarget._reflowed = true;
+            // }
             movingTarget.render(ctx);
             ctx.restore();
         }

@@ -93,10 +93,11 @@ class JFlow extends EventTarget{
             }
         }
 
-        this._lastFocus = {
+        this._focus = {
             instance: null,
-            processing: false,
         }
+
+        this._dragOverTarget = null;
 
         this.allowDrop = configs.allowDrop;
     }
@@ -211,29 +212,25 @@ class JFlow extends EventTarget{
         }
     }
 
-    /**
-     * 设置当前聚焦元素
-     * @param {Instance} instance 
-     */
-    $setFocus(instance) {
-        if(this._lastFocus.processing) return;
-        this._lastFocus.processing = true;
-        if(this._lastFocus.instance){
-            this._lastFocus.instance.status.focus = false;
-        }
+    // $setFocus(instance) {
+    //     if(this._lastFocus.processing) return;
+    //     this._lastFocus.processing = true;
+    //     if(this._lastFocus.instance){
+    //         this._lastFocus.instance.status.focus = false;
+    //     }
         
-        this._lastFocus.instance = instance;
-        if(instance) {
-            instance.status.focus = true;
-            instance.bubbleEvent(new JFlowEvent('focus'))
-        }
+    //     this._lastFocus.instance = instance;
+    //     if(instance) {
+    //         instance.status.focus = true;
+    //         instance.bubbleEvent(new JFlowEvent('focus'))
+    //     }
 
-        requestAnimationFrame(() => {
-            this._render();
-            this._lastFocus.processing = false;
-        })
+    //     requestAnimationFrame(() => {
+    //         this._render();
+    //         this._lastFocus.processing = false;
+    //     })
 
-    }
+    // }
 
     _createEventHandler() { 
         const canvas = this.canvas;
@@ -345,6 +342,23 @@ class JFlow extends EventTarget{
             dragovering: true,
         })
         this._targetLockOn([offsetX, offsetY])
+        const instance = this._target.instance;
+        if(this._dragOverTarget !== instance) {
+            if(instance) {
+                instance.dispatchEvent(new JFlowEvent('dragover', {
+                    event,
+                    instance,
+                }));
+            }
+            if(this._dragOverTarget) {
+                const oldIns = this._dragOverTarget;
+                oldIns.dispatchEvent(new JFlowEvent('dragoverend', {
+                    event,
+                    instance: oldIns,
+                }));
+            }
+            this._dragOverTarget = instance;
+        }
         
         if(this._target.isLinkDirty || this._target.isInstanceDirty) {
             requestAnimationFrame(() => {
@@ -362,7 +376,14 @@ class JFlow extends EventTarget{
         const { offsetX, offsetY, clientX, clientY } = event
         const payload = this.consumeMessage();
         const instance = payload.instance;
-
+        if(this._dragOverTarget) {
+            const oldIns = this._dragOverTarget;
+            oldIns.dispatchEvent(new JFlowEvent('dragoverend', {
+                event,
+                instance: oldIns,
+            }));
+            this._dragOverTarget = null;
+        }
         const {
             link,
             instance: target,
@@ -831,6 +852,9 @@ Object.assign(JFlow.prototype, LayoutMixin);
 
 export default JFlow;
 export { default as JFlowEvent } from '../events';
+export { default as Instance } from '../instance/instance';
+export { default as Node } from '../instance/node';
+export { default as BaseLink } from '../instance/base-link';
 export { default as Point } from '../instance/shapes/point';
 export { default as Rectangle } from '../instance/shapes/rectangle';
 export { default as Group } from '../instance/shapes/rectangle-group';

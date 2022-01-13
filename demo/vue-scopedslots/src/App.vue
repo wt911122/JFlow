@@ -135,9 +135,16 @@ export default {
             body: [
                 {
                     type: 'start',
+                   
                     id: 'start',
                 }, 
                 {
+                    type: 'CallLogic',
+                    id: 'CallLogic1',
+                    content: '',
+                    params: [],
+                },
+              /*  {
                     type: 'IfStatement',
                     content: 'aaaa',
                     id: 'logic1',
@@ -224,7 +231,7 @@ export default {
                         //     id: 'whiel1body1',
                         // },
                     ]
-                },
+                },*/
                 {
                     type: 'end',
                     id: 'end',

@@ -5,7 +5,7 @@
  */
 const LayoutMixin = {
     _layout: null,
-    _reflowed: false,
+    // _reflowed: false,
     /**
      * 初始化布局
      * @param {JflowConfigs} configs - 配置
@@ -17,8 +17,28 @@ const LayoutMixin = {
      * 向上层递归重排
      */
     recalculateUp() {
-        this.recalculate();
-        if(this._belongs) {
+        let dirty = true;
+        if(this.getBoundingDimension) {
+            const { width: wold, height: hold } = this.getBoundingDimension();
+            if(this.resetChildrenPosition) {
+                this.resetChildrenPosition();
+            }
+            if(this._getBoundingGroupRect){
+                this._getBoundingGroupRect();
+                console.log(this.width);
+            }
+            this.reflow();
+            if(this._getBoundingGroupRect){
+                this._getBoundingGroupRect();
+            }
+            const { width: wnow, height: hnow } = this.getBoundingDimension();
+            console.log(wold, hold, wnow, hnow)
+            dirty = (wold !== wnow || hold !== hnow)
+        } else {
+            this.reflow();
+        }
+        console.log(this.type, dirty)
+        if(this._belongs && dirty) {
             this._belongs.recalculateUp();
         }
     },
@@ -26,7 +46,7 @@ const LayoutMixin = {
      * 重新计算布局，相当于浏览器里面重排，并重算当前布局下的最小外接矩形
      */
     recalculate() {
-        this._reflowed = true;
+        // this._reflowed = true;
         this.reflow();
         if(this._getBoundingGroupRect){
             this._getBoundingGroupRect();
@@ -54,7 +74,7 @@ const LayoutMixin = {
         if(this._layout) {
             this._layout.reflow(this);
         }
-    }
+    },
 }
 
 export default LayoutMixin;

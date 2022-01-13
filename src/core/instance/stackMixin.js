@@ -82,6 +82,12 @@ const StackMixin = {
     emptyLink() {
         this._linkStack = new InstanceStack();
     },
+
+    resetChildrenPosition() {
+        this._stack.forEach(i => {
+            i.anchor = [0,0]
+        });
+    },
     /* 
         还是丢给实现方去处理，这个不属于框架自带的通用逻辑
     removeLinkOnInstance(target) {

@@ -31,9 +31,9 @@ class Point extends Node {
             ctx.strokeStyle = this.borderColor;
             ctx.stroke();
         }
-        if(this._isTargeting) {
-            this.renderFocus(ctx);
-        }
+        // if(this._isTargeting) {
+        //     this.renderFocus(ctx);
+        // }
         ctx.restore();
     }
 

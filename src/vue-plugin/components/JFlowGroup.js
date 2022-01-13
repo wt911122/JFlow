@@ -38,6 +38,10 @@ export default function (nameNode) {
                     return {};
                 },
             },
+            visible: {
+                type: Boolean,
+                default: true,
+            },
             name: {
                 type: String,
             }
@@ -48,6 +52,7 @@ export default function (nameNode) {
                     return;
                 }
                 this._jflowInstance.setConfig(val);
+                // this._jflowInstance._jflow._render();
             },
             '$listeners' (val, oldVal) {
                 let news = [];
@@ -73,10 +78,16 @@ export default function (nameNode) {
                 deletes.forEach((v) => {
                     this._jflowInstance.removeEventListener(v.event, v.handler);
                 });
-            }
+            },
+            visible(val) {
+                this._jflowInstance.visible = val;
+                // this._jflowInstance._belongs.recalculateUp();
+                // this._jflowInstance._jflow._render();
+            },
         },
         created() {
             this._jflowInstance =  new bulder(this.configs);
+            this._jflowInstance.visible = this.visible;
             Object.keys(this.$listeners).map(event => {
                 const func = this.$listeners[event].bind(this);
                 this._jflowInstance.addEventListener(event, func);
@@ -88,8 +99,20 @@ export default function (nameNode) {
         mounted(){
             this._jflowInstance.recalculate();
         },
+        updated() {
+            this._jflowInstance.recalculateUp();
+        },
         destroyed() {
             this.removeFromBelongStack(this._jflowInstance);
         },
+        // methods: {
+        //     reflow() {
+        //         // this._jflowInstance._getBoundingGroupRect();
+        //         // console.log(this._jflowInstance.width);
+        //         // this._jflowInstance.recalulate();
+        //         this._jflowInstance.recalculateUp();
+        //         this._jflowInstance._jflow._render();
+        //     }
+        // }
     }
 }

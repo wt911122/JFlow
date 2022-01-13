@@ -77,14 +77,14 @@ class Diamond extends Node {
         ctx.fillStyle = this.color;
         ctx.fill();     
         if(this.borderWidth && this.borderColor){
-            ctx.strokeStyle = this.hoverStyle;
+            ctx.lineWidth = this.borderWidth;
             ctx.strokeStyle = this.borderColor;
             ctx.stroke();
         }
        
-        if(this._isTargeting) {
-            this.renderFocus(ctx);
-        }
+        // if(this._isTargeting) {
+        //     this.renderFocus(ctx);
+        // }
 
         ctx.restore();
 

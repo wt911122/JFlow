@@ -13,8 +13,16 @@
                 fontSize: '12px',
                 textColor: '#585c63',
                 content: node.content || '请选择接口' ,
-                lineHeight: 26,
-                indent: 10,
+            }" />
+            <j-text :configs="{
+                fontSize: '12px',
+                textColor: '#585c63',
+                content: node.content || 'sss接口' ,
+            }" />
+            <j-text :configs="{
+                fontSize: '12px',
+                textColor: '#585c63',
+                content: node.content || '接口' ,
             }" />
         </j-group>
         <template v-if="node.params && node.params.length">
@@ -77,20 +85,20 @@ export default {
                 layout: new LinearLayout({
                     direction: 'horizontal',
                     gap: 0,
+                    justify: 'start',
                 }),
                 borderColor: '#517cff',
                 borderWidth: 2,
                 borderRadius: 5,
                 width: 200,
-                hoverStyle: 'transparent',
-                hasShrink: false,
+                height: 36,
                 lock: true,
             },
             paramsConfigs: {
                 layout: new LinearLayout({
                     direction: 'vertical',
                     gap: 0,
-                    alignment: 'start'
+                    alignment: 'end'
                 }),
                 borderColor: 'transparent',
                 hoverStyle: 'transparent',
@@ -120,7 +128,8 @@ export default {
             console.log(event)
             event.detail.bubbles = false; 
             const { currentTarget } = event;
-            const p = [ 0, currentTarget.height/2 ];
+            const p = [ -currentTarget.width/2, currentTarget.height/2 ];
+            console.log(p)
             const gp = currentTarget.calculateToRealWorld(p)
             // const [ offsetX, offsetY ] = gp;
             this.$emit('toggle-select', gp);

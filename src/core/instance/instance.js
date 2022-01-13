@@ -191,9 +191,7 @@ class Instance extends EventTarget{
      */
     bubbleEvent(customEvent){
         this.dispatchEvent(customEvent);
-        console.log(customEvent)
         if(customEvent.detail.bubbles && this._belongs.bubbleEvent){
-            console.log(customEvent.type)
             this._belongs.bubbleEvent(customEvent);
         }
     }
