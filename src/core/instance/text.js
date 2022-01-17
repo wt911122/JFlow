@@ -57,8 +57,16 @@ class Text extends Rectangle {
     _makeEditable() {
         if(this.editable) {
             this.addEventListener('click', (event) => {
-                
-                const p = [ -this.width / 2, -this.height/2 ];
+                let x;
+                const hw = this.width / 2;
+                if(this.textAlign === 'left'){
+                    x = this.anchor[0] - hw + this.indent / 2;
+                } else if(this.textAlign === 'right') {
+                    x = this.anchor[0] + hw;
+                } else {
+                    x = this.anchor[0] + this.indent / 2;
+                }
+                const p = [ x, -this.height/2 ];
                 const fontSize = +/(\d+)/.exec(this.fontSize)[1];
                 const [offsetX, offsetY] = this.calculateToRealWorld(p);
                 let inputElement = createInputElement();
@@ -204,9 +212,9 @@ class Text extends Rectangle {
         } else {
             ctx.fillText(this.content, this.anchor[0] + this.indent / 2, this.anchor[1]);
         }
-        // ctx.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
-        // ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        // ctx.fill();
+        ctx.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fill();
         ctx.restore();
     }
 }
