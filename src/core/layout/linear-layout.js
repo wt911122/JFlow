@@ -32,7 +32,7 @@ class LinearLayout {
          * @property {string} alignment     - 对齐方式 默认 center
          */
         this.direction =     configs.direction || 'vertical';
-        this.gap =           configs.gap || 5;
+        this.gap =           configs.gap ?? 5;
         this.alignment =     configs.alignment || 'center';
         this.justify =       configs.justify || 'center';
     }
@@ -119,8 +119,9 @@ class LinearLayout {
                 })                
             }
             if(this.justify === 'space-between' && stack.length > 1) {
-                const gapAverage = (groupWidth - allWidth) / (stack.length - 1);
-                const withdraw = groupWidth/2;
+                const width = Math.max(groupWidth, allWidth);
+                const gapAverage = (width - allWidth) / (stack.length - 1);
+                const withdraw = width/2;
                 stack.forEach((instance, idx) => {
                     instance.anchor[0] += ((gapAverage * idx) - withdraw);
                 });  

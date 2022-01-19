@@ -150,9 +150,9 @@ export default {
         renderJFlow() {
             this._jflowInstance._render();
         },
-        addNameToRootStack(instance, name) {
+        addNameToRootStack(instance, jflowId) {
              this.stack.push({
-                name,
+                jflowId,
                 instance,
             });
         }

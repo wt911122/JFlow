@@ -2,7 +2,7 @@ import * as JFlowInstance from '../../core/flow';
 
 export default function (nameNode, isLink) {
     /**
-     * JFlow {@link BaseLink} 的 vue 封装 
+     * JFlow {@link BaseLink} 的 vue 封装
      * @module JFlowLink
      *
      * @vue-prop {Configs} configs - 传给 Instance 的配置
@@ -11,7 +11,7 @@ export default function (nameNode, isLink) {
      * @vue-event {pressStart} pressStartEvent - {@link BaseLink#event:pressStart} 事件
      */
     return {
-        inject: [ 'addToLinkStack', 'removeFromLinkStack', 'getInstanceByName' ],
+        inject: [ 'addToLinkStack', 'removeFromLinkStack', 'getInstanceByJFlowId' ],
         props: {
             configs: {
                 type: Object,
@@ -34,8 +34,8 @@ export default function (nameNode, isLink) {
             return null;
         },
         created() {
-            const fromInstance = this.getInstanceByName(this.from);
-            const toInstance = this.getInstanceByName(this.to);
+            const fromInstance = this.getInstanceByJFlowId(this.from);
+            const toInstance = this.getInstanceByJFlowId(this.to);
             const key = this.$vnode.key;
             if(fromInstance && toInstance) {
                 this._jflowInstance =  new JFlowInstance[nameNode]({
@@ -44,17 +44,17 @@ export default function (nameNode, isLink) {
                     from: fromInstance,
                     to: toInstance,
                 });
-                this.addToLinkStack(this._jflowInstance); 
+                this.addToLinkStack(this._jflowInstance);
                 Object.keys(this.$listeners).map(event => {
                     const func = this.$listeners[event].bind(this);
                     this._jflowInstance.addEventListener(event, func);
-                })               
+                })
             }
         },
         methods: {
             resetLink() {
-                const fromInstance = this.getInstanceByName(this.from);
-                const toInstance = this.getInstanceByName(this.to);
+                const fromInstance = this.getInstanceByJFlowId(this.from);
+                const toInstance = this.getInstanceByJFlowId(this.to);
                 this._jflowInstance.from = fromInstance;
                 this._jflowInstance.to = toInstance;
             }

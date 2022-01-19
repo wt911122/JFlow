@@ -20,6 +20,14 @@ class Node extends Instance {
         this.margin =   configs.margin || 5;
     }
 
+    setConfig(configs) {
+        Object.keys(configs).forEach(k => {
+            if(configs[k] !== undefined && configs[k] !== null) {
+                this[k] = configs[k]
+            }
+        });
+    }
+
     // end: from | to
     // from 逆时针, to 顺时针
     // checkLinked(interDir, end) {

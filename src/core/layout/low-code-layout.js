@@ -112,7 +112,6 @@ class LowcodeLayout {
         const currentAnchor = instance.anchor;
         const d = dist2(nowAnchor, currentAnchor);
         if(d > 1000) {
-            console.log(instance)
             instance.dispatchEvent(new JFlowEvent('outOfFlow', {
                 anchor: nowAnchor,
                 instance,

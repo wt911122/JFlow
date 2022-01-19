@@ -398,7 +398,7 @@ class JFlow extends EventTarget{
             * @event BaseLink#drop
             * @type {object}
             * @property {Event} event           - 原始事件 
-            * @property {Object} instance     - 拖动的对象 
+            * @property {Object} instance       - 拖动的对象 
             * @property {BaseLink} link         - 目标连线 
             * @property {JFlow} jflow           - 当前JFlow对象 
             * @property {Group|JFlow} belongs   - 连线所在的绘图栈的对象
@@ -426,13 +426,13 @@ class JFlow extends EventTarget{
             * @property {Node} target           - 目标节点
             * @property {number[]} point        - 已经计算到绘图栈对应坐标系下的坐标
             */
-            target.bubbleEvent(new JFlowEvent('drop', {
+            target.dispatchEvent(new JFlowEvent('drop', {
                 event,
                 instance,
                 jflow: this,
                 target,
                 point
-            }))
+            }));
         } else {
             // 丢在主图上
             // instance.anchor = point;
@@ -507,6 +507,7 @@ class JFlow extends EventTarget{
 		this.position.y += pY * deltaHeight;
         this.position.offsetX = this.position.x - x * newScale;
         this.position.offsetY = this.position.y - y * newScale;
+        this.dispatchEvent(new JFlowEvent('zoompan'));
         requestAnimationFrame(() => {
             this._render();
             this._zooming = false;
@@ -514,7 +515,6 @@ class JFlow extends EventTarget{
     }
 
     _onPressStart(event) { 
-        console.log('pressStart', event )
         const { offsetX, offsetY, deltaY, button } = event
         if(button !== 0) return;
         this._targetLockOn([offsetX, offsetY], 'pressStart');
@@ -580,9 +580,10 @@ class JFlow extends EventTarget{
             })
         } else {
             this._recalculatePosition(deltaX, deltaY);    
+            this.dispatchEvent(new JFlowEvent('zoompan'));
         }
         this._targetLockOn([offsetX, offsetY])
-
+            
         // this._target.meta.x = offsetX;
         // this._target.meta.y = offsetY;
         

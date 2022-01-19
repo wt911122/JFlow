@@ -24,9 +24,9 @@ class Point extends Node {
         }
         ctx.beginPath();
         ctx.arc(this.anchor[0], this.anchor[1], this.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = this.backgroundColor;
         ctx.fill();   
-        if(this.borderWidth && this.borderColor) {
+        if(this.borderWidth) {
             ctx.lineWidth = this.borderWidth;
             ctx.strokeStyle = this.borderColor;
             ctx.stroke();

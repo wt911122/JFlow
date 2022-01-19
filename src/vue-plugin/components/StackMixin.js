@@ -5,7 +5,7 @@ export default {
             addToLinkStack: this.addToLinkStack,
             removeFromStack: this.removeFromStack,
             removeFromLinkStack: this.removeFromLinkStack,
-            getInstanceByName: this.getInstanceByName,
+            getInstanceByJFlowId: this.getInstanceByJFlowId,
         }
     },
     data() {
@@ -14,17 +14,18 @@ export default {
         }
     },
     methods: {
-        getInstanceByName(name) {
-            const obj = this.stack.find(i => i.name === name);
+        getInstanceByJFlowId(jflowId) {
+            const obj = this.stack.find(i => i.jflowId === jflowId);
             if(obj) {
                 return obj.instance;
             }
             return null;
         },
-        addToStack(instance, name) {
+        addToStack(instance, jflowId) {
             this._jflowInstance.addToStack(instance);
+            if(!jflowId) return;
             this.stack.push({
-                name,
+                jflowId,
                 instance,
             });
             // this.$nextTick(this.onStackChangeHandler)

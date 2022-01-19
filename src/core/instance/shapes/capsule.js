@@ -38,17 +38,15 @@ class Capsule extends Node {
         ctx.lineTo(leftCenter, bottom);
         ctx.arc(leftCenter, y, hh, Math.PI/2, Math.PI/2*3);
 
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = this.backgroundColor;
         ctx.fill();     
-        if(this.borderWidth && this.borderColor){
+        if(this.borderWidth) {
             ctx.lineWidth = this.borderWidth;
             ctx.strokeStyle = this.borderColor;
             ctx.stroke();
         }
-       
-        // if(this._isTargeting) {
-        //     this.renderFocus(ctx);
-        // }
+        // ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        // ctx.fillRect(x-hw, y-hh, this.width, this.height)
 
         ctx.restore();
     }

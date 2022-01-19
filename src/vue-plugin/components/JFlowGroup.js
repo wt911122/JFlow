@@ -42,7 +42,7 @@ export default function (nameNode) {
                 type: Boolean,
                 default: true,
             },
-            name: {
+            jflowId: {
                 type: String,
             }
         },
@@ -93,8 +93,8 @@ export default function (nameNode) {
                 this._jflowInstance.addEventListener(event, func);
             })
             // console.log(this.name, this.)
-            this.addToBelongStack(this._jflowInstance, this.name);
-            this.addNameToRootStack(this._jflowInstance, this.name);
+            this.addToBelongStack(this._jflowInstance, this.jflowId);
+            this.addNameToRootStack(this._jflowInstance, this.jflowId);
         },
         mounted(){
             this._jflowInstance.recalculate();

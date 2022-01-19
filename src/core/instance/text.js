@@ -88,7 +88,6 @@ class Text extends Rectangle {
                     inputElement.style.outline = "none";  
                 });
                 let blurHandler = () => {
-                    console.log('blurHandler')
                     if(this.acceptPatten){
                         
                     } else {
@@ -99,7 +98,6 @@ class Text extends Rectangle {
                             val,
                         }))
                         this.content = oldVal;
-                        console.log(val);
                         inputElement.removeEventListener('blur', blurHandler)
                         wrapper.removeChild(inputElement);
                         inputElement = null;
@@ -111,7 +109,6 @@ class Text extends Rectangle {
                     if (e.key === 'Enter' || e.keyCode === 13) {
                         e.preventDefault();
                         inputElement.removeEventListener('keypress', keyUpHandler)
-                        console.log('enter pressed')
                         blurHandler();
                     }
                 };
@@ -212,8 +209,8 @@ class Text extends Rectangle {
         } else {
             ctx.fillText(this.content, this.anchor[0] + this.indent / 2, this.anchor[1]);
         }
-        ctx.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        // ctx.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
+        // ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         ctx.fill();
         ctx.restore();
     }

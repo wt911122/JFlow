@@ -24,7 +24,6 @@ class CapsuleGroup extends Capsule {
         if(result) {
             return result;
         }
-        
         return Capsule.prototype.isHit.call(this, point);
     }
 }

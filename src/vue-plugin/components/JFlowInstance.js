@@ -36,13 +36,15 @@ export default function (nameNode) {
                 if(JSON.stringify(val) === JSON.stringify(oldVal)){
                     return;
                 }
-                const diffed = diff(val, oldVal);
-                const reflowKeys = Object.keys(diffed).filter(k => {
-                    const lk = k.toLowerCase();
-                    return !(lk.endsWith('color') || k.endsWith('style'));
-                });
+                // const diffed = diff(val, oldVal);
+                // const reflowKeys = Object.keys(diffed).filter(k => {
+                //     const lk = k.toLowerCase();
+                //     return !(lk.endsWith('color') || k.endsWith('style'));
+                // });
                 this._jflowInstance.setConfig(val);
-                console.log(reflowKeys.length, val)
+                // console.log('recalculateUp')
+                // this._jflowInstance.recalculateUp();
+                // console.log(reflowKeys.length, val)
                 // if(reflowKeys.length) {
                 //     this._jflowInstance._belongs.recalculateUp();
                 // } 
@@ -88,9 +90,10 @@ export default function (nameNode) {
             this.bindListeners();
             this.addToStack(this._jflowInstance, this.name);
         },
-        updated() {
-            this._jflowInstance.recalculateUp();
-        },
+        // updated() {
+        //     console.log('recalculateUp')
+            
+        // },
         destroyed() {
             this.removeFromStack(this._jflowInstance);
         },

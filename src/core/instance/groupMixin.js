@@ -74,6 +74,7 @@ const GroupMixin = {
         ctx.save();
         callback(ctx);
         ctx.restore();
+
         // const height = this.height;
         // const width = this.width;
         const padding = this.padding;

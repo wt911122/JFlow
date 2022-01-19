@@ -15,6 +15,7 @@ class BezierLink extends BaseLink {
     constructor(configs) {
         super(configs);
         this.anticlock     = configs.anticlock;
+        this.approximate   = configs.approximate || APPROXIMATE;
     }
     /**
      * 根据当前状态获取颜色，当前单元是否被选中
@@ -136,7 +137,7 @@ class BezierLink extends BaseLink {
         if(!this._cachePoints) return false;
         const points = this._cachePoints;
         const dist = distToBezierSegmentSquared(point, points)
-        return dist < APPROXIMATE;
+        return dist < this.approximate;
     }
 
     getBoundingRect() {

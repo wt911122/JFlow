@@ -33,7 +33,7 @@ class Diamond extends Node {
     _cacheSide() {
         this.sinSIDE = Math.sin(Math.PI/3) * this.side;
         this.cosSIDE = Math.cos(Math.PI/3) * this.side;
-        console.log(this.sinSIDE, this.cosSIDE);
+        // console.log(this.sinSIDE, this.cosSIDE);
     }
 
     render(ctx) {
@@ -74,9 +74,9 @@ class Diamond extends Node {
         
         ctx.closePath();
 
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = this.backgroundColor;
         ctx.fill();     
-        if(this.borderWidth && this.borderColor){
+        if(this.borderWidth) {
             ctx.lineWidth = this.borderWidth;
             ctx.strokeStyle = this.borderColor;
             ctx.stroke();
@@ -85,6 +85,8 @@ class Diamond extends Node {
         // if(this._isTargeting) {
         //     this.renderFocus(ctx);
         // }
+        // ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        // ctx.fillRect(x-hw, y-hh, this.width, this.height)
 
         ctx.restore();
 

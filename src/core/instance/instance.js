@@ -40,16 +40,16 @@ class Instance extends EventTarget{
          * 通用样式属性
          * @property {number} borderWidth      - 边的宽度 默认是 2
          * @property {string} borderColor      - 边框颜色 默认 black
-         * @property {string} color            - 填充颜色 默认 white
+         * @property {string} backgroundColor  - 填充颜色 默认 white
          * @property {string} shadowColor      - 阴影颜色
          * @property {string} shadowBlur       - 阴影扩散范围
          * @property {string} shadowOffsetX    - 阴影偏移 X
          * @property {string} shadowOffsetX    - 阴影偏移 Y
          */
-        this.borderWidth =      configs.borderWidth !== undefined ? configs.borderWidth : 2;
-        this.borderColor =      configs.borderColor;
+        this.borderWidth =      configs.borderWidth || 0;
+        this.borderColor =      configs.borderColor || 'transparent';
         // this.hoverStyle =       configs.hoverStyle || 'transparent';
-        this.color =            configs.color || 'white';
+        this.backgroundColor =  configs.backgroundColor || 'transparent';
         this.shadowColor =      configs.shadowColor;
         this.shadowBlur  =      configs.shadowBlur || 5;
         this.shadowOffsetX =    configs.shadowOffsetX || 0;
@@ -218,6 +218,12 @@ class Instance extends EventTarget{
     removeFromLayoutSource() {
         if(this._layoutNode) {
             this._layoutNode.remove();
+        }
+    }
+
+    recalculateUp() {
+        if(this.belongs) {
+            this.belongs.recalculateUp();
         }
     }
 }

@@ -25,19 +25,16 @@ const LayoutMixin = {
             }
             if(this._getBoundingGroupRect){
                 this._getBoundingGroupRect();
-                console.log(this.width);
             }
             this.reflow();
             if(this._getBoundingGroupRect){
                 this._getBoundingGroupRect();
             }
             const { width: wnow, height: hnow } = this.getBoundingDimension();
-            console.log(wold, hold, wnow, hnow)
             dirty = (wold !== wnow || hold !== hnow)
         } else {
             this.reflow();
         }
-        console.log(this.type, dirty)
         if(this._belongs && dirty) {
             this._belongs.recalculateUp();
         }

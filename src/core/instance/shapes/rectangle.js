@@ -18,6 +18,43 @@ class Rectangle extends Node {
         this.width =            configs.width || 10;
         this.height =           configs.height || 10;
         this.borderRadius =     configs.borderRadius || 0;
+        this._setBorder(configs);
+    }
+
+    _setBorder(configs){
+        this.border = {
+            top: {
+                color: configs.border?.top?.borderColor || configs.borderColor || 'transparent',
+                width: configs.border?.top?.borderWidth || configs.borderWidth || 0,
+                enable: configs.border?.top?.borderWidth,
+            },
+            right: {
+                color: configs.border?.right?.borderColor || configs.borderColor || 'transparent',
+                width: configs.border?.right?.borderWidth || configs.borderWidth || 0,
+                enable: configs.border?.right?.borderWidth,
+            },
+            bottom: {
+                color: configs.border?.bottom?.borderColor || configs.borderColor || 'transparent',
+                width: configs.border?.bottom?.borderWidth || configs.borderWidth || 0,
+                enable: configs.border?.bottom?.borderWidth,
+            },
+            left: {
+                color: configs.border?.left?.borderColor || configs.borderColor || 'transparent',
+                width: configs.border?.left?.borderWidth || configs.borderWidth || 0,
+                enable: configs.border?.left?.borderWidth,
+            }
+        };
+        this.borderColor = configs.borderColor || 'transparent';
+        this.borderWidth = configs.borderWidth || 0;
+    }
+
+    setConfig(configs) {
+        Object.keys(configs).forEach(k => {
+            if(configs[k] !== undefined && configs[k] !== null) {
+                this[k] = configs[k]
+            }
+        });
+        this._setBorder(configs);
     }
 
     render(ctx) {
@@ -25,13 +62,16 @@ class Rectangle extends Node {
         if(this._isMoving){
             ctx.globalAlpha = 0.5;
         }
-        ctx.beginPath();
+       
         const {
             borderRadius: radius, anchor, width, height
         } = this;
+        const x = this.anchor[0] - this.width / 2;
+        const y = this.anchor[1] - this.height / 2;
+        const xt = this.anchor[0] + this.width / 2;
+        const yt = this.anchor[1] + this.height / 2;
         if(this.borderRadius) {
-            const x = this.anchor[0] - this.width / 2;
-            const y = this.anchor[1] - this.height / 2;
+            ctx.beginPath();
             ctx.moveTo(x + radius, y);
             ctx.lineTo(x + width - radius, y);
             ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
@@ -42,35 +82,106 @@ class Rectangle extends Node {
             ctx.lineTo(x, y + radius);
             ctx.quadraticCurveTo(x, y, x + radius, y);
             ctx.closePath();
+            if(this.borderWidth) {
+                ctx.lineWidth = this.borderWidth;
+                ctx.strokeStyle = this.borderColor;
+                ctx.stroke();
+            }
         } else {
+            ctx.beginPath();
             ctx.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
         }
-            
-        if(this.borderWidth && this.borderColor){
-            ctx.strokeStyle = this.borderColor;
-            ctx.lineWidth = this.borderWidth
-            ctx.stroke();
-        }
+        ctx.fillStyle = this.backgroundColor;
         if(this.shadowColor) {
             ctx.shadowColor = this.shadowColor;
             ctx.shadowBlur = this.shadowBlur;
             ctx.shadowOffsetX = this.shadowOffsetX;
             ctx.shadowOffsetY = this.shadowOffsetY;
         }
-        ctx.fillStyle = this.color;
         ctx.fill(); 
-        // if(this.content) {
-        //     ctx.font = this.font;
-        //     ctx.textAlign = this.textAlign;
-        //     ctx.textBaseline = this.textBaseline;
-        //     ctx.fillStyle = this.textColor;
-        //     ctx.fillText(this.content, this.anchor[0], this.anchor[1]);
-        // } 
-       
-        // if(this._isTargeting) {
-        //     this.renderFocus(ctx);
-        // }
+        if(this.borderRadius) {
+            if(this.border.top.enable) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(x, y + radius);
+                ctx.quadraticCurveTo(x, y, x + radius, y);
+                ctx.lineTo(x + width - radius, y);
+                ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+                ctx.closePath();
+                
+                // ctx.fill();
+                ctx.clip();
+                
+                ctx.beginPath();
+                ctx.rect(x, y, this.width, this.border.top.width);
+                ctx.fillStyle = this.border.top.color;
+                ctx.fill();
+                ctx.restore();
+            }
 
+            // if(this.border.right.enable) {
+            //     ctx.beginPath();
+            //     ctx.moveTo(x + width, y + radius);
+            //     ctx.lineTo(x + width, y + height - radius);
+            //     ctx.strokeStyle = this.border.right.color;
+            //     ctx.lineWidth = this.border.right.width;
+            //     ctx.stroke();
+            // }
+
+            // if(this.border.bottom.enable) {
+            //     ctx.beginPath();
+            //     ctx.moveTo(x + width - radius, y + height);
+            //     ctx.lineTo(x + radius, y + height);
+            //     ctx.strokeStyle = this.border.bottom.color;
+            //     ctx.lineWidth = this.border.bottom.width;
+            //     ctx.stroke();
+            // }
+
+            // if(this.border.left.enable) {
+            //     ctx.beginPath();
+            //     ctx.moveTo(x, y + height - radius);
+            //     ctx.lineTo(x, y + radius);
+            //     ctx.strokeStyle = this.border.left.color;
+            //     ctx.lineWidth = this.border.left.width;
+            //     ctx.stroke();
+            // }
+        } else {
+            if(this.border.top.width) {
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(xt, y);
+                ctx.strokeStyle = this.border.top.color;
+                ctx.lineWidth = this.border.top.width;
+                ctx.stroke();
+            }
+
+            if(this.border.right.width) {
+                ctx.beginPath();
+                ctx.moveTo(xt, y);
+                ctx.lineTo(xt, yt);
+                ctx.strokeStyle = this.border.right.color;
+                ctx.lineWidth = this.border.right.width;
+                ctx.stroke();
+            }
+
+            if(this.border.bottom.width) {
+                ctx.beginPath();
+                ctx.moveTo(xt, yt);
+                ctx.lineTo(x, yt);
+                ctx.strokeStyle = this.border.bottom.color;
+                ctx.lineWidth = this.border.bottom.width;
+                ctx.stroke();
+            }
+
+            if(this.border.left.width) {
+                ctx.beginPath();
+                ctx.moveTo(x, yt);
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = this.border.left.color;
+                ctx.lineWidth = this.border.left.width;
+                ctx.stroke();
+            }
+        }
         ctx.restore();
     }
 
@@ -172,14 +283,14 @@ class Rectangle extends Node {
             ? (diry ? DIRECTION.BOTTOM : DIRECTION.TOP) 
             : (dirx ? DIRECTION.RIGHT : DIRECTION.LEFT));
 
-        if(this._belongs && this._belongs.calculateToCoordination) {
-            console.log(JSON.stringify(this._intersections));
-            console.log(interDir)
-        }
+        // if(this._belongs && this._belongs.calculateToCoordination) {
+        //     console.log(JSON.stringify(this._intersections));
+        //     console.log(interDir)
+        // }
         // interDir = this.checkLinked(interDir, end);
-        if(this._belongs && this._belongs.calculateToCoordination) {
-            console.log(interDir)
-        }
+        // if(this._belongs && this._belongs.calculateToCoordination) {
+        //     console.log(interDir)
+        // }
         
         // if(!interDir) {
         //     debugger

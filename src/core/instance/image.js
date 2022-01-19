@@ -19,7 +19,6 @@ class Icon extends Rectangle {
         **/
     constructor(configs) {
         super(configs)
-        this.borderWidth = 0;
         this.image = configs.image;
         this.image.onload = () => {
             requestAnimationFrame(() => {

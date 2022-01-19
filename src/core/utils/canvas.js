@@ -22,6 +22,7 @@ export function createCanvas(wrapper) {
     const { width, height, left, top } = wrapper.getBoundingClientRect();
     canvas.style.width = width + "px";
     canvas.style.height = height + "px";
+    canvas.style.userSelect = 'none';
     const scale = window.devicePixelRatio;
     canvas.width = Math.floor(width * scale);
     canvas.height = Math.floor(height * scale);
