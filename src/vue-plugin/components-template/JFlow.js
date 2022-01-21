@@ -34,7 +34,11 @@ export default {
         } else {
             const vnodes = this.nodes.map(({ type, configs, meta }) => {
                 if(!this.$scopedSlots[type]) {
-                    return
+                    if(this.$scopedSlots['jflowcommon']){
+                        type = 'jflowcommon';
+                    } else {
+                        return
+                    }
                 }
                 const [vnode] = this.$scopedSlots[type]({ configs, meta });
                 meta.getJflowInstance = function() {
@@ -120,6 +124,7 @@ export default {
                     meta: meta.layoutMeta,
                 }
             });
+            /* no free Nodes
             const freeNodes = []
             this.nodes.forEach(n => {
                 if(!layoutNodes.find(ln => ln.configs.id === n.configs.id)){
@@ -127,6 +132,8 @@ export default {
                 }
             })
             this.nodes = layoutNodes.concat(freeNodes);
+            */
+            this.nodes = layoutNodes;
             this.links = this._jflowInstance._layout.flowLinkStack.slice();
             this.$nextTick(() => {
                 if(preCallback) {
@@ -134,6 +141,7 @@ export default {
                 }
                 this._jflowInstance.recalculate();
                 this._jflowInstance._render();
+                console.log(this.nodes);
                 console.log(this._jflowInstance.bounding_box)
             })
         },

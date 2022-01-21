@@ -51,8 +51,8 @@ class JFlow extends EventTarget{
          */
         this.position = null;
 		this.scale = null;
-        this.maxZoom = 3;
-        this.minZoom = .5
+        this.maxZoom = configs.maxZoom || 3;
+        this.minZoom = configs.minZoom || .5;
 		// this.initScale = 1;
 		// this.initPosition = null
 		this.offeset = null;
@@ -98,12 +98,34 @@ class JFlow extends EventTarget{
         }
 
         this._dragOverTarget = null;
+        // this.lock = configs.lock;
 
+        // this._belongs = 
         this.allowDrop = configs.allowDrop;
+        this._tempInstance = null;
     }
 
     use(plugin) {
         this.plugins.push(plugin)
+    }
+
+    setTempDraggingInstance(instance) {
+        instance._belongs = this;
+        this._tempInstance = instance;
+        Object.assign(this._target, {
+            moving: [this._tempInstance],
+            dragging: true,
+        })
+        // this.addToStack(instance);
+    }
+
+    removeTempDraggingInstance() {
+        if(this._tempInstance) {
+            // this.removeFromStack(this._tempInstance);
+            const anchor = this._tempInstance.anchor;
+            this._tempInstance = null;
+            return anchor;
+        }
     }
     /**
      * 在 Document 元素上初始化实例
@@ -311,9 +333,9 @@ class JFlow extends EventTarget{
             while (movingtarget && movingtarget._belongs.lock && movingtarget !== this) {
                 movingtarget = movingtarget._belongs;
             }
-            if(movingtarget === this) {
-                movingtarget = target;
-            }
+            // if(movingtarget === this) {
+            //     movingtarget = undefined;
+            // }
             if(movingtarget) {
                 if(movingtarget._layoutNode && movingtarget._layoutNode.isLocked) {
                     movingtarget = movingtarget._layoutNode.getNodes()
@@ -333,16 +355,7 @@ class JFlow extends EventTarget{
         return this._target.moving && this._target.moving[0];
     }
 
-    _onDragover(event) {
-        event.preventDefault();
-        if(this._lastDragState.processing) return;
-        this._lastDragState.processing = true;
-        const { offsetX, offsetY } = event
-        Object.assign(this._target.status, {
-            dragovering: true,
-        })
-        this._targetLockOn([offsetX, offsetY])
-        const instance = this._target.instance;
+    _processDragOver(instance) {
         if(this._dragOverTarget !== instance) {
             if(instance) {
                 instance.dispatchEvent(new JFlowEvent('dragover', {
@@ -359,6 +372,35 @@ class JFlow extends EventTarget{
             }
             this._dragOverTarget = instance;
         }
+    }
+
+    _onDragover(event) {
+        event.preventDefault();
+        if(this._lastDragState.processing) return;
+        this._lastDragState.processing = true;
+        const { offsetX, offsetY } = event
+        Object.assign(this._target.status, {
+            dragovering: true,
+        })
+        this._targetLockOn([offsetX, offsetY])
+        const instance = this._target.instance;
+        this._processDragOver(instance);
+        // if(this._dragOverTarget !== instance) {
+        //     if(instance) {
+        //         instance.dispatchEvent(new JFlowEvent('dragover', {
+        //             event,
+        //             instance,
+        //         }));
+        //     }
+        //     if(this._dragOverTarget) {
+        //         const oldIns = this._dragOverTarget;
+        //         oldIns.dispatchEvent(new JFlowEvent('dragoverend', {
+        //             event,
+        //             instance: oldIns,
+        //         }));
+        //     }
+        //     this._dragOverTarget = instance;
+        // }
         
         if(this._target.isLinkDirty || this._target.isInstanceDirty) {
             requestAnimationFrame(() => {
@@ -543,6 +585,17 @@ class JFlow extends EventTarget{
                 jflow: this,
             }))
         }
+
+        if(this._target.instance) {
+            const t = this._target.instance;
+            t.bubbleEvent(new JFlowEvent('instancePressStart', {
+                event,
+                target: t,
+                jflow: this,
+                bubbles: true,
+            }))
+        }
+
     }
 
     _onPressMove(event) {
@@ -553,6 +606,11 @@ class JFlow extends EventTarget{
         const { x, y } = this._target.meta;
 
         const { offsetX, offsetY, clientX, clientY } = event
+        this.dispatchEvent(new JFlowEvent('canvasmousemove', {
+            event,
+            jflow: this,
+        }))
+
         if(!dragging && !processing) {
             const {
                 link,
@@ -567,7 +625,7 @@ class JFlow extends EventTarget{
         if(!dragging) return;
         if(processing) return;
         
-        const movingtarget = this._target.moving;
+        const movingtarget = this._target.moving;// this._tempInstance ? [this._tempInstance] : this._target.moving;
 
         this._target.status.processing = true;
         const deltaX = offsetX - x;
@@ -582,7 +640,8 @@ class JFlow extends EventTarget{
             this._recalculatePosition(deltaX, deltaY);    
             this.dispatchEvent(new JFlowEvent('zoompan'));
         }
-        this._targetLockOn([offsetX, offsetY])
+        const { instance } = this._targetLockOn([offsetX, offsetY]);
+        this._processDragOver(instance);
             
         // this._target.meta.x = offsetX;
         // this._target.meta.y = offsetY;
@@ -609,6 +668,23 @@ class JFlow extends EventTarget{
         //     }));
         //     return;
         // }
+        
+        // if(this._tempInstance) {
+        //     this.dispatchEvent(new JFlowEvent('canvasmouseup', {
+        //         event,
+        //         jflow: this,
+        //     }));
+        //     this._clearTarget();
+        //     return;
+        // } else {
+        //     // 没有设置也需要触发事件
+        //     this.dispatchEvent(new JFlowEvent('canvasmouseup', {
+        //         event,
+        //         jflow: this,
+        //     }));
+        // }
+        
+        
         if(meta.initialX === meta.x
             && meta.initialY === meta.y) {
                 if(this._target.instance && !isDocument) {
@@ -711,6 +787,7 @@ class JFlow extends EventTarget{
                      * @property {Instance} target       - 拖动到的对象
                      * @property {boolean} bubbles       - 冒泡
                      */
+                     console.log('pressEnd', this._target.instance)
                     this._target.instance.bubbleEvent(new JFlowEvent('pressEnd', {
                         event,
                         instance: this._getMovingTarget(),
@@ -736,6 +813,7 @@ class JFlow extends EventTarget{
                 }
             }
             this._target.moving = null;
+            this.removeTempDraggingInstance()
             // this._target.isMovingDirty = false;
             this._render();
         }
@@ -835,15 +913,20 @@ class JFlow extends EventTarget{
         // this._stack.forEach(instance => {
         //     instance._intersections = [];
         // });
-        let linkStack = this._linkStack;
+        // let linkStack = this._linkStack;
         // if(this._layout.alignLinkOrder) {
         //     const p = new InstanceStack();
         //     this._layout.alignLinkOrder(linkStack, p);
         //     linkStack = p;
         // }
-        
-        this._stack.render(this.ctx);
-        linkStack.render(this.ctx);
+        const ctx = this.ctx;
+        this._stack.render(ctx);
+        this._linkStack.render(ctx);
+        if(this._tempInstance) {
+            ctx.save();
+            this._tempInstance.render(ctx)
+            ctx.restore();
+        }
         
     }
 }
