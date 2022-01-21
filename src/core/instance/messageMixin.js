@@ -21,6 +21,9 @@ const MessageMixin = {
         this._message = null;
         return msg;
     },
+    readMessage() {
+        return this._message;
+    }
 }
 
 export default MessageMixin;

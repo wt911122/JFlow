@@ -297,6 +297,7 @@ class JFlow extends EventTarget{
 
     _targetLockOn(offsetPoint, event) {
         let point = this._calculatePointBack(offsetPoint);
+        const topLayerPoint = point;
         this._currentp = point;
         let stack = this._stack;
         const target = stack.checkHit(point, (instance) => {
@@ -322,6 +323,7 @@ class JFlow extends EventTarget{
             stack,
             belongs,
             point,
+            topLayerPoint,
         })
         Object.assign(this._target.meta, {
             x: offsetPoint[0],
@@ -357,10 +359,12 @@ class JFlow extends EventTarget{
 
     _processDragOver(instance) {
         if(this._dragOverTarget !== instance) {
+            const target = this.readMessage()?.instance;
             if(instance) {
                 instance.dispatchEvent(new JFlowEvent('dragover', {
                     event,
                     instance,
+                    target,
                 }));
             }
             if(this._dragOverTarget) {
@@ -368,6 +372,7 @@ class JFlow extends EventTarget{
                 oldIns.dispatchEvent(new JFlowEvent('dragoverend', {
                     event,
                     instance: oldIns,
+                    target
                 }));
             }
             this._dragOverTarget = instance;
@@ -383,7 +388,7 @@ class JFlow extends EventTarget{
             dragovering: true,
         })
         this._targetLockOn([offsetX, offsetY])
-        const instance = this._target.instance;
+        const instance = this._target.instance || this._target.link;
         this._processDragOver(instance);
         // if(this._dragOverTarget !== instance) {
         //     if(instance) {
@@ -856,13 +861,21 @@ class JFlow extends EventTarget{
             link,
             instance
         } = this._targetLockOn([offsetX, offsetY]);
+        const { topLayerPoint } = this._target.cache
         if(instance || link) {
             const target = (instance || link);
             target.bubbleEvent(new JFlowEvent('contextclick', {
                 event,
                 jflow: this,
                 target,
+                topLayerPoint,
                 bubbles: true
+            }));
+        } else {
+            this.dispatchEvent(new JFlowEvent('contextclick', {
+                event,
+                jflow: this,
+                topLayerPoint,
             }));
         }
     }
