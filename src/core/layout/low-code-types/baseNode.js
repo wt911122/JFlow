@@ -14,6 +14,7 @@ class BaseNode {
         this.parent = undefined;
         this.idx = undefined;
         this.parentIterateType = undefined;
+        source._getAstNode = () => this;
     }
 
     reflowPreCalculate(level = 0, sequence = 0, callback) {

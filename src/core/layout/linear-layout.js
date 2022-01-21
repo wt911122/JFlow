@@ -35,6 +35,7 @@ class LinearLayout {
         this.gap =           configs.gap ?? 5;
         this.alignment =     configs.alignment || 'center';
         this.justify =       configs.justify || 'center';
+        this._rawConfigs = configs;
     }
 
 
@@ -139,6 +140,10 @@ class LinearLayout {
                 })
             }
         }
+    }
+
+    clone() {
+        return new LinearLayout(this._rawConfigs);
     }
 }
 

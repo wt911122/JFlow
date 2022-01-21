@@ -14,16 +14,18 @@ class Node extends Instance {
      */
     constructor(configs = {}) {
         super(configs);
+        this._rawConfigs = configs;
         // for layout
         // this._intersections = [];
         this.anchor =   configs.anchor || [0, 0];
-        this.margin =   configs.margin || 5;
+        this.margin =   configs.margin || 5;    
     }
 
     setConfig(configs) {
         Object.keys(configs).forEach(k => {
             if(configs[k] !== undefined && configs[k] !== null) {
                 this[k] = configs[k]
+                this._rawConfigs[k] = configs[k];
             }
         });
     }
@@ -77,6 +79,12 @@ class Node extends Instance {
         ctx.lineTo(p3[0] - margin, p3[1] + margin - h);
         ctx.stroke();
         ctx.restore();
+    }
+
+    clone() {
+        const C = this.constructor;
+        const t = new C(this._rawConfigs);
+        return t;
     }
 }
 

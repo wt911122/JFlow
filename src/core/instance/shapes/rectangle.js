@@ -51,7 +51,8 @@ class Rectangle extends Node {
     setConfig(configs) {
         Object.keys(configs).forEach(k => {
             if(configs[k] !== undefined && configs[k] !== null) {
-                this[k] = configs[k]
+                this[k] = configs[k];
+                this._rawConfigs[k] = configs[k];
             }
         });
         this._setBorder(configs);

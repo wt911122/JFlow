@@ -144,7 +144,7 @@ const StackMixin = {
         l2._belongs = this;
 
         this._linkStack.splice(index, 1, l1, l2);
-    }
+    },
     // reLayout() {
     //     this.reflow();
     //     this._getBoundingGroupRect();
@@ -164,7 +164,11 @@ const StackMixin = {
     //     this._tempStack = new InstanceStack();
     //     return temp;
     // }
-
+    interateNodeStack(callback) {
+        this._stack.forEach(instance => {
+            callback(instance);
+        })
+    }   
 }
 
 export default StackMixin;

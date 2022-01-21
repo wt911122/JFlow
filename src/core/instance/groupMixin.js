@@ -31,7 +31,7 @@ const GroupMixin = {
         this.definedWidth =     configs.width;
         this.minWidth =         configs.minWidth;
         this.definedHeight =    configs.height;
-        this.lock =             configs.lock;
+        this.lock =             configs.lock ?? true ;
         // this.offsetY = 0;
         // this.offsetX = 0;
         this._getBoundingGroupRect();
@@ -42,6 +42,7 @@ const GroupMixin = {
         Object.keys(configs).forEach(k => {
             if(configs[k] !== undefined && configs[k] !== null) {
                 this[k] = configs[k]
+                this._rawConfigs[k] = configs[k];
             }
         });
         this.padding = {
@@ -154,6 +155,18 @@ const GroupMixin = {
         if(this._belongs && this._belongs.calculateToRealWorld) {
             return this._belongs.calculateToRealWorld(p);
         }
+    },
+    clone() {
+        const C = this.constructor;
+        const configs = Object.assign({}, this._rawConfigs, {
+            layout: this._layout && this._layout.clone(),
+        })
+        const t = new C(configs);
+        this.interateNodeStack((instance) => {
+            t.addToStack(instance.clone());
+        })
+        t.recalculate();
+        return t;
     }
 }
 
