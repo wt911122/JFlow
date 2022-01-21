@@ -22,8 +22,7 @@ class BaseLink extends Instance{
         this.toDir    = configs.toDir;
         this.key      = configs.key;
         this._cachePoints = null;
-        this.defaultStyle = 'black';
-        this.hoverStyle = 'cornflowerblue';
+        this.backgroundColor = configs.backgroundColor || '#000';
     }
 }
 

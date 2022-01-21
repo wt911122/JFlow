@@ -28,7 +28,12 @@ export default function (nameNode, isLink) {
             },
             to() {
                 this.resetLink();
-            }
+            },
+            configs(val, oldVal) {
+                if(val.backgroundColor !== oldVal.backgroundColor) {
+                    this._jflowInstance.backgroundColor = val.backgroundColor;
+                }
+            },
         },
         render: function (createElement) {
             return null;
@@ -44,11 +49,9 @@ export default function (nameNode, isLink) {
                     from: fromInstance,
                     to: toInstance,
                 });
+                this.bindListeners();
                 this.addToLinkStack(this._jflowInstance);
-                Object.keys(this.$listeners).map(event => {
-                    const func = this.$listeners[event].bind(this);
-                    this._jflowInstance.addEventListener(event, func);
-                })
+               
             }
         },
         methods: {
@@ -57,6 +60,12 @@ export default function (nameNode, isLink) {
                 const toInstance = this.getInstanceByJFlowId(this.to);
                 this._jflowInstance.from = fromInstance;
                 this._jflowInstance.to = toInstance;
+            },
+            bindListeners() {
+                Object.keys(this.$listeners).map(event => {
+                    const func = this.$listeners[event];
+                    this._jflowInstance.addEventListener(event, func);
+                })
             }
         },
         destroyed() {

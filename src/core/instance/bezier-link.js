@@ -21,12 +21,12 @@ class BezierLink extends BaseLink {
      * 根据当前状态获取颜色，当前单元是否被选中
      * @return {String} 颜色
      */
-    getColor() {
-        if(this._isTargeting) {
-            return this.hoverStyle;
-        }
-        return this.defaultStyle;
-    }
+    // getColor() {
+    //     if(this._isTargeting) {
+    //         return this.hoverStyle;
+    //     }
+    //     return this.defaultStyle;
+    // }
     
     // _calculateAnchorPoints() {
     //     let start;
@@ -115,8 +115,7 @@ class BezierLink extends BaseLink {
         this._calculateAnchorPoints();
         const points = this._cachePoints;
         const angle = getBezierAngle.apply(null, [1, ...points])
-
-        ctx.fillStyle = ctx.strokeStyle = this.getColor();
+        ctx.fillStyle = ctx.strokeStyle = this.backgroundColor;
         ctx.beginPath();
         ctx.moveTo(points[0], points[1])
         ctx.bezierCurveTo(...points.slice(2));
