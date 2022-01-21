@@ -339,8 +339,14 @@ class JFlow extends EventTarget{
             //     movingtarget = undefined;
             // }
             if(movingtarget) {
-                if(movingtarget._layoutNode && movingtarget._layoutNode.isLocked) {
-                    movingtarget = movingtarget._layoutNode.getNodes()
+                if(movingtarget._layoutNode) {
+                    if(movingtarget._layoutNode.isLocked) {
+                        movingtarget = movingtarget._layoutNode.getNodes()
+                    } else if(!movingtarget._layoutNode.isDraggable) {
+                        movingtarget = undefined;
+                    } else {
+                        movingtarget = [movingtarget];
+                    }
                 } else {
                     movingtarget = [movingtarget];
                 }

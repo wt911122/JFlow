@@ -6,6 +6,7 @@ class BaseNode {
         this.source = source;
         this.id = source.id;
         this.type = source.type;
+        this.isDraggable = true;
         this.getJflowInstance = undefined;
         this.level = undefined;
         this.sequence = undefined;

@@ -27,6 +27,7 @@ class LowcodeLayout {
     constructor(configs) {
         this.linkLength = configs.linkLength || 18;
         this.gap = configs.gap || 30;
+        this.treeItemDraggable = configs.treeItemDraggable ?? true;
         this.reOrder(configs.ast);
         this.static = true;
     }
@@ -41,6 +42,9 @@ class LowcodeLayout {
 
         this.root = makeAST(this.ast)// new AstNode(this.ast, this.flowStack, true);
         this.root.traverse((node) => {
+            if(node.parentIterateType !== 'playground') {
+                node.isDraggable = this.treeItemDraggable
+            }
             this.flowStack.push({
                 type: node.type,
                 configs: node.source,
