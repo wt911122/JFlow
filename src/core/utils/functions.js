@@ -106,9 +106,9 @@ function _resolveControlPoint(p, dir, spanx, spany){
     }
 }
 
-export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECTION.TOP) {
-    const spanx = Math.max(Math.abs((p1[0] - p2[0])/2), 0);
-    const spany = Math.max(Math.abs((p1[1] - p2[1])/2), 0);
+export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECTION.TOP, minSpanX = 0, minSpanY = 0) {
+    const spanx = Math.max(Math.abs((p1[0] - p2[0])/2), minSpanX);
+    const spany = Math.max(Math.abs((p1[1] - p2[1])/2), minSpanY);
     const cp1 = _resolveControlPoint(p1, start_dir, spanx, spany);
     const cp2 = _resolveControlPoint(p2, end_dir, spanx, spany);
     const arrowspan = [DIRECTION.TOP, DIRECTION.LEFT].includes(end_dir) ? -5 : 5;
@@ -119,6 +119,13 @@ export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECT
         ...cp1,
         ...cp2,
         endX, endY];
+}
+
+export function bezierPoint(t, P) {
+    const q = 1-t;
+    const x = q*q*q*P[0] + 3 *q*q*t*P[2] + 3*q*t*t*P[4] + t*t*t*P[6];
+    const y = q*q*q*P[1] + 3 *q*q*t*P[3] + 3*q*t*t*P[5] + t*t*t*P[7];
+    return [x, y];
 }
 
 export function polylinePoints(p1, p2, start_dir = DIRECTION.RIGHT, end_dir = DIRECTION.TOP) {

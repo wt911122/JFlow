@@ -40,6 +40,7 @@ class ERLayout {
         this.flowStack = [];
         this.flowLinkStack = [];
         const nodes = makeER(this.er);
+        const idMap = [];
         nodes.forEach(node => {
             node.traverse((n) => {
                 this.flowStack.push({
@@ -49,6 +50,21 @@ class ERLayout {
                 })
             });
             node.makeLink(configs => {
+                const {
+                    from: property,
+                    to: toProperty,
+                    meta,
+                } = configs;
+                if(meta.isObjectRef) {
+                    const id1 = `${property}-${toProperty}`;
+                    const id2 = `${toProperty}-${property}`;
+                    console.log(id1, id2)
+                    if(idMap.includes(id1) || idMap.includes(id2)) {
+                        return;
+                    }
+                    idMap.push(id1);
+                    idMap.push(id2);
+                }
                 this.flowLinkStack.push(configs)
             })
         });
@@ -63,9 +79,39 @@ class ERLayout {
         const links = this.flowLinkStack;
         const nodes = this.erNodes;
         let x = 0;
+        const lineMapping = {};
+        const size = 1000;
+        function computeNodeAnchor(node, recorded = []) {
+            let relativeAnchor = [0, 0];
+            
+            
+            if (node.parentRef) {
+                if(recorded.includes(node.parentRef)) {
+                    // debugger;
+                    return [
+                        relativeAnchor[0] - (size/2) + node.source.diagramWeight * size,
+                        relativeAnchor[1]
+                    ];
+                }
+                recorded.push(node.parentRef);
+                
+                relativeAnchor = computeNodeAnchor(node.parentRef, recorded);
+                return [
+                    relativeAnchor[0] - (size/2) + node.source.diagramWeight * size,
+                    relativeAnchor[1] + 600,
+                ];
+            } else {
+                return relativeAnchor;
+            }
+        }
         this.erNodes.forEach(node => {
             const instance = node.getJflowInstance();
-            instance.anchor = [x, 0];
+            const [nx, ny] = computeNodeAnchor(node);
+            if(!lineMapping[ny]) {
+                lineMapping[ny] = [];
+            }
+            lineMapping[ny].push(node);
+            instance.anchor = [nx + lineMapping[ny].length * 500, ny];
             x+=300
         });
         // debugger

@@ -1,11 +1,12 @@
 import BaseLink from './base-link';
 import { bezierPoints, distToBezierSegmentSquared, getBezierAngle } from '../utils/functions';
 import { APPROXIMATE } from '../utils/constance';
-import { dist2 } from '../utils/functions';
+import { dist2, bezierPoint } from '../utils/functions';
 /**
  * 贝塞尔曲线
  * @extends BaseLink
  */
+const PIINRATIO = Math.PI / 180
 class BezierLink extends BaseLink {
      /**
      * 创建贝塞尔曲线.
@@ -16,6 +17,14 @@ class BezierLink extends BaseLink {
         super(configs);
         this.anticlock     = configs.anticlock;
         this.approximate   = configs.approximate || APPROXIMATE;
+        this.minSpanX      = configs.minSpanX || 0;
+        this.minSpanY      = configs.minSpanY || 0;
+        this.lineDash      = configs.lineDash;
+        this.doubleLink    = configs.doubleLink;
+        this.fontFamily    = configs.fontFamily = '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji'
+        this.fontSize      = configs.fontSize || '12px';
+        this.content       = configs.content || '';
+
     }
     /**
      * 根据当前状态获取颜色，当前单元是否被选中
@@ -62,14 +71,14 @@ class BezierLink extends BaseLink {
 
         const dmsfrom = this.from.getIntersectionsInFourDimension();
         const dmsto = this.to.getIntersectionsInFourDimension();
-
         if(this.fromDir !== undefined && this.toDir !== undefined) {
             const points = bezierPoints(
                 dmsfrom[this.fromDir],
                 dmsto[this.toDir],
                 this.fromDir,
-                this.toDir);
+                this.toDir, this.minSpanX , this.minSpanY);
             this._cachePoints = [...dmsfrom[this.fromDir], ...points] 
+            this._cacheAngle = [this.fromDir, this.toDir]
             return;
         }
         const meta = {
@@ -108,7 +117,8 @@ class BezierLink extends BaseLink {
             meta.fromDir,
             meta.toDir);
 
-        this._cachePoints = [...meta.fromP, ...points]
+        this._cachePoints = [...meta.fromP, ...points];
+        this._cacheAngle = [meta.fromDir, meta.toDir];
     }
 
     render(ctx) {
@@ -116,10 +126,30 @@ class BezierLink extends BaseLink {
         const points = this._cachePoints;
         const angle = getBezierAngle.apply(null, [1, ...points])
         ctx.fillStyle = ctx.strokeStyle = this.backgroundColor;
+        if(this.doubleLink) {
+            const beginAngle = ((this._cacheAngle[0] + 2) % 4) * 90 * PIINRATIO;
+            ctx.beginPath();
+            ctx.translate(points[0], points[1]);
+            ctx.rotate(beginAngle);
+            ctx.moveTo(5, 0);
+            ctx.lineTo(0, -4);
+            ctx.lineTo(0, 4);
+            ctx.lineTo(5, 0);
+            ctx.fill();
+            ctx.rotate(-beginAngle);
+            ctx.translate(-points[0], -points[1]);
+        }
         ctx.beginPath();
         ctx.moveTo(points[0], points[1])
         ctx.bezierCurveTo(...points.slice(2));
+        if(this.lineDash) {
+            ctx.save();
+            ctx.setLineDash(this.lineDash);
+        }
         ctx.stroke();
+        if(this.lineDash) {
+            ctx.restore();
+        }
         ctx.beginPath();
         ctx.translate(points[6], points[7]);
         ctx.rotate(angle);
@@ -130,6 +160,13 @@ class BezierLink extends BaseLink {
         ctx.fill();
         ctx.rotate(-angle);
         ctx.translate(-points[6], -points[7]);
+        if(this.content) {
+            ctx.beginPath();
+            const [x, y] = bezierPoint(0.5, points);
+            ctx.font = `${this.fontSize} ${this.fontFamily}`;
+            ctx.textAlign = 'center';
+            ctx.fillText(this.content, x, y);
+        }
     }
 
     isHit(point) {
