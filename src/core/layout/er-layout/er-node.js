@@ -34,6 +34,7 @@ class ERNode {
         this.type = 'ERNode';
         this.source = source;
         this.id = source.name;
+        this.association = source.association;
         this.isDraggable = true;
         this.getJflowInstance = undefined;
         // this.adjacencyList = []
@@ -92,7 +93,7 @@ class ERNode {
                         part: 'property',
                         fromDir: DIRECTION.LEFT,
                         toDir: DIRECTION.LEFT,
-                        content: getRelationShip(property, toProperty),
+                        content: property.association,
                         minSpanX: 80,
                         meta: {
                             from: property,
@@ -104,7 +105,7 @@ class ERNode {
                         from: property.id,
                         to: toProperty.id,
                         part: 'property',
-                        content: getRelationShip(property, toProperty),
+                        content: property.association,
                         meta: {
                             from: property,
                             to: toProperty,
@@ -127,7 +128,7 @@ class ERNode {
                         toDir: DIRECTION.TOP,
                         lineDash: [10, 5],
                         doubleLink: true,
-                        content: getRelationShip(property, toProperty),
+                        content: property.association,
                         minSpanX: 80,
                         minSpanY: 80,
                         meta: {
@@ -142,7 +143,7 @@ class ERNode {
                         part: 'property',
                         lineDash: [10, 5],
                         doubleLink: true,
-                        content: getRelationShip(property, toProperty),
+                        content: property.association,
                         meta: {
                             from: property,
                             to: toProperty,
