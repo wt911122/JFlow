@@ -58,13 +58,20 @@ class ERLayout {
                 if(meta.isObjectRef) {
                     const id1 = `${property}-${toProperty}`;
                     const id2 = `${toProperty}-${property}`;
+                    
+                    const fromMeta = meta.from;
                     if(idMap.includes(id1) || idMap.includes(id2)) {
                         return;
                     }
-                    idMap.push(id1);
-                    idMap.push(id2);
+                    if(!fromMeta.source.isParentRef) {  
+                        idMap.push(id1);
+                        idMap.push(id2);
+                        this.flowLinkStack.push(configs)
+                    }
+                } else {
+                    this.flowLinkStack.push(configs)
                 }
-                this.flowLinkStack.push(configs)
+               
             })
         });
         this.erNodes = nodes;

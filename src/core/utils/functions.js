@@ -128,9 +128,10 @@ export function bezierPoint(t, P) {
     const u = q*q*(P[2]-P[0]) + 2*t*q*(P[4]-P[2]) + t*t*(P[6]-P[4]);
     const v = q*q*(P[3]-P[1]) + 2*t*q*(P[5]-P[3]) + t*t*(P[7]-P[5]);
     let angle = Math.atan2(v, u);
-    if(angle < 0) {
-        angle = Math.PI + angle;
-    }
+    // console.log(angle * 180)
+    // if(angle < 0) {
+    //     angle = Math.PI + angle;
+    // }
     return [x, y, angle];
 }
 
