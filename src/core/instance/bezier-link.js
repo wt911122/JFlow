@@ -162,10 +162,14 @@ class BezierLink extends BaseLink {
         ctx.translate(-points[6], -points[7]);
         if(this.content) {
             ctx.beginPath();
-            const [x, y] = bezierPoint(0.5, points);
+            const [x, y, angle] = bezierPoint(0.5, points);
+            ctx.translate(x, y);
+            ctx.rotate(angle);
             ctx.font = `${this.fontSize} ${this.fontFamily}`;
             ctx.textAlign = 'center';
-            ctx.fillText(this.content, x, y);
+            ctx.fillText(this.content, 0, 10);
+            ctx.rotate(-angle);
+            ctx.translate(-x, -y);
         }
     }
 

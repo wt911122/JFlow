@@ -123,9 +123,15 @@ export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECT
 
 export function bezierPoint(t, P) {
     const q = 1-t;
-    const x = q*q*q*P[0] + 3 *q*q*t*P[2] + 3*q*t*t*P[4] + t*t*t*P[6];
-    const y = q*q*q*P[1] + 3 *q*q*t*P[3] + 3*q*t*t*P[5] + t*t*t*P[7];
-    return [x, y];
+    const x = q*q*q*P[0] + 3*q*q*t*P[2] + 3*q*t*t*P[4] + t*t*t*P[6];
+    const y = q*q*q*P[1] + 3*q*q*t*P[3] + 3*q*t*t*P[5] + t*t*t*P[7];
+    const u = q*q*(P[2]-P[0]) + 2*t*q*(P[4]-P[2]) + t*t*(P[6]-P[4]);
+    const v = q*q*(P[3]-P[1]) + 2*t*q*(P[5]-P[3]) + t*t*(P[7]-P[5]);
+    let angle = Math.atan2(v, u);
+    if(angle < 0) {
+        angle = Math.PI + angle;
+    }
+    return [x, y, angle];
 }
 
 export function polylinePoints(p1, p2, start_dir = DIRECTION.RIGHT, end_dir = DIRECTION.TOP) {
