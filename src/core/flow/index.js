@@ -698,6 +698,10 @@ class JFlow extends EventTarget{
         
         if(meta.initialX === meta.x
             && meta.initialY === meta.y) {
+                if(event.target !== this.canvas){
+                    this._clearTarget();
+                    return;
+                }
                 if(this._target.instance && !isDocument) {
                     const t = this._target.instance;
                     /**
@@ -939,9 +943,9 @@ class JFlow extends EventTarget{
         //     linkStack = p;
         // }
         const ctx = this.ctx;
-        this._linkStack.render(ctx);
+        
         this._stack.render(ctx);
-       
+        this._linkStack.render(ctx);
         if(this._tempInstance) {
             ctx.save();
             this._tempInstance.render(ctx)
