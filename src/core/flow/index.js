@@ -939,8 +939,9 @@ class JFlow extends EventTarget{
         //     linkStack = p;
         // }
         const ctx = this.ctx;
-        this._stack.render(ctx);
         this._linkStack.render(ctx);
+        this._stack.render(ctx);
+       
         if(this._tempInstance) {
             ctx.save();
             this._tempInstance.render(ctx)
