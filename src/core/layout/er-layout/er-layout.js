@@ -58,7 +58,6 @@ class ERLayout {
                 if(meta.isObjectRef) {
                     const id1 = `${property}-${toProperty}`;
                     const id2 = `${toProperty}-${property}`;
-                    console.log(id1, id2)
                     if(idMap.includes(id1) || idMap.includes(id2)) {
                         return;
                     }

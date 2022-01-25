@@ -20,6 +20,7 @@ class ERProperty {
         this.node = node;
         this.ref = source.ref;
         this.type = source.type;
+        this.association = source.association;
         this.id = isNavigation ? `${node.id}-${source.name}-navigation` : `${node.id}-${source.name}`
         this._selfLink = false;
         this.parentPropertyRef = undefined;
@@ -34,7 +35,6 @@ class ERNode {
         this.type = 'ERNode';
         this.source = source;
         this.id = source.name;
-        this.association = source.association;
         this.isDraggable = true;
         this.getJflowInstance = undefined;
         // this.adjacencyList = []
