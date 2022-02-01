@@ -1,5 +1,5 @@
 <template>
-    <j-group v-on="$listeners" :name="node.name" :configs="configs">
+    <j-group v-on="$listeners" :jflowId="node.id" :configs="configs">
         <j-group :configs="headerConfigs">
             <j-icon :configs="imageConfig" />
             <j-text :configs="{
@@ -14,7 +14,7 @@
                 textColor: '#585c63',
                 content: node.content || '请选择接口' ,
             }" />
-            <j-text :configs="{
+            <!-- <j-text :configs="{
                 fontSize: '12px',
                 textColor: '#585c63',
                 content: node.content || 'sss接口' ,
@@ -23,7 +23,7 @@
                 fontSize: '12px',
                 textColor: '#585c63',
                 content: node.content || '接口' ,
-            }" />
+            }" /> -->
         </j-group>
         <template v-if="node.params && node.params.length">
             <j-group ref="paramGroup" :configs="paramsConfigs">
@@ -65,10 +65,6 @@ export default {
                 borderColor: '#517cff',
                 borderWidth: 2,
                 borderRadius: 12,
-                width: 220,
-                hoverStyle: 'transparent',
-                hasShrink: false,
-                lock: true,
             },
             headerConfigs: {
                 layout: new LinearLayout({
@@ -77,9 +73,7 @@ export default {
                 }),
                 borderRadius: 10,
                 borderColor: '#ccc',
-                hoverStyle: '#517cff',
                 borderWidth: 0,
-                lock: true,
             },
             contentConfigs: {
                 layout: new LinearLayout({
@@ -92,7 +86,6 @@ export default {
                 borderRadius: 5,
                 width: 200,
                 height: 36,
-                lock: true,
             },
             paramsConfigs: {
                 layout: new LinearLayout({
@@ -102,8 +95,6 @@ export default {
                 }),
                 borderColor: 'transparent',
                 hoverStyle: 'transparent',
-                hasShrink: false,
-                lock: true,
             },
             imageConfig: {
                 image: p,

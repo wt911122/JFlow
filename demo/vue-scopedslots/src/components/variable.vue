@@ -1,6 +1,6 @@
 <template>
     <j-group
-        :name="node.name" 
+        :jflowId="node.id" 
         :configs="groupConfig"
         v-on="$listeners">
         <j-text :configs="{
@@ -31,9 +31,6 @@ export default {
                 borderWidth: 2,
                 borderRadius: 5,
                 padding: 10,
-                hasShrink: false,
-                lock: true,
-                anchor: this.initialAnchor, 
             }
         }
     },

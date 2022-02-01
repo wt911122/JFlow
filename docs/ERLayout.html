@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>JFlow Module: JFlowLink</title>
+	<title>JFlow Class: ERLayout</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -100,10 +100,33 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Module: JFlowLink</h1>
+	<h1 class="page-title">Class: ERLayout</h1>
 <section>
 
 <header>
+    
+        <h2>
+        ERLayout
+        </h2>
+        
+            <div class="class-description"><p>ER layout</p>
+<pre><code>Entity Relationship Structure
+tree = [
+    {
+        type: 'node',
+        id: 'uniqueID',
+        properties: [
+            {
+                name: 'xxxx',
+                ref: someUniqueId,
+                description: 'xxxxxx',
+            },
+            ...
+        ]
+    },
+    ...
+]</code></pre></div>
+        
     
 </header>
 
@@ -112,65 +135,315 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>JFlow <a href="BaseLink.html">BaseLink</a> 的 vue 封装</p></p></div></div> 
+<hr>
+<dt>
+    <h4 class="name" id="ERLayout"><span class="type-signature"></span>new ERLayout()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Layout.html">Layout</a></li>
+        
+    </ul></dd>
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
 
 
-<h3 class="subsection-title" style="margin-top: 1em" data-jsdoc-vuejs="section-props">Props</h3>
-<table class="table table-responsive table-hover table-striped" data-jsdoc-vuejs="table-props">
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<hr>
+<dt>
+    <h4 class="name" id="reflow"><span class="type-signature"></span>reflow(group)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>重排</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
     <thead>
     <tr>
+        
         <th>Name</th>
+        
+
         <th>Type</th>
-        <th>Default value</th>
-        <th>Required?</th>
-        <th>Description</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
     </tr>
     </thead>
-    <tbody><tr>
-        <td><code>configs</code></td>
-        <td>Configs</td>
-        <td>-</td>
-        <td><b>Yes</b></td>
-        <td>传给 Instance 的配置</td>
-    </tr></tbody>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>group</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Group</span>
+|
+
+<span class="param-type"><a href="JFlow.html">JFlow</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>栈对象</p></td>
+        </tr>
+
+    
+    </tbody>
 </table>
 
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Layout.html#reflow">Layout#reflow</a></li>
+        
+    </ul></dd>
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
 
 
 
+	
+
+	
+
+	
+
+	
+</dl>
 
 
+    
 
-<h3 class="subsection-title" style="margin-top: 1em" data-jsdoc-vuejs="section-event">Events</h3>
-<table data-jsdoc-vuejs="table-event" class="table table-responsive table-hover table-striped">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="reOrder"><span class="type-signature"></span>reOrder(tree)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>从 tree 计算布局</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
     <thead>
     <tr>
+        
         <th>Name</th>
-        <th>Payload Type</th>
-        <th>Description</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
     </tr>
     </thead>
-    <tbody><tr>
-        <td><code>dropEvent</code></td>
-        <td>drop</td>
-        <td><a href="BaseLink.html#event:drop">BaseLink#event:drop</a> 事件</td>
-    </tr><tr>
-        <td><code>pressEndEvent</code></td>
-        <td>pressEnd</td>
-        <td><a href="BaseLink.html#event:pressEnd">BaseLink#event:pressEnd</a> 事件</td>
-    </tr><tr>
-        <td><code>pressStartEvent</code></td>
-        <td>pressStart</td>
-        <td>BaseLink#event:pressStart 事件</td>
-    </tr></tbody>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>tree</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">AstNode</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>ER 树</p></td>
+        </tr>
+
+    
+    </tbody>
 </table>
 
+    
 
-<div class="container-overview"><div><p> 
-</div>
-        
-
-        
+    
 <dl class="details">
     
 
@@ -210,9 +483,164 @@
 </dl>
 
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
         
+            
+<hr>
+<dt>
+    <h4 class="name" id="staticCheck"><span class="type-signature"></span>staticCheck(instance, jflow)</h4>
     
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>对象布局位置检查</p>
     </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>instance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Node.html">Node</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>目标节点对象</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>jflow</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="JFlow.html">JFlow</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>JFlow对象</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Layout.html#staticCheck">Layout#staticCheck</a></li>
+        
+    </ul></dd>
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
 
     
 
@@ -225,7 +653,31 @@
     
 
     
+    <h5>Returns:</h5>
+    
+            
 
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        </dl>
     
 
     

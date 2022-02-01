@@ -82,7 +82,9 @@ const StackMixin = {
     emptyLink() {
         this._linkStack = new InstanceStack();
     },
-
+    /**
+     * 重置当前栈中对象的位置
+     */
     resetChildrenPosition() {
         this._stack.forEach(i => {
             i.anchor = [0,0]
@@ -164,11 +166,21 @@ const StackMixin = {
     //     this._tempStack = new InstanceStack();
     //     return temp;
     // }
+
+    /**
+     * 循环当前栈中节点
+     * @property {stackIteratorCallback} 循环访问栈中每个节点
+     */
     interateNodeStack(callback) {
         this._stack.forEach(instance => {
             callback(instance);
         })
     }   
+    /**
+    * 循环访问栈中每个节点
+    * @callback stackIteratorCallback
+    * @param {Node} instance 栈中节点
+    */
 }
 
 export default StackMixin;

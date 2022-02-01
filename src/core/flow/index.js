@@ -37,7 +37,7 @@ class JFlow extends EventTarget{
          * @property {number} padding       - 内边距
          */
         // TODO 引入 plugin 拓展
-        this.plugins = [];
+        // this.plugins = [];
         this.ctx = null;
         this.canvas = null;
         this.dpr = 1;
@@ -105,10 +105,14 @@ class JFlow extends EventTarget{
         this._tempInstance = null;
     }
 
-    use(plugin) {
-        this.plugins.push(plugin)
-    }
+    // use(plugin) {
+    //     this.plugins.push(plugin)
+    // }
 
+    /**
+     * 设置当前拖动的 JFlow 对象
+     * @param {Instance} instance - JFlow 对象
+     */
     setTempDraggingInstance(instance) {
         instance._belongs = this;
         this._tempInstance = instance;
@@ -119,6 +123,10 @@ class JFlow extends EventTarget{
         // this.addToStack(instance);
     }
 
+    /**
+     * 取消当前拖动的 JFlow 对象
+     * @return {number[]} point - JFlow 坐标
+     */
     removeTempDraggingInstance() {
         if(this._tempInstance) {
             // this.removeFromStack(this._tempInstance);
@@ -311,7 +319,13 @@ class JFlow extends EventTarget{
             stack = target._belongs._stack;
             belongs = target._belongs
         }
-        const targetLink = linkStack.checkHit(point);
+        const targetLink = linkStack.checkHit(point, (link) => {
+            if(!this._target.status.dragging) {
+                return false;
+            }
+            const movingtarget = this._getMovingTarget();
+            return link.from === movingtarget || link.to === movingtarget;
+        });
 
         Object.assign(this._target, {
             instance: target,
@@ -367,6 +381,14 @@ class JFlow extends EventTarget{
         if(this._dragOverTarget !== instance) {
             const target = this.readMessage()?.instance;
             if(instance) {
+                /**
+                * dragover 进入事件
+                * @event Instance#dragover
+                * @type {object}
+                * @property {Event} event           - 原始事件 
+                * @property {Object} instance       - dragover的对象 
+                * @property {target} target         - drag 携带的对象（特指从外面拖进canvas的对象） 
+                */
                 instance.dispatchEvent(new JFlowEvent('dragover', {
                     event,
                     instance,
@@ -375,6 +397,14 @@ class JFlow extends EventTarget{
             }
             if(this._dragOverTarget) {
                 const oldIns = this._dragOverTarget;
+                /**
+                * dragover 退出事件
+                * @event Instance#dragoverend
+                * @type {object}
+                * @property {Event} event           - 原始事件 
+                * @property {Object} instance       - dragover的对象 
+                * @property {target} target         - drag 携带的对象（特指从外面拖进canvas的对象） 
+                */
                 oldIns.dispatchEvent(new JFlowEvent('dragoverend', {
                     event,
                     instance: oldIns,
@@ -446,17 +476,17 @@ class JFlow extends EventTarget{
         } = this._target.cache;
         if(link) {   
             /**
-            * 丢在线上事件
-            *
-            * @event BaseLink#drop
-            * @type {object}
-            * @property {Event} event           - 原始事件 
-            * @property {Object} instance       - 拖动的对象 
-            * @property {BaseLink} link         - 目标连线 
-            * @property {JFlow} jflow           - 当前JFlow对象 
-            * @property {Group|JFlow} belongs   - 连线所在的绘图栈的对象
-            * @property {number[]} point        - 已经计算到绘图栈对应坐标系下的坐标
-            */
+             * 丢在线上事件
+             *
+             * @event BaseLink#drop
+             * @type {object}
+             * @property {Event} event           - 原始事件 
+             * @property {Object} instance       - 拖动的对象 
+             * @property {BaseLink} link         - 目标连线 
+             * @property {JFlow} jflow           - 当前JFlow对象 
+             * @property {Group|JFlow} belongs   - 连线所在的绘图栈的对象
+             * @property {number[]} point        - 已经计算到绘图栈对应坐标系下的坐标
+             */
             instance.anchor = point;
             link.dispatchEvent(new JFlowEvent('drop', {
                 event,
@@ -466,19 +496,18 @@ class JFlow extends EventTarget{
                 belongs,
                 point
             }))
-            // belongs.addInstanceToLink(link, instance)
         } else if(target) {
             /**
-            * 丢在节点上事件
-            *
-            * @event Node#drop
-            * @type {object}
-            * @property {Event} event           - 原始事件 
-            * @property {Object} instance       - 拖动的对象 
-            * @property {JFlow} jflow           - 当前JFlow对象 
-            * @property {Node} target           - 目标节点
-            * @property {number[]} point        - 已经计算到绘图栈对应坐标系下的坐标
-            */
+             * 丢在节点上事件
+             *
+             * @event Node#drop
+             * @type {object}
+             * @property {Event} event           - 原始事件 
+             * @property {Object} instance       - 拖动的对象 
+             * @property {JFlow} jflow           - 当前JFlow对象 
+             * @property {Node} target           - 目标节点
+             * @property {number[]} point        - 已经计算到绘图栈对应坐标系下的坐标
+             */
             target.dispatchEvent(new JFlowEvent('drop', {
                 event,
                 instance,
@@ -487,9 +516,6 @@ class JFlow extends EventTarget{
                 point
             }));
         } else {
-            // 丢在主图上
-            // instance.anchor = point;
-            // this.addToStack(instance);
             /**
             * 丢在主图上事件
             *
@@ -506,11 +532,6 @@ class JFlow extends EventTarget{
                 jflow: this,
                 target,
                 point,
-                // reflowCallback: (jflowinstance) => {
-                //     instance.anchor = point;
-                //     this.recalculate();
-                //     this.reflow();
-                // }
             }))
         }
         
@@ -560,6 +581,11 @@ class JFlow extends EventTarget{
 		this.position.y += pY * deltaHeight;
         this.position.offsetX = this.position.x - x * newScale;
         this.position.offsetY = this.position.y - y * newScale;
+        /**
+         * 缩放平移事件
+         *
+         * @event JFlow#zoompan
+        */
         this.dispatchEvent(new JFlowEvent('zoompan'));
         requestAnimationFrame(() => {
             this._render();
@@ -582,12 +608,12 @@ class JFlow extends EventTarget{
         if(this._target.moving) {
             const moving = this._getMovingTarget();
             /**
-             * 开始拖动对象事件
+             * 开始拖动组的事件（特指lock的顶层组）
              *
-             * @event Instance#pressStart
+             * @event Node#pressStart
              * @type {object}
              * @property {Event} event           - 原始事件 
-             * @property {Instance} instance       - 拖动的对象 
+             * @property {Node} instance       - 拖动的对象 
              * @property {JFlow} jflow           - 当前JFlow对象 
              */
             moving.dispatchEvent(new JFlowEvent('pressStart', {
@@ -598,6 +624,16 @@ class JFlow extends EventTarget{
         }
 
         if(this._target.instance) {
+            /**
+             * 开始拖动对象事件（就是目标对象的拖动事件，事件支持冒泡）
+             *
+             * @event Node#instancePressStart
+             * @type {object}
+             * @property {Event} event           - 原始事件 
+             * @property {Node} instance     - 拖动的对象 
+             * @property {JFlow} jflow           - 当前JFlow对象 
+             * @property {Boolean} bubbles       - 冒泡
+             */
             const t = this._target.instance;
             t.bubbleEvent(new JFlowEvent('instancePressStart', {
                 event,
@@ -617,6 +653,14 @@ class JFlow extends EventTarget{
         const { x, y } = this._target.meta;
 
         const { offsetX, offsetY, clientX, clientY } = event
+        /**
+         * canvas pressmove 原生事件
+         *
+         * @event JFlow#canvasmousemove
+         * @type {object}
+         * @property {Event} event           - 原始事件
+         * @property {JFlow} jflow           - 当前JFlow对象 
+         */
         this.dispatchEvent(new JFlowEvent('canvasmousemove', {
             event,
             jflow: this,
@@ -651,8 +695,9 @@ class JFlow extends EventTarget{
             this._recalculatePosition(deltaX, deltaY);    
             this.dispatchEvent(new JFlowEvent('zoompan'));
         }
-        const { instance } = this._targetLockOn([offsetX, offsetY]);
-        this._processDragOver(instance);
+        const { instance, link } = this._targetLockOn([offsetX, offsetY]);
+        // console.log(instance);
+        this._processDragOver(instance || link);
             
         // this._target.meta.x = offsetX;
         // this._target.meta.y = offsetY;
@@ -705,7 +750,7 @@ class JFlow extends EventTarget{
                 if(this._target.instance && !isDocument) {
                     const t = this._target.instance;
                     /**
-                    * 点击事件
+                    * 点击事件（冒泡）
                     *
                     * @event Node#click
                     * @type {object}
@@ -724,6 +769,14 @@ class JFlow extends EventTarget{
                     this._render();
                     return;
                 } else {
+                    /**
+                    * 点击事件
+                    *
+                    * @event JFlow#click
+                    * @type {object}
+                    * @property {Event} event          - 原始事件 
+                    * @property {JFlow} jflow          - 当前JFlow对象 
+                    */
                     this.dispatchEvent(new JFlowEvent('click', {
                         event,
                         jflow: this,
@@ -874,6 +927,17 @@ class JFlow extends EventTarget{
         const { topLayerPoint } = this._target.cache
         if(instance || link) {
             const target = (instance || link);
+            /**
+             * 右键事件（冒泡）
+             *
+             * @event instance#contextclick
+             * @type {object}
+             * @property {Event} event           - 原始事件 
+             * @property {Instance} target       - 右键对象 
+             * @property {JFlow} jflow           - 当前JFlow对象
+             * @property {number[]} topLayerPoint  - jflow坐标系上的位置
+             * @property {Boolean} bubbles       - 冒泡
+             */
             target.bubbleEvent(new JFlowEvent('contextclick', {
                 event,
                 jflow: this,
@@ -882,6 +946,15 @@ class JFlow extends EventTarget{
                 bubbles: true
             }));
         } else {
+            /**
+             * 右键事件
+             *
+             * @event JFlow#contextclick
+             * @type {object}
+             * @property {Event} event           - 原始事件 
+             * @property {JFlow} jflow           - 当前JFlow对象
+             * @property {number[]} topLayerPoint  - jflow坐标系上的位置
+             */
             this.dispatchEvent(new JFlowEvent('contextclick', {
                 event,
                 jflow: this,

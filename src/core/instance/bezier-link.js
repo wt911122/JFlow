@@ -11,11 +11,17 @@ class BezierLink extends BaseLink {
      /**
      * 创建贝塞尔曲线.
      * @param {Configs} configs - 配置
-     * @param {Boolean} configs.anticlock   - 进出方向反转
+     * @param {Number} configs.approximate   - 点击响应范围
+     * @param {Number} configs.minSpanX      - 起点终点在 x 方向最小的跨度
+     * @param {Number} configs.minSpanY      - 起点终点在 y 方向最小的跨度
+     * @param {number[]} configs.lineDash    - 虚线数组
+     * @param {Boolean} configs.doubleLink   - 双向箭头
+     * @param {String} configs.fontFamily    - 连线上的文字字体
+     * @param {Number} configs.fontSize      - 连线上的文字大小
+     * @param {String} configs.content       - 连线上的文字
      **/
     constructor(configs) {
         super(configs);
-        this.anticlock     = configs.anticlock;
         this.approximate   = configs.approximate || APPROXIMATE;
         this.minSpanX      = configs.minSpanX || 0;
         this.minSpanY      = configs.minSpanY || 0;
@@ -26,10 +32,7 @@ class BezierLink extends BaseLink {
         this.content       = configs.content || '';
 
     }
-    /**
-     * 根据当前状态获取颜色，当前单元是否被选中
-     * @return {String} 颜色
-     */
+    
     // getColor() {
     //     if(this._isTargeting) {
     //         return this.hoverStyle;

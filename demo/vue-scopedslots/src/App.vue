@@ -16,50 +16,48 @@
             @drop="onDrop"
             @pressEnd="onPressEnd">
                 <template #start="{ configs }">
-                    <j-start :node="{ name: configs.id }"></j-start>
+                    <j-start :node="configs"></j-start>
                 </template>
                 <template #end="{ configs }">
-                    <j-end :node="{ name: configs.id }"></j-end>
+                    <j-end :node="configs"></j-end>
                 </template>
                 <template #variable="{ configs, meta }">
-                    <j-variable :node="{ name: configs.id, content: configs.content }" 
+                    <j-variable :node="configs" 
                     @pressStart="onPressStart(configs)" 
                     @outOfFlow="onOutOfFlow($event, meta)"
                     @change="onChangeContent($event, configs)"></j-variable>
                 </template>
                 <template #IfStatement="{ configs, meta }">
-                    <j-ifstatement :node="{ name: configs.id, content: configs.content }" 
+                    <j-ifstatement :node="configs" 
                     @pressStart="onPressStart(configs)" 
                     @outOfFlow="onOutOfFlow($event, meta)"></j-ifstatement>
                 </template>
                 <template #SwitchStatement="{ configs, meta }" >
-                    <j-switch :node="{ name: configs.id, content: configs.id, cases: configs.cases }" 
+                    <j-switch :node="configs" 
                     @pressStart="onPressStart(configs)" 
                     @outOfFlow="onOutOfFlow($event, meta)"/>
                 </template>
                 <template #WhileStatement="{ configs, meta }">
-                    <j-whilestatement :node="{ name: configs.id, content: configs.content }" 
+                    <j-whilestatement :node="configs" 
                     @pressStart="onPressStart(configs)" 
                     @outOfFlow="onOutOfFlow($event, meta)"></j-whilestatement>
                 </template>
                 <template #endpoint="{ configs }">
-                    <j-endpoint :node="{ name: configs.id }"></j-endpoint>
+                    <j-endpoint :node="configs"></j-endpoint>
                 </template>
                 <template #CallLogic="{ configs, meta }" >
                     <j-calllogic 
-                        :node="{ name: configs.id, content: configs.content, params: configs.params, }"
+                        :node="configs"
                         @toggle-select="onToggleSelect($event, configs)"
                         @pressStart="onPressStart(configs)" 
                         @outOfFlow="onOutOfFlow($event, meta)">
                     </j-calllogic>
                 </template>
                 <template #plainlink="{ configs }">
-                    <jBezierLink
-                        :configs="configs"
-                        :from="configs.from"
-                        :to="configs.to"
+                    <instance-link
+                        :linkConfigs="configs"
                         @drop="onDropToLink($event, configs)">
-                    </jBezierLink>
+                    </instance-link>
                 </template>
         </j-jflow>
         <div ref="hoverblock" 
@@ -91,6 +89,7 @@ import endPoint from './components/endpoint.vue';
 import switchComp from './components/switch.vue'; 
 import whileComp from './components/whilestatement.vue';
 import CallLogicComp from './components/callLogic.vue';
+import instanceLink from './components/instance-link.vue';
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -128,6 +127,7 @@ export default {
         'j-ifstatement': ifStatement,
         'j-whilestatement': whileComp,
         'j-calllogic': CallLogicComp,
+        instanceLink,
     },
     data() {
         const ast = {
@@ -139,12 +139,6 @@ export default {
                     id: 'start',
                 }, 
                 {
-                    type: 'CallLogic',
-                    id: 'CallLogic1',
-                    content: '',
-                    params: [],
-                },
-              /*  {
                     type: 'IfStatement',
                     content: 'aaaa',
                     id: 'logic1',
@@ -231,7 +225,7 @@ export default {
                         //     id: 'whiel1body1',
                         // },
                     ]
-                },*/
+                },
                 {
                     type: 'end',
                     id: 'end',

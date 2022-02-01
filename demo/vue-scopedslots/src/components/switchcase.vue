@@ -1,13 +1,13 @@
 <template>
     <j-diamond-group
-        :name="node.name" 
+        :jflowId="node.id" 
         :configs="groupConfig"
         :rootLink="true"
         v-on="$listeners">
         <j-text :configs="{
             fontSize: '12px',
             textColor: '#585c63',
-            content: node.name,
+            content: node.content,
             lineHeight: 26,
         }"/>
     </j-diamond-group>
@@ -32,9 +32,6 @@ export default {
                 padding: 10,
                 borderWidth: 2,
                 borderRadius: 5,
-                hasShrink: false,
-                lock: true,
-                anchor: this.initialAnchor, 
             }
         }
     },

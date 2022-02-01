@@ -186,7 +186,7 @@ class Instance extends EventTarget{
         }
     }
     /**
-     * 事件冒泡
+     * 冒泡事件
      * @param {JFlowEvent} customEvent 自定义事件
      */
     bubbleEvent(customEvent){

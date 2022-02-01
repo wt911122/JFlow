@@ -27,7 +27,7 @@ export default function (nameNode) {
                 type: Boolean,
                 default: true,
             },
-            name: {
+            jflowId: {
                 type: String,
             }
         },
@@ -88,7 +88,7 @@ export default function (nameNode) {
             this._jflowInstance =  new bulder(this.configs);
             this._jflowInstance.visible = this.visible;
             this.bindListeners();
-            this.addToStack(this._jflowInstance, this.name);
+            this.addToStack(this._jflowInstance, this.jflowId);
         },
         // updated() {
         //     console.log('recalculateUp')

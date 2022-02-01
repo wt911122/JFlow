@@ -10,7 +10,6 @@ class Node extends Instance {
      * 创建节点.
      * @param {Configs} configs - 配置
      * @param {number[]} configs.anchor - 起始位置
-     * @param {number} configs.margin   - focus 状态下外层指示器的 margin
      */
     constructor(configs = {}) {
         super(configs);
@@ -18,7 +17,7 @@ class Node extends Instance {
         // for layout
         // this._intersections = [];
         this.anchor =   configs.anchor || [0, 0];
-        this.margin =   configs.margin || 5;    
+        // this.margin =   configs.margin || 5;
     }
 
     setConfig(configs) {
@@ -40,12 +39,8 @@ class Node extends Instance {
     //     }
     //     return interDir;
     // }
-    
-    /**
-     * 绘制 focus 状态下外层指示器
-     * @param {Context2d} ctx 
-     */
-    renderFocus(ctx) {
+
+    /* renderFocus(ctx) {
         const points = this.getBoundingRect();
         if(points.length !== 4) return;
         const margin = this.margin;
@@ -79,8 +74,12 @@ class Node extends Instance {
         ctx.lineTo(p3[0] - margin, p3[1] + margin - h);
         ctx.stroke();
         ctx.restore();
-    }
+    } */
 
+    /**
+     * 克隆当前节点.
+     * @return {Node} 当前节点的副本
+     */
     clone() {
         const C = this.constructor;
         const t = new C(this._rawConfigs);

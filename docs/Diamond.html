@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>JFlow Class: Node</title>
+	<title>JFlow Class: Diamond</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -100,16 +100,16 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: Node</h1>
+	<h1 class="page-title">Class: Diamond</h1>
 <section>
 
 <header>
     
         <h2>
-        Node
+        Diamond
         </h2>
         
-            <div class="class-description"><p>节点基类</p></div>
+            <div class="class-description"><p>菱形单元</p></div>
         
     
 </header>
@@ -121,7 +121,7 @@
         
 <hr>
 <dt>
-    <h4 class="name" id="Node"><span class="type-signature"></span>new Node(configs)</h4>
+    <h4 class="name" id="Diamond"><span class="type-signature"></span>new Diamond(configs)</h4>
     
     
 </dt>
@@ -129,7 +129,7 @@
 
     
     <div class="description">
-        <p>创建节点.</p>
+        <p>创建胶囊节点.</p>
     </div>
     
 
@@ -207,13 +207,13 @@
 
         <tr>
             
-                <td class="name"><code>anchor</code></td>
+                <td class="name"><code>width</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array.&lt;number></span>
+<span class="param-type">number</span>
 
 
 
@@ -224,7 +224,31 @@
 
             
 
-            <td class="description last"><p>起始位置</p></td>
+            <td class="description last"><p>宽</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>高</p></td>
         </tr>
 
     
@@ -305,7 +329,7 @@
 
 
     <ul>
-        <li><a href="Instance.html">Instance</a></li>
+        <li><a href="Node.html">Node</a></li>
     </ul>
 
 
@@ -410,7 +434,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#_isHit">Instance#_isHit</a>
+        <a href="Node.html#_isHit">Node#_isHit</a>
     </li></ul></dd>
     
 
@@ -533,7 +557,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#_isMoving">Instance#_isMoving</a>
+        <a href="Node.html#_isMoving">Node#_isMoving</a>
     </li></ul></dd>
     
 
@@ -656,7 +680,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#_isTargeting">Instance#_isTargeting</a>
+        <a href="Node.html#_isTargeting">Node#_isTargeting</a>
     </li></ul></dd>
     
 
@@ -781,7 +805,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#_jflow">Instance#_jflow</a>
+        <a href="Node.html#_jflow">Node#_jflow</a>
     </li></ul></dd>
     
 
@@ -855,7 +879,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#_layoutNode">Instance#_layoutNode</a>
+        <a href="Node.html#_layoutNode">Node#_layoutNode</a>
     </li></ul></dd>
     
 
@@ -1126,7 +1150,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#borderWidth">Instance#borderWidth</a>
+        <a href="Node.html#borderWidth">Node#borderWidth</a>
     </li></ul></dd>
     
 
@@ -1249,7 +1273,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#visible">Instance#visible</a>
+        <a href="Node.html#visible">Node#visible</a>
     </li></ul></dd>
     
 
@@ -1385,7 +1409,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#bubbleEvent">Instance#bubbleEvent</a>
+        <a href="Node.html#bubbleEvent">Node#bubbleEvent</a>
     </li></ul></dd>
     
 
@@ -1527,7 +1551,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#calculateToRealWorld">Instance#calculateToRealWorld</a>
+        <a href="Node.html#calculateToRealWorld">Node#calculateToRealWorld</a>
     </li></ul></dd>
     
 
@@ -1630,7 +1654,21 @@
 	
 
 	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Node.html#clone">Node#clone</a>
+			</li>
+		</ul>
+	</dd>
+	
 
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Node.html#clone">Node#clone</a>
+    </li></ul></dd>
     
 
     
@@ -1745,7 +1783,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#getBoundingDimension">Instance#getBoundingDimension</a>
+        <a href="Node.html#getBoundingDimension">Node#getBoundingDimension</a>
     </li></ul></dd>
     
 
@@ -1905,7 +1943,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#getBoundingRect">Instance#getBoundingRect</a>
+        <a href="Node.html#getBoundingRect">Node#getBoundingRect</a>
     </li></ul></dd>
     
 
@@ -2021,7 +2059,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#getCenter">Instance#getCenter</a>
+        <a href="Node.html#getCenter">Node#getCenter</a>
     </li></ul></dd>
     
 
@@ -2137,7 +2175,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#getIntersectionsInFourDimension">Instance#getIntersectionsInFourDimension</a>
+        <a href="Node.html#getIntersectionsInFourDimension">Node#getIntersectionsInFourDimension</a>
     </li></ul></dd>
     
 
@@ -2391,7 +2429,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#isHit">Instance#isHit</a>
+        <a href="Node.html#isHit">Node#isHit</a>
     </li></ul></dd>
     
 
@@ -2503,7 +2541,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#removeFromLayoutSource">Instance#removeFromLayoutSource</a>
+        <a href="Node.html#removeFromLayoutSource">Node#removeFromLayoutSource</a>
     </li></ul></dd>
     
 
@@ -2645,7 +2683,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#render">Instance#render</a>
+        <a href="Node.html#render">Node#render</a>
     </li></ul></dd>
     
 
@@ -2787,7 +2825,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#setConfig">Instance#setConfig</a>
+        <a href="Node.html#setConfig">Node#setConfig</a>
     </li></ul></dd>
     
 
@@ -3005,7 +3043,21 @@
 	
 
 	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Node.html#event:click">Node#event:click</a>
+			</li>
+		</ul>
+	</dd>
+	
 
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Node.html#event:click">Node#event:click</a>
+    </li></ul></dd>
     
 
     
@@ -3203,7 +3255,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#event:dragover">Instance#event:dragover</a>
+        <a href="Node.html#event:dragover">Node#event:dragover</a>
     </li></ul></dd>
     
 
@@ -3402,7 +3454,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#event:dragoverend">Instance#event:dragoverend</a>
+        <a href="Node.html#event:dragoverend">Node#event:dragoverend</a>
     </li></ul></dd>
     
 
@@ -3636,7 +3688,21 @@
 	
 
 	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Node.html#event:drop">Node#event:drop</a>
+			</li>
+		</ul>
+	</dd>
+	
 
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Node.html#event:drop">Node#event:drop</a>
+    </li></ul></dd>
     
 
     
@@ -3845,7 +3911,21 @@
 	
 
 	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Node.html#event:instancePressStart">Node#event:instancePressStart</a>
+			</li>
+		</ul>
+	</dd>
+	
 
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Node.html#event:instancePressStart">Node#event:instancePressStart</a>
+    </li></ul></dd>
     
 
     
@@ -3995,7 +4075,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#event:mouseenter">Instance#event:mouseenter</a>
+        <a href="Node.html#event:mouseenter">Node#event:mouseenter</a>
     </li></ul></dd>
     
 
@@ -4146,7 +4226,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#event:mouseleave">Instance#event:mouseleave</a>
+        <a href="Node.html#event:mouseleave">Node#event:mouseleave</a>
     </li></ul></dd>
     
 
@@ -4393,7 +4473,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Instance.html#event:pressEnd">Instance#event:pressEnd</a>
+        <a href="Node.html#event:pressEnd">Node#event:pressEnd</a>
     </li></ul></dd>
     
 
@@ -4579,7 +4659,21 @@
 	
 
 	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Node.html#event:pressStart">Node#event:pressStart</a>
+			</li>
+		</ul>
+	</dd>
+	
 
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Node.html#event:pressStart">Node#event:pressStart</a>
+    </li></ul></dd>
     
 
     

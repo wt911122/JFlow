@@ -1,16 +1,16 @@
 <template>
     <j-group 
-        :name="node.name" 
+        :jflowId="node.id" 
         :configs="configs"
         v-on="$listeners">
         <j-text :configs="{
             fontSize: '12px',
             textColor,
-            content: node.content,
+            content: node.id,
         }">
         </j-text>
         <template v-for="switchcase in node.cases">
-            <j-switchcase :node="{ content: switchcase.id, name: switchcase.id }" :key="switchcase.id" />
+            <j-switchcase :node="switchcase" :key="switchcase.id" />
         </template>
     </j-group>
 </template>
@@ -37,10 +37,6 @@ export default {
                 borderColor: '#517cff',
                 borderWidth: 2,
                 borderRadius: 5,
-                hoverStyle: 'transparent',
-                color: 'transparent',
-                hasShrink: false,
-                lock: true,
             }
         }
     }

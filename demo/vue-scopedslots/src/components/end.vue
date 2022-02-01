@@ -1,5 +1,5 @@
 <template>
-    <j-group :name="node.name" :configs="configs">
+    <j-group :jflowId="node.id" :configs="configs">
         <j-text :configs="{
             fontSize: '12px',
             textColor: '#000',
@@ -7,7 +7,7 @@
         }">
         </j-text>
         <j-rectangle :configs="{
-            color: '#FAAAAA',
+            backgroundColor: '#FAAAAA',
             width: 36,
             height: 36,
             borderRadius: 8,
@@ -36,10 +36,6 @@ export default {
                 }),
                 borderColor: 'transparent',
                 borderWidth: 0,
-                hoverStyle: 'translate',
-                color: 'transparent',
-                hasShrink: false,
-                lock: true,
             }
         }
     }

@@ -1,8 +1,8 @@
 <template>
     <j-point 
-        :name="node.name" 
+        :jflowId="node.id" 
         :configs="{
-            color: '#fff',
+            backgroundColor: '#fff',
             borderColor: '#000',
             borderWidth: 1,
             radius: 5,

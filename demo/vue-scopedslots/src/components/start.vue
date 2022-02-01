@@ -1,6 +1,6 @@
 <template>
     <j-group 
-        :name="node.name" 
+        :jflowId="node.id" 
         :configs="configs">
         <j-text ref="start" :configs="{
             fontSize: '12px',
@@ -9,7 +9,7 @@
         }">
         </j-text>
         <j-point :configs="{
-            color: '#99DBC5',
+            backgroundColor: '#99DBC5',
             radius: 20,
             borderColor: '#33B88C',
             borderWidth: 2,
@@ -32,15 +32,10 @@ export default {
             configs: {
                 layout: new LinearLayout({
                     direction: 'vertical',
-                    gap: 0,
+                    gap: 10,
                 }),
                 borderColor: 'transparent',
                 borderWidth: 0,
-                hoverStyle: 'transparent',
-                paddingBottom: 10,
-                color: 'transparent',
-                hasShrink: false,
-                lock: true,
             },
         }
     },

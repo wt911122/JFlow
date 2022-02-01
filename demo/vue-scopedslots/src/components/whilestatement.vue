@@ -1,12 +1,12 @@
 <template>
     <j-group
-        :name="node.name" 
+        :jflowId="node.id" 
         :configs="groupConfig"
         v-on="$listeners">
         <j-text :configs="{
             fontSize: '12px',
             textColor: '#585c63',
-            content: node.name,
+            content: node.content,
             lineHeight: 26,
             indent: 10,
         }"/>
@@ -29,8 +29,6 @@ export default {
                 borderColor: '#517cff',
                 borderWidth: 2,
                 borderRadius: 5,
-                hasShrink: false,
-                lock: true,
             }
         }
     },

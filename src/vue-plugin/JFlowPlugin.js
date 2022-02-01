@@ -1,5 +1,5 @@
 // import JFlowComponent from './components/JFlow';
-import JFlowComponent from './components-template/JFlow';
+import JFlowComponent from './components/JFlow';
 import JFlowInstance from './components/JFlowInstance';
 import JFlowLink from './components/JFlowLink';
 import JFLowGroup from './components/JFlowGroup';

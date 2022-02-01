@@ -28,13 +28,15 @@ class LinearLayout {
         /**
          * 通用样式属性
          * @property {string} direction     - 排列方向 默认 vertical
-         * @property {number} gap           - 边距
-         * @property {string} alignment     - 对齐方式 默认 center
+         * @property {number} gap           - 边距, 默认是 5
+         * @property {string} alignment     - 垂直排列方向对齐方式 默认 center
+         * @property {string} justify       - 排列方向对齐方式 默认 center
          */
         this.direction =     configs.direction || 'vertical';
         this.gap =           configs.gap ?? 5;
         this.alignment =     configs.alignment || 'center';
         this.justify =       configs.justify || 'center';
+        // this.widthSetByParent =  configs.width === '100%'
         this._rawConfigs = configs;
     }
 

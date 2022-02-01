@@ -14,7 +14,7 @@ const LayoutMixin = {
         this._layout = configs.layout;
     },
     /**
-     * 向上层递归重排
+     * 从当前层出发，向上层递归重排
      */
     recalculateUp() {
         let dirty = true;

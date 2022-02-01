@@ -1,12 +1,12 @@
 <template>
     <j-capsule-group
-        :name="node.name" 
+        :jflowId="node.id" 
         :configs="groupConfig"
         v-on="$listeners">
         <j-text :configs="{
             fontSize: '12px',
             textColor: '#585c63',
-            content: 'ifstatement' + node.name,
+            content: 'ifstatement ' + node.id,
             lineHeight: 26,
             indent: 10,
         }"/>
@@ -18,7 +18,6 @@ import { LinearLayout } from '@joskii/jflow';
 export default {
     props: {
         node: Object,
-        initialAnchor: Array,
     },
     computed: {
         groupConfig() {
@@ -32,9 +31,6 @@ export default {
                 shadowBlur: 15,
                 borderWidth: 2,
                 borderRadius: 5,
-                hasShrink: false,
-                lock: true,
-                anchor: this.initialAnchor, 
             }
         }
     },

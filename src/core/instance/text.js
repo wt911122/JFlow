@@ -17,6 +17,16 @@ function createInputElement() {
     return input;
 }
 /**
+ * 文字对齐方式
+ * @readonly
+ * @enum {string}
+ */
+const TEXT_ALIGN = {
+    CENTER: 'center',
+    LEFT: 'left',
+    RIGHT: 'right',    
+};
+/**
  * 文字对象
  * @description 可以绘制文字
  * @extends Rectangle
@@ -25,9 +35,16 @@ class Text extends Rectangle {
     /**
      * 创建一个文本对象
      * @param {Configs} configs - 配置
-     * @param {number} configs.lineHeight   - 行高
-     * @param {number} configs.indent   - 缩进
-     * @param {number} configs.editable   - 是否可编辑
+     * @param {String} configs.fontFamily    - 字体
+     * @param {Number} configs.fontSize      - 字号
+     * @param {String} configs.content       - 内容
+     * @param {String} configs.textColor     - 字体颜色
+     * @param {TEXT_ALIGN} configs.textAlign     - 文字对齐方式
+     * @param {String} configs.backgroundColor     - 背景颜色
+     * @param {number} configs.lineHeight    - 行高
+     * @param {number} configs.indent        - 缩进
+     * @param {number} configs.editable      - 是否可编辑
+     * @param {number} configs.minWidth      - 最小宽度
      **/
     constructor(configs) {
         super(configs);
@@ -36,7 +53,8 @@ class Text extends Rectangle {
         this.fontFamily =       configs.fontFamily = '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji'
         this.fontSize =         configs.fontSize || '28px';
         this.textColor =        configs.textColor || 'white';
-        this.textAlign =        configs.textAlign || 'center';
+        this.textAlign =        configs.textAlign || TEXT_ALIGN.CENTER;
+        console.log(this.textAlign)
         this.textBaseline =     configs.textBaseline || 'middle';
         this.lineHeight =       configs.lineHeight ;
         this.indent =           configs.indent || 0;
@@ -59,9 +77,9 @@ class Text extends Rectangle {
             this.addEventListener('click', (event) => {
                 let x;
                 const hw = this.width / 2;
-                if(this.textAlign === 'left'){
+                if(this.textAlign === TEXT_ALIGN.LEFT){
                     x = this.anchor[0] - hw + this.indent / 2;
-                } else if(this.textAlign === 'right') {
+                } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
                     x = this.anchor[0] + hw;
                 } else {
                     x = this.anchor[0] + this.indent / 2;
@@ -92,6 +110,14 @@ class Text extends Rectangle {
                         
                     } else {
                         const val = inputElement.value;
+                        /**
+                         * 文字改变事件
+                         * @event Text#change
+                         * @type {object}
+                         * @property {Text} target           - 当前文字对象 
+                         * @property {String} oldVal         - 原始文字 
+                         * @property {String} val            - 当前文字 
+                         */
                         this.dispatchEvent(new JFlowEvent('change', {
                             target: this,
                             oldVal,
@@ -201,10 +227,10 @@ class Text extends Rectangle {
         ctx.textAlign = this.textAlign;
         ctx.textBaseline = this.textBaseline;
         ctx.fillStyle = this.textColor;
-        if(this.textAlign === 'left'){
+        if(this.textAlign === TEXT_ALIGN.LEFT){
             const hw = this.width / 2;
             ctx.fillText(this.content, this.anchor[0] - hw + this.indent / 2, this.anchor[1]);
-        } else if(this.textAlign === 'right') {
+        } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
             const hw = this.width / 2;
             ctx.fillText(this.content, this.anchor[0] + hw, this.anchor[1]);
         } else {

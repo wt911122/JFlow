@@ -13,6 +13,7 @@ class BaseLink extends Instance{
      * @param {String} configs.fromDir  - 起始方向 
      * @param {String} configs.toDir    - 终止方向 
      * @param {String} configs.key      - 连线唯一键值
+     * @param {String} configs.backgroundColor    - 线条颜色 
      */
     constructor(configs = {}) {
         super();
