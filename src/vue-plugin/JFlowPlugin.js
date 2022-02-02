@@ -3,33 +3,113 @@ import JFlowComponent from './components/JFlow';
 import JFlowInstance from './components/JFlowInstance';
 import JFlowLink from './components/JFlowLink';
 import JFLowGroup from './components/JFlowGroup';
+ 
 const JFLOW_NODES = [
+    /**
+     * JFlow {@link Point} 的 vue 封装 
+     * @module j-point
+     * @property {Point~PointConfigs} configs - 传给 Point 的配置
+     * @property {Boolean} visible - 可见状态
+     * @property {String} jflowId - 全局唯一ID，用于连线单元
+     */
     'Point',
+    /**
+     * JFlow {@link Rectangle} 的 vue 封装 
+     * @module j-rectangle
+     * @property {Rectangle~RectangleConfigs} configs - 传给 Rectangle 的配置
+     * @property {Boolean} visible - 可见状态
+     * @property {String} jflowId - 全局唯一ID，用于连线单元
+     */
     'Rectangle',
+    /**
+     * JFlow {@link Capsule} 的 vue 封装 
+     * @module j-capsule
+     * @property {Capsule~CapsuleConfigs} configs - 传给 Capsule 的配置
+     * @property {Boolean} visible - 可见状态
+     * @property {String} jflowId - 全局唯一ID，用于连线单元
+     */
     'Capsule',
+    /**
+     * JFlow {@link Diamond} 的 vue 封装 
+     * @module j-diamond
+     * @property {Diamond~DiamondConfigs} configs - 传给 Diamond 的配置
+     * @property {Boolean} visible - 可见状态
+     * @property {String} jflowId - 全局唯一ID，用于连线单元
+     */
     'Diamond',
+    /**
+     * JFlow {@link Text} 的 vue 封装 
+     * @module j-text
+     * @property {Text~TextConfigs} configs - 传给 Text 的配置
+     * @property {Boolean} visible - 可见状态
+     * @property {String} jflowId - 全局唯一ID，用于连线单元
+     */
     'Text',
+    /**
+     * JFlow {@link Icon} 的 vue 封装 
+     * @module j-icon
+     * @property {Icon~IconConfigs} configs - 传给 Icon 的配置
+     * @property {Boolean} visible - 可见状态
+     * @property {String} jflowId - 全局唯一ID，用于连线单元
+     */
     'Icon',
 ];
+/**
+ * @typedef {BezierLink~Configs} j-bezier-link~Configs
+ * @property {String} from   - 起始单元 jflowId
+ * @property {String} to     - 终止单元 jflowId
+ */
 const JFLOW_LINKS = [
     'Link',
     'PolylineLink',
+    
+    /**
+     * JFlow {@link BezierLink} 的 vue 封装 
+     * @module j-bezier-link
+     * @property {j-bezier-link~Configs} configs - 传给 Icon 的配置
+     * @property {Boolean} visible - 可见状态
+     * @property {String} jflowId - 全局唯一ID，用于连线单元
+     */
     'BezierLink'
 ]
 const JFLOW_GROUPS = [
+    /**
+     * JFlow {@link CapsuleGroup} 的 vue 封装 
+     * @module j-capsule-group
+     * @property {CapsuleGroup~CapsuleGroupConfigs} configs - 传给 RectangleGroup 的配置
+     * @property {Boolean} visible - 可见状态
+     * @property {String}} jflowId - 全局唯一ID，用于连线单元
+     */
     'CapsuleGroup',
+    /**
+     * JFlow {@link DiamondGroup} 的 vue 封装 
+     * @module j-diamond-group
+     * @property {Diamond~DiamondConfigs} configs - 传给 RectangleGroup 的配置
+     * @property {Boolean} visible - 可见状态
+     * @property {String}} jflowId - 全局唯一ID，用于连线单元
+     */
     'DiamondGroup',
 ]
 
 const components = [
     {
+        /**
+         * JFlow {@link JFlow} 的 vue 封装 
+         * @module j-jflow
+         * @property {JFlow~JFlowConfigs} configs - 传给 JFlow 的配置
+         */
         name: 'Jflow',
         component: JFlowComponent,
     },
     {
+        /**
+         * JFlow {@link RectangleGroup} 的 vue 封装 
+         * @module j-group
+         * @property {RectangleGroup~RectangleGroupConfigs} configs - 传给 RectangleGroup 的配置
+         */
         name: 'Group',
         component: JFLowGroup('Group'),
-    },
+    }, 
     ...JFLOW_GROUPS.map(name => ({
         name,
         component: JFLowGroup(name)

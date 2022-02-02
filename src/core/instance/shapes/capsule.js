@@ -1,16 +1,18 @@
 import Node from '../node';
 import { DIRECTION, oppositeDirection } from '../../utils/constance';
 /**
+ * 胶囊单元 配置
+ * @typedef {Instance~Configs} Capsule~CapsuleConfigs
+ * @property {number} width  - 内部矩形宽
+ * @property {number} height - 内部矩形高
+ */
+/**
  * 胶囊单元
+ * @constructor Capsule
  * @extends Node
+ * @param {Capsule~CapsuleConfigs} configs - 配置
  */
 class Capsule extends Node {
-    /**
-     * 创建胶囊节点.
-     * @param {Configs} configs - 配置
-     * @param {number} configs.width - 宽
-     * @param {number} configs.height - 高
-     */
     constructor(configs = {}) {
         super(configs);
         this.type =             'Capsule';

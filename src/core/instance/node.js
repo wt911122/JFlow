@@ -3,14 +3,12 @@ import { nextDirection } from '../utils/constance';
 
 /**
  * 节点基类
+ * @constructor Node
  * @extends Instance
+ * @param {Instance~Configs} configs - 节点配置
+ * @param {Number[]} configs.anchor - 坐标
  */
 class Node extends Instance {
-    /**
-     * 创建节点.
-     * @param {Configs} configs - 配置
-     * @param {number[]} configs.anchor - 起始位置
-     */
     constructor(configs = {}) {
         super(configs);
         this._rawConfigs = configs;

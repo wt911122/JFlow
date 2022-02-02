@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev:demo": "cd demo/vue-scopedslots && npm run serve",
-    "build:jsdoc": "rm -rf docs && cd demo/vue-scopedslots && npm run build && cd ../../ && jsdoc -c conf.json -t ./node_modules/ink-docstrap/template -R README.md -r . && mv out docs"
+    "build:doc": "rm -rf docs && cd demo/vue-scopedslots && npm run build && cd ../../ && jsdoc -c conf.json -t ./node_modules/ink-docstrap/template -R README.md -r . && mv out docs",
+    "build:jsdoc": "rm -rf docs &&  jsdoc -c conf.json -t ./node_modules/ink-docstrap/template -R README.md -r . && mv out docs"
   },
   "author": "",
   "license": "ISC",

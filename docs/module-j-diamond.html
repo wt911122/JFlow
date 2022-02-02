@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>JFlow Class: InstanceStack</title>
+	<title>JFlow Module: j-diamond</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -100,17 +100,10 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: InstanceStack</h1>
+	<h1 class="page-title">Module: j-diamond</h1>
 <section>
 
 <header>
-    
-        <h2>
-        InstanceStack
-        </h2>
-        
-            <div class="class-description"><p>绘图栈</p></div>
-        
     
 </header>
 
@@ -119,133 +112,18 @@
     <div class="container-overview">
     
         
-<hr>
-<dt>
-    <h4 class="name" id="InstanceStack"><span class="type-signature"></span>new InstanceStack()</h4>
-    
-    
-</dt>
-<dd>
+            <div class="description"><p>JFlow <a href="Diamond.html">Diamond</a> 的 vue 封装</p></div>
+        
 
-    
-
-    
-
-    
-
-    
-    
-
-    
+        
 <dl class="details">
     
 
-	
+    <h5 class="subsection-title">Properties:</h5>
 
-	
+    <dl>
 
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-    
-    </div>
-
-    
-        <h3 class="subsection-title">Extends</h3>
-
-        
-
-
-    <ul>
-        <li>Array</li>
-    </ul>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        <dl>
-            
-<hr>
-<dt>
-    <h4 class="name" id="checkHit"><span class="type-signature"></span>checkHit(point, condition)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>碰撞检测</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
+<table class="props table table-striped">
     <thead>
     <tr>
         
@@ -267,13 +145,13 @@
 
         <tr>
             
-                <td class="name"><code>point</code></td>
+                <td class="name"><code>configs</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array.&lt;number></span>
+<span class="param-type"><a href="Diamond.html#~DiamondConfigs">Diamond~DiamondConfigs</a></span>
 
 
 
@@ -284,20 +162,20 @@
 
             
 
-            <td class="description last"><p>碰撞点</p></td>
+            <td class="description last"><p>传给 Diamond 的配置</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>condition</code></td>
+                <td class="name"><code>visible</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="InstanceStack.html#~InstanceFilter">InstanceStack~InstanceFilter</a></span>
+<span class="param-type">Boolean</span>
 
 
 
@@ -308,248 +186,20 @@
 
             
 
-            <td class="description last"><p>碰撞对象过滤条件</p></td>
+            <td class="description last"><p>可见状态</p></td>
         </tr>
 
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Instance.html">Instance</a></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="getBoundingRectPoints"><span class="type-signature"></span>getBoundingRectPoints()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>获取当前层栈的最小外接矩形</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <ul>
-<li>外接矩形坐标</li>
-</ul>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array.&lt;Array.&lt;number>></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="render"><span class="type-signature"></span>render(ctx)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>绘制当前栈</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
     
 
         <tr>
             
-                <td class="name"><code>ctx</code></td>
+                <td class="name"><code>jflowId</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Context2d</span>
+<span class="param-type">String</span>
 
 
 
@@ -560,17 +210,14 @@
 
             
 
-            <td class="description last"><p>canvas context2d</p></td>
+            <td class="description last"><p>全局唯一ID，用于连线单元</p></td>
         </tr>
 
     
     </tbody>
 </table>
+</dl>
 
-    
-
-    
-<dl class="details">
     
 
 	
@@ -609,133 +256,9 @@
 </dl>
 
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
         
-            
-<hr>
-<dt>
-    <h4 class="name" id="~InstanceFilter"><span class="type-signature">&lt;inner> </span>InstanceFilter(instance)</h4>
     
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>碰撞对象过滤条件</p>
     </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>instance</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Instance.html">Instance</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>当前对象</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
 
     
 
@@ -749,10 +272,6 @@
 
     
 
-    
-</dd>
-
-        </dl>
     
 
     

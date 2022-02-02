@@ -7,15 +7,20 @@ import MessageMixin from '../instance/messageMixin';
 import { setUniqueId, getUniqueId } from '../utils/functions';
 import JFlowEvent from '../events';
 /**
- * @typedef JflowConfigs
+ * @typedef JFlow~JFlowConfigs
  * @type {object}
  * @property {Boolean} allowDrop      - 是否允许 dragdrop
- * @property {Object} layout          - 布局对象
+ * @property {Number} maxZoom         - 最大缩放
+ * @property {Number} minZoom         - 最小缩放
  */
 
+/**
+ * @typedef {JFlowConfigs | LayoutMixin~LayoutConfigs} JFlow~JFlowLayoutConfigs
+ */
 /** 
  * JFlow 对象
  * JFlow 是 canvas 上面封装的一个顶层对象，具有处理事件和绘制的功能
+ * @constructor JFlow
  * @mixes LayoutMixin
  * @mixes StackMixin
  * @mixes MessageMixin
@@ -23,7 +28,7 @@ import JFlowEvent from '../events';
 class JFlow extends EventTarget{
     /**
      * 创建一个JFlow对象
-     * @param {JflowConfigs} configs - 配置项
+     * @param {JFlowLayoutConfigs} configs - 配置项
      */
     constructor(configs) {
         super();

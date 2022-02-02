@@ -1,17 +1,34 @@
 import Node from '../node';
 import { DIRECTION, oppositeDirection } from '../../utils/constance';
 /**
+ * 矩形单元 配置
+ * @typedef {Instance~Configs} Rectangle~RectangleConfigs
+ * @property {number} width - 宽
+ * @property {number} height - 高
+ * @property {number} borderRadius - 圆角矩形半径
+ * @property {string} borderColor - 边框颜色, 默认 transparent
+ * @property {string} borderWidth - 边框宽度, 默认 0
+ * @property {Object} border      - 边框设置
+ * @property {Object} border.top      - 上边框设置
+ * @property {string} border.top.borderColor - 边框颜色, 默认 transparent
+ * @property {number} border.top.borderWidth - 边框宽度, 默认 0
+ * @property {Object} border.right    - 右边框设置
+ * @property {string} border.right.borderColor - 边框颜色, 默认 transparent
+ * @property {number} border.right.borderWidth - 边框宽度, 默认 0
+ * @property {Object} border.bottom   - 下边框设置
+ * @property {string} border.bottom.borderColor - 边框颜色, 默认 transparent
+ * @property {number} border.bottom.borderWidth - 边框宽度, 默认 0
+ * @property {Object} border.left     - 左边框设置
+ * @property {string} border.left.borderColor - 边框颜色, 默认 transparent
+ * @property {number} border.left.borderWidth - 边框宽度, 默认 0
+ */
+/**
  * 矩形单元
+ * @constructor Rectangle
  * @extends Node
+ * @param {Rectangle~RectangleConfigs} configs
  */
 class Rectangle extends Node {
-    /**
-     * 创建矩形节点.
-     * @param {Configs} configs - 配置
-     * @param {number} configs.width - 宽
-     * @param {number} configs.height - 高
-     * @param {number} configs.borderRadius - 圆角矩形半径
-     */
     constructor(configs = {}) {
         super(configs);
         this.type =             'Rectangle';

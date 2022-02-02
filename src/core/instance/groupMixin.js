@@ -2,12 +2,26 @@ import StackMixin from './stackMixin';
 import LayoutMixin from './layoutMixin';
 import { bounding_box } from '../utils/functions';
 import { DIRECTION } from '../utils/constance';
+
 /**
- * @property {number} definedWidth     - 设定宽度 
- * @property {number} definedHeight    - 设定高度 
+ * Group mixin 配置
+ * @typedef {Object} GroupMixin~GroupConfigs
+ * @property {number} width             - 设定宽度 
+ * @property {number} minWidth          - 最小宽度 
+ * @property {number} height            - 设定高度 
  * @property {number} padding          - 内边距
- * @property {boolean} lock            - 布局锁定状态
+ * @property {number} paddingTop          - 内上边距
+ * @property {number} paddingRight         - 内右边距
+ * @property {number} paddingBottom        - 内下边距
+ * @property {number} paddingLeft          - 内左边距
+ * @property {boolean} lock            - 布局锁定状态 默认 true
  */
+
+ /**
+ * Group mixin 配置
+ * @typedef {GroupMixin~GroupConfigs | LayoutMixin~LayoutConfigs} GroupMixin~LayoutGroupConfigs
+ */
+
 /**
  * Group mixin 用于在形状上加上 Group 特性
  *
@@ -15,9 +29,14 @@ import { DIRECTION } from '../utils/constance';
  * @mixes LayoutMixin
  * @mixes StackMixin
  */
+ 
 const GroupMixin = {
     ...StackMixin,
     ...LayoutMixin,
+    /**
+     * 配置 mixin
+     * @param {GroupMixin~LayoutGroupConfigs} configs - 配置 Group
+     */
     initGroup(configs) {
         this.initStack(configs);
         this.initLayout(configs);

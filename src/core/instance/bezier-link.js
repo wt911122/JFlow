@@ -2,23 +2,28 @@ import BaseLink from './base-link';
 import { bezierPoints, distToBezierSegmentSquared, getBezierAngle } from '../utils/functions';
 import { APPROXIMATE } from '../utils/constance';
 import { dist2, bezierPoint } from '../utils/functions';
+const PIINRATIO = Math.PI / 180
+/**
+ * @typedef {BaseLink~Configs} BezierLink~Configs
+ * @property {Number} approximate   - 点击响应范围
+ * @property {Number} minSpanX      - 起点终点在 x 方向最小的跨度
+ * @property {Number} minSpanY      - 起点终点在 y 方向最小的跨度
+ * @property {number[]} lineDash    - 虚线数组
+ * @property {Boolean} doubleLink   - 双向箭头
+ * @property {String} fontFamily    - 连线上的文字字体
+ * @property {Number} fontSize      - 连线上的文字大小
+ * @property {String} content       - 连线上的文字
+ */
 /**
  * 贝塞尔曲线
+ * @constructor BezierLink
  * @extends BaseLink
+ * @param {BezierLink~Configs} configs - 配置
  */
-const PIINRATIO = Math.PI / 180
 class BezierLink extends BaseLink {
      /**
      * 创建贝塞尔曲线.
-     * @param {Configs} configs - 配置
-     * @param {Number} configs.approximate   - 点击响应范围
-     * @param {Number} configs.minSpanX      - 起点终点在 x 方向最小的跨度
-     * @param {Number} configs.minSpanY      - 起点终点在 y 方向最小的跨度
-     * @param {number[]} configs.lineDash    - 虚线数组
-     * @param {Boolean} configs.doubleLink   - 双向箭头
-     * @param {String} configs.fontFamily    - 连线上的文字字体
-     * @param {Number} configs.fontSize      - 连线上的文字大小
-     * @param {String} configs.content       - 连线上的文字
+     * @param {BezierLink~Configs} configs - 配置
      **/
     constructor(configs) {
         super(configs);

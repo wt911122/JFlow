@@ -4,14 +4,6 @@ export default function (nameNode) {
     const bulder =  typeof nameNode === 'string' 
         ? JFlowInstance[nameNode] 
         : nameNode;
-    /**
-    * JFlow {@link Group} 的 vue 封装 
-    * @vue-prop {GroupConfigs} configs - 传给 Group 的配置
-    * @vue-event {drop} dropEvent -  {@link Group#event:drop} 事件
-    * @vue-event {pressEnd} pressEndEvent - {@link Group#event:pressEnd} 事件
-    * @vue-event {click} click - {@link Group#event:click} 事件
-    * @vue-event {pressStart} pressStartEvent - {@link Group#event:pressStart} 事件
-    */
     return {
         mixins: [StackMixin],
         inject: {
@@ -105,14 +97,5 @@ export default function (nameNode) {
         destroyed() {
             this.removeFromBelongStack(this._jflowInstance);
         },
-        // methods: {
-        //     reflow() {
-        //         // this._jflowInstance._getBoundingGroupRect();
-        //         // console.log(this._jflowInstance.width);
-        //         // this._jflowInstance.recalulate();
-        //         this._jflowInstance.recalculateUp();
-        //         this._jflowInstance._jflow._render();
-        //     }
-        // }
     }
 }

@@ -40,14 +40,14 @@ class InstanceStack extends Array {
 
     /**
      * 碰撞对象过滤条件
-     * @name InstanceFilter
+     * @name InstanceStack~InstanceFilter
      * @function
      * @param {Instance} instance - 当前对象
     */
     /**
      * 碰撞检测
      * @param {number[]} point - 碰撞点
-     * @param {InstanceFilter} condition - 碰撞对象过滤条件
+     * @param {InstanceStack~InstanceFilter} condition - 碰撞对象过滤条件
      * @return {Instance}
      */
     checkHit(point, condition){

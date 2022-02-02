@@ -3,7 +3,7 @@ import { nextDirection } from '../utils/constance';
 const margin = 5;
 const ishitKey = Symbol('ishit');
 /**
- * @typedef Configs
+ * @typedef Instance~Configs
  * @type {object}
  * @property {number} borderWidth      - 边的宽度 默认是 2
  * @property {string} borderColor      - 边框颜色 默认 black
@@ -14,12 +14,13 @@ const ishitKey = Symbol('ishit');
  * @property {string} shadowOffsetX    - 阴影偏移 Y
  */
 
-/** 图中的最小单元 */
+/** 
+ * 图中的最小单元
+ * @constructor Instance
+ * @extends EventTarget
+ * @param {Instance~Configs} configs - 最小单元的一些通用属性配置
+ */
 class Instance extends EventTarget{
-    /**
-     * 创建一个最小单元.
-     * @param {Configs} configs - 最小单元的一些通用属性配置
-     */
     constructor(configs = {}) {
         super();
         Object.assign(this, configs);

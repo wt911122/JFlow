@@ -52,13 +52,6 @@ const scale = window.devicePixelRatio;
 caheCanvasctx.scale(scale, scale);
 
 /**
- * 对象绘制
- * @name render
- * @function
- * @param {Context2d} ctx - 绘图对象
-*/
-
-/**
  * 在离线canvas上绘制元素
  * @param  {render} render - 绘图函数
  */

@@ -1,18 +1,24 @@
 import Rectangle from './rectangle';
 import GroupMixin from '../groupMixin';
 
+ /**
+ * 矩形组单元配置
+ * @typedef {GroupMixin~LayoutGroupConfigs | Rectangle~RectangleConfigs} RectangleGroup~RectangleGroupConfigs
+ */
+
 /**
  * 矩形组单元
  * @description 组单元包含绘图栈，能够包裹内部单元，具有独立的坐标系，目前为中心对齐的坐标系
- * @extends Rectangle
+ * @constructor RectangleGroup
+ * @param {RectangleGroup~RectangleGroupConfigs} configs
  * @mixes GroupMixin
+ * @extends Rectangle
  */
 class RectangleGroup extends Rectangle {
     constructor(configs) {
         super(configs)
         this.initGroup(configs);
     }
-
 
     render(ctx) {
         this.renderGroup(ctx, () => {

@@ -1,11 +1,5 @@
 import JFlow from '../../core/flow';
 import StackMixin from './StackMixin';
-/**
- * JFlow {@link JFlow} 的 vue 封装 
- * @vue-prop {JflowConfigs} configs - 传给 JFlow 的配置
- * @vue-event {drop} dropEvent - 同 JFlow 上的 {@link JFlow#event:drop} 事件
- * @vue-event {pressEnd} pressEndEvent- 同 JFlow 上的 {@link JFlow#event:pressEnd} 事件
- */
 export default {
     mixins: [StackMixin],
     provide(){
@@ -109,12 +103,12 @@ export default {
     methods: {
         /**
          * 绘制之前，vnode渲染之后
-         * @name preCallback
+         * @name j-jflow~preCallback
          * @function
          */
         /**
          * 重排
-         * @param {preCallback} preCallback - JFlow 绘制之前，vnode渲染之后
+         * @param {j-jflow~preCallback} preCallback - JFlow 绘制之前，vnode渲染之后
          */
         reflow(preCallback) {
             const layoutNodes = this._jflowInstance._layout.flowStack.map(meta => {

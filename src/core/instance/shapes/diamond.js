@@ -2,16 +2,19 @@ import Node from '../node';
 import { DIRECTION, oppositeDirection } from '../../utils/constance';
 import { makeBezierPoints } from '../../utils/functions';
 /**
- * 菱形单元
+ * 钻石形单元 配置
+ * @typedef {Instance~Configs} Diamond~DiamondConfigs
+ * @property {number} width  - 内部矩形宽
+ * @property {number} height - 内部矩形高
+ * @property {number} side   - 两侧三角形的宽
+ */
+/**
+ * 钻石形单元
+ * @constructor Diamond
+ * @param {Diamond~DiamondConfigs} configs - 配置
  * @extends Node
  */
 class Diamond extends Node {
-    /**
-     * 创建胶囊节点.
-     * @param {Configs} configs - 配置
-     * @param {number} configs.width - 宽
-     * @param {number} configs.height - 高
-     */
     constructor(configs = {}) {
         super(configs);
         this.type =             'Capsule';

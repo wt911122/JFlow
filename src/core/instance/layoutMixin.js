@@ -1,4 +1,9 @@
 /**
+ * Layout mixin 配置
+ * @typedef {Object} LayoutMixin~LayoutConfigs
+ * @property {Layout} layout             - 布局对象 
+ */
+/**
  * 布局 mixin 用于注册和方便控制布局
  *
  * @mixin
@@ -8,7 +13,7 @@ const LayoutMixin = {
     // _reflowed: false,
     /**
      * 初始化布局
-     * @param {JflowConfigs} configs - 配置
+     * @param {LayoutMixin~LayoutConfigs} configs - 配置
      */
     initLayout(configs) {
         this._layout = configs.layout;

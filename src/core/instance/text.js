@@ -27,25 +27,27 @@ const TEXT_ALIGN = {
     RIGHT: 'right',    
 };
 /**
+ * 文字单元 配置
+ * @typedef {Rectangle~RectangleConfigs} Text~TextConfigs
+ * @property {String} fontFamily    - 字体
+ * @property {Number} fontSize      - 字号
+ * @property {String} content       - 内容
+ * @property {String} textColor     - 字体颜色
+ * @property {TEXT_ALIGN} textAlign     - 文字对齐方式
+ * @property {String} backgroundColor     - 背景颜色
+ * @property {number} lineHeight    - 行高
+ * @property {number} indent        - 缩进
+ * @property {number} editable      - 是否可编辑
+ * @property {number} minWidth      - 最小宽度
+ */
+/**
  * 文字对象
  * @description 可以绘制文字
+ * @constructor Text
  * @extends Rectangle
+ * @param {Text~TextConfigs} configs - 配置
  */
 class Text extends Rectangle {
-    /**
-     * 创建一个文本对象
-     * @param {Configs} configs - 配置
-     * @param {String} configs.fontFamily    - 字体
-     * @param {Number} configs.fontSize      - 字号
-     * @param {String} configs.content       - 内容
-     * @param {String} configs.textColor     - 字体颜色
-     * @param {TEXT_ALIGN} configs.textAlign     - 文字对齐方式
-     * @param {String} configs.backgroundColor     - 背景颜色
-     * @param {number} configs.lineHeight    - 行高
-     * @param {number} configs.indent        - 缩进
-     * @param {number} configs.editable      - 是否可编辑
-     * @param {number} configs.minWidth      - 最小宽度
-     **/
     constructor(configs) {
         super(configs);
         this.type =             'Text';

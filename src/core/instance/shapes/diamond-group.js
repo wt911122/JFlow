@@ -2,9 +2,16 @@ import Diamond from './diamond';
 import GroupMixin from '../groupMixin';
 import { bounding_box } from '../../utils/functions';
 const backsqrt3 = 1/Math.sqrt(3)
+
+ /**
+ * 钻石形组单元配置
+ * @typedef {GroupMixin~LayoutGroupConfigs | Diamond~DiamondConfigs } DiamondGroup~DiamondGroupConfigs
+ */
 /**
  * 钻石形组单元
  * @description 组单元包含绘图栈，能够包裹内部单元，具有独立的坐标系，目前为中心对齐的坐标系
+ * @constructor DiamondGroup
+ * @param {DiamondGroup~DiamondGroupConfigs} configs - 配置
  * @extends Diamond
  * @mixes GroupMixin
  */
