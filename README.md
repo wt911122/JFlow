@@ -21,12 +21,12 @@ const rectangle = new Rectangle({
     anchor: [0, 0],
     width: 30,
     height: 40,
-    color: '#99dbc5'
+    backgroundColor: '#99dbc5'
 })
 const circle = new Point({
     anchor: [0, 0],
     radius: 10,
-    color: '#faaaaa'
+    backgroundColor: '#faaaaa'
 })
 circle.addEventListener('mouseenter', () => {
     circle.color = 'green'
@@ -43,6 +43,7 @@ const group = new Group({
 });
 group.addToStack(rectangle);
 group.addToStack(circle);
+group.recalculate();
 jflow.addToStack(group)
 
 jflow.$mount(someElement);
@@ -73,7 +74,6 @@ Vue.use(JFlowVuePlugin, {
             @mouseleave="onMouseLeave" 
             :configs="configs">
             <j-text ref="start" :configs="{
-                font: '12px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji',
                 textColor,
                 content: '开始',
             }">
@@ -95,12 +95,6 @@ export default {
                     direction: 'vertical',
                     gap: 0,
                 }),
-                borderColor: 'transparent',
-                borderWidth: 0,
-                hoverStyle: 'transparent',
-                color: 'transparent',
-                hasShrink: false,
-                lock: true,
             }
         }
     },

@@ -47,7 +47,6 @@ const GroupMixin = {
             bottom: configs.paddingBottom || configs.padding || 0,
             left: configs.paddingLeft || configs.padding || 0,
         };
-        console.log(this.padding)
         this.definedWidth =     configs.width;
         this.minWidth =         configs.minWidth;
         this.definedHeight =    configs.height;

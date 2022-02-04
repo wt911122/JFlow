@@ -1,9 +1,9 @@
 {
-    "plugins": ["plugins/markdown", "node_modules/jsdoc-vuejs"],
+    "plugins": ["plugins/markdown", "node_modules/jsdoc-vuejs", "./jsdoc-plugin/er.js"],
     "recurseDepth": 10,
     "source": {
         "includePattern": ".+\\.js(doc|x)?$",
-        "excludePattern": "node_modules"
+        "excludePattern": "node_modules|jsdoc-plugin|demo"
     },
     "sourceType": "module",
     "tags": {
@@ -12,10 +12,13 @@
     "templates": {
         "cleverLinks": false,
         "monospaceLinks": false,
+        "copyright": "JFlow Copyright © 2021-2022 The contributors to the JFlow and JFlow projects.",
         "default": {
           "staticFiles": {
             "include": [
-                "./demo/vue-scopedslots/dist"
+                "./demo/vue-scopedslots/dist",
+                "./jsdoc-plugin/dist/ergraphbundle.js"
+                
             ]
           }
         },

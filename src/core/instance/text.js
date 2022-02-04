@@ -56,7 +56,6 @@ class Text extends Rectangle {
         this.fontSize =         configs.fontSize || '28px';
         this.textColor =        configs.textColor || 'white';
         this.textAlign =        configs.textAlign || TEXT_ALIGN.CENTER;
-        console.log(this.textAlign)
         this.textBaseline =     configs.textBaseline || 'middle';
         this.lineHeight =       configs.lineHeight ;
         this.indent =           configs.indent || 0;
