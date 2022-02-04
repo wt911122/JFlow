@@ -78,7 +78,7 @@ const JFLOW_GROUPS = [
      * @module j-capsule-group
      * @property {CapsuleGroup~CapsuleGroupConfigs} configs - 传给 RectangleGroup 的配置
      * @property {Boolean} visible - 可见状态
-     * @property {String}} jflowId - 全局唯一ID，用于连线单元
+     * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
     'CapsuleGroup',
     /**
@@ -86,7 +86,7 @@ const JFLOW_GROUPS = [
      * @module j-diamond-group
      * @property {Diamond~DiamondConfigs} configs - 传给 RectangleGroup 的配置
      * @property {Boolean} visible - 可见状态
-     * @property {String}} jflowId - 全局唯一ID，用于连线单元
+     * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
     'DiamondGroup',
 ]
