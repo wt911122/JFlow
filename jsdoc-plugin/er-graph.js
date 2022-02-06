@@ -1,22 +1,102 @@
 import erLayout from './erlayout';
-import JFlow, { Group, Text, BezierLink } from '../src/core/flow';
+import JFlow, { Group, Text, BezierLink, LinearLayout } from '../src/core/flow';
 function renderNode(erNode) {
-    const textContent = new Text({
+    const className = new Text({
         content: erNode.id,
         textColor: '#EB6864'
     });
     const wrapper = new Group({
-        padding: 15,
+        layout: new LinearLayout({
+            direction: 'vertical',
+            gap: 0,
+        }),
         borderRadius: 8,
         borderColor: '#EB6864',
         borderWidth: 2,
     });
-    erNode.getJflowInstance = () => wrapper;
-    wrapper.addToStack(textContent);
-    wrapper.recalculate();
-    wrapper.addEventListener('click', () => {
+    if(erNode.source.module) {
+        const moduleName = new Text({
+            content: erNode.source.module.name,
+            textColor: '#EB6864'
+        });
+        const td1 = new Group({
+            padding: 15,
+            border: {
+                right: {
+                    borderWidth: 2,
+                    borderColor: '#EB6864',
+                }
+            }
+        });
+        const td2 = new Group({
+            padding: 15,
+        });
+        td1.addToStack(className);
+        td1.recalculate();
+        console.log(td1.height);
+        td2.addToStack(moduleName);
+        td2.recalculate();
+        console.log(td2.height)
 
-    })
+        const w2 = new Group({
+            layout: new LinearLayout({
+                direction: 'horizontal',
+                gap: 0,
+            }),
+        });
+        w2.addToStack(td1);
+        w2.addToStack(td2);
+        w2.recalculate();
+        console.log(w2.height)
+        
+        wrapper.addToStack(w2);
+        const w3 = new Group({
+            padding: 15
+        })
+        const configName = new Text({
+            content: erNode.source.configName,
+            textColor: '#EB6864'
+        });
+        w3.addToStack(configName);
+        w3.recalculate();
+        if(w2.width > w3.width) {
+            w2.setConfig({
+                border: {
+                    bottom: {
+                        borderWidth: 2,
+                        borderColor: '#EB6864',
+                    }
+                }
+            })
+        } else {
+            w3.setConfig({
+                border: {
+                    top: {
+                        borderWidth: 2,
+                        borderColor: '#EB6864',
+                    }
+                }
+            })
+        }
+        wrapper.addToStack(w3)
+        wrapper.recalculate();
+        console.log(erNode.id, wrapper.height)
+    } else {
+        wrapper.addToStack(className);
+        wrapper.setConfig({
+            padding: 15,
+            borderRadius: 8,
+            borderColor: '#EB6864',
+            borderWidth: 2,
+        })
+        wrapper.recalculate();
+        console.log(erNode.id, wrapper.height)
+    }
+    wrapper._ERnode = erNode;
+    erNode.getJflowInstance = () => wrapper;
+    // wrapper.addEventListener('click', () => {
+
+    // })
     return wrapper;
 }
 
@@ -24,9 +104,10 @@ function renderLink(linkmeta) {
     const meta = linkmeta.meta;
     const link = new BezierLink({
         content: linkmeta.part,
-        from: meta.from.getJflowInstance(),
-        to: meta.to.getJflowInstance(),
+        to: meta.from.getJflowInstance(),
+        from: meta.to.getJflowInstance(),
         backgroundColor: '#EB6864',
+        fontSize: '16px'
     });
     return link;
 }

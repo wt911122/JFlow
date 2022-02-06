@@ -23,27 +23,55 @@ module.exports = {
             const classes = [];
             const mixins = [];
             const interfaces = [];
+            const modules = [];
             let erDiagram;
             Object.keys(documented).forEach(name => {
                 const doclet = documented[name][0];
                 if(doclet.kind === 'class') {
-                    classes.push({
-                        name: doclet.name,
-                        extends: doclet.augments ? doclet.augments[0] : undefined,
-                        mixins: doclet.mixes,
-                        implements: doclet.implements ? doclet.implements[0] : undefined,
-                    })
+                    //const configs = documented[`${doclet.name}~${doclet.name}Configs`]
+                    let configName;
+                    if(doclet.params) {
+                        const configDoclet = doclet.params.find(p => p.name === 'configs');
+                        configName = configDoclet.type.names[0];
+                    }
+                    // if(configName) {
+                        classes.push({
+                            name: doclet.name,
+                            extends: doclet.augments ? doclet.augments[0] : undefined,
+                            mixins: doclet.mixes,
+                            implements: doclet.implements ? doclet.implements[0] : undefined,
+                            configName,
+                            kind: 'class'
+                        })
+                    // }
+                }
+
+                if(doclet.kind === 'module') {
+                    let configName;
+                    if(doclet.properties) {
+                        const configDoclet = doclet.properties.find(p => p.name === 'configs');
+                        configName = configDoclet.type.names[0];
+                    }
+                    if(configName) {
+                        modules.push({
+                            name: doclet.name,
+                            configName,
+                            kind: 'module'
+                        })
+                    }
                 }
 
                 if(doclet.kind === 'mixin') {
                     mixins.push({
                         name: doclet.name,
                         mixins: doclet.mixes,
+                        kind: 'mixin'
                     })
                 }
                 if(doclet.kind === 'interface') {
                     interfaces.push({
                         name: doclet.name,
+                        kind: 'interface'
                     })
                 }
                 if(doclet._isERDiagram) {
@@ -51,6 +79,13 @@ module.exports = {
                 }
             });
 
+            modules.forEach(m => {
+                classes.forEach(c => {
+                    if(m.configName === c.configName) {
+                        c.module = m;
+                    }
+                });
+            })
         
             const diagram = [...classes, ...mixins, ...interfaces];
             erDiagram.description = render(diagram);

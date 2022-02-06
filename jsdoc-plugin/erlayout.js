@@ -85,23 +85,25 @@ class ERLayout {
                 })
             })
         });
+        const levelMapping = {};
         const roots = nodes.filter(n => n.linkIn === 0);
         function iterateNodes(ns, level = 0) {
+            if(!levelMapping[level]) {
+                levelMapping[level] = [];
+            }
             const nextLevel = level + 1;
             ns.forEach(n => {
+                const index = levelMapping[n.level].findIndex(node => node === n);
+                ~index && levelMapping[n.level].splice(index, 1);
                 n.level = Math.max(level, n.level);
+                levelMapping[n.level].push(n);
                 iterateNodes(n.linkOutArr, nextLevel);
             });
         }
         iterateNodes(roots);
-
-        const levelMapping = {};
-        nodes.forEach(node => {
-            if(!levelMapping[node.level]) {
-                levelMapping[node.level] = [];
-            }
-            levelMapping[node.level].push(node);
-        });
+        // nodes.forEach(node => {
+        //     levelMapping[node.level].push(node);
+        // });
         this.levelMapping = levelMapping;
     }
 
@@ -110,17 +112,21 @@ class ERLayout {
         const nodes = this.flowStack;
         let reduceWidth = 0;
         Object.keys(this.levelMapping)
-            .sort((a, b) => (+a) - (+b))
+            .sort((a, b) => (+b) - (+a))
             .forEach(key => {
                 const levelNodes = this.levelMapping[key];
                 let columnWidth = 0;
                 let columnHeight = 0;
-                levelNodes.forEach(erNode => {
+                levelNodes.forEach((erNode, idx) => {
                     const instance = erNode.getJflowInstance();
                     const { width, height } = instance.getBoundingDimension();
                     columnWidth = Math.max(width, columnWidth);
+                    if(idx > 0) {
+                        columnHeight += height/2
+                    }
                     instance.anchor[1] = columnHeight;
-                    columnHeight += height + 20;
+                    columnHeight += (height/2 + 40);
+                    
                 });
                 columnHeight -= 20;
                 const h = columnHeight/2;
@@ -128,6 +134,7 @@ class ERLayout {
                     const instance = erNode.getJflowInstance();
                     instance.anchor[0] = reduceWidth;
                     instance.anchor[1] -= h;
+                    console.log(instance._ERnode.id, instance.anchor[1])
                 });
 
                 reduceWidth += columnWidth + 150;

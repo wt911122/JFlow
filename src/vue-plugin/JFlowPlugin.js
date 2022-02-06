@@ -66,7 +66,7 @@ const JFLOW_LINKS = [
     /**
      * JFlow {@link BezierLink} 的 vue 封装 
      * @module j-bezier-link
-     * @property {j-bezier-link~Configs} configs - 传给 Icon 的配置
+     * @property {j-bezier-link~Configs} configs - 传给 BezierLink 的配置
      * @property {Boolean} visible - 可见状态
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
@@ -76,7 +76,7 @@ const JFLOW_GROUPS = [
     /**
      * JFlow {@link CapsuleGroup} 的 vue 封装 
      * @module j-capsule-group
-     * @property {CapsuleGroup~CapsuleGroupConfigs} configs - 传给 RectangleGroup 的配置
+     * @property {CapsuleGroup~CapsuleGroupConfigs} configs - 传给 CapsuleGroup 的配置
      * @property {Boolean} visible - 可见状态
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
@@ -84,7 +84,7 @@ const JFLOW_GROUPS = [
     /**
      * JFlow {@link DiamondGroup} 的 vue 封装 
      * @module j-diamond-group
-     * @property {Diamond~DiamondConfigs} configs - 传给 RectangleGroup 的配置
+     * @property {DiamondGroup~DiamondGroupConfigs} configs - 传给 DiamondGroup 的配置
      * @property {Boolean} visible - 可见状态
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
