@@ -105,18 +105,21 @@ class Diamond extends Node {
     }
 
     isHit(point) {
-        const points = this._cachePoints;
-        const [x, y] = point;
-        let inside = false;
-        var len = points.length/2;
-        for (var i = 0, j = len - 1; i < len; j = i++) {
-            var xi = points[i*2+0], yi = points[i*2+1];
-            var xj = points[j*2+0], yj = points[j*2+1];
-            var intersect = ((yi > y) !== (yj > y))
-                && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-            if (intersect) inside = !inside;
+        const polygon = this._cachePoints;
+        let odd = false;
+        // For each edge (In this case for each point of the polygon and the previous one)
+        for (let i = 0, j = polygon.length - 1; i < polygon.length; i++) {
+            // If a line from the point into infinity crosses this edge
+            if (((polygon[i][1] > point[1]) !== (polygon[j][1] > point[1])) // One point needs to be above, one below our y coordinate
+                // ...and the edge doesn't cross our Y corrdinate before our x coordinate (but between our x coordinate and infinity)
+                && (point[0] < ((polygon[j][0] - polygon[i][0]) * (point[1] - polygon[i][1]) / (polygon[j][1] - polygon[i][1]) + polygon[i][0]))) {
+                // Invert odd
+                odd = !odd;
+            }
+            j = i;
+
         }
-        return inside;
+        return odd;
     }
 
     getBoundingRect() {
