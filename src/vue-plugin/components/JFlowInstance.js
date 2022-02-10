@@ -23,10 +23,12 @@ export default function (nameNode) {
         },
         watch: {
             configs(val, oldVal) {
-                if(JSON.stringify(val) === JSON.stringify(oldVal)){
+                // console.log(val, JSON.stringify(val) === JSON.stringify(oldVal), )
+                const diffed = diff(val, oldVal);
+                if(Object.keys(diffed).length === 0){
                     return;
                 }
-                // const diffed = diff(val, oldVal);
+                // 
                 // const reflowKeys = Object.keys(diffed).filter(k => {
                 //     const lk = k.toLowerCase();
                 //     return !(lk.endsWith('color') || k.endsWith('style'));

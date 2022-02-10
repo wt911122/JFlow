@@ -34,6 +34,26 @@ class Icon extends Rectangle {
         }
     }
 
+    setConfig(configs) {
+        Object.keys(configs).forEach(k => {
+            if(configs[k] !== undefined && configs[k] !== null) {
+                this[k] = configs[k];
+                this._rawConfigs[k] = configs[k];
+            }
+        });
+        if(configs.image && !configs.image.complete) {
+            this.image.onload = () => {
+                requestAnimationFrame(() => {
+                    this._jflow._render();
+                })
+            }
+        }
+        this.imageBounding = {
+            width: configs.imageWidth || configs.width || this.imageBounding.width,
+            height: configs.imageHeight ||  configs.height || this.imageBounding.height,
+        }
+    }
+
     render(ctx) {
         ctx.save();
         if(this._isMoving){
@@ -42,7 +62,9 @@ class Icon extends Rectangle {
         Rectangle.prototype.render.call(this, ctx);
         const x = this.anchor[0] - this.width / 2;
         const y = this.anchor[1] - this.height / 2;
-        ctx.drawImage(this.image, x, y, this.imageBounding.width, this.imageBounding.height);
+        if(this.image.complete) {
+            ctx.drawImage(this.image, x, y, this.imageBounding.width, this.imageBounding.height);
+        }
         ctx.restore();
     }
 }
