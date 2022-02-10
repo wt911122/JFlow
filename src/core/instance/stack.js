@@ -5,6 +5,7 @@
 class InstanceStack extends Array {
     constructor() {
         super();
+        this._currentHit = null;
     }
     /**
      * 绘制当前栈
@@ -63,6 +64,12 @@ class InstanceStack extends Array {
                 const ishit = instance.isHit(point, condition);
                 instance._isHit = !!ishit;
                 if(ishit) {
+                    if(this._currentHit !== instance) {
+                        if(this._currentHit) {
+                            this._currentHit._isHit = false;
+                        }
+                        this._currentHit = instance;
+                    }
                     if(typeof ishit !== 'boolean') {
                         return ishit;
                     }
@@ -72,7 +79,7 @@ class InstanceStack extends Array {
             }
             i--
         }
-
+        this._currentHit = null;
         return null;
     }
     /**
