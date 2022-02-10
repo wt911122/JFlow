@@ -676,13 +676,16 @@ class JFlow extends EventTarget{
                 link,
                 instance
             } = this._targetLockOn([offsetX, offsetY]);
-            if(instance || link) {
-                this.canvas.style.cursor = 'move';
-            } else {
-                this.canvas.style.cursor = 'default';
-            }
+            // console.log(offsetX, offsetY)
+            // if(instance || link) {
+            //     this.canvas.style.cursor = 'move';
+            // } else {
+            //     this.canvas.style.cursor = 'default';
+            // }
         }
+        this.canvas.style.cursor = 'default';
         if(!dragging) return;
+        this.canvas.style.cursor = 'move';
         if(processing) return;
         
         const movingtarget = this._target.moving;// this._tempInstance ? [this._tempInstance] : this._target.moving;
