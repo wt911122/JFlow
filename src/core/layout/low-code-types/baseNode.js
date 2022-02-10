@@ -24,7 +24,6 @@ class BaseNode {
         this.spanX = 1;
         this.spanY = 1;
         if(callback) {
-            console.log(level, sequence, this.id)
             callback(level, sequence, this);
         }
         return {
@@ -434,7 +433,6 @@ class WhileStatement extends BaseNode {
     constructor(source) {
         super(source);
         this.body = (source.body || []).map(mapFunc('body').bind(this));
-        console.log(this.body)
         this.isLocked = true
     }
 
@@ -481,7 +479,6 @@ class WhileStatement extends BaseNode {
             b = b.makeLink(callback);
             last = b;
         });
-        console.log(last === this)
         callback({
             from: last.id,
             to: this.id,
@@ -595,7 +592,6 @@ function mapFunc(type)  {
 function makeAST(source) {
     const type = source.type;
     const Constructor = TYPE_MAPPING[type] || TYPE_MAPPING.other;
-    console.log(type)
     const node = new Constructor(source);
     return node;
 }

@@ -66,7 +66,6 @@ export default {
         this._jflowInstance = new JFlow(this.configs);
     },
     mounted() {
-        console.log(this);
         // this._jflowInstance = new JFlow(this.configs);
         this.nodes = this._jflowInstance._layout.flowStack.map(meta => {
             return {
@@ -94,7 +93,6 @@ export default {
             // })
         });
         Object.keys(this.$listeners).map(event => {
-            console.log(event)
             const func = this.$listeners[event].bind(this);
             this._jflowInstance.addEventListener(event, func);
         })
@@ -135,8 +133,6 @@ export default {
                 }
                 this._jflowInstance.recalculate();
                 this._jflowInstance._render();
-                console.log(this.nodes);
-                console.log(this._jflowInstance.bounding_box)
             })
         },
         /**
@@ -153,7 +149,6 @@ export default {
             this._jflowInstance._render();
         },
         addNameToRootStack(instance, jflowId) {
-            console.log(jflowId, ' addNameToRootStack')
              this.stack.push({
                 jflowId,
                 instance,
