@@ -1,5 +1,5 @@
 <template>
-    <j-group
+     <j-diamond-group 
         :jflowId="node.id" 
         :configs="groupConfig"
         v-on="$listeners">
@@ -11,7 +11,7 @@
             editable: true
         }"
         @change="onContentChange"/>
-    </j-group>
+     </j-diamond-group>
 </template>
 
 <script>

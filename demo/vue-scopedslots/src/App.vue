@@ -129,16 +129,26 @@ export default {
         'j-calllogic': CallLogicComp,
         instanceLink,
     },
+     provide() {
+        return {
+            renderJFlow: this.renderJFlow,
+        }
+     },
     data() {
         const ast = {
             type: 'Root',
             body: [
+                // {
+                //             type: 'variable',
+                //             content: 'vvvkjhkjhvvvv',
+                //             id: 'logic5',
+                //         },
                 {
                     type: 'start',
                    
                     id: 'start',
                 }, 
-                {
+               {
                     type: 'IfStatement',
                     content: 'aaaa',
                     id: 'logic1',
@@ -386,7 +396,10 @@ export default {
         },
         onChangeContent($event, configs){
             configs.content = $event.val;
-        }
+        },
+        renderJFlow() {
+            this.$refs.jflow.renderJFlow();
+        },
     }
 }
 </script>

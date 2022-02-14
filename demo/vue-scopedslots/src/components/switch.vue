@@ -1,5 +1,5 @@
 <template>
-    <j-group 
+    <j-capsule-vertical-group 
         :jflowId="node.id" 
         :configs="configs"
         v-on="$listeners">
@@ -12,7 +12,7 @@
         <template v-for="switchcase in node.cases">
             <j-switchcase :node="switchcase" :key="switchcase.id" />
         </template>
-    </j-group>
+    </j-capsule-vertical-group>
 </template>
 
 <script>
@@ -32,11 +32,13 @@ export default {
             configs: {
                 layout: new LinearLayout({
                     direction: 'vertical',
-                    gap: 0,
+                    gap: 10,
                 }),
                 borderColor: '#517cff',
                 borderWidth: 2,
                 borderRadius: 5,
+                paddingTop: 20,
+                paddingBottom: 20
             }
         }
     }

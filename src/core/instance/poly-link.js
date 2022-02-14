@@ -14,12 +14,13 @@ const PIINRATIO = Math.PI / 180
  * @property {String} fontFamily    - 连线上的文字字体
  * @property {Number} fontSize      - 连线上的文字大小
  * @property {String} content       - 连线上的文字
+ * @property {String} isSelf        - 是否为自连接
  */
 /**
  * 方形折线
- * @constructor BezierLink
+ * @constructor PolyLink
  * @extends BaseLink
- * @param {CubicLink~Configs} configs - 配置
+ * @param {PolyLink~Configs} configs - 配置
  */
 class PolyLink extends BaseLink {
      /**

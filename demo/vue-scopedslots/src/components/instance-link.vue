@@ -1,12 +1,12 @@
 <template>
-    <jBezierLink
+    <jPolyLink
         :configs="configs"
         :from="configs.from"
         :to="configs.to"
         @dragover="onDragOver"
         @dragoverend="onDragOverEnd"
         @drop="onDropToLink">
-    </jBezierLink>
+    </jPolyLink>
 </template>
 
 <script>
@@ -23,6 +23,10 @@ export default {
         configs() {
             return {
                 ...this.linkConfigs,
+                // fromDir: undefined,
+                // toDir: undefined,
+                // isSelf: false,
+                radius: 5,
                 approximate: 400,
                 backgroundColor: this.isDragOver ? 'rgba(81, 124, 255, 0.5)' : '#000',
             };

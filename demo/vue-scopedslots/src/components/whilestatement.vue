@@ -1,5 +1,5 @@
 <template>
-    <j-group
+    <j-rhombus-group
         :jflowId="node.id" 
         :configs="groupConfig"
         v-on="$listeners">
@@ -10,7 +10,7 @@
             lineHeight: 26,
             indent: 10,
         }"/>
-    </j-group>
+    </j-rhombus-group>
 </template>
 
 <script>
@@ -29,6 +29,7 @@ export default {
                 borderColor: '#517cff',
                 borderWidth: 2,
                 borderRadius: 5,
+                padding: 30,
             }
         }
     },

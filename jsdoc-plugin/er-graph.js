@@ -103,6 +103,7 @@ function renderNode(erNode) {
 function renderLink(linkmeta) {
     const meta = linkmeta.meta;
     const link = new BezierLink({
+        ...linkmeta,
         content: linkmeta.part,
         to: meta.from.getJflowInstance(),
         from: meta.to.getJflowInstance(),

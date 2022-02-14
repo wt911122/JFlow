@@ -28,6 +28,7 @@ class ERNode {
                     from: t,
                     to: this.id,
                     part: 'mixins',
+                    lineDash: [5, 2]
                 })
             })
         }

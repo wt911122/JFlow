@@ -81,7 +81,7 @@ module.exports = {
 
             modules.forEach(m => {
                 classes.forEach(c => {
-                    if(m.configName === c.configName) {
+                    if(m.name.split('-').slice(1).join('') === c.name.toLowerCase() && m.configName === c.configName) {
                         c.module = m;
                     }
                 });
