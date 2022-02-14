@@ -58,6 +58,38 @@ export function distToSegmentSquared(p, v, w) {
     return dist2(p, [ v[0] + t * (w[0] - v[0]), v[1] + t * (w[1] - v[1]) ]);
 }
 
+export function minIntersectionBetweenNodes(dmsfrom, dmsto) {
+    const meta = {
+        fromDir: null,
+        fromP: null,
+        toDir: null,
+        toP: null,
+        distMin: Infinity
+    }
+    Object.keys(dmsfrom).forEach(df => {
+        if((+df) === DIRECTION.SELF) {
+            return;
+        }
+        let pf = dmsfrom[df];
+        Object.keys(dmsto).forEach(dt => {
+            if((+dt) === DIRECTION.SELF) {
+                return;
+            }
+            let pt = dmsto[dt];
+            const dist = dist2(pf, pt);
+            if(dist < meta.distMin) {
+                Object.assign(meta, {
+                    distMin: dist,
+                    fromDir: +df,
+                    fromP: pf,
+                    toDir: +dt,
+                    toP: pt,
+                })
+            }
+        })
+    });
+    return meta;
+}
 
 // export function bezierPoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECTION.TOP, anticlock = false) {
 //     const isSameDirection = start_dir === end_dir;
@@ -135,10 +167,6 @@ export function bezierPoint(t, P) {
     return [x, y, angle];
 }
 
-export function polylinePoints(p1, p2, start_dir = DIRECTION.RIGHT, end_dir = DIRECTION.TOP) {
-
-}
-
 // export function bezierPoints(p1, p2, start_vec, end_vec) {
 
 // }
@@ -173,5 +201,108 @@ export function getInstanceHeight(instance) {
     return {
         height: max_y - min_y,
         width: max_x - min_x,
+    }
+}
+
+export function polylinePoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECTION.TOP, minSpanX = 10, minSpanY = 10, isSelf) {
+    const dirSpan = Math.abs(start_dir - end_dir);
+    // const spanx = Math.max(Math.abs((p1[0] - p2[0])/2), minSpanX);
+    // const spany = Math.max(Math.abs((p1[1] - p2[1])/2), minSpanY);
+    const isVerticalStart = (start_dir === DIRECTION.TOP || start_dir === DIRECTION.BOTTOM);
+    let points = [];
+    switch (dirSpan) {
+        case 0:
+            // 都按向右好了
+            if(start_dir === DIRECTION.TOP) {
+                const y = Math.min(p1[1], p2[1]);
+                const yp = y - minSpanY;
+                points.push([p1[0], yp]);
+                points.push([p2[0], yp]);
+            }
+            if(start_dir === DIRECTION.BOTTOM) {
+                const y = Math.max(p1[1], p2[1]);
+                const yp = y + minSpanY;
+                points.push([p1[0], yp]);
+                points.push([p2[0], yp]);
+            }
+            if(start_dir === DIRECTION.LEFT) {
+                const x = Math.min(p1[0], p2[0]);
+                const xp = x - minSpanX;
+                points.push([xp, p1[1]]);
+                points.push([xp, p2[1]]);
+            }
+            if(start_dir === DIRECTION.RIGHT) {
+                const x = Math.max(p1[0], p2[0]);
+                const xp = x + minSpanX;
+                points.push([xp, p1[1]]);
+                points.push([xp, p2[1]]);
+            }
+            break;
+        case 1:
+        case 3:  
+            if(isSelf) {
+                if(!isVerticalStart) {
+                    points.push([p1[0] + minSpanX, p1[1]]);
+                    points.push([p1[0] + minSpanX, p2[1] + minSpanY]);
+                    points.push([p2[0], p2[1] + minSpanY]);
+                } else {
+                    points.push([p1[0], p1[1] + minSpanY]);
+                    points.push([p2[0] + minSpanX, p1[1] + minSpanY]);
+                    points.push([p2[0] + minSpanX, p2[1]]);
+                }
+            } else {
+                const point = isVerticalStart ? [p1[0], p2[1]]: [p2[0], p1[1]]
+                points.push(point);
+            }
+            break;
+        case 2:
+            const pmiddle = [
+                (p1[0] - p2[0])/2 + p2[0],
+                (p1[1] - p2[1])/2 + p2[1]
+            ]; 
+            if(isVerticalStart) {
+                points.push([p1[0], pmiddle[1]])
+                points.push([p2[0], pmiddle[1]])
+            } else {
+                points.push([pmiddle[0], p1[1]])
+                points.push([pmiddle[0], p2[1]])
+            }
+            break;
+        default:
+            break;
+    }
+    points.unshift(p1);
+    points.push(p2);
+    return points;
+}
+
+function minusVec(p1, p2) {
+    return [p1[0] - p2[0], p1[1] - p2[1]]
+}
+
+function absVec(vec) {
+    return Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
+}
+
+function scaleVec(vec, scale) {
+    return [vec[0] * scale, vec[1] * scale];
+}
+
+export function makeRadiusFromVector(pbefore, p, pnext, radius) {
+    const vec1 = minusVec(p, pbefore);
+    const vec2 = minusVec(p, pnext);
+    const absVec1 = absVec(vec1);
+    const absVec2 = absVec(vec2);
+    if(!absVec1 || !absVec2) {
+        return {
+            p1: null,
+            p2: null,
+        }
+    }
+    const r1 = scaleVec(vec1, radius/absVec1);
+    const r2 = scaleVec(vec2, radius/absVec2);
+    return {
+        p1: minusVec(p, r1),
+        p2: minusVec(p, r2),
     }
 }
