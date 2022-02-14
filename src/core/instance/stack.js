@@ -95,6 +95,20 @@ class InstanceStack extends Array {
         });
         return points;
     }
+
+    /**
+     * 获取当前层栈的锚点矩形
+     * @return {number[][]} - 锚点矩形坐标
+     */
+    getAnchorRectPoints() {
+        const points = [];
+        this.forEach(instance => {
+            if(instance.visible) {
+                points.push(instance.anchor);
+            }
+        });
+        return points;
+    }
 }
 
 export default InstanceStack;
