@@ -11,7 +11,9 @@ export const DIRECTION = {
     /** LEFT */
     LEFT: 2,
     /** TOP */
-    TOP: 3
+    TOP: 3,
+    /** SELF */
+    SELF: 100,
 }
 
 export function nextDirection(direction, clockwise) {
