@@ -3,7 +3,7 @@ import { DIRECTION, oppositeDirection } from '../../utils/constance';
 import { makeBezierPoints } from '../../utils/functions';
 /**
  * 钻石形单元 配置
- * @typedef {Instance~Configs} Diamond~DiamondConfigs
+ * @typedef {Node~Configs} Diamond~DiamondConfigs
  * @property {number} width  - 内部矩形宽
  * @property {number} height - 内部矩形高
  * @property {number} side   - 两侧三角形的宽

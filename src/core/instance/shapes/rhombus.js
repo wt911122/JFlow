@@ -2,7 +2,7 @@ import Node from '../node';
 import { DIRECTION } from '../../utils/constance';
 /**
  * 菱形单元 配置
- * @typedef {Instance~Configs} Rhombus~RhombusConfigs
+ * @typedef {Node~Configs} Rhombus~RhombusConfigs
  * @property {number} diagonalsV  - 内十字高度
  * @property {number} diagonalsH  - 内十字宽度
  */

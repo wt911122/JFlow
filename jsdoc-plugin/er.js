@@ -84,6 +84,9 @@ module.exports = {
                     if(m.name.split('-').slice(1).join('') === c.name.toLowerCase() && m.configName === c.configName) {
                         c.module = m;
                     }
+                    if(m.name === 'j-group' && m.configName === c.configName){
+                        c.module = m;
+                    }
                 });
             })
         

@@ -2,7 +2,7 @@ import Node from '../node';
 import { DIRECTION } from '../../utils/constance';
 /**
  * 圆形单元 配置
- * @typedef {Instance~Configs} Point~PointConfigs
+ * @typedef {Node~Configs} Point~PointConfigs
  * @property {number} radius  - 半径
  */
 /**

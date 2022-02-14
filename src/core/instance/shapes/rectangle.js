@@ -2,7 +2,7 @@ import Node from '../node';
 import { DIRECTION, oppositeDirection } from '../../utils/constance';
 /**
  * 矩形单元 配置
- * @typedef {Instance~Configs} Rectangle~RectangleConfigs
+ * @typedef {Node~Configs} Rectangle~RectangleConfigs
  * @property {number} width - 宽
  * @property {number} height - 高
  * @property {number} borderRadius - 圆角矩形半径

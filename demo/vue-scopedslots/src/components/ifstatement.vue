@@ -5,13 +5,31 @@
         v-on="$listeners"
         @mouseenter="touch = true"
         @mouseleave="touch = false">
-        <j-text :configs="{
-            fontSize: '12px',
-            textColor: '#585c63',
-            content: 'ifstatement ' + node.id,
-            lineHeight: 26,
-            indent: 10,
-        }"/>
+        <j-point :configs="{
+            backgroundColor: '#99DBC5',
+            radius: 8,
+            borderColor: '#33B88C',
+            borderWidth: 2,
+            absolutePosition: {
+                top: 2,
+                right: 10,
+            }
+        }" @click="shrink = !shrink"/>
+        <j-group>
+            <j-text v-if="shrink" :configs="{
+                fontSize: '12px',
+                textColor: '#585c63',
+                content: 'ifstatement ' + node.id,
+                lineHeight: 26,
+                indent: 10,
+            }"/>
+            <j-rectangle v-else :configs="{
+                    backgroundColor: '#FAAAAA',
+                    width: 36,
+                    height: 72,
+                }">
+            </j-rectangle>
+        </j-group>
     </j-rhombus-group>
 </template>
 
@@ -24,7 +42,13 @@ export default {
     inject: ['renderJFlow'],
     data() {
         return {
-            touch: false
+            touch: false,
+            shrinkButton: {
+                backgroundColor: '#99DBC5',
+                radius: 20,
+                borderColor: '#33B88C',
+            },
+            shrink: false,
         }
     },
     computed: {

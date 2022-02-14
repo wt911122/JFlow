@@ -2,7 +2,7 @@ import Node from '../node';
 import { DIRECTION, oppositeDirection } from '../../utils/constance';
 /**
  * 胶囊单元 配置
- * @typedef {Instance~Configs} Capsule~CapsuleConfigs
+ * @typedef {Node~Configs} Capsule~CapsuleConfigs
  * @property {number} width  - 内部矩形宽
  * @property {number} height - 内部矩形高
  */
