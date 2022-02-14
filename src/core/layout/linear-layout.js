@@ -42,7 +42,8 @@ class LinearLayout {
 
 
     reflow(group) {
-        const stack = group._stack.filter(instance => instance.visible && !instance.outOfFlow);
+        const stack = group._stack.filter(instance => instance.visible && !instance.absolutePosition);
+        const absoluteStack = group._stack.filter(instance => instance.visible && instance.absolutePosition)
         const groupWidth = group.width - group.padding.left - group.padding.right;
         // console.log(groupWidth, group.height, group)
         if(this.direction === 'vertical') {
@@ -84,7 +85,6 @@ class LinearLayout {
                     instance.anchor[1] -= allHeight;
                 })
             }
-
         } 
         if(this.direction === 'horizontal') {
             let reduceWidth = 0;
@@ -142,6 +142,37 @@ class LinearLayout {
                 })
             }
         }
+
+        if(absoluteStack.length) {
+            group._getBoundingGroupRect();
+            const WIDTH = group.width /2;
+            const HEIGHT = group.height /2;
+            absoluteStack.forEach(instance => {
+                instance.anchor = this._resolveAbsoluteAnchor(instance.absolutePosition, instance, WIDTH, HEIGHT);
+            })
+        }
+    }
+
+    _resolveAbsoluteAnchor(config, instance, w, h){
+        const { top, right, bottom, left } = config;
+        const { width, height } = instance.getBoundingDimension();
+        const hw = width / 2;
+        const hh = height / 2;
+        let y = 0;
+        let x = 0;
+        if(top) {
+            y = top + hh - h;
+        }
+        if(right) {
+            x = w - right - hw;
+        }
+        if(bottom) {
+            y = h - bottom - hh;
+        }
+        if(left) {
+            x = left + hw - w;
+        }
+        return [x, y]
     }
 
     clone() {

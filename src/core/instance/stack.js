@@ -89,7 +89,7 @@ class InstanceStack extends Array {
     getBoundingRectPoints() {
         const points = [];
         this.forEach(instance => {
-            if(instance.visible) {
+            if(instance.visible && !instance.absolutePosition) {
                 points.splice(points.length, 0, ...instance.getBoundingRect());
             }
         });
@@ -103,7 +103,7 @@ class InstanceStack extends Array {
     getAnchorRectPoints() {
         const points = [];
         this.forEach(instance => {
-            if(instance.visible) {
+            if(instance.visible && !instance.absolutePosition) {
                 points.push(instance.anchor);
             }
         });

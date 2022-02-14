@@ -2,11 +2,20 @@ import Instance from './instance';
 import { nextDirection } from '../utils/constance';
 
 /**
+ * 绝对定位 配置， 绝对定位不受布局影响，相对于当前组来定位
+ * @typedef {object} Instance~AbsolutePosition 
+ * @property {number} top       - 上距离
+ * @property {number} bottom    - 下距离
+ * @property {number} right     - 右距离
+ * @property {number} left      - 左距离
+ *、
+/**
  * 节点基类
  * @constructor Node
  * @extends Instance
  * @param {Instance~Configs} configs - 节点配置
  * @param {Number[]} configs.anchor - 坐标
+ * @param {Instance~AbsolutePosition} configs.absolutePosition - 绝对定位位置
  */
 class Node extends Instance {
     constructor(configs = {}) {
@@ -14,7 +23,8 @@ class Node extends Instance {
         this._rawConfigs = configs;
         // for layout
         // this._intersections = [];
-        this.anchor =   configs.anchor || [0, 0];
+        this.anchor =           configs.anchor || [0, 0];
+        this.absolutePosition = configs.absolutePosition;
         // this.margin =   configs.margin || 5;
     }
 
