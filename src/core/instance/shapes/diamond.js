@@ -17,7 +17,7 @@ import { makeBezierPoints } from '../../utils/functions';
 class Diamond extends Node {
     constructor(configs = {}) {
         super(configs);
-        this.type =             'Capsule';
+        this.type =             'Diamond';
         this.width =            configs.width || 20;
         this.height =           configs.height || 10;
         this.side =             configs.side || 6;

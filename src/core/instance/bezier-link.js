@@ -1,6 +1,6 @@
 import BaseLink from './base-link';
-import { bezierPoints, distToBezierSegmentSquared, getBezierAngle } from '../utils/functions';
-import { APPROXIMATE } from '../utils/constance';
+import { bezierPoints, distToBezierSegmentSquared, getBezierAngle, minIntersectionBetweenNodes } from '../utils/functions';
+import { APPROXIMATE, DIRECTION } from '../utils/constance';
 import { dist2, bezierPoint } from '../utils/functions';
 const PIINRATIO = Math.PI / 180
 /**
@@ -35,7 +35,7 @@ class BezierLink extends BaseLink {
         this.fontFamily    = configs.fontFamily = '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji'
         this.fontSize      = configs.fontSize || '12px';
         this.content       = configs.content || '';
-
+        this.isSelf        = !!configs.isSelf
     }
     
     // getColor() {
@@ -79,7 +79,19 @@ class BezierLink extends BaseLink {
 
         const dmsfrom = this.from.getIntersectionsInFourDimension();
         const dmsto = this.to.getIntersectionsInFourDimension();
-        if(this.fromDir !== undefined && this.toDir !== undefined) {
+        if(this.isSelf) {
+            const points = bezierPoints(
+                dmsfrom[this.fromDir],
+                dmsto[DIRECTION.SELF],
+                this.fromDir,
+                DIRECTION.BOTTOM, 
+                this.minSpanX, 
+                this.minSpanY);
+
+            this._cachePoints = [...dmsfrom[this.fromDir], ...points] 
+            console.log(points)
+            this._cacheAngle = [this.fromDir, DIRECTION.BOTTOM]
+        } else if(this.fromDir !== undefined && this.toDir !== undefined) {
             const points = bezierPoints(
                 dmsfrom[this.fromDir],
                 dmsto[this.toDir],
@@ -87,46 +99,17 @@ class BezierLink extends BaseLink {
                 this.toDir, this.minSpanX , this.minSpanY);
             this._cachePoints = [...dmsfrom[this.fromDir], ...points] 
             this._cacheAngle = [this.fromDir, this.toDir]
-            return;
-        }
-        const meta = {
-            fromDir: null,
-            fromP: null,
-            toDir: null,
-            toP: null,
-            distMin: Infinity
-        }
-        Object.keys(dmsfrom).forEach(df => {
-            let pf = dmsfrom[df];
-            // if(this.from._belongs && this.from._belongs.calculateToCoordination) {
-            //     debugger
-            //     pf = this.from._belongs.calculateToCoordination(pf);
-            // }
-            Object.keys(dmsto).forEach(dt => {
-                let pt = dmsto[dt];
-                // if(this.to._belongs && this.to._belongs.calculateToCoordination) {
-                //     pt = this.to._belongs.calculateToCoordination(pt);
-                // }
-                const dist = dist2(pf, pt);
-                if(dist < meta.distMin) {
-                    Object.assign(meta, {
-                        distMin: dist,
-                        fromDir: +df,
-                        fromP: pf,
-                        toDir: +dt,
-                        toP: pt,
-                    })
-                }
-            })
-        });
-        const points = bezierPoints(
-            meta.fromP,
-            meta.toP,
-            meta.fromDir,
-            meta.toDir);
+        } else {
+            const meta = minIntersectionBetweenNodes(dmsfrom, dmsto);
+            const points = bezierPoints(
+                meta.fromP,
+                meta.toP,
+                meta.fromDir,
+                meta.toDir);
 
-        this._cachePoints = [...meta.fromP, ...points];
-        this._cacheAngle = [meta.fromDir, meta.toDir];
+            this._cachePoints = [...meta.fromP, ...points];
+            this._cacheAngle = [meta.fromDir, meta.toDir];
+        }
     }
 
     render(ctx) {

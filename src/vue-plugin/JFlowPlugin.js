@@ -38,6 +38,14 @@ const JFLOW_NODES = [
      */
     'Diamond',
     /**
+     * JFlow {@link Rhombus} 的 vue 封装 
+     * @module j-rhombus
+     * @property {Rhombus~RhombusConfigs} configs - 传给 Diamond 的配置
+     * @property {Boolean} visible - 可见状态
+     * @property {String} jflowId - 全局唯一ID，用于连线单元
+     */
+    'Rhombus',
+    /**
      * JFlow {@link Text} 的 vue 封装 
      * @module j-text
      * @property {Text~TextConfigs} configs - 传给 Text 的配置
@@ -61,7 +69,7 @@ const JFLOW_NODES = [
  */
 const JFLOW_LINKS = [
     'Link',
-    'PolylineLink',
+    'PolyLink',
     
     /**
      * JFlow {@link BezierLink} 的 vue 封装 
@@ -82,6 +90,14 @@ const JFLOW_GROUPS = [
      */
     'CapsuleGroup',
     /**
+     * JFlow {@link CapsuleVerticalGroup} 的 vue 封装 
+     * @module j-capsule-vertical-group
+     * @property {CapsuleGroup~CapsuleGroupConfigs} configs - 传给 CapsuleVerticalGroup 的配置
+     * @property {Boolean} visible - 可见状态
+     * @property {String} jflowId - 全局唯一ID，用于连线单元
+     */
+    'CapsuleVerticalGroup',
+    /**
      * JFlow {@link DiamondGroup} 的 vue 封装 
      * @module j-diamond-group
      * @property {DiamondGroup~DiamondGroupConfigs} configs - 传给 DiamondGroup 的配置
@@ -89,6 +105,22 @@ const JFLOW_GROUPS = [
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
     'DiamondGroup',
+    /**
+     * JFlow {@link DiamondVerticalGroup} 的 vue 封装 
+     * @module j-diamond-vertical-group
+     * @property {DiamondGroup~DiamondGroupConfigs} configs - 传给 DiamondVerticalGroup 的配置
+     * @property {Boolean} visible - 可见状态
+     * @property {String} jflowId - 全局唯一ID，用于连线单元
+     */
+    'DiamondVerticalGroup',
+    /**
+     * JFlow {@link RhombusGroup} 的 vue 封装 
+     * @module j-rhombus-group
+     * @property {RhombusGroup~RhombusGroupConfigs} configs - 传给 DiamondGroup 的配置
+     * @property {Boolean} visible - 可见状态
+     * @property {String} jflowId - 全局唯一ID，用于连线单元
+     */
+    'RhombusGroup',
 ]
 
 const components = [

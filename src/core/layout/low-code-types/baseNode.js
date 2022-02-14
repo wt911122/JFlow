@@ -346,7 +346,7 @@ class SwitchStatement extends BaseNode {
         let lastc = this;
         if(this.cases.length) {
             const consequent = this.cases[this.cases.length - 1].consequent;
-            consequent.forEach(c => {
+            consequent.forEach((c, idx) => {
                 callback({
                     from: lastc.id,
                     to: c.id,
@@ -373,7 +373,7 @@ class SwitchStatement extends BaseNode {
             }
         });
 
-        this.cases.forEach(c => {
+        this.cases.forEach((c, idx) => {
             let lasta = c;
             c.alternate.forEach(a => {
                 callback({
@@ -396,6 +396,7 @@ class SwitchStatement extends BaseNode {
                 fromDir: lasta === c ? DIRECTION.RIGHT : DIRECTION.BOTTOM,
                 toDir: DIRECTION.RIGHT,
                 part: 'alternate',
+                minSpanX: 32 * (idx + 1),
                 meta: {
                     from: lasta,
                     to: this.Endpoint
@@ -486,6 +487,9 @@ class WhileStatement extends BaseNode {
             fromDir: last === this ? DIRECTION.RIGHT : DIRECTION.BOTTOM,
             anticlock: last === this,
             toDir: DIRECTION.BOTTOM,
+            isSelf: true,
+            minSpanX: 20,
+            minSpanY: 20,
             meta: {
                 from: last,
                 to: this
