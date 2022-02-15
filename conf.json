@@ -24,6 +24,8 @@
         },
         "systemName"            : "JFlow",
         "includeDate"           : false,
-        "theme"                 : "journal"
+        "theme"                 : "journal",
+        "inverseNav"            : true,
+        "footer"                : "<script>(document.body.setAttribute('style', 'font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif'))</script>"
     }
 }
