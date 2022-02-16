@@ -382,46 +382,62 @@ class JFlow extends EventTarget{
         return this._target.moving && this._target.moving[0];
     }
 
-    _processDragOver(instance) {
+    _processDragOver(instance, event) {
         if(this._dragOverTarget !== instance) {
             const target = this.readMessage()?.instance;
-            if(instance) {
-                /**
-                * dragover 进入事件
-                * @event Instance#dragover
-                * @type {object}
-                * @property {Event} event           - 原始事件 
-                * @property {Object} instance       - dragover的对象 
-                * @property {target} target         - drag 携带的对象（特指从外面拖进canvas的对象） 
-                */
-                instance.dispatchEvent(new JFlowEvent('dragover', {
-                    event,
-                    instance,
-                    target,
-                }));
-            }
             if(this._dragOverTarget) {
                 const oldIns = this._dragOverTarget;
                 /**
-                * dragover 退出事件
-                * @event Instance#dragoverend
+                * dragleave 退出事件
+                * @event Instance#dragleave
                 * @type {object}
                 * @property {Event} event           - 原始事件 
-                * @property {Object} instance       - dragover的对象 
+                * @property {Object} instance       - dragleave的对象 
                 * @property {target} target         - drag 携带的对象（特指从外面拖进canvas的对象） 
                 */
-                oldIns.dispatchEvent(new JFlowEvent('dragoverend', {
+                oldIns.dispatchEvent(new JFlowEvent('dragleave', {
                     event,
                     instance: oldIns,
                     target
                 }));
             }
+            if(instance) {
+                /**
+                * dragenter 进入事件
+                * @event Instance#dragenter
+                * @type {object}
+                * @property {Event} event           - 原始事件 
+                * @property {Object} instance       - dragenter的对象 
+                * @property {target} target         - drag 携带的对象（特指从外面拖进canvas的对象） 
+                */
+                instance.dispatchEvent(new JFlowEvent('dragenter', {
+                    event,
+                    instance,
+                    target,
+                }));
+            }
             this._dragOverTarget = instance;
+        } else if(this._dragOverTarget){
+            /**
+            * dragover 进入事件
+            * @event Instance#dragover
+            * @type {object}
+            * @property {Event} event           - 原始事件 
+            * @property {Object} instance       - dragover的对象 
+            * @property {target} target         - drag 携带的对象（特指从外面拖进canvas的对象） 
+            */
+            this._dragOverTarget.dispatchEvent(new JFlowEvent('dragover', {
+                event,
+                instance,
+                target: this._dragOverTarget,
+            }));
         }
     }
 
     _onDragover(event) {
+        // console.log(event);
         event.preventDefault();
+        event.stopPropagation();
         if(this._lastDragState.processing) return;
         this._lastDragState.processing = true;
         const { offsetX, offsetY } = event
@@ -430,7 +446,11 @@ class JFlow extends EventTarget{
         })
         this._targetLockOn([offsetX, offsetY])
         const instance = this._target.instance || this._target.link;
-        this._processDragOver(instance);
+        // console.log(event)
+        // if (instance) {
+        //     event.dataTransfer.dropEffect = 'copy';
+        // }
+        this._processDragOver(instance, event);
         // if(this._dragOverTarget !== instance) {
         //     if(instance) {
         //         instance.dispatchEvent(new JFlowEvent('dragover', {
@@ -705,7 +725,7 @@ class JFlow extends EventTarget{
         }
         const { instance, link } = this._targetLockOn([offsetX, offsetY]);
         // console.log(instance);
-        this._processDragOver(instance || link);
+        this._processDragOver(instance || link, event);
             
         // this._target.meta.x = offsetX;
         // this._target.meta.y = offsetY;
