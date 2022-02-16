@@ -385,6 +385,7 @@ class JFlow extends EventTarget{
     _processDragOver(instance, event) {
         if(this._dragOverTarget !== instance) {
             const target = this.readMessage()?.instance;
+            this._dragCurrentData = target;
             if(this._dragOverTarget) {
                 const oldIns = this._dragOverTarget;
                 /**
@@ -429,7 +430,7 @@ class JFlow extends EventTarget{
             this._dragOverTarget.dispatchEvent(new JFlowEvent('dragover', {
                 event,
                 instance,
-                target: this._dragOverTarget,
+                target: this._dragCurrentData,
             }));
         }
     }
