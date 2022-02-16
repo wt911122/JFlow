@@ -52,7 +52,7 @@ class Text extends Rectangle {
         super(configs);
         this.type =             'Text';
         this.content =          configs.content || '';
-        this.fontFamily =       configs.fontFamily = '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji'
+        this.fontFamily =       configs.fontFamily || '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji'
         this.fontSize =         configs.fontSize || '28px';
         this.textColor =        configs.textColor || 'white';
         this.textAlign =        configs.textAlign || TEXT_ALIGN.CENTER;
