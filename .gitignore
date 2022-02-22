@@ -74,4 +74,3 @@ build.sh
 src-copy/
 package-lock.json
 
-dist/*
