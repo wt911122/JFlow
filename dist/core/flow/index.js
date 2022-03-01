@@ -764,7 +764,7 @@ var JFlow = /*#__PURE__*/function (_EventTarget) {
 
 
       if (this._target.isLinkDirty || this._target.isInstanceDirty) {
-        requestAnimationFrame(function () {
+        Promise.resolve().then(function () {
           _this3._render();
 
           _this3._target.isLinkDirty = false;
