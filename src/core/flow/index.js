@@ -470,7 +470,7 @@ class JFlow extends EventTarget{
         // }
         
         if(this._target.isLinkDirty || this._target.isInstanceDirty) {
-            requestAnimationFrame(() => {
+            Promise.resolve().then(() => {
                 this._render();    
                 this._target.isLinkDirty = false; 
                 this._target.isInstanceDirty = false;
