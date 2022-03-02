@@ -576,7 +576,10 @@ class JFlow extends EventTarget{
         event.preventDefault();
         if(this._zooming) return;
         this._zooming = true;
-        const { offsetX, offsetY, deltaY } = event
+        let { offsetX, offsetY, deltaY } = event
+        if(event.ctrlKey) {
+            deltaY = -deltaY;
+        }
         const { width: p_width, height: p_height, x, y } = this.bounding_box;
         let newScale = this.scale;
         const amount = deltaY > 0 ? 1.1 : 1 / 1.1;
@@ -621,6 +624,7 @@ class JFlow extends EventTarget{
 
     _onPressStart(event) { 
         const { offsetX, offsetY, deltaY, button } = event
+        console.log('pressStart', event)
         if(button !== 0) return;
         this._targetLockOn([offsetX, offsetY], 'pressStart');
         Object.assign(this._target.meta, {
