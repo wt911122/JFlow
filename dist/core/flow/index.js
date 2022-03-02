@@ -884,6 +884,11 @@ var JFlow = /*#__PURE__*/function (_EventTarget) {
       var offsetX = event.offsetX,
           offsetY = event.offsetY,
           deltaY = event.deltaY;
+
+      if (event.ctrlKey) {
+        deltaY = -deltaY;
+      }
+
       var _this$bounding_box3 = this.bounding_box,
           p_width = _this$bounding_box3.width,
           p_height = _this$bounding_box3.height,
@@ -936,6 +941,7 @@ var JFlow = /*#__PURE__*/function (_EventTarget) {
           offsetY = event.offsetY,
           deltaY = event.deltaY,
           button = event.button;
+      console.log('pressStart', event);
       if (button !== 0) return;
 
       this._targetLockOn([offsetX, offsetY], 'pressStart');
