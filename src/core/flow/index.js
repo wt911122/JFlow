@@ -576,40 +576,42 @@ class JFlow extends EventTarget{
         event.preventDefault();
         if(this._zooming) return;
         this._zooming = true;
-        let { offsetX, offsetY, deltaY } = event
-        if(event.ctrlKey) {
+        let { offsetX, offsetY, deltaX, deltaY } = event
+        if(event.ctrlKey) { 
             deltaY = -deltaY;
+            const { width: p_width, height: p_height, x, y } = this.bounding_box;
+            let newScale = this.scale;
+            const amount = deltaY > 0 ? 1.1 : 1 / 1.1;
+            newScale *= amount;
+
+            if (this.maxZoom && newScale > this.maxZoom){
+                // could just return but then won't stop exactly at maxZoom
+                newScale = this.maxZoom;
+            }
+
+            if(this.minZoom && newScale < this.minZoom) {
+                newScale = this.minZoom;
+            }
+
+            var deltaScale    = newScale - this.scale;
+            var currentWidth  = p_width * this.scale;
+            var currentHeight = p_height * this.scale;
+            var deltaWidth    = p_width * deltaScale;
+            var deltaHeight   = p_height * deltaScale;
+
+            var tX = offsetX - this.position.x;
+            var tY = offsetY - this.position.y;
+            var pX = -tX / currentWidth;
+            var pY = -tY / currentHeight;
+
+            this.scale = newScale;
+            this.position.x += pX * deltaWidth;
+            this.position.y += pY * deltaHeight;
+            this.position.offsetX = this.position.x - x * newScale;
+            this.position.offsetY = this.position.y - y * newScale;
+        } else {
+            this._recalculatePosition(-deltaX, -deltaY);
         }
-        const { width: p_width, height: p_height, x, y } = this.bounding_box;
-        let newScale = this.scale;
-        const amount = deltaY > 0 ? 1.1 : 1 / 1.1;
-        newScale *= amount;
-
-        if (this.maxZoom && newScale > this.maxZoom){
-            // could just return but then won't stop exactly at maxZoom
-            newScale = this.maxZoom;
-        }
-
-        if(this.minZoom && newScale < this.minZoom) {
-            newScale = this.minZoom;
-        }
-
-        var deltaScale    = newScale - this.scale;
-        var currentWidth  = p_width * this.scale;
-        var currentHeight = p_height * this.scale;
-        var deltaWidth    = p_width * deltaScale;
-        var deltaHeight   = p_height * deltaScale;
-
-        var tX = offsetX - this.position.x;
-        var tY = offsetY - this.position.y;
-        var pX = -tX / currentWidth;
-        var pY = -tY / currentHeight;
-
-        this.scale = newScale;
-        this.position.x += pX * deltaWidth;
-		this.position.y += pY * deltaHeight;
-        this.position.offsetX = this.position.x - x * newScale;
-        this.position.offsetY = this.position.y - y * newScale;
         /**
          * 缩放平移事件
          *
@@ -683,8 +685,34 @@ class JFlow extends EventTarget{
         const { x, y } = this._target.meta;
 
         const { offsetX, offsetY, clientX, clientY } = event
+        
+        this.canvas.style.cursor = 'default';
+        
+
+        if(!dragging && !processing) {
+            const {
+                link,
+                instance
+            } = this._targetLockOn([offsetX, offsetY]);
+            if(instance) {
+                /**
+                * instance mousemove 原生事件
+                *
+                * @event JFlow#instancemousemove
+                * @type {object}
+                * @property {Event} event           - 原始事件
+                * @property {Node} instance           - 原始事件
+                * @property {JFlow} jflow           - 当前JFlow对象 
+                */
+                instance.dispatchEvent(new JFlowEvent('instancemousemove', {
+                    event,
+                    instance,
+                    jflow: this,
+                }))
+            }
+        }
         /**
-         * canvas pressmove 原生事件
+         * canvas mousemove 原生事件
          *
          * @event JFlow#canvasmousemove
          * @type {object}
@@ -695,22 +723,9 @@ class JFlow extends EventTarget{
             event,
             jflow: this,
         }))
-
-        if(!dragging && !processing) {
-            const {
-                link,
-                instance
-            } = this._targetLockOn([offsetX, offsetY]);
-            // console.log(offsetX, offsetY)
-            // if(instance || link) {
-            //     this.canvas.style.cursor = 'move';
-            // } else {
-            //     this.canvas.style.cursor = 'default';
-            // }
-        }
-        this.canvas.style.cursor = 'default';
+        
         if(!dragging) return;
-        this.canvas.style.cursor = 'move';
+        this.canvas.style.cursor = 'grabbing';
         if(processing) return;
         
         const movingtarget = this._target.moving;// this._tempInstance ? [this._tempInstance] : this._target.moving;

@@ -43,7 +43,7 @@ class Diamond extends Node {
     render(ctx) {
         ctx.save();
         if(this._isMoving){
-            ctx.globalAlpha = 0.5;
+            ctx.globalAlpha = 0.6
         }
         ctx.beginPath();
         const [x, y] = this.anchor;
@@ -75,17 +75,17 @@ class Diamond extends Node {
         ctx.quadraticCurveTo(left, y, left + cosSIDE, y - sinSIDE);
         ctx.lineTo(leftCenter - cosSIDE, top + sinSIDE);
         ctx.quadraticCurveTo(leftCenter, top, leftCenter + side, top);
-        
+
         ctx.closePath();
 
         ctx.fillStyle = this.backgroundColor;
-        ctx.fill();     
+        ctx.fill();
         if(this.borderWidth) {
             ctx.lineWidth = this.borderWidth;
             ctx.strokeStyle = this.borderColor;
             ctx.stroke();
         }
-       
+
         // if(this._isTargeting) {
         //     this.renderFocus(ctx);
         // }
@@ -150,7 +150,7 @@ class Diamond extends Node {
         if(this._belongs && this._belongs.calculateToCoordination) {
             p2 = this._belongs.calculateToCoordination(p2);
         }
-        
+
         const [x2, y2] = p2;
         const w = this.width/2;
         const h = this.height/2;

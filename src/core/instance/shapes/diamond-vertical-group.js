@@ -22,7 +22,7 @@ class DiamondVerticalGroup extends Diamond {
         this.renderGroup(ctx, () => {
             ctx.save();
             if(this._isMoving){
-                ctx.globalAlpha = 0.5;
+                ctx.globalAlpha = 0.6
             }
             ctx.beginPath();
             const [x, y] = this.anchor;
@@ -45,7 +45,7 @@ class DiamondVerticalGroup extends Diamond {
             ctx.lineTo(xleft, topmiddle);
             ctx.closePath();
             ctx.fillStyle = this.backgroundColor;
-            ctx.fill();     
+            ctx.fill();
             if(this.borderWidth) {
                 ctx.lineWidth = this.borderWidth;
                 ctx.strokeStyle = this.borderColor;
@@ -85,7 +85,7 @@ Object.assign(DiamondVerticalGroup.prototype, {
         const definedWidth = this.definedWidth - padding.left - padding.right;
         const w = bbox.width + padding.left + padding.right;
         const h = anchorsbbox.height + w / 1.732 + padding.top + padding.bottom;
-        
+
         this.width = minWidth ? Math.max(minWidth, w) : definedWidth || w;
         this.height = this.definedHeight || h;
     },

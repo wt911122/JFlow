@@ -24,7 +24,7 @@ function createInputElement() {
 const TEXT_ALIGN = {
     CENTER: 'center',
     LEFT: 'left',
-    RIGHT: 'right',    
+    RIGHT: 'right',
 };
 /**
  * 文字单元 配置
@@ -104,20 +104,20 @@ class Text extends Rectangle {
                 inputElement.addEventListener("focus",  () => {
                     this.content = '';
                     this._jflow._render();
-                    inputElement.style.outline = "none";  
+                    inputElement.style.outline = "none";
                 });
                 let blurHandler = () => {
                     if(this.acceptPatten){
-                        
+
                     } else {
                         const val = inputElement.value;
                         /**
                          * 文字改变事件
                          * @event Text#change
                          * @type {object}
-                         * @property {Text} target           - 当前文字对象 
-                         * @property {String} oldVal         - 原始文字 
-                         * @property {String} val            - 当前文字 
+                         * @property {Text} target           - 当前文字对象
+                         * @property {String} oldVal         - 原始文字
+                         * @property {String} val            - 当前文字
                          */
                         this.dispatchEvent(new JFlowEvent('change', {
                             target: this,
@@ -167,7 +167,7 @@ class Text extends Rectangle {
         } else {
             this.height = height;
         }
-        
+
     }
 
     setConfig(configs) {
@@ -185,7 +185,7 @@ class Text extends Rectangle {
     render(ctx) {
         ctx.save();
         if(this._isMoving){
-            ctx.globalAlpha = 0.5;
+            ctx.globalAlpha = 0.6
         }
         // this.renderShadowText(ctx);
 

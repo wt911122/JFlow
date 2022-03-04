@@ -78,9 +78,9 @@ class Rectangle extends Node {
     render(ctx) {
         ctx.save();
         if(this._isMoving){
-            ctx.globalAlpha = 0.5;
+            ctx.globalAlpha = 0.6
         }
-       
+
         const {
             borderRadius: radius, anchor, width, height
         } = this;
@@ -116,7 +116,7 @@ class Rectangle extends Node {
             ctx.shadowOffsetX = this.shadowOffsetX;
             ctx.shadowOffsetY = this.shadowOffsetY;
         }
-        ctx.fill(); 
+        ctx.fill();
         if(this.borderRadius) {
             if(this.border.top.enable) {
                 ctx.save();
@@ -126,10 +126,10 @@ class Rectangle extends Node {
                 ctx.lineTo(x + width - radius, y);
                 ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
                 ctx.closePath();
-                
+
                 // ctx.fill();
                 ctx.clip();
-                
+
                 ctx.beginPath();
                 ctx.rect(x, y, this.width, this.border.top.width);
                 ctx.fillStyle = this.border.top.color;
@@ -207,9 +207,9 @@ class Rectangle extends Node {
         const anchor = this.anchor;
         const w = this.width /2;
         const h = this.height/2;
-        return point[0] > anchor[0] - w 
-            && point[0] < anchor[0] + w 
-            && point[1] > anchor[1] - h 
+        return point[0] > anchor[0] - w
+            && point[0] < anchor[0] + w
+            && point[1] > anchor[1] - h
             && point[1] < anchor[1] + h;
     }
 
@@ -263,7 +263,7 @@ class Rectangle extends Node {
         if(this._belongs && this._belongs.calculateToCoordination) {
             p2 = this._belongs.calculateToCoordination(p2);
         }
-        
+
         const [x2, y2] = p2;
         const w = this.width/2;
         const h = this.height/2;
@@ -274,14 +274,14 @@ class Rectangle extends Node {
             [DIRECTION.TOP]:    [x2, y2-h],
         }
     }
-  
+
     calculateIntersectionInFourDimension(point, end) {
         const [x1, y1] = point;
         let p2 = this.anchor;
         if(this._belongs && this._belongs.calculateToCoordination) {
             p2 = this._belongs.calculateToCoordination(p2);
         }
-        
+
         const [x2, y2] = p2;
         const w = this.width/2;
         const h = this.height/2;
@@ -297,8 +297,8 @@ class Rectangle extends Node {
         const theta2 = Math.abs(vecy/vecx);
         const dirx = x1 > x2;
         const diry = y1 > y2;
-        let interDir = (theta2 > theta1 
-            ? (diry ? DIRECTION.BOTTOM : DIRECTION.TOP) 
+        let interDir = (theta2 > theta1
+            ? (diry ? DIRECTION.BOTTOM : DIRECTION.TOP)
             : (dirx ? DIRECTION.RIGHT : DIRECTION.LEFT));
 
         // if(this._belongs && this._belongs.calculateToCoordination) {
@@ -309,7 +309,7 @@ class Rectangle extends Node {
         // if(this._belongs && this._belongs.calculateToCoordination) {
         //     console.log(interDir)
         // }
-        
+
         // if(!interDir) {
         //     debugger
         // }

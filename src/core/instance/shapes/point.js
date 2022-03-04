@@ -22,12 +22,12 @@ class Point extends Node {
     render(ctx) {
         ctx.save();
         if(this._isMoving){
-            ctx.globalAlpha = 0.5;
+            ctx.globalAlpha = 0.6
         }
         ctx.beginPath();
         ctx.arc(this.anchor[0], this.anchor[1], this.radius, 0, 2 * Math.PI);
         ctx.fillStyle = this.backgroundColor;
-        ctx.fill();   
+        ctx.fill();
         if(this.borderWidth) {
             ctx.lineWidth = this.borderWidth;
             ctx.strokeStyle = this.borderColor;
@@ -106,7 +106,7 @@ class Point extends Node {
         //     }
         // }
         let interDir = (Math.abs(vecy) > Math.abs(vecx)
-            ? (vecy < 0 ? DIRECTION.BOTTOM : DIRECTION.TOP) 
+            ? (vecy < 0 ? DIRECTION.BOTTOM : DIRECTION.TOP)
             : (vecx < 0 ? DIRECTION.RIGHT : DIRECTION.LEFT));
 
         // interDir = this.checkLinked(interDir, end);
@@ -122,7 +122,7 @@ class Point extends Node {
             height: this.radius * 2,
         }
     }
-    
+
 }
 
 export default Point;

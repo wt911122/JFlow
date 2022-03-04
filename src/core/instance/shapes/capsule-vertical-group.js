@@ -18,7 +18,7 @@ class CapsuleVerticalGroup extends Capsule {
         this.renderGroup(ctx, () => {
             ctx.save();
             if(this._isMoving){
-                ctx.globalAlpha = 0.5;
+                ctx.globalAlpha = 0.6
             }
             ctx.beginPath();
             const [x, y] = this.anchor;
@@ -28,7 +28,7 @@ class CapsuleVerticalGroup extends Capsule {
             const bottomCenter = y + hh - hw;
             const left = x - hw;
             const right = x + hw;
-            
+
             ctx.moveTo(left, topCenter);
             ctx.arc(x, topCenter, hw, -Math.PI, 0);
             ctx.lineTo(right, bottomCenter);
@@ -36,7 +36,7 @@ class CapsuleVerticalGroup extends Capsule {
             ctx.closePath();
 
             ctx.fillStyle = this.backgroundColor;
-            ctx.fill();     
+            ctx.fill();
             if(this.borderWidth) {
                 ctx.lineWidth = this.borderWidth;
                 ctx.strokeStyle = this.borderColor;
@@ -61,10 +61,10 @@ class CapsuleVerticalGroup extends Capsule {
         const topCenter = y - hh + hw;
         const bottomCenter = y + hh - hw;
         const rr = hw * hw;
-        return (point[0] > x - hw 
-            && point[0] < x + hw 
-            && point[1] > y - yy 
-            && point[1] < y + yy)  
+        return (point[0] > x - hw
+            && point[0] < x + hw
+            && point[1] > y - yy
+            && point[1] < y + yy)
             || ( Math.pow(point[0] - x, 2) + Math.pow(point[1] - topCenter, 2) < rr)
             || ( Math.pow(point[0] - x, 2) + Math.pow(point[1] - bottomCenter, 2) < rr)
     }

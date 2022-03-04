@@ -23,7 +23,7 @@ class Capsule extends Node {
     render(ctx) {
         ctx.save();
         if(this._isMoving){
-            ctx.globalAlpha = 0.5;
+            ctx.globalAlpha = 0.6
         }
         ctx.beginPath();
         const [x, y] = this.anchor;
@@ -41,7 +41,7 @@ class Capsule extends Node {
         ctx.arc(leftCenter, y, hh, Math.PI/2, Math.PI/2*3);
 
         ctx.fillStyle = this.backgroundColor;
-        ctx.fill();     
+        ctx.fill();
         if(this.borderWidth) {
             ctx.lineWidth = this.borderWidth;
             ctx.strokeStyle = this.borderColor;
@@ -61,10 +61,10 @@ class Capsule extends Node {
         const leftCenter = anchor[0] - hw + hh;
         const rightCenter = anchor[0] + hw - hh;
         const rr = hh * hh;
-        return (point[0] > anchor[0] - ww 
-            && point[0] < anchor[0] + ww 
-            && point[1] > anchor[1] - hh 
-            && point[1] < anchor[1] + hh) 
+        return (point[0] > anchor[0] - ww
+            && point[0] < anchor[0] + ww
+            && point[1] > anchor[1] - hh
+            && point[1] < anchor[1] + hh)
             || ( Math.pow(point[0] - leftCenter, 2) + Math.pow(point[1] - anchor[1], 2) < rr)
             || ( Math.pow(point[0] - rightCenter, 2) + Math.pow(point[1] - anchor[1], 2) < rr)
     }
@@ -97,7 +97,7 @@ class Capsule extends Node {
         if(this._belongs && this._belongs.calculateToCoordination) {
             p2 = this._belongs.calculateToCoordination(p2);
         }
-        
+
         const [x2, y2] = p2;
         const w = this.width/2;
         const h = this.height/2;

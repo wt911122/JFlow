@@ -17,13 +17,13 @@ class Rhombus extends Node {
         super(configs);
         this.type =             'Rhombus';
         this.height =           configs.diagonalsV || 10;
-        this.width =            configs.diagonalsH || 20; 
+        this.width =            configs.diagonalsH || 20;
     }
 
     render(ctx) {
         ctx.save();
         if(this._isMoving){
-            ctx.globalAlpha = 0.5;
+            ctx.globalAlpha = 0.6
         }
         const w = this.width / 2;
         const h = this.height / 2;
@@ -48,7 +48,7 @@ class Rhombus extends Node {
             ctx.shadowOffsetX = this.shadowOffsetX;
             ctx.shadowOffsetY = this.shadowOffsetY;
         }
-        ctx.fill(); 
+        ctx.fill();
         ctx.translate(-center[0], -center[1])
         ctx.restore();
     }
@@ -90,7 +90,7 @@ class Rhombus extends Node {
         if(this._belongs && this._belongs.calculateToCoordination) {
             p2 = this._belongs.calculateToCoordination(p2);
         }
-        
+
         const [x2, y2] = p2;
         const w = this.width/2;
         const h = this.height/2;

@@ -57,7 +57,7 @@ class Icon extends Rectangle {
     render(ctx) {
         ctx.save();
         if(this._isMoving){
-            ctx.globalAlpha = 0.5;
+            ctx.globalAlpha = 0.6
         }
         Rectangle.prototype.render.call(this, ctx);
         const x = this.anchor[0] - this.width / 2;
