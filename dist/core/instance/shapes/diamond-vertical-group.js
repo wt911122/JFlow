@@ -83,7 +83,7 @@ var DiamondVerticalGroup = /*#__PURE__*/function (_Diamond) {
         ctx.save();
 
         if (_this2._isMoving) {
-          ctx.globalAlpha = 0.5;
+          ctx.globalAlpha = 0.6;
         }
 
         ctx.beginPath();

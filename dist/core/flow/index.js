@@ -883,49 +883,52 @@ var JFlow = /*#__PURE__*/function (_EventTarget) {
       this._zooming = true;
       var offsetX = event.offsetX,
           offsetY = event.offsetY,
+          deltaX = event.deltaX,
           deltaY = event.deltaY;
 
       if (event.ctrlKey) {
         deltaY = -deltaY;
+        var _this$bounding_box3 = this.bounding_box,
+            p_width = _this$bounding_box3.width,
+            p_height = _this$bounding_box3.height,
+            x = _this$bounding_box3.x,
+            y = _this$bounding_box3.y;
+        var newScale = this.scale;
+        var amount = deltaY > 0 ? 1.1 : 1 / 1.1;
+        newScale *= amount;
+
+        if (this.maxZoom && newScale > this.maxZoom) {
+          // could just return but then won't stop exactly at maxZoom
+          newScale = this.maxZoom;
+        }
+
+        if (this.minZoom && newScale < this.minZoom) {
+          newScale = this.minZoom;
+        }
+
+        var deltaScale = newScale - this.scale;
+        var currentWidth = p_width * this.scale;
+        var currentHeight = p_height * this.scale;
+        var deltaWidth = p_width * deltaScale;
+        var deltaHeight = p_height * deltaScale;
+        var tX = offsetX - this.position.x;
+        var tY = offsetY - this.position.y;
+        var pX = -tX / currentWidth;
+        var pY = -tY / currentHeight;
+        this.scale = newScale;
+        this.position.x += pX * deltaWidth;
+        this.position.y += pY * deltaHeight;
+        this.position.offsetX = this.position.x - x * newScale;
+        this.position.offsetY = this.position.y - y * newScale;
+      } else {
+        this._recalculatePosition(-deltaX, -deltaY);
       }
-
-      var _this$bounding_box3 = this.bounding_box,
-          p_width = _this$bounding_box3.width,
-          p_height = _this$bounding_box3.height,
-          x = _this$bounding_box3.x,
-          y = _this$bounding_box3.y;
-      var newScale = this.scale;
-      var amount = deltaY > 0 ? 1.1 : 1 / 1.1;
-      newScale *= amount;
-
-      if (this.maxZoom && newScale > this.maxZoom) {
-        // could just return but then won't stop exactly at maxZoom
-        newScale = this.maxZoom;
-      }
-
-      if (this.minZoom && newScale < this.minZoom) {
-        newScale = this.minZoom;
-      }
-
-      var deltaScale = newScale - this.scale;
-      var currentWidth = p_width * this.scale;
-      var currentHeight = p_height * this.scale;
-      var deltaWidth = p_width * deltaScale;
-      var deltaHeight = p_height * deltaScale;
-      var tX = offsetX - this.position.x;
-      var tY = offsetY - this.position.y;
-      var pX = -tX / currentWidth;
-      var pY = -tY / currentHeight;
-      this.scale = newScale;
-      this.position.x += pX * deltaWidth;
-      this.position.y += pY * deltaHeight;
-      this.position.offsetX = this.position.x - x * newScale;
-      this.position.offsetY = this.position.y - y * newScale;
       /**
        * 缩放平移事件
        *
        * @event JFlow#zoompan
       */
+
 
       this.dispatchEvent(new _events["default"]('zoompan'));
       requestAnimationFrame(function () {
@@ -1011,8 +1014,32 @@ var JFlow = /*#__PURE__*/function (_EventTarget) {
           offsetY = event.offsetY,
           clientX = event.clientX,
           clientY = event.clientY;
+      this.canvas.style.cursor = 'default';
+
+      if (!dragging && !processing) {
+        var _this$_targetLockOn = this._targetLockOn([offsetX, offsetY]),
+            _link = _this$_targetLockOn.link,
+            _instance = _this$_targetLockOn.instance;
+
+        if (_instance) {
+          /**
+          * instance mousemove 原生事件
+          *
+          * @event JFlow#instancemousemove
+          * @type {object}
+          * @property {Event} event           - 原始事件
+          * @property {Node} instance           - 原始事件
+          * @property {JFlow} jflow           - 当前JFlow对象 
+          */
+          _instance.dispatchEvent(new _events["default"]('instancemousemove', {
+            event: event,
+            instance: _instance,
+            jflow: this
+          }));
+        }
+      }
       /**
-       * canvas pressmove 原生事件
+       * canvas mousemove 原生事件
        *
        * @event JFlow#canvasmousemove
        * @type {object}
@@ -1020,26 +1047,13 @@ var JFlow = /*#__PURE__*/function (_EventTarget) {
        * @property {JFlow} jflow           - 当前JFlow对象 
        */
 
+
       this.dispatchEvent(new _events["default"]('canvasmousemove', {
         event: event,
         jflow: this
       }));
-
-      if (!dragging && !processing) {
-        var _this$_targetLockOn = this._targetLockOn([offsetX, offsetY]),
-            _link = _this$_targetLockOn.link,
-            _instance = _this$_targetLockOn.instance; // console.log(offsetX, offsetY)
-        // if(instance || link) {
-        //     this.canvas.style.cursor = 'move';
-        // } else {
-        //     this.canvas.style.cursor = 'default';
-        // }
-
-      }
-
-      this.canvas.style.cursor = 'default';
       if (!dragging) return;
-      this.canvas.style.cursor = 'move';
+      this.canvas.style.cursor = 'grabbing';
       if (processing) return;
       var movingtarget = this._target.moving; // this._tempInstance ? [this._tempInstance] : this._target.moving;
 

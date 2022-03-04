@@ -179,9 +179,9 @@ var Text = /*#__PURE__*/function (_Rectangle) {
                * 文字改变事件
                * @event Text#change
                * @type {object}
-               * @property {Text} target           - 当前文字对象 
-               * @property {String} oldVal         - 原始文字 
-               * @property {String} val            - 当前文字 
+               * @property {Text} target           - 当前文字对象
+               * @property {String} oldVal         - 原始文字
+               * @property {String} val            - 当前文字
                */
 
               _this2.dispatchEvent(new _events["default"]('change', {
@@ -261,7 +261,7 @@ var Text = /*#__PURE__*/function (_Rectangle) {
       ctx.save();
 
       if (this._isMoving) {
-        ctx.globalAlpha = 0.5;
+        ctx.globalAlpha = 0.6;
       } // this.renderShadowText(ctx);
       // const {
       //     borderRadius: radius, anchor, width, height

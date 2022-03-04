@@ -111,7 +111,7 @@ var Icon = /*#__PURE__*/function (_Rectangle) {
       ctx.save();
 
       if (this._isMoving) {
-        ctx.globalAlpha = 0.5;
+        ctx.globalAlpha = 0.6;
       }
 
       _rectangle["default"].prototype.render.call(this, ctx);

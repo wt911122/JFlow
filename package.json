@@ -1,6 +1,6 @@
 {
   "name": "@joskii/jflow",
-  "version": "0.0.43-beta",
+  "version": "0.0.44-beta",
   "description": "",
   "main": "dist/index.js",
   "scripts": {

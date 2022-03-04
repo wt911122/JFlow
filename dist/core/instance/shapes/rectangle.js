@@ -149,7 +149,7 @@ var Rectangle = /*#__PURE__*/function (_Node) {
       ctx.save();
 
       if (this._isMoving) {
-        ctx.globalAlpha = 0.5;
+        ctx.globalAlpha = 0.6;
       }
 
       var radius = this.borderRadius,

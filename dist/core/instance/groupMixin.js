@@ -36,9 +36,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /**
  * Group mixin 配置
  * @typedef {Object} GroupMixin~GroupConfigs
- * @property {number} width             - 设定宽度 
- * @property {number} minWidth          - 最小宽度 
- * @property {number} height            - 设定高度 
+ * @property {number} width             - 设定宽度
+ * @property {number} minWidth          - 最小宽度
+ * @property {number} height            - 设定高度
  * @property {number} padding          - 内边距
  * @property {number} paddingTop          - 内上边距
  * @property {number} paddingRight         - 内右边距
@@ -121,7 +121,7 @@ var GroupMixin = _objectSpread(_objectSpread(_objectSpread({}, _stackMixin["defa
     ctx.save();
 
     if (this._isMoving) {
-      ctx.globalAlpha = 0.5;
+      ctx.globalAlpha = 0.6;
     } // this._getBoundingGroupRect();
 
 
