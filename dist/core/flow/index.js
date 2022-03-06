@@ -237,6 +237,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
  * @property {Boolean} allowDrop      - 是否允许 dragdrop
  * @property {Number} maxZoom         - 最大缩放
  * @property {Number} minZoom         - 最小缩放
+ * @property {number} initialZoom     - 初始缩放比
  */
 
 /**
@@ -295,6 +296,7 @@ var JFlow = /*#__PURE__*/function (_EventTarget) {
 
     _this.position = null;
     _this.scale = null;
+    _this.initialZoom = configs.initialZoom;
     _this.maxZoom = configs.maxZoom || 3;
     _this.minZoom = configs.minZoom || .5; // this.initScale = 1;
     // this.initPosition = null
@@ -435,7 +437,14 @@ var JFlow = /*#__PURE__*/function (_EventTarget) {
       var w_ratio = contentBox.width / p_width;
       var h_ratio = contentBox.height / p_height;
       var align = w_ratio <= h_ratio ? 'x' : 'y';
-      var scaleRatio = Math.min(w_ratio, h_ratio);
+      var scaleRatio;
+
+      if (this.initialZoom) {
+        scaleRatio = this.initialZoom;
+      } else {
+        scaleRatio = Math.min(w_ratio, h_ratio);
+      }
+
       this.scale = scaleRatio;
 
       if (scaleRatio > this.maxZoom) {
@@ -444,8 +453,7 @@ var JFlow = /*#__PURE__*/function (_EventTarget) {
 
       if (scaleRatio < this.minZoom) {
         this.minZoom = scaleRatio;
-      } // this.initScale = scaleRatio;
-
+      }
 
       position.x = align === 'x' ? contentBox.x : (contentBox.width - p_width * scaleRatio) / 2 + padding;
       position.y = align === 'y' ? contentBox.y : (contentBox.height - p_height * scaleRatio) / 2 + padding;
