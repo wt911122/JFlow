@@ -12,6 +12,7 @@ import JFlowEvent from '../events';
  * @property {Boolean} allowDrop      - 是否允许 dragdrop
  * @property {Number} maxZoom         - 最大缩放
  * @property {Number} minZoom         - 最小缩放
+ * @property {number} initialZoom     - 初始缩放比
  */
 
 /**
@@ -56,6 +57,7 @@ class JFlow extends EventTarget{
          */
         this.position = null;
 		this.scale = null;
+        this.initialZoom = configs.initialZoom;
         this.maxZoom = configs.maxZoom || 3;
         this.minZoom = configs.minZoom || .5;
 		// this.initScale = 1;
@@ -181,7 +183,13 @@ class JFlow extends EventTarget{
         const w_ratio = contentBox.width / p_width;
         const h_ratio = contentBox.height / p_height;
         const align = w_ratio <= h_ratio ? 'x' : 'y';
-        const scaleRatio = Math.min(w_ratio, h_ratio);
+        let scaleRatio;
+        if(this.initialZoom) {
+            scaleRatio = this.initialZoom;
+        } else {
+            scaleRatio = Math.min(w_ratio, h_ratio);
+        }
+       
         this.scale = scaleRatio;
         if(scaleRatio > this.maxZoom) {
             this.maxZoom = scaleRatio;
@@ -189,7 +197,7 @@ class JFlow extends EventTarget{
         if(scaleRatio < this.minZoom) {
             this.minZoom = scaleRatio;
         }
-        // this.initScale = scaleRatio;
+
         position.x = align === 'x' ? contentBox.x : (contentBox.width - p_width * scaleRatio) / 2 + padding
         position.y = align === 'y' ? contentBox.y : (contentBox.height - p_height * scaleRatio) / 2 + padding
         position.offsetX = position.x - x * scaleRatio;
