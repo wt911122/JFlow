@@ -294,8 +294,6 @@ var JFlow = /*#__PURE__*/function (_EventTarget) {
      * @member {number} dpr           - 设备DPR
      * @member {number} padding       - 内边距
      */
-    // TODO 引入 plugin 拓展
-    // this.plugins = [];
 
 
     _this.ctx = null;
@@ -362,10 +360,7 @@ var JFlow = /*#__PURE__*/function (_EventTarget) {
     _this.allowDrop = configs.allowDrop;
     _this._tempInstance = null;
     return _this;
-  } // use(plugin) {
-  //     this.plugins.push(plugin)
-  // }
-
+  }
   /**
    * 设置当前拖动的 JFlow 对象
    * @param {Instance} instance - JFlow 对象
@@ -380,7 +375,7 @@ var JFlow = /*#__PURE__*/function (_EventTarget) {
       Object.assign(this._target, {
         moving: [this._tempInstance],
         dragging: true
-      }); // this.addToStack(instance);
+      });
     }
     /**
      * 取消当前拖动的 JFlow 对象
