@@ -78,7 +78,7 @@
 
 <script>
 import { prettyPrintJson } from 'pretty-print-json';
-import { LinearLayout, Lowcodelayout, Rectangle, Point } from '@joskii/jflow';
+import { LinearLayout, Lowcodelayout, Rectangle, Point, commonEventAdapter } from '@joskii/jflow';
 // import './logic-components/assignment.vue'; // resolve Circular dependencies with logic-node!!!
 // import logicNode from './logic-components/logic-node';
 import variable from './components/variable.vue';
@@ -116,6 +116,7 @@ function getPath(object, condition) {
     iter(object, []);
     return path.join('.');
 }
+console.log(commonEventAdapter)
 let uniqueId = 0;
 export default {
     components: {
@@ -252,6 +253,8 @@ export default {
             configs: {
                 allowDrop: true,
                 layout,
+                initialZoom: 1,
+                eventAdapter: commonEventAdapter
             },
             isHover: false,
             offsetX: 0,

@@ -6,6 +6,7 @@ import LayoutMixin from '../instance/layoutMixin';
 import MessageMixin from '../instance/messageMixin';
 import { setUniqueId, getUniqueId } from '../utils/functions';
 import JFlowEvent from '../events';
+import EventAdapter from '../events/adapter';
 /**
  * @typedef JFlow~JFlowConfigs
  * @type {object}
@@ -13,6 +14,7 @@ import JFlowEvent from '../events';
  * @property {Number} maxZoom         - 最大缩放
  * @property {Number} minZoom         - 最小缩放
  * @property {number} initialZoom     - 初始缩放比
+ * @property {EventAdapter~pluginDef} eventAdapter
  */
 
 /**
@@ -34,26 +36,28 @@ class JFlow extends EventTarget{
     constructor(configs) {
         super();
         this.uniqueName = 'jflow';
+        /**
+         * @member {EventAdapter} eventAdapter    - eventAdapter 对象
+         **/
+        this.eventAdapter = new EventAdapter(configs.eventAdapter);
         this.initStack(configs);
         this.initLayout(configs);
         /**
-         * @property {Context2d} ctx        - Context2d 对象
-         * @property {Element} canvas       - canvas 元素
-         * @property {number} dpr           - 设备DPR
-         * @property {number} padding       - 内边距
+         * @member {Context2d} ctx        - Context2d 对象
+         * @member {Element} canvas       - canvas 元素
+         * @member {number} dpr           - 设备DPR
+         * @member {number} padding       - 内边距
          */
-        // TODO 引入 plugin 拓展
-        // this.plugins = [];
         this.ctx = null;
         this.canvas = null;
         this.dpr = 1;
         this.padding = 20;
         /**
          * for zoom and pinch
-         * @property {Context2d} position       - 平移位置
-         * @property {Element} scale            - 当前缩放比
-         * @property {number} maxZoom           - 最大缩放比
-         * @property {number} minZoom           - 最小缩放比
+         * @member {Context2d} position       - 平移位置
+         * @member {Element} scale            - 当前缩放比
+         * @member {number} maxZoom           - 最大缩放比
+         * @member {number} minZoom           - 最小缩放比
          */
         this.position = null;
 		this.scale = null;
@@ -111,11 +115,6 @@ class JFlow extends EventTarget{
         this.allowDrop = configs.allowDrop;
         this._tempInstance = null;
     }
-
-    // use(plugin) {
-    //     this.plugins.push(plugin)
-    // }
-
     /**
      * 设置当前拖动的 JFlow 对象
      * @param {Instance} instance - JFlow 对象
@@ -127,7 +126,6 @@ class JFlow extends EventTarget{
             moving: [this._tempInstance],
             dragging: true,
         })
-        // this.addToStack(instance);
     }
 
     /**
@@ -205,39 +203,6 @@ class JFlow extends EventTarget{
         this.position = position;
         this._render();
     }
-    // _resetPosition() {
-    //     const padding = this.padding;
-    //     const {
-    //         c_width,
-    //         c_height,
-    //     } =  this.canvasMeta;
-    //     const { width: p_width, height: p_height, x, y } = this.bounding_box;
-    //     console.log(this.bounding_box)
-    //     const contentBox = {
-    //         x: padding,
-    //         y: padding,
-    //         width: c_width - padding * 2,
-    //         height: c_height - padding * 2,
-    //     }
-    //     const position = { x: 0, y: 0, offsetX: 0, offsetY: 0 };
-    //     const w_ratio = contentBox.width / p_width;
-    //     const h_ratio = contentBox.height / p_height;
-    //     const align = w_ratio <= h_ratio ? 'x' : 'y';
-    //     const scaleRatio = Math.min(w_ratio, h_ratio);
-    //     this.scale = scaleRatio;
-    //     if(scaleRatio > this.maxZoom) {
-    //         this.maxZoom = scaleRatio;
-    //     }
-    //     if(scaleRatio < this.minZoom) {
-    //         this.minZoom = scaleRatio;
-    //     }
-    //     // this.initScale = scaleRatio;
-    //     position.x = align === 'x' ? contentBox.x : (contentBox.width - p_width * scaleRatio) / 2 + padding
-    //     position.y = align === 'y' ? contentBox.y : (contentBox.height - p_height * scaleRatio) / 2 + padding
-    //     position.offsetX = position.x - x * scaleRatio;
-    //     position.offsetY = position.y - y * scaleRatio;
-    //     this.position = position;
-    // }
     
     _getBoundingGroupRect() {
         const points = this._stack.getBoundingRectPoints();
@@ -255,50 +220,12 @@ class JFlow extends EventTarget{
         }
     }
 
-    // $setFocus(instance) {
-    //     if(this._lastFocus.processing) return;
-    //     this._lastFocus.processing = true;
-    //     if(this._lastFocus.instance){
-    //         this._lastFocus.instance.status.focus = false;
-    //     }
-        
-    //     this._lastFocus.instance = instance;
-    //     if(instance) {
-    //         instance.status.focus = true;
-    //         instance.bubbleEvent(new JFlowEvent('focus'))
-    //     }
-
-    //     requestAnimationFrame(() => {
-    //         this._render();
-    //         this._lastFocus.processing = false;
-    //     })
-
-    // }
-
     _createEventHandler() { 
         const canvas = this.canvas;
-        const zoomHandler = this._onZoom.bind(this);
-        const pressStartHandler = this._onPressStart.bind(this);
-        const pressMoveHandler = this._onPressMove.bind(this);
-        const pressUpHandler = this._onPressUp.bind(this);
-        const pressUpDocument = this._onPressUpDocument.bind(this);
-        const contextmenuHandler = this._onContextMenu.bind(this);
-        canvas.addEventListener('wheel', zoomHandler );
-        canvas.addEventListener('contextmenu', e => {
-            e.preventDefault();
-        });
-        canvas.addEventListener('pointerdown', pressStartHandler );
-        canvas.addEventListener('pointermove', pressMoveHandler );
-        canvas.addEventListener('pointerup', pressUpHandler );
-        canvas.addEventListener('contextmenu', contextmenuHandler)
-        document.addEventListener('pointerup', pressUpDocument);
         let destroyListener;
+        this.eventAdapter.apply(this);
         const destroyPlainEventListener = () => {
-            canvas.removeEventListener('wheel', zoomHandler );
-            canvas.removeEventListener('pointerdown', pressStartHandler );
-            canvas.removeEventListener('pointermove', pressMoveHandler );
-            canvas.removeEventListener('pointerup', pressUpHandler );
-            document.removeEventListener('pointerup', pressUpDocument);
+            this.eventAdapter.unload(this);
         }
         destroyListener = destroyPlainEventListener;
 
@@ -455,28 +382,7 @@ class JFlow extends EventTarget{
         })
         this._targetLockOn([offsetX, offsetY])
         const instance = this._target.instance || this._target.link;
-        // console.log(event)
-        // if (instance) {
-        //     event.dataTransfer.dropEffect = 'copy';
-        // }
         this._processDragOver(instance, event);
-        // if(this._dragOverTarget !== instance) {
-        //     if(instance) {
-        //         instance.dispatchEvent(new JFlowEvent('dragover', {
-        //             event,
-        //             instance,
-        //         }));
-        //     }
-        //     if(this._dragOverTarget) {
-        //         const oldIns = this._dragOverTarget;
-        //         oldIns.dispatchEvent(new JFlowEvent('dragoverend', {
-        //             event,
-        //             instance: oldIns,
-        //         }));
-        //     }
-        //     this._dragOverTarget = instance;
-        // }
-        
         if(this._target.isLinkDirty || this._target.isInstanceDirty) {
             Promise.resolve().then(() => {
                 this._render();    
@@ -570,56 +476,71 @@ class JFlow extends EventTarget{
         }
         
         requestAnimationFrame(() => {
-            // this.recalculate();
             this._target.instance = null;
             this._target.link = null;
             Object.assign(this._target.status, {
                dragovering: false,
             })
-            // this._render();
         })
     }
-
-    _onZoom(event) {
-        event.preventDefault();
+    
+    /**
+     * 缩放操作处理函数
+     * @param {Number} offsetX - 事件对象与canvas的内填充边（padding edge）在 X 轴方向上的偏移量。
+     * @param {Number} offsetY - 事件对象与canvas的内填充边（padding edge）在 Y 轴方向上的偏移量。 
+     * @param {Number} deltaX  - 水平滚动量
+     * @param {Number} deltaY  - 垂直滚动量
+     * @param {Number} event - 原生事件
+     */
+    zoomHandler(offsetX, offsetY, deltaX, deltaY, event) {
         if(this._zooming) return;
         this._zooming = true;
-        let { offsetX, offsetY, deltaX, deltaY } = event
-        if(event.ctrlKey) { 
-            deltaY = -deltaY;
-            const { width: p_width, height: p_height, x, y } = this.bounding_box;
-            let newScale = this.scale;
-            const amount = deltaY > 0 ? 1.1 : 1 / 1.1;
-            newScale *= amount;
+        const { width: p_width, height: p_height, x, y } = this.bounding_box;
+        let newScale = this.scale;
+        const amount = deltaY > 0 ? 1.1 : 1 / 1.1;
+        newScale *= amount;
 
-            if (this.maxZoom && newScale > this.maxZoom){
-                // could just return but then won't stop exactly at maxZoom
-                newScale = this.maxZoom;
-            }
-
-            if(this.minZoom && newScale < this.minZoom) {
-                newScale = this.minZoom;
-            }
-
-            var deltaScale    = newScale - this.scale;
-            var currentWidth  = p_width * this.scale;
-            var currentHeight = p_height * this.scale;
-            var deltaWidth    = p_width * deltaScale;
-            var deltaHeight   = p_height * deltaScale;
-
-            var tX = offsetX - this.position.x;
-            var tY = offsetY - this.position.y;
-            var pX = -tX / currentWidth;
-            var pY = -tY / currentHeight;
-
-            this.scale = newScale;
-            this.position.x += pX * deltaWidth;
-            this.position.y += pY * deltaHeight;
-            this.position.offsetX = this.position.x - x * newScale;
-            this.position.offsetY = this.position.y - y * newScale;
-        } else {
-            this._recalculatePosition(-deltaX, -deltaY);
+        if (this.maxZoom && newScale > this.maxZoom){
+            // could just return but then won't stop exactly at maxZoom
+            newScale = this.maxZoom;
         }
+
+        if(this.minZoom && newScale < this.minZoom) {
+            newScale = this.minZoom;
+        }
+
+        var deltaScale    = newScale - this.scale;
+        var currentWidth  = p_width * this.scale;
+        var currentHeight = p_height * this.scale;
+        var deltaWidth    = p_width * deltaScale;
+        var deltaHeight   = p_height * deltaScale;
+
+        var tX = offsetX - this.position.x;
+        var tY = offsetY - this.position.y;
+        var pX = -tX / currentWidth;
+        var pY = -tY / currentHeight;
+
+        this.scale = newScale;
+        this.position.x += pX * deltaWidth;
+        this.position.y += pY * deltaHeight;
+        this.position.offsetX = this.position.x - x * newScale;
+        this.position.offsetY = this.position.y - y * newScale;
+        this.dispatchEvent(new JFlowEvent('zoompan'));
+        requestAnimationFrame(() => {
+            this._render();
+            this._zooming = false;
+        })
+    }
+    /**
+     * 平移画布操作处理函数
+     * @param {Number} deltaX  - 水平滚动量
+     * @param {Number} deltaY  - 垂直滚动量
+     * @param {Number} event - 原生事件
+     */
+    panHandler(deltaX, deltaY, event) {
+        if(this._panning) return;
+        this._panning = true;
+        this._recalculatePosition(deltaX, deltaY);
         /**
          * 缩放平移事件
          *
@@ -628,14 +549,16 @@ class JFlow extends EventTarget{
         this.dispatchEvent(new JFlowEvent('zoompan'));
         requestAnimationFrame(() => {
             this._render();
-            this._zooming = false;
+            this._panning = false;
         })
     }
-
-    _onPressStart(event) { 
-        const { offsetX, offsetY, deltaY, button } = event
-        console.log('pressStart', event)
-        if(button !== 0) return;
+    /**
+     * 开始按压处理函数
+     * @param {Number} offsetX - 事件对象与canvas的内填充边（padding edge）在 X 轴方向上的偏移量。
+     * @param {Number} offsetY - 事件对象与canvas的内填充边（padding edge）在 Y 轴方向上的偏移量。 
+     * @param {Number} event - 原生事件
+     */
+    pressStartHandler(offsetX, offsetY, event) {
         this._targetLockOn([offsetX, offsetY], 'pressStart');
         Object.assign(this._target.meta, {
             initialX: offsetX,
@@ -682,21 +605,19 @@ class JFlow extends EventTarget{
                 bubbles: true,
             }))
         }
-
     }
-
-    _onPressMove(event) {
-        // console.log('_onPressMove')
+    /**
+     * 按压中处理函数
+     * @param {Number} offsetX - 事件对象与canvas的内填充边（padding edge）在 X 轴方向上的偏移量。
+     * @param {Number} offsetY - 事件对象与canvas的内填充边（padding edge）在 Y 轴方向上的偏移量。 
+     * @param {Number} event - 原生事件
+     */
+    pressMoveHandler(offsetX, offsetY, event) {
         const {
             dragging, processing
         } = this._target.status;
         const { x, y } = this._target.meta;
-
-        const { offsetX, offsetY, clientX, clientY } = event
-        
         this.canvas.style.cursor = 'default';
-        
-
         if(!dragging && !processing) {
             const {
                 link,
@@ -752,51 +673,22 @@ class JFlow extends EventTarget{
             this.dispatchEvent(new JFlowEvent('zoompan'));
         }
         const { instance, link } = this._targetLockOn([offsetX, offsetY]);
-        // console.log(instance);
         this._processDragOver(instance || link, event);
             
-        // this._target.meta.x = offsetX;
-        // this._target.meta.y = offsetY;
-        
         requestAnimationFrame(() => {
             this._render();
             this._target.isLinkDirty = false; 
             this._target.isInstanceDirty = false;
             this._target.status.processing = false;
         })
-        
     }
-
-    _onPressUp(event, isDocument) {
-        event.preventDefault();
-        event.stopPropagation();
-        const { button } = event
-        if(button !== 0) return;
+    /**
+     * 按压结束处理函数
+     * @param {Boolean} isDocument - 是否为 document 触发
+     * @param {Number} event - 原生事件
+     */
+    pressUpHanlder(isDocument, event) {
         const meta = this._target.meta;
-        // if(meta.initialX === undefined && isDocument) {
-        //     this.dispatchEvent(new JFlowEvent('click', {
-        //         event,
-        //         jflow: this,
-        //     }));
-        //     return;
-        // }
-        
-        // if(this._tempInstance) {
-        //     this.dispatchEvent(new JFlowEvent('canvasmouseup', {
-        //         event,
-        //         jflow: this,
-        //     }));
-        //     this._clearTarget();
-        //     return;
-        // } else {
-        //     // 没有设置也需要触发事件
-        //     this.dispatchEvent(new JFlowEvent('canvasmouseup', {
-        //         event,
-        //         jflow: this,
-        //     }));
-        // }
-        
-        
         if(meta.initialX === meta.x
             && meta.initialY === meta.y) {
                 if(event.target !== this.canvas){
@@ -854,15 +746,6 @@ class JFlow extends EventTarget{
                 } = this._target.cache;
                 const link = this._target.link;
                 const instance = this._getMovingTarget();
-                // instance.anchor = point;
-                // belongs.addInstanceToLink(this._target.link, instance);
-                // belongs.dispatchEvent(new JFlowEvent('drop', {
-                //     event,
-                //     instance,
-                //     link: ,
-                //     jflow: this,
-                //     target,
-                // }))
                 /**
                  * 拖动到线上事件
                  *
@@ -880,23 +763,9 @@ class JFlow extends EventTarget{
                     link,
                     jflow: this,
                     belongs,
-                    // reflowCallback: () => {
-                    //     debugger
-                    //     belongs.recalculate();
-                    //     belongs.reflow();
-                    //     this._render();
-                    // }
                 }));
                 this._target.link = null;
                 this._target.instance = null;
-                // link.dispatchEvent(new JFlowEvent('dragover', {
-                //     event,
-                //     instance,
-                //     link,
-                //     jflow: this,
-                //     belongs,
-                // }))
-                // this.recalculate();
             }
             if(this._target.moving) {
                 if(this._target.instance) {
@@ -943,39 +812,13 @@ class JFlow extends EventTarget{
         }
         this._clearTarget();
     }
-
-    _clearTarget(){
-        Object.assign(this._target.meta, {
-            x: undefined,
-            y: undefined,
-            initialX: undefined,
-            initialY: undefined, 
-        })
-        Object.assign(this._target.status, {
-            dragging: false,
-            processing: false,
-        });
-        Object.assign(this._target, {
-            instance: null,
-            link: null,
-            moving: null,
-        });
-    }
-
-    _onPressUpDocument(event) {
-        this._onPressUp(event, true);
-    }
-
-    _onClick(event) {
-        const { offsetX, offsetY } = event;
-        const point = this._calculatePointBack([offsetX, offsetY]);
-        const target = this._stack.checkHit(point);
-    }
-
-    _onContextMenu(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        const { offsetX, offsetY } = event;
+    /**
+     * 菜单弹出处理函数
+     * @param {Number} offsetX - 事件对象与canvas的内填充边（padding edge）在 X 轴方向上的偏移量。
+     * @param {Number} offsetY - 事件对象与canvas的内填充边（padding edge）在 Y 轴方向上的偏移量。 
+     * @param {Number} event - 原生事件
+     */
+    contextMenuHanlder(offsetX, offsetY, event) {
         const {
             link,
             instance
@@ -1017,6 +860,65 @@ class JFlow extends EventTarget{
                 topLayerPoint,
             }));
         }
+    }
+
+    /*_onZoom(event) {
+        event.preventDefault();
+        let { offsetX, offsetY, deltaX, deltaY } = event
+        if(event.ctrlKey) { 
+            deltaY = -deltaY;
+            this.zoomHandler(offsetX, offsetY, deltaX, deltaY);
+        } else {
+            this.panHandler(-deltaX, -deltaY);
+        }
+    }
+
+    _onPressStart(event) { 
+        const { offsetX, offsetY, deltaY, button } = event
+        if(button !== 0) return;
+        this.pressStartHandler(offsetX, offsetY);
+    }
+
+    _onPressMove(event) {
+        const { offsetX, offsetY } = event
+        this.pressMoveHandler(offsetX, offsetY);
+    }
+
+    _onPressUp(event, isDocument) {
+        event.preventDefault();
+        event.stopPropagation();
+        const { button } = event
+        if(button !== 0) return;
+        this.pressUpHanlder(isDocument)
+    }
+
+    _onPressUpDocument(event) {
+        this._onPressUp(event, true);
+    }
+
+    _onContextMenu(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const { offsetX, offsetY } = event;
+        this.contextMenuHanlder(offsetX, offsetY);
+    }*/
+
+    _clearTarget(){
+        Object.assign(this._target.meta, {
+            x: undefined,
+            y: undefined,
+            initialX: undefined,
+            initialY: undefined, 
+        })
+        Object.assign(this._target.status, {
+            dragging: false,
+            processing: false,
+        });
+        Object.assign(this._target, {
+            instance: null,
+            link: null,
+            moving: null,
+        });
     }
 
     _recalculatePosition(deltaX, deltaY, scale) {
@@ -1062,15 +964,6 @@ class JFlow extends EventTarget{
      */
     _render() {
         this._resetTransform();
-        // this._stack.forEach(instance => {
-        //     instance._intersections = [];
-        // });
-        // let linkStack = this._linkStack;
-        // if(this._layout.alignLinkOrder) {
-        //     const p = new InstanceStack();
-        //     this._layout.alignLinkOrder(linkStack, p);
-        //     linkStack = p;
-        // }
         const ctx = this.ctx;
         
         this._stack.render(ctx);
@@ -1080,7 +973,6 @@ class JFlow extends EventTarget{
             this._tempInstance.render(ctx)
             ctx.restore();
         }
-        
     }
 }
 Object.assign(JFlow.prototype, MessageMixin);
@@ -1089,6 +981,7 @@ Object.assign(JFlow.prototype, LayoutMixin);
 
 export default JFlow;
 export { default as JFlowEvent } from '../events';
+export { default as commonEventAdapter } from '../events/commonAdapter';
 export { default as Instance } from '../instance/instance';
 export { default as Node } from '../instance/node';
 export { default as BaseLink } from '../instance/base-link';

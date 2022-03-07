@@ -117,6 +117,9 @@ var _default2 = {
   created: function created() {
     this._jflowInstance = new _flow["default"](this.configs);
   },
+  beforeDestroy: function beforeDestroy() {
+    this._jflowInstance.destroy();
+  },
   mounted: function mounted() {
     var _this2 = this;
 

@@ -65,6 +65,9 @@ export default {
     created() {
         this._jflowInstance = new JFlow(this.configs);
     },
+    beforeDestroy() {
+        this._jflowInstance.destroy();
+    },
     mounted() {
         // this._jflowInstance = new JFlow(this.configs);
         this.nodes = this._jflowInstance._layout.flowStack.map(meta => {
