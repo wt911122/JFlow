@@ -18,21 +18,18 @@ import EventAdapter from '../events/adapter';
  */
 
 /**
- * @typedef {JFlowConfigs | LayoutMixin~LayoutConfigs} JFlow~JFlowLayoutConfigs
+ * @typedef {JFlow~JFlowConfigs | LayoutMixin~LayoutConfigs} JFlow~JFlowLayoutConfigs
  */
 /** 
  * JFlow 对象
  * JFlow 是 canvas 上面封装的一个顶层对象，具有处理事件和绘制的功能
  * @constructor JFlow
+ * @param {JFlow~JFlowLayoutConfigs} configs - 配置项
  * @mixes LayoutMixin
  * @mixes StackMixin
  * @mixes MessageMixin
  */
 class JFlow extends EventTarget{
-    /**
-     * 创建一个JFlow对象
-     * @param {JFlowLayoutConfigs} configs - 配置项
-     */
     constructor(configs) {
         super();
         this.uniqueName = 'jflow';

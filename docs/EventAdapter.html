@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>JFlow Module: JFlowVuePlugin</title>
+	<title>JFlow Class: EventAdapter</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -100,10 +100,15 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Module: JFlowVuePlugin</h1>
+	<h1 class="page-title">Class: EventAdapter</h1>
 <section>
 
 <header>
+    
+        <h2>
+        EventAdapter
+        </h2>
+        
     
 </header>
 
@@ -112,8 +117,29 @@
     <div class="container-overview">
     
         
+<hr>
+<dt>
+    <h4 class="name" id="EventAdapter"><span class="type-signature"></span>new EventAdapter()</h4>
+    
+    
+</dt>
+<dd>
 
-        
+    
+    <div class="description">
+        <p>EventAdapter 对象
+EventAdapter 通过 plugin 的形式实现多种交互方式的映射</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
 <dl class="details">
     
 
@@ -153,7 +179,21 @@
 </dl>
 
 
-        
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
     
     </div>
 
@@ -176,7 +216,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".install"><span class="type-signature">&lt;static> </span>install(Vue, options)</h4>
+    <h4 class="name" id="~Handler"><span class="type-signature">&lt;inner> </span>Handler(event, jflow)</h4>
     
     
 </dt>
@@ -184,7 +224,7 @@
 
     
     <div class="description">
-        <p>安装 JFlowVuePlugin</p>
+        <p>事件处理函数</p>
     </div>
     
 
@@ -219,13 +259,13 @@
 
         <tr>
             
-                <td class="name"><code>Vue</code></td>
+                <td class="name"><code>event</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Vue</span>
+<span class="param-type">Event</span>
 
 
 
@@ -236,20 +276,20 @@
 
             
 
-            <td class="description last"><p>Vue</p></td>
+            <td class="description last"><p>原生事件</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>jflow</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type"><a href="JFlow.html">JFlow</a></span>
 
 
 
@@ -260,81 +300,7 @@
 
             
 
-            <td class="description last"><p>Vue plugin 配置</p>
-                <h6 class="method-params-label method-subparams-label">Properties</h6>
-                
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>prefix</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>组件前缀，默认是 j</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>custom</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>自定义组件，形式为 { key: {@link:Instance} }</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last"><p>当前jflow 对象</p></td>
         </tr>
 
     
@@ -401,6 +367,256 @@
         </dl>
     
 
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        <dl>
+                
+<hr>
+<dt class="name" id="~pluginDef">
+    <h4 id="~pluginDef">pluginDef</h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>EventAdapter 对象 plugin 配置</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">Object</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>canvas</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>canvas 相关的事件</p>
+                <h6>Properties</h6>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>eventName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="EventAdapter.html#~Handler">EventAdapter~Handler</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>注册 canvas 上的事件处理</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>document</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>document 相关的事件</p>
+                <h6>Properties</h6>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>eventName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="EventAdapter.html#~Handler">EventAdapter~Handler</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>注册 document 上的事件处理</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+            </dl>
     
 
     

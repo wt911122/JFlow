@@ -89,9 +89,10 @@ module.exports = {
                     }
                 });
             })
-        
-            const diagram = [...classes, ...mixins, ...interfaces];
-            erDiagram.description = render(diagram);
+            if(erDiagram) {
+                const diagram = [...classes, ...mixins, ...interfaces];
+                erDiagram.description = render(diagram);
+            }
             console.log(erDiagram)
         }
     }
