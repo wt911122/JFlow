@@ -126,6 +126,7 @@ class Text extends Rectangle {
                         }))
                         this.content = oldVal;
                         this._jflow._render();
+                        this._jflow.removeEventListener('zoompan', blurHandler)
                         inputElement.removeEventListener('blur', blurHandler)
                         wrapper.removeChild(inputElement);
                         inputElement = null;
