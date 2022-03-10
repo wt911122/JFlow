@@ -194,6 +194,8 @@ var Text = /*#__PURE__*/function (_Rectangle) {
 
               _this2._jflow._render();
 
+              _this2._jflow.removeEventListener('zoompan', _blurHandler);
+
               inputElement.removeEventListener('blur', _blurHandler);
               wrapper.removeChild(inputElement);
               inputElement = null;

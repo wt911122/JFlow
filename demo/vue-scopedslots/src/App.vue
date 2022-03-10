@@ -254,7 +254,7 @@ export default {
                 allowDrop: true,
                 layout,
                 initialZoom: 1,
-                eventAdapter: commonEventAdapter
+                // eventAdapter: commonEventAdapter
             },
             isHover: false,
             offsetX: 0,
