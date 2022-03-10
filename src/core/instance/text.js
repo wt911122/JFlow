@@ -125,12 +125,14 @@ class Text extends Rectangle {
                             val,
                         }))
                         this.content = oldVal;
+                        this._jflow._render();
                         inputElement.removeEventListener('blur', blurHandler)
                         wrapper.removeChild(inputElement);
                         inputElement = null;
                         blurHandler = null;
                     }
                 };
+                this._jflow.addEventListener('zoompan', blurHandler);
                 inputElement.addEventListener('blur', blurHandler);
                 const keyUpHandler = (e) => {
                     if (e.key === 'Enter' || e.keyCode === 13) {
