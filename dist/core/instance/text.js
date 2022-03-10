@@ -191,12 +191,17 @@ var Text = /*#__PURE__*/function (_Rectangle) {
               }));
 
               _this2.content = oldVal;
+
+              _this2._jflow._render();
+
               inputElement.removeEventListener('blur', _blurHandler);
               wrapper.removeChild(inputElement);
               inputElement = null;
               _blurHandler = null;
             }
           };
+
+          _this2._jflow.addEventListener('zoompan', _blurHandler);
 
           inputElement.addEventListener('blur', _blurHandler);
 

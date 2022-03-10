@@ -23,9 +23,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * EventAdapter 对象 plugin 配置
  * @typedef {Object} EventAdapter~pluginDef
  * @property {Object} canvas - canvas 相关的事件
- * @property {EventAdapter~Handler} canvas[eventName] - 注册 canvas 上的事件处理
+ * @property {EventAdapter~Handler} canvas.eventName - 注册 canvas 上的事件处理
  * @property {Object} document - document 相关的事件
- * @property {EventAdapter~Handler} document[eventName] - 注册 document 上的事件处理
+ * @property {EventAdapter~Handler} document.eventName - 注册 document 上的事件处理
  */
 function getDefaultPlugin() {
   return {

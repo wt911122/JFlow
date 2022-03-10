@@ -252,13 +252,14 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
  */
 
 /**
- * @typedef {JFlowConfigs | LayoutMixin~LayoutConfigs} JFlow~JFlowLayoutConfigs
+ * @typedef {JFlow~JFlowConfigs | LayoutMixin~LayoutConfigs} JFlow~JFlowLayoutConfigs
  */
 
 /** 
  * JFlow 对象
  * JFlow 是 canvas 上面封装的一个顶层对象，具有处理事件和绘制的功能
  * @constructor JFlow
+ * @param {JFlow~JFlowLayoutConfigs} configs - 配置项
  * @mixes LayoutMixin
  * @mixes StackMixin
  * @mixes MessageMixin
@@ -268,10 +269,6 @@ var JFlow = /*#__PURE__*/function (_EventTarget) {
 
   var _super = _createSuper(JFlow);
 
-  /**
-   * 创建一个JFlow对象
-   * @param {JFlowLayoutConfigs} configs - 配置项
-   */
   function JFlow(configs) {
     var _this;
 
