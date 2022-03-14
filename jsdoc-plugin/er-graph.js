@@ -1,9 +1,9 @@
 import erLayout from './erlayout';
-import JFlow, { Group, Text, BezierLink, LinearLayout } from '../src/core/flow';
+import JFlow, { Group, Text, BezierLink, LinearLayout, commonEventAdapter } from '../src/core/flow';
 function renderNode(erNode) {
     const className = new Text({
         content: erNode.id,
-        textColor: '#EB6864'
+        textColor: '#2780E3'
     });
     const wrapper = new Group({
         layout: new LinearLayout({
@@ -11,20 +11,20 @@ function renderNode(erNode) {
             gap: 0,
         }),
         borderRadius: 8,
-        borderColor: '#EB6864',
+        borderColor: '#2780E3',
         borderWidth: 2,
     });
     if(erNode.source.module) {
         const moduleName = new Text({
             content: erNode.source.module.name,
-            textColor: '#EB6864'
+            textColor: '#2780E3'
         });
         const td1 = new Group({
             padding: 15,
             border: {
                 right: {
                     borderWidth: 2,
-                    borderColor: '#EB6864',
+                    borderColor: '#2780E3',
                 }
             }
         });
@@ -55,7 +55,7 @@ function renderNode(erNode) {
         })
         const configName = new Text({
             content: erNode.source.configName,
-            textColor: '#EB6864'
+            textColor: '#2780E3'
         });
         w3.addToStack(configName);
         w3.recalculate();
@@ -64,7 +64,7 @@ function renderNode(erNode) {
                 border: {
                     bottom: {
                         borderWidth: 2,
-                        borderColor: '#EB6864',
+                        borderColor: '#2780E3',
                     }
                 }
             })
@@ -73,7 +73,7 @@ function renderNode(erNode) {
                 border: {
                     top: {
                         borderWidth: 2,
-                        borderColor: '#EB6864',
+                        borderColor: '#2780E3',
                     }
                 }
             })
@@ -86,7 +86,7 @@ function renderNode(erNode) {
         wrapper.setConfig({
             padding: 15,
             borderRadius: 8,
-            borderColor: '#EB6864',
+            borderColor: '#2780E3',
             borderWidth: 2,
         })
         wrapper.recalculate();
@@ -107,7 +107,7 @@ function renderLink(linkmeta) {
         content: linkmeta.part,
         to: meta.from.getJflowInstance(),
         from: meta.to.getJflowInstance(),
-        backgroundColor: '#EB6864',
+        backgroundColor: '#2780E3',
         fontSize: '16px'
     });
     return link;
@@ -118,6 +118,7 @@ function render (data, elemId) {
     const jflowStage = new JFlow({
         allowDrop: false,
         layout,
+        eventAdapter: commonEventAdapter
     });
 
     layout.flowStack.forEach(erNode => {

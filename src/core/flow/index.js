@@ -622,9 +622,9 @@ class JFlow extends EventTarget{
             } = this._targetLockOn([offsetX, offsetY]);
             if(instance) {
                 /**
-                * instance mousemove 原生事件
+                * instance mousemove 原生事件，仅在无拖拽时触发
                 *
-                * @event JFlow#instancemousemove
+                * @event Node#instancemousemove
                 * @type {object}
                 * @property {Event} event           - 原始事件
                 * @property {Node} instance           - 原始事件
@@ -767,12 +767,12 @@ class JFlow extends EventTarget{
             if(this._target.moving) {
                 if(this._target.instance) {
                     /**
-                     * 拖动后放置到 Instance 上的事件
+                     * 拖动后放置到 Instance 上的事件，由被拖动到的对象触发
                      *
-                     * @event Instance#pressEnd
+                     * @event Node#pressEnd
                      * @type {object}
                      * @property {Event} event           - 原始事件 
-                     * @property {Instance} instance     - 拖动的对象 
+                     * @property {Node} instance         - 拖动的对象 
                      * @property {JFlow} jflow           - 当前JFlow对象 
                      * @property {Instance} target       - 拖动到的对象
                      * @property {boolean} bubbles       - 冒泡
@@ -826,7 +826,7 @@ class JFlow extends EventTarget{
             /**
              * 右键事件（冒泡）
              *
-             * @event instance#contextclick
+             * @event Instance#contextclick
              * @type {object}
              * @property {Event} event           - 原始事件 
              * @property {Instance} target       - 右键对象 

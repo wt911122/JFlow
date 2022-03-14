@@ -1,5 +1,11 @@
 import * as JFlowInstance from '../../core/flow';
-
+/**
+ * JFlow {@link BaseLink} 的 vue 封装 
+ * @module jflow-link
+ * @property {BaseLink~Configs} configs - 传给 BseLink 的配置, from, to属性会被替换为jflowid对应的 Instance
+ * @property {String} from - jflowId
+ * @property {String} to - jflowId
+ */
 export default function (nameNode, isLink) {
     return {
         inject: [ 'addToLinkStack', 'removeFromLinkStack', 'getInstanceByJFlowId' ],

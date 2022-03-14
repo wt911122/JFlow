@@ -1,5 +1,16 @@
 import JFlow from '../../core/flow';
 import StackMixin from './StackMixin';
+/**
+ * @typedef {Object} j-jflow~Node
+ * @property {string}       type   - 布局节点类型
+ * @property {Object}       configs  - 源数据
+ * @property {LayoutNode}   meta   - 布局节点
+ */
+/**
+ * JFlow {@link JFlow} 的 vue 封装 
+ * @module j-jflow
+ * @property {JFlow~JFlowConfigs} configs - 传给 JFlow 的配置
+ */
 export default {
     mixins: [StackMixin],
     provide(){
@@ -69,7 +80,9 @@ export default {
         this._jflowInstance.destroy();
     },
     mounted() {
-        // this._jflowInstance = new JFlow(this.configs);
+        /** 
+         * @member {j-jflow~Node[]} nodes
+         */
         this.nodes = this._jflowInstance._layout.flowStack.map(meta => {
             return {
                 type: meta.type,
@@ -77,7 +90,9 @@ export default {
                 meta: meta.layoutMeta,
             }
         });
-        
+        /** 
+         * @member {Layout~LinkMeta[]} links
+         */
         this.links = this._jflowInstance._layout.flowLinkStack.slice();
         this.$nextTick(() => {
             this._jflowInstance.$mount(this.$el);

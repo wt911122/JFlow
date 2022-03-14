@@ -1,7 +1,7 @@
 
 
 function render(diagram) {
-    const str = `<div id='jflow_erdiagram' style="height: 500px;border:1px solid #EB6864;"></div>
+    const str = `<div id='jflow_erdiagram' style="height: 500px;border:1px solid #2780E3;"></div>
     <script src="ergraphbundle.js"></script>
     <script>
         const data = ${JSON.stringify(diagram)};

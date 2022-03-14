@@ -18,14 +18,16 @@
             "include": [
                 "./demo/vue-scopedslots/dist",
                 "./jsdoc-plugin/dist/ergraphbundle.js"
-                
             ]
           }
         },
         "systemName"            : "JFlow",
         "includeDate"           : false,
-        "theme"                 : "journal",
-        "inverseNav"            : true,
-        "footer"                : "<script>(document.body.setAttribute('style', 'font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif'))</script>"
+        "theme"                 : "cosmo",
+        "syntaxTheme"           : "none",
+        "inverseNav"            : true
+    },
+    "opts": {
+      "tutorials": "./Tutorials"
     }
 }

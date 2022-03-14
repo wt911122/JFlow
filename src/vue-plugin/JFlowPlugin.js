@@ -74,9 +74,7 @@ const JFLOW_LINKS = [
     /**
      * JFlow {@link BezierLink} 的 vue 封装 
      * @module j-bezier-link
-     * @property {j-bezier-link~Configs} configs - 传给 BezierLink 的配置
-     * @property {Boolean} visible - 可见状态
-     * @property {String} jflowId - 全局唯一ID，用于连线单元
+     * @property {BezierLink~Configs} configs - 传给 BezierLink 的配置
      */
     'BezierLink'
 ]
@@ -125,11 +123,6 @@ const JFLOW_GROUPS = [
 
 const components = [
     {
-        /**
-         * JFlow {@link JFlow} 的 vue 封装 
-         * @module j-jflow
-         * @property {JFlow~JFlowConfigs} configs - 传给 JFlow 的配置
-         */
         name: 'Jflow',
         component: JFlowComponent,
     },

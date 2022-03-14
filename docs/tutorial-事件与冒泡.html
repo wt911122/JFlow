@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>JFlow Tutorial: 事件与冒泡</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/github-dark.min.css">
+	<link type="text/css" rel="stylesheet" href="styles/site.cosmo.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">JFlow</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="module-j-bezier-link.html">j-bezier-link</a></li><li><a href="module-j-capsule.html">j-capsule</a></li><li><a href="module-j-capsule-group.html">j-capsule-group</a></li><li><a href="module-j-capsule-vertical-group.html">j-capsule-vertical-group</a></li><li><a href="module-j-diamond.html">j-diamond</a></li><li><a href="module-j-diamond-group.html">j-diamond-group</a></li><li><a href="module-j-diamond-vertical-group.html">j-diamond-vertical-group</a></li><li><a href="module-j-group.html">j-group</a></li><li><a href="module-j-icon.html">j-icon</a></li><li><a href="module-j-jflow.html">j-jflow</a></li><li><a href="module-j-point.html">j-point</a></li><li><a href="module-j-rectangle.html">j-rectangle</a></li><li><a href="module-j-rhombus.html">j-rhombus</a></li><li><a href="module-j-rhombus-group.html">j-rhombus-group</a></li><li><a href="module-j-text.html">j-text</a></li><li><a href="module-jflow-link.html">jflow-link</a></li><li><a href="module-JFlowVuePlugin.html">JFlowVuePlugin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="BaseLink.html">BaseLink</a></li><li><a href="BezierLink.html">BezierLink</a></li><li><a href="Capsule.html">Capsule</a></li><li><a href="CapsuleGroup.html">CapsuleGroup</a></li><li><a href="CapsuleVerticalGroup.html">CapsuleVerticalGroup</a></li><li><a href="Diamond.html">Diamond</a></li><li><a href="DiamondGroup.html">DiamondGroup</a></li><li><a href="DiamondVerticalGroup.html">DiamondVerticalGroup</a></li><li><a href="ERLayout.html">ERLayout</a></li><li><a href="EventAdapter.html">EventAdapter</a></li><li><a href="Icon.html">Icon</a></li><li><a href="Instance.html">Instance</a></li><li><a href="InstanceStack.html">InstanceStack</a></li><li><a href="JFlow.html">JFlow</a></li><li><a href="JFlowEvent.html">JFlowEvent</a></li><li><a href="LinearLayout.html">LinearLayout</a></li><li><a href="LowcodeLayout.html">LowcodeLayout</a></li><li><a href="Node.html">Node</a></li><li><a href="Point.html">Point</a></li><li><a href="PolyLink.html">PolyLink</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="RectangleGroup.html">RectangleGroup</a></li><li><a href="Rhombus.html">Rhombus</a></li><li><a href="RhombusGroup.html">RhombusGroup</a></li><li><a href="Text.html">Text</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="GroupMixin.html">GroupMixin</a></li><li><a href="LayoutMixin.html">LayoutMixin</a></li><li><a href="MessageMixin.html">MessageMixin</a></li><li><a href="StackMixin.html">StackMixin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="events.list.html" class="dropdown-toggle" data-toggle="dropdown">Events<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="BaseLink.html#event:contextclick">BaseLink#event:contextclick</a></li><li><a href="BaseLink.html#event:dragenter">BaseLink#event:dragenter</a></li><li><a href="BaseLink.html#event:dragleave">BaseLink#event:dragleave</a></li><li><a href="BaseLink.html#event:dragover">BaseLink#event:dragover</a></li><li><a href="BaseLink.html#event:drop">BaseLink#event:drop</a></li><li><a href="BaseLink.html#event:mouseenter">BaseLink#event:mouseenter</a></li><li><a href="BaseLink.html#event:mouseleave">BaseLink#event:mouseleave</a></li><li><a href="BezierLink.html#event:contextclick">BezierLink#event:contextclick</a></li><li><a href="BezierLink.html#event:dragenter">BezierLink#event:dragenter</a></li><li><a href="BezierLink.html#event:dragleave">BezierLink#event:dragleave</a></li><li><a href="BezierLink.html#event:dragover">BezierLink#event:dragover</a></li><li><a href="BezierLink.html#event:drop">BezierLink#event:drop</a></li><li><a href="BezierLink.html#event:mouseenter">BezierLink#event:mouseenter</a></li><li><a href="BezierLink.html#event:mouseleave">BezierLink#event:mouseleave</a></li><li><a href="Capsule.html#event:click">Capsule#event:click</a></li><li><a href="Capsule.html#event:contextclick">Capsule#event:contextclick</a></li><li><a href="Capsule.html#event:dragenter">Capsule#event:dragenter</a></li><li><a href="Capsule.html#event:dragleave">Capsule#event:dragleave</a></li><li><a href="Capsule.html#event:dragover">Capsule#event:dragover</a></li><li><a href="Capsule.html#event:drop">Capsule#event:drop</a></li><li><a href="Capsule.html#event:instancemousemove">Capsule#event:instancemousemove</a></li><li><a href="Capsule.html#event:instancePressStart">Capsule#event:instancePressStart</a></li><li><a href="Capsule.html#event:mouseenter">Capsule#event:mouseenter</a></li><li><a href="Capsule.html#event:mouseleave">Capsule#event:mouseleave</a></li><li><a href="Capsule.html#event:pressEnd">Capsule#event:pressEnd</a></li><li><a href="Capsule.html#event:pressStart">Capsule#event:pressStart</a></li><li><a href="CapsuleGroup.html#event:click">CapsuleGroup#event:click</a></li><li><a href="CapsuleGroup.html#event:contextclick">CapsuleGroup#event:contextclick</a></li><li><a href="CapsuleGroup.html#event:dragenter">CapsuleGroup#event:dragenter</a></li><li><a href="CapsuleGroup.html#event:dragleave">CapsuleGroup#event:dragleave</a></li><li><a href="CapsuleGroup.html#event:dragover">CapsuleGroup#event:dragover</a></li><li><a href="CapsuleGroup.html#event:drop">CapsuleGroup#event:drop</a></li><li><a href="CapsuleGroup.html#event:instancemousemove">CapsuleGroup#event:instancemousemove</a></li><li><a href="CapsuleGroup.html#event:instancePressStart">CapsuleGroup#event:instancePressStart</a></li><li><a href="CapsuleGroup.html#event:mouseenter">CapsuleGroup#event:mouseenter</a></li><li><a href="CapsuleGroup.html#event:mouseleave">CapsuleGroup#event:mouseleave</a></li><li><a href="CapsuleGroup.html#event:pressEnd">CapsuleGroup#event:pressEnd</a></li><li><a href="CapsuleGroup.html#event:pressStart">CapsuleGroup#event:pressStart</a></li><li><a href="CapsuleVerticalGroup.html#event:click">CapsuleVerticalGroup#event:click</a></li><li><a href="CapsuleVerticalGroup.html#event:contextclick">CapsuleVerticalGroup#event:contextclick</a></li><li><a href="CapsuleVerticalGroup.html#event:dragenter">CapsuleVerticalGroup#event:dragenter</a></li><li><a href="CapsuleVerticalGroup.html#event:dragleave">CapsuleVerticalGroup#event:dragleave</a></li><li><a href="CapsuleVerticalGroup.html#event:dragover">CapsuleVerticalGroup#event:dragover</a></li><li><a href="CapsuleVerticalGroup.html#event:drop">CapsuleVerticalGroup#event:drop</a></li><li><a href="CapsuleVerticalGroup.html#event:instancemousemove">CapsuleVerticalGroup#event:instancemousemove</a></li><li><a href="CapsuleVerticalGroup.html#event:instancePressStart">CapsuleVerticalGroup#event:instancePressStart</a></li><li><a href="CapsuleVerticalGroup.html#event:mouseenter">CapsuleVerticalGroup#event:mouseenter</a></li><li><a href="CapsuleVerticalGroup.html#event:mouseleave">CapsuleVerticalGroup#event:mouseleave</a></li><li><a href="CapsuleVerticalGroup.html#event:pressEnd">CapsuleVerticalGroup#event:pressEnd</a></li><li><a href="CapsuleVerticalGroup.html#event:pressStart">CapsuleVerticalGroup#event:pressStart</a></li><li><a href="Diamond.html#event:click">Diamond#event:click</a></li><li><a href="Diamond.html#event:contextclick">Diamond#event:contextclick</a></li><li><a href="Diamond.html#event:dragenter">Diamond#event:dragenter</a></li><li><a href="Diamond.html#event:dragleave">Diamond#event:dragleave</a></li><li><a href="Diamond.html#event:dragover">Diamond#event:dragover</a></li><li><a href="Diamond.html#event:drop">Diamond#event:drop</a></li><li><a href="Diamond.html#event:instancemousemove">Diamond#event:instancemousemove</a></li><li><a href="Diamond.html#event:instancePressStart">Diamond#event:instancePressStart</a></li><li><a href="Diamond.html#event:mouseenter">Diamond#event:mouseenter</a></li><li><a href="Diamond.html#event:mouseleave">Diamond#event:mouseleave</a></li><li><a href="Diamond.html#event:pressEnd">Diamond#event:pressEnd</a></li><li><a href="Diamond.html#event:pressStart">Diamond#event:pressStart</a></li><li><a href="DiamondGroup.html#event:click">DiamondGroup#event:click</a></li><li><a href="DiamondGroup.html#event:contextclick">DiamondGroup#event:contextclick</a></li><li><a href="DiamondGroup.html#event:dragenter">DiamondGroup#event:dragenter</a></li><li><a href="DiamondGroup.html#event:dragleave">DiamondGroup#event:dragleave</a></li><li><a href="DiamondGroup.html#event:dragover">DiamondGroup#event:dragover</a></li><li><a href="DiamondGroup.html#event:drop">DiamondGroup#event:drop</a></li><li><a href="DiamondGroup.html#event:instancemousemove">DiamondGroup#event:instancemousemove</a></li><li><a href="DiamondGroup.html#event:instancePressStart">DiamondGroup#event:instancePressStart</a></li><li><a href="DiamondGroup.html#event:mouseenter">DiamondGroup#event:mouseenter</a></li><li><a href="DiamondGroup.html#event:mouseleave">DiamondGroup#event:mouseleave</a></li><li><a href="DiamondGroup.html#event:pressEnd">DiamondGroup#event:pressEnd</a></li><li><a href="DiamondGroup.html#event:pressStart">DiamondGroup#event:pressStart</a></li><li><a href="DiamondVerticalGroup.html#event:click">DiamondVerticalGroup#event:click</a></li><li><a href="DiamondVerticalGroup.html#event:contextclick">DiamondVerticalGroup#event:contextclick</a></li><li><a href="DiamondVerticalGroup.html#event:dragenter">DiamondVerticalGroup#event:dragenter</a></li><li><a href="DiamondVerticalGroup.html#event:dragleave">DiamondVerticalGroup#event:dragleave</a></li><li><a href="DiamondVerticalGroup.html#event:dragover">DiamondVerticalGroup#event:dragover</a></li><li><a href="DiamondVerticalGroup.html#event:drop">DiamondVerticalGroup#event:drop</a></li><li><a href="DiamondVerticalGroup.html#event:instancemousemove">DiamondVerticalGroup#event:instancemousemove</a></li><li><a href="DiamondVerticalGroup.html#event:instancePressStart">DiamondVerticalGroup#event:instancePressStart</a></li><li><a href="DiamondVerticalGroup.html#event:mouseenter">DiamondVerticalGroup#event:mouseenter</a></li><li><a href="DiamondVerticalGroup.html#event:mouseleave">DiamondVerticalGroup#event:mouseleave</a></li><li><a href="DiamondVerticalGroup.html#event:pressEnd">DiamondVerticalGroup#event:pressEnd</a></li><li><a href="DiamondVerticalGroup.html#event:pressStart">DiamondVerticalGroup#event:pressStart</a></li><li><a href="Icon.html#event:click">Icon#event:click</a></li><li><a href="Icon.html#event:contextclick">Icon#event:contextclick</a></li><li><a href="Icon.html#event:dragenter">Icon#event:dragenter</a></li><li><a href="Icon.html#event:dragleave">Icon#event:dragleave</a></li><li><a href="Icon.html#event:dragover">Icon#event:dragover</a></li><li><a href="Icon.html#event:drop">Icon#event:drop</a></li><li><a href="Icon.html#event:instancemousemove">Icon#event:instancemousemove</a></li><li><a href="Icon.html#event:instancePressStart">Icon#event:instancePressStart</a></li><li><a href="Icon.html#event:mouseenter">Icon#event:mouseenter</a></li><li><a href="Icon.html#event:mouseleave">Icon#event:mouseleave</a></li><li><a href="Icon.html#event:pressEnd">Icon#event:pressEnd</a></li><li><a href="Icon.html#event:pressStart">Icon#event:pressStart</a></li><li><a href="Instance.html#event:contextclick">Instance#event:contextclick</a></li><li><a href="Instance.html#event:dragenter">Instance#event:dragenter</a></li><li><a href="Instance.html#event:dragleave">Instance#event:dragleave</a></li><li><a href="Instance.html#event:dragover">Instance#event:dragover</a></li><li><a href="Instance.html#event:mouseenter">Instance#event:mouseenter</a></li><li><a href="Instance.html#event:mouseleave">Instance#event:mouseleave</a></li><li><a href="JFlow.html#event:canvasmousemove">JFlow#event:canvasmousemove</a></li><li><a href="JFlow.html#event:click">JFlow#event:click</a></li><li><a href="JFlow.html#event:contextclick">JFlow#event:contextclick</a></li><li><a href="JFlow.html#event:drop">JFlow#event:drop</a></li><li><a href="JFlow.html#event:pressEnd">JFlow#event:pressEnd</a></li><li><a href="JFlow.html#event:zoompan">JFlow#event:zoompan</a></li><li><a href="Node.html#event:click">Node#event:click</a></li><li><a href="Node.html#event:contextclick">Node#event:contextclick</a></li><li><a href="Node.html#event:dragenter">Node#event:dragenter</a></li><li><a href="Node.html#event:dragleave">Node#event:dragleave</a></li><li><a href="Node.html#event:dragover">Node#event:dragover</a></li><li><a href="Node.html#event:drop">Node#event:drop</a></li><li><a href="Node.html#event:instancemousemove">Node#event:instancemousemove</a></li><li><a href="Node.html#event:instancePressStart">Node#event:instancePressStart</a></li><li><a href="Node.html#event:mouseenter">Node#event:mouseenter</a></li><li><a href="Node.html#event:mouseleave">Node#event:mouseleave</a></li><li><a href="Node.html#event:pressEnd">Node#event:pressEnd</a></li><li><a href="Node.html#event:pressStart">Node#event:pressStart</a></li><li><a href="Point.html#event:click">Point#event:click</a></li><li><a href="Point.html#event:contextclick">Point#event:contextclick</a></li><li><a href="Point.html#event:dragenter">Point#event:dragenter</a></li><li><a href="Point.html#event:dragleave">Point#event:dragleave</a></li><li><a href="Point.html#event:dragover">Point#event:dragover</a></li><li><a href="Point.html#event:drop">Point#event:drop</a></li><li><a href="Point.html#event:instancemousemove">Point#event:instancemousemove</a></li><li><a href="Point.html#event:instancePressStart">Point#event:instancePressStart</a></li><li><a href="Point.html#event:mouseenter">Point#event:mouseenter</a></li><li><a href="Point.html#event:mouseleave">Point#event:mouseleave</a></li><li><a href="Point.html#event:pressEnd">Point#event:pressEnd</a></li><li><a href="Point.html#event:pressStart">Point#event:pressStart</a></li><li><a href="PolyLink.html#event:contextclick">PolyLink#event:contextclick</a></li><li><a href="PolyLink.html#event:dragenter">PolyLink#event:dragenter</a></li><li><a href="PolyLink.html#event:dragleave">PolyLink#event:dragleave</a></li><li><a href="PolyLink.html#event:dragover">PolyLink#event:dragover</a></li><li><a href="PolyLink.html#event:drop">PolyLink#event:drop</a></li><li><a href="PolyLink.html#event:mouseenter">PolyLink#event:mouseenter</a></li><li><a href="PolyLink.html#event:mouseleave">PolyLink#event:mouseleave</a></li><li><a href="Rectangle.html#event:click">Rectangle#event:click</a></li><li><a href="Rectangle.html#event:contextclick">Rectangle#event:contextclick</a></li><li><a href="Rectangle.html#event:dragenter">Rectangle#event:dragenter</a></li><li><a href="Rectangle.html#event:dragleave">Rectangle#event:dragleave</a></li><li><a href="Rectangle.html#event:dragover">Rectangle#event:dragover</a></li><li><a href="Rectangle.html#event:drop">Rectangle#event:drop</a></li><li><a href="Rectangle.html#event:instancemousemove">Rectangle#event:instancemousemove</a></li><li><a href="Rectangle.html#event:instancePressStart">Rectangle#event:instancePressStart</a></li><li><a href="Rectangle.html#event:mouseenter">Rectangle#event:mouseenter</a></li><li><a href="Rectangle.html#event:mouseleave">Rectangle#event:mouseleave</a></li><li><a href="Rectangle.html#event:pressEnd">Rectangle#event:pressEnd</a></li><li><a href="Rectangle.html#event:pressStart">Rectangle#event:pressStart</a></li><li><a href="RectangleGroup.html#event:click">RectangleGroup#event:click</a></li><li><a href="RectangleGroup.html#event:contextclick">RectangleGroup#event:contextclick</a></li><li><a href="RectangleGroup.html#event:dragenter">RectangleGroup#event:dragenter</a></li><li><a href="RectangleGroup.html#event:dragleave">RectangleGroup#event:dragleave</a></li><li><a href="RectangleGroup.html#event:dragover">RectangleGroup#event:dragover</a></li><li><a href="RectangleGroup.html#event:drop">RectangleGroup#event:drop</a></li><li><a href="RectangleGroup.html#event:instancemousemove">RectangleGroup#event:instancemousemove</a></li><li><a href="RectangleGroup.html#event:instancePressStart">RectangleGroup#event:instancePressStart</a></li><li><a href="RectangleGroup.html#event:mouseenter">RectangleGroup#event:mouseenter</a></li><li><a href="RectangleGroup.html#event:mouseleave">RectangleGroup#event:mouseleave</a></li><li><a href="RectangleGroup.html#event:pressEnd">RectangleGroup#event:pressEnd</a></li><li><a href="RectangleGroup.html#event:pressStart">RectangleGroup#event:pressStart</a></li><li><a href="Rhombus.html#event:click">Rhombus#event:click</a></li><li><a href="Rhombus.html#event:contextclick">Rhombus#event:contextclick</a></li><li><a href="Rhombus.html#event:dragenter">Rhombus#event:dragenter</a></li><li><a href="Rhombus.html#event:dragleave">Rhombus#event:dragleave</a></li><li><a href="Rhombus.html#event:dragover">Rhombus#event:dragover</a></li><li><a href="Rhombus.html#event:drop">Rhombus#event:drop</a></li><li><a href="Rhombus.html#event:instancemousemove">Rhombus#event:instancemousemove</a></li><li><a href="Rhombus.html#event:instancePressStart">Rhombus#event:instancePressStart</a></li><li><a href="Rhombus.html#event:mouseenter">Rhombus#event:mouseenter</a></li><li><a href="Rhombus.html#event:mouseleave">Rhombus#event:mouseleave</a></li><li><a href="Rhombus.html#event:pressEnd">Rhombus#event:pressEnd</a></li><li><a href="Rhombus.html#event:pressStart">Rhombus#event:pressStart</a></li><li><a href="RhombusGroup.html#event:click">RhombusGroup#event:click</a></li><li><a href="RhombusGroup.html#event:contextclick">RhombusGroup#event:contextclick</a></li><li><a href="RhombusGroup.html#event:dragenter">RhombusGroup#event:dragenter</a></li><li><a href="RhombusGroup.html#event:dragleave">RhombusGroup#event:dragleave</a></li><li><a href="RhombusGroup.html#event:dragover">RhombusGroup#event:dragover</a></li><li><a href="RhombusGroup.html#event:drop">RhombusGroup#event:drop</a></li><li><a href="RhombusGroup.html#event:instancemousemove">RhombusGroup#event:instancemousemove</a></li><li><a href="RhombusGroup.html#event:instancePressStart">RhombusGroup#event:instancePressStart</a></li><li><a href="RhombusGroup.html#event:mouseenter">RhombusGroup#event:mouseenter</a></li><li><a href="RhombusGroup.html#event:mouseleave">RhombusGroup#event:mouseleave</a></li><li><a href="RhombusGroup.html#event:pressEnd">RhombusGroup#event:pressEnd</a></li><li><a href="RhombusGroup.html#event:pressStart">RhombusGroup#event:pressStart</a></li><li><a href="Text.html#event:change">Text#event:change</a></li><li><a href="Text.html#event:click">Text#event:click</a></li><li><a href="Text.html#event:contextclick">Text#event:contextclick</a></li><li><a href="Text.html#event:dragenter">Text#event:dragenter</a></li><li><a href="Text.html#event:dragleave">Text#event:dragleave</a></li><li><a href="Text.html#event:dragover">Text#event:dragover</a></li><li><a href="Text.html#event:drop">Text#event:drop</a></li><li><a href="Text.html#event:instancemousemove">Text#event:instancemousemove</a></li><li><a href="Text.html#event:instancePressStart">Text#event:instancePressStart</a></li><li><a href="Text.html#event:mouseenter">Text#event:mouseenter</a></li><li><a href="Text.html#event:mouseleave">Text#event:mouseleave</a></li><li><a href="Text.html#event:pressEnd">Text#event:pressEnd</a></li><li><a href="Text.html#event:pressStart">Text#event:pressStart</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="interfaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Interfaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Layout.html">Layout</a></li><li><a href="LayoutNode.html">LayoutNode</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="tutorials.list.html" class="dropdown-toggle" data-toggle="dropdown">Tutorials<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="tutorial-事件与冒泡.html">事件与冒泡</a></li><li><a href="tutorial-坐标系统.html">坐标系统</a></li><li><a href="tutorial-对象、连线和布局.html">对象、连线和布局</a></li><li><a href="tutorial-开始.html">开始</a></li><li><a href="tutorial-扩展JFlow.html">扩展JFlow</a></li><li><a href="tutorial-组与组布局.html">组与组布局</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#bounding_box">bounding_box</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#DIRECTION">DIRECTION</a></li><li><a href="global.html#eventAdapter">eventAdapter</a></li><li><a href="global.html#minZoom">minZoom</a></li><li><a href="global.html#padding">padding</a></li><li><a href="global.html#requestCacheCanvas">requestCacheCanvas</a></li><li><a href="global.html#TEXT_ALIGN">TEXT_ALIGN</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			<section class="tutorial-section">
+
+<header>
+    
+
+    <h2>事件与冒泡</h2>
+</header>
+
+<article>
+    <h2>事件</h2>
+<p>jflow 中每一个对象都继承了 <a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget">EventTarget</a>，可以通过<code>addEventListener</code>方法来监听对象抛出的事件，vue中可以直接在组件上用<code>@</code>语法糖绑定事件。</p>
+<p>目前支持的事件包括：</p>
+<ul>
+<li>
+<p>DragDrop</p>
+<ul>
+<li><a href="https://wt911122.github.io/JFlow/Instance.html#event:dragenter">Instance#dragenter</a></li>
+<li><a href="https://wt911122.github.io/JFlow/Instance.html#event:dragover">Instance#dragover</a></li>
+<li><a href="https://wt911122.github.io/JFlow/Instance.html#event:dragleave">Instance#dragleave</a></li>
+<li><a href="https://wt911122.github.io/JFlow/BaseLink.html#event:drop">BaseLink#drop</a></li>
+<li><a href="https://wt911122.github.io/JFlow/Node.html#event:drop">Node#drop</a></li>
+<li><a href="https://wt911122.github.io/JFlow/JFlow.html#event:drop">JFlow#drop</a></li>
+</ul>
+</li>
+<li>
+<p>ZoomPan</p>
+<ul>
+<li><a href="https://wt911122.github.io/JFlow/JFlow.html#event:zoompan">JFlow#zoompan</a></li>
+</ul>
+</li>
+<li>
+<p>Movement</p>
+<ul>
+<li><a href="https://wt911122.github.io/JFlow/Node.html#event:pressStart">Node#pressStart</a></li>
+<li><a href="https://wt911122.github.io/JFlow/Node.html#event:instancePressStart">Node#instancePressStart</a></li>
+<li><a href="https://wt911122.github.io/JFlow/Node.html#event:pressStart">Node#pressEnd</a></li>
+<li><a href="https://wt911122.github.io/JFlow/JFlow.html#event:pressEnd">JFlow#pressEnd</a></li>
+</ul>
+</li>
+<li>
+<p>Detection</p>
+<ul>
+<li><a href="https://wt911122.github.io/JFlow/Instance.html#event:mouseenter">Instance#mouseenter</a></li>
+<li><a href="https://wt911122.github.io/JFlow/Instance.html#event:mouseleave">Instance#mouseleave</a></li>
+<li><a href="https://wt911122.github.io/JFlow/Node.html#event:instancemousemove">Node#instancemousemove</a></li>
+</ul>
+</li>
+<li>
+<p>Others</p>
+<ul>
+<li><a href="https://wt911122.github.io/JFlow/Node.html#event:click">Node#click</a></li>
+<li><a href="https://wt911122.github.io/JFlow/JFlow.html#event:click">JFlow#click</a></li>
+<li><a href="https://wt911122.github.io/JFlow/instance_.html#event:contextclick">Instance#contextclick</a></li>
+<li><a href="https://wt911122.github.io/JFlow/JFlow.html#event:contextclick">JFlow#contextclick</a></li>
+<li><a href="https://wt911122.github.io/JFlow/Text.html#event:change">Text#change</a></li>
+</ul>
+</li>
+</ul>
+<p>继承 Node 与 Instance 的JFlow对象均支持以上这些事件的监听。</p>
+<p>互斥关系：</p>
+<ul>
+<li>
+<p><a href="https://wt911122.github.io/JFlow/JFlow.html#event:drop">JFlow#drop</a> 与 <a href="https://wt911122.github.io/JFlow/Node.html#event:drop">Node#drop</a> 与 <a href="https://wt911122.github.io/JFlow/BaseLink.html#event:drop">BaseLink#drop</a>： 在 drop 到 Node 上时，仅触发Node#drop, 不会触发JFlow#drop; drop 到 BaseLink#drop, 不会触发JFlow#drop;</p>
+</li>
+<li>
+<p><a href="https://wt911122.github.io/JFlow/JFlow.html#event:click">JFlow#click</a> 与 <a href="https://wt911122.github.io/JFlow/Node.html#event:click">Node#click</a>： 在点击到 Node 上时，仅触发Node#click, 不会触发JFlow#click。</p>
+</li>
+<li>
+<p><a href="https://wt911122.github.io/JFlow/JFlow.html#event:click">JFlow#PressEnd</a> 与 <a href="https://wt911122.github.io/JFlow/Node.html#event:click">Node#PressEnd</a>： 在PressEnd 到 Node 上时，仅触发Node#PressEnd, 不会触发JFlow#PressEnd</p>
+</li>
+<li>
+<p><a href="https://wt911122.github.io/JFlow/instance_.html#event:contextclick">Instance#contextclick</a> 与 <a href="https://wt911122.github.io/JFlow/JFlow.html#event:contextclick">JFlow#contextclick</a> 右键事件也是如此</p>
+</li>
+</ul>
+<h2>冒泡</h2>
+<p>父级对象可以通过事件冒泡来监听部分子对象上触发的事件，这些事件包括：</p>
+<ul>
+<li><a href="https://wt911122.github.io/JFlow/Node.html#event:instancePressStart">Node#instancePressStart</a></li>
+<li><a href="https://wt911122.github.io/JFlow/Node.html#event:click">Node#click</a></li>
+<li><a href="https://wt911122.github.io/JFlow/Node.html#event:pressEnd">Node#pressEnd</a></li>
+<li><a href="https://wt911122.github.io/JFlow/Node.html#event:contextclick">Instance#contextclick</a></li>
+</ul>
+<p>冒泡过程可以被终止，只要在被监听之后做如下设置：</p>
+<pre class="prettyprint source lang-javascript"><code>eventHandler(event) {
+    event.detail.bubbles = false;
+    // ...其他处理
+}
+</code></pre>
+<p>即可停止冒泡</p>
+</article>
+
+</section>
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	JFlow Copyright © 2021-2022 The contributors to the JFlow and JFlow projects.
+	</span>
+
+<!-- <span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a>
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span> -->
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/highlightjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/highlightjs-vue"></script>
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+    hljs.registerLanguage("vue", window.hljsDefineVue);
+    hljs.initHighlightingOnLoad();
+    // hljs.highlightAll();
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

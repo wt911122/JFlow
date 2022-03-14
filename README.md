@@ -1,121 +1,29 @@
 # JFlow
-JFlow 的目标是设计一套架在 canvas 上的轻量级流程图引擎，支持 vue 开发者与 canvas 高级开发人员共同开发。
+JFlow 的目标是设计一套基于 canvas 的轻量级流程图引擎，支持 vue 开发者与 canvas 高级开发人员共同开发。
 
-[文档地址](https://wt911122.github.io/JFlow/)
+[导引](https://wt911122.github.io/JFlow/tutorial-开始.html)
 [DEMO](https://wt911122.github.io/JFlow/vue-demo.html)
 ## Features
 目前的实现包含了：
 + 可自由缩放移动的画布
 + 多层级
     + 坐标换算
-    + 事件传递机制
+    + 事件冒泡
     + 布局系统
 + dragdrop
 + vue 框架支持
 
-## Usage
-### 原生用法
-```javascript
-const jflow = new JFlow();
-const rectangle = new Rectangle({
-    anchor: [0, 0],
-    width: 30,
-    height: 40,
-    backgroundColor: '#99dbc5'
-})
-const circle = new Point({
-    anchor: [0, 0],
-    radius: 10,
-    backgroundColor: '#faaaaa'
-})
-circle.addEventListener('mouseenter', () => {
-    circle.color = 'green'
-    jflow._render();
-})
-circle.addEventListener('mouseleave', () => {
-    circle.color = '#99dbc5'
-    jflow._render();
-})
-const group = new Group({
-    anchor: [100, 100],
-    padding: 10,
-    borderColor: '#517cff',
-});
-group.addToStack(rectangle);
-group.addToStack(circle);
-group.recalculate();
-jflow.addToStack(group)
+## Motivation
+在设计实现过程中，我一直在问自己一个问题，在关于点线图的业务开发过程中，什么是业务开发者需要关心的，什么是框架维护者需要提供的。在开发过程中，这个答案逐渐明晰了起来，业务开发者关心的是：
 
-jflow.$mount(someElement);
-jflow._render();
-```
-### 与 Vue 配合使用
-#### 注册 Vue 插件
-```javascript
-import { JFlowVuePlugin } from '@joskii/jflow';
-import someCustomOriginJFlowInstance from 'path/to/instance';
++ 自己处理的数据结构与图上的一个直接映射关系
++ 能够方便的对用户行为的监听和处理
 
-Vue.use(JFlowVuePlugin, {
-    custom: {
-        // 自动生成全局注册的 jSomeCustomOriginJFlowInstance 组件
-        someCustomOriginJFlowInstance
-    }
-});
-```
-#### 模板形式写组件
-```vue
-<template>
-    <j-jflow ref="jflow" 
-        :class="$style.wrapper" 
-        :configs="configs">
-        <j-group 
-            name="xxxxx" 
-            @mouseenter="onMouseEnter"
-            @mouseleave="onMouseLeave" 
-            :configs="configs">
-            <j-text ref="start" :configs="{
-                textColor,
-                content: '开始',
-            }">
-            </j-text>
-            <j-point :configs="{
-                color: '#99dbc5',
-                radius: 11,
-            }"></j-point>
-        </j-group>
-    </j-jflow>
-</template>
-<script>
-export default {
-    data() {
-        return {
-            textColor: '#585c63',
-            configs: {
-                layout: new LinearLayout({
-                    direction: 'vertical',
-                    gap: 0,
-                }),
-            }
-        }
-    },
-    methods: {
-        onMouseEnter(){
-            this.textColor = 'red'
-        },
-        onMouseLeave() {
-             this.textColor = '#585c63'
-        }
-    }
-}
-</script>
-<style module>
-.wrapper{
-    width: 800px;
-    height: 600px;
-    border: 1px solid #ccc;
-}
-</style>
-```
+并不关心的是：
++ 点与线是如何连接的
++ 坐标是如何换算的
++ 事件是如何抛出的
 
-#### 布局与具名插槽
-[例子](https://github.com/wt911122/JFlow/blob/master/demo/vue-scopedslots/src/App.vue)
+而这些就是JFlow应该去解决的问题
+
+
