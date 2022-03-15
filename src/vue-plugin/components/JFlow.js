@@ -1,7 +1,8 @@
 import JFlow from '../../core/flow';
 import StackMixin from './StackMixin';
 /**
- * @typedef {Object} j-jflow~Node
+ * typs#slot 中的属性 
+ * @typedef {Object} j-jflow-Node
  * @property {string}       type   - 布局节点类型
  * @property {Object}       configs  - 源数据
  * @property {LayoutNode}   meta   - 布局节点
@@ -81,7 +82,7 @@ export default {
     },
     mounted() {
         /** 
-         * @member {j-jflow~Node[]} nodes
+         * @member {j-jflow-Node[]} nodes
          */
         this.nodes = this._jflowInstance._layout.flowStack.map(meta => {
             return {

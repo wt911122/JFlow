@@ -32,7 +32,7 @@ class Instance extends EventTarget{
         this._belongs = undefined;
         this[ishitKey] = false; 
 
-        /** @member {LayoutNode} 布局节点 */
+        /** @member {LayoutNode} - 布局节点 */
         this._layoutNode = undefined;
         /** @member {number}      - 边的宽度 默认是 0 */
         this.borderWidth =      configs.borderWidth || 0;
