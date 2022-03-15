@@ -1,13 +1,13 @@
 {
   "name": "@joskii/jflow",
-  "version": "0.0.51-beta",
+  "version": "0.0.52-beta",
   "description": "",
   "main": "dist/jflow.bundle.js",
   "files": ["dist/*.js"],
   "scripts": {
     "dev:demo": "cd demo/vue-scopedslots && npm run serve",
-    "build:doc": "rm -rf docs && cd jsdoc-plugin && npm run build && cd ../demo/vue-scopedslots && npm run build && cd ../../ && jsdoc -c conf.json -t ./node_modules/ink-docstrap/template -R README.md -r . && mv out docs",
-    "build:jsdoc": "rm -rf docs &&  jsdoc -c conf.json -t ./node_modules/ink-docstrap/template -R README.md -r . && mv out docs",
+    "build:doc": "rm -rf docs && cd jsdoc-plugin && npm run build && cd ../demo/vue-scopedslots && npm run build && cd ../../ && npm run build:jsdoc",
+    "build:jsdoc": "rm -rf docs &&  jsdoc -c conf.json -t ~/Documents/Source-Codes/docstrap/template -R README.md -r . && mv out docs",
     "build:lib": "webpack --config configs/webpack.lib.config.js"
   },
   "author": "",

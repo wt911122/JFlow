@@ -169,14 +169,12 @@ class BezierLink extends BaseLink {
             ctx.rotate(angle);
             if(hasFlip){
                 ctx.rotate(Math.PI);
-                // ctx.transform(1, 0, 0, -1, 0, 0);
             }
             ctx.font = `${this.fontSize} ${this.fontFamily}`;
             ctx.textAlign = 'center';
             ctx.fillText(this.content, 0, -(parseInt(this.fontSize) || 12)/4);
             if(hasFlip){
                 ctx.rotate(Math.PI);
-                // ctx.transform(1, 0, 0, -1, 0, 0);
             }
             ctx.rotate(-angle);
             ctx.translate(-x, -y);
