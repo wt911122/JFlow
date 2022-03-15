@@ -163,7 +163,7 @@ Vue.use(JFlowVuePlugin, {
 + [组与组布局](https://wt911122.github.io/JFlow/tutorial-组与组布局.html)
 
 ## 事件监听策略
-通过自定义事件映射关系来满足不同的交互需求。默认的交互为 https://github.com/wt911122/JFlow/blob/90deff93a65b84a9664b88a929066ed4b8f14e7f/src/core/events/adapter.js#L18
+通过自定义事件映射关系来满足不同的交互需求。默认的交互为 [https://github.com/wt911122/JFlow/blob/90deff93a65b84a9664b88a929066ed4b8f14e7f/src/core/events/adapter.js#L18](https://github.com/wt911122/JFlow/blob/90deff93a65b84a9664b88a929066ed4b8f14e7f/src/core/events/adapter.js#L18)
 
-自定义事件监听策略可参考 https://github.com/wt911122/JFlow/blob/master/src/core/events/commonAdapter.js 来制定。
+自定义事件监听策略可参考 [https://github.com/wt911122/JFlow/blob/master/src/core/events/commonAdapter.js](https://github.com/wt911122/JFlow/blob/master/src/core/events/commonAdapter.js) 来制定。
 
