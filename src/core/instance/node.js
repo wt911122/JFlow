@@ -26,10 +26,10 @@ class Node extends Instance {
         super(configs);
         this._rawConfigs = configs;
         // for layout
-        // this._intersections = [];
+        /** @member {number[]} */
         this.anchor =           configs.anchor || [0, 0];
+        /** @member {Node~AbsolutePosition} */
         this.absolutePosition = configs.absolutePosition;
-        // this.margin =   configs.margin || 5;
     }
 
     setConfig(configs) {
@@ -40,7 +40,15 @@ class Node extends Instance {
             }
         });
     }
-
+    /**
+     * 克隆当前节点.
+     * @return {Node} 当前节点的副本
+     */
+    clone() {
+        const C = this.constructor;
+        const t = new C(this._rawConfigs);
+        return t;
+    }
     // end: from | to
     // from 逆时针, to 顺时针
     // checkLinked(interDir, end) {
@@ -87,16 +95,6 @@ class Node extends Instance {
         ctx.stroke();
         ctx.restore();
     } */
-
-    /**
-     * 克隆当前节点.
-     * @return {Node} 当前节点的副本
-     */
-    clone() {
-        const C = this.constructor;
-        const t = new C(this._rawConfigs);
-        return t;
-    }
 }
 
 export default Node;

@@ -10,6 +10,14 @@ function dist2(v, w) {
 }
 
 /**
+ * @typedef {Object} LowcodeLayout~Configs
+ * @property {number} linkLength - 最小连线长度
+ * @property {number} gap       - 列间隙
+ * @property {boolean} treeItemDraggable - 树上的是否可以拖动
+ * @property {Object} ast       - 语法树
+ */
+
+/**
     lowcode layout
 
     type: 
@@ -22,13 +30,19 @@ function dist2(v, w) {
         + other,
     
     * @implements {Layout}
+    * @param {LowcodeLayout~Configs} - 配置
+    
  */
 class LowcodeLayout {
     constructor(configs) {
+        /** @member {number}      - 最小连线长度 */
         this.linkLength = configs.linkLength || 18;
+        /** @member {number}      - 列间隙 */
         this.gap = configs.gap || 30;
+        /** @member {boolean}      - 树上的是否可以拖动 */
         this.treeItemDraggable = configs.treeItemDraggable ?? true;
         this.reOrder(configs.ast);
+        /** @member {boolean}      - true 需要检查元素拖动 */
         this.static = true;
     }
     /**

@@ -13,29 +13,45 @@ function getRelationShip(p1, p2) {
         return '一对一'
     }
 }
+/**
+    ER property Node
+    * @implements {LayoutNode}
+ */
 class ERProperty {
     constructor(source, node, isNavigation) {
+        /** @member {String}      - 布局节点类型 */
         this.type = 'ERProperty';
+        /** @member {Object}      - 数据源 */
         this.source = source;
         this.node = node;
         this.ref = source.ref;
         this.type = source.type;
         this.association = source.association;
+        /** @member {String}      - 唯一标识 */
         this.id = isNavigation ? `${node.id}-${source.name}-navigation` : `${node.id}-${source.name}`
         this._selfLink = false;
         this.parentPropertyRef = undefined;
+        /** @member {LayoutNode~getJflowInstance}      - 获取jflow对象 */
         this.getJflowInstance = undefined;
-
         this.doubleRef = undefined;
     }
 }
-
+/**
+ ER Node
+ * @implements {LayoutNode}
+ * @param {Object} source
+ */
 class ERNode { 
     constructor(source) {
+        /** @member {String}      - 布局节点类型 */
         this.type = 'ERNode';
+        /** @member {Object}      - 数据源 */
         this.source = source;
+        /** @member {String}      - 唯一标识 */
         this.id = source.name;
+        /** @member {Boolean}      - true, 可拖动 */
         this.isDraggable = true;
+        /** @member {LayoutNode~getJflowInstance}      - 获取jflow对象 */
         this.getJflowInstance = undefined;
         // this.adjacencyList = []
         this.propertyList = source.propertyList.map(p => new ERProperty(p, this));

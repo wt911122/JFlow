@@ -16,7 +16,9 @@ class Capsule extends Node {
     constructor(configs = {}) {
         super(configs);
         this.type =             'Capsule';
+        /** @member {Number}      - 内部矩形宽 */
         this.width =            configs.width || 20;
+        /** @member {Number}      - 内部矩形高 */
         this.height =           configs.height || 10;
     }
 

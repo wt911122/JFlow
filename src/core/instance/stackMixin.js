@@ -1,6 +1,4 @@
 import InstanceStack from './stack';
-// import Link from './link';
-import Link from './polyline-link';
 import { setUniqueId, getUniqueId } from '../utils/functions';
 /**
  * 对象栈 mixin 用于方便控制节点栈和连线栈
@@ -8,9 +6,13 @@ import { setUniqueId, getUniqueId } from '../utils/functions';
  * @mixin
  */
 const StackMixin = {
+    /** @property {Node[]}          - 对象数组 */
     instances: [],
+    /** @property {BaseLink[]}      - 连线数组 */
     links: [],
+    /** @property {InstanceStack}       - 对象栈 */
     _stack: null,
+    /** @property {InstanceStack}       - 连线栈 */
     _linkStack: null,
     /**
      * 初始化对象栈

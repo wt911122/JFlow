@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="BaseLink.html">BaseLink</a></li><li><a href="BezierLink.html">BezierLink</a></li><li><a href="Capsule.html">Capsule</a></li><li><a href="CapsuleGroup.html">CapsuleGroup</a></li><li><a href="CapsuleVerticalGroup.html">CapsuleVerticalGroup</a></li><li><a href="Diamond.html">Diamond</a></li><li><a href="DiamondGroup.html">DiamondGroup</a></li><li><a href="DiamondVerticalGroup.html">DiamondVerticalGroup</a></li><li><a href="ERLayout.html">ERLayout</a></li><li><a href="EventAdapter.html">EventAdapter</a></li><li><a href="Icon.html">Icon</a></li><li><a href="Instance.html">Instance</a></li><li><a href="InstanceStack.html">InstanceStack</a></li><li><a href="JFlow.html">JFlow</a></li><li><a href="JFlowEvent.html">JFlowEvent</a></li><li><a href="LinearLayout.html">LinearLayout</a></li><li><a href="LowcodeLayout.html">LowcodeLayout</a></li><li><a href="Node.html">Node</a></li><li><a href="Point.html">Point</a></li><li><a href="PolyLink.html">PolyLink</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="RectangleGroup.html">RectangleGroup</a></li><li><a href="Rhombus.html">Rhombus</a></li><li><a href="RhombusGroup.html">RhombusGroup</a></li><li><a href="Text.html">Text</a></li>
+					<li><a href="BaseLink.html">BaseLink</a></li><li><a href="BezierLink.html">BezierLink</a></li><li><a href="Capsule.html">Capsule</a></li><li><a href="CapsuleGroup.html">CapsuleGroup</a></li><li><a href="CapsuleVerticalGroup.html">CapsuleVerticalGroup</a></li><li><a href="Diamond.html">Diamond</a></li><li><a href="DiamondGroup.html">DiamondGroup</a></li><li><a href="DiamondVerticalGroup.html">DiamondVerticalGroup</a></li><li><a href="ERLayout.html">ERLayout</a></li><li><a href="ERNode.html">ERNode</a></li><li><a href="ERProperty.html">ERProperty</a></li><li><a href="EventAdapter.html">EventAdapter</a></li><li><a href="Icon.html">Icon</a></li><li><a href="Instance.html">Instance</a></li><li><a href="InstanceStack.html">InstanceStack</a></li><li><a href="JFlow.html">JFlow</a></li><li><a href="JFlowEvent.html">JFlowEvent</a></li><li><a href="LinearLayout.html">LinearLayout</a></li><li><a href="LowcodeLayout.html">LowcodeLayout</a></li><li><a href="Node.html">Node</a></li><li><a href="Point.html">Point</a></li><li><a href="PolyLink.html">PolyLink</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="RectangleGroup.html">RectangleGroup</a></li><li><a href="Rhombus.html">Rhombus</a></li><li><a href="RhombusGroup.html">RhombusGroup</a></li><li><a href="Text.html">Text</a></li>
 				</ul>
 			</li>
 			
@@ -75,7 +75,7 @@
 			<li class="dropdown">
 				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="global.html#bounding_box">bounding_box</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#DIRECTION">DIRECTION</a></li><li><a href="global.html#eventAdapter">eventAdapter</a></li><li><a href="global.html#minZoom">minZoom</a></li><li><a href="global.html#padding">padding</a></li><li><a href="global.html#requestCacheCanvas">requestCacheCanvas</a></li><li><a href="global.html#TEXT_ALIGN">TEXT_ALIGN</a></li>
+					<li><a href="global.html#bounding_box">bounding_box</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#DIRECTION">DIRECTION</a></li><li><a href="global.html#eventAdapter">eventAdapter</a></li><li><a href="global.html#minZoom">minZoom</a></li><li><a href="global.html#padding">padding</a></li><li><a href="global.html#requestCacheCanvas">requestCacheCanvas</a></li><li><a href="global.html#TEXT_ALIGN">TEXT_ALIGN</a></li><li><a href="global.html#%25E5%25B8%2583%25E5%25B1%2580%25E8%258A%2582%25E7%2582%25B9">布局节点</a></li>
 				</ul>
 			</li>
 			
@@ -117,10 +117,11 @@
     <p>JFlow 通过预设的布局概念对开发者隐藏了坐标系的概念，其实JFlow中存在多重坐标换算：</p>
 <ol>
 <li>点线布局到canvas自身坐标，存在缩放平移换算</li>
-<li>组布局有自身的坐标系</li>
+<li>组有自身的坐标系</li>
 </ol>
-<p>这两个部分都由JFlow来负责换算。</p>
-<p>JFlow中每个绘图对象默认约定为中心对称图形，即以每个图形的中心为坐标原点来绘制，组布局的实现也需要保证组也是一个中心对称图形，这样可以方便的实现类似 <code>flex布局</code> 主轴的效果。</p>
+<p>这两个部分都由JFlow负责换算。</p>
+<p>JFlow中每个绘图对象默认约定为中心对称图形，即以每个图形的中心为坐标原点来绘制，中心坐标为<a href="https://wt911122.github.io/JFlow/Node.html#anchor__anchor">anchor</a>，组布局的实现也需要保证组也是一个中心对称图形，这样可以方便的实现类似 <code>flex布局</code> 主轴的效果。</p>
+<p><strong>从 JFlow 中扩展的对象也需要遵从这种原则</strong>。</p>
 </article>
 
 </section>

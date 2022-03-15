@@ -18,12 +18,19 @@ import Instance from './instance';
 class BaseLink extends Instance{
     constructor(configs = {}) {
         super();
-        this.from     = configs.from; // Instance
-        this.to       = configs.to;   // Instance
+        /** @member {Instance}      - 起始单元 */
+        this.from     = configs.from;
+        /** @member {Instance}      - 终止单元 */
+        this.to       = configs.to;
+        /** @member {DIRECTION}      - 起始方向 */
         this.fromDir  = configs.fromDir;
+        /** @member {DIRECTION}      - 终止方向 */
         this.toDir    = configs.toDir;
+        /** @member {key}            - 连线唯一键值 */
         this.key      = configs.key;
+        /** @member {number[][]}     - 连线控制点缓存 */
         this._cachePoints = null;
+        /** @member {string}     - 连线颜色，默认为 #000 */
         this.backgroundColor = configs.backgroundColor || '#000';
     }
 }

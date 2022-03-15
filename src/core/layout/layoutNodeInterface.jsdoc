@@ -3,7 +3,7 @@
  * 事件处理函数
  * @name LayoutNode~getJflowInstance
  * @function
- * @returns {}
+ * @returns {Instance}
  */
 
 /**
@@ -12,7 +12,7 @@
  * @property {Object}           source              - 源数据
  * @property {String}           type                - 节点数据分类
  * @property {String}           id                  - 唯一标识
- * @property {Instance}         getJflowInstance    - 获取Vue组件对应的jflow对象（由vue plugin填充）
  * @property {Boolean}          isDraggable         - 是否可被拖动（默认false）
  * @property {Boolean}          isLocked            - 是否在拖动时锁住节点下连接的其他节点
+ * @property {LayoutNode~getJflowInstance}         getJflowInstance    - 获取Vue组件对应的jflow对象（由vue plugin填充）
  */

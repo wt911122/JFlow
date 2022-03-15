@@ -126,6 +126,37 @@ class Dot3 extends Rectangle {
 export default Dot3;
 ```
 
+在Vue中，可以在通过插件配置注入新的组件
+
+```javascript
+Vue.use(JFlowVuePlugin, {
+    custom: {
+        Angle,
+        Dot3,
+    },
+});
+```
+之后就可以在工程中通过标签正常使用了，configs传入对象具体的setConfigs函数
+```vue
+<template>
+    <j-angle :configs="{
+        wing: 6,
+        borderWidth: 1.5,
+        borderColor: '#999',
+        rotation: 180,
+    }"></j-angle>
+</template>
+```
+```vue
+<template>
+    <j-dot3 :configs="{
+        backgroundColor: '#323747',
+    }"></j-dot3>
+</template>
+```
+    
+
+
 ## 点线布局和组布局
 参考 
 + [对象、连线和布局](https://wt911122.github.io/JFlow/tutorial-对象、连线和布局.html)

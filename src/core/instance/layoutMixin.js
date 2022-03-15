@@ -9,6 +9,7 @@
  * @mixin
  */
 const LayoutMixin = {
+    /** @property {Layout}      - 布局对象 */
     _layout: null,
     // _reflowed: false,
     /**

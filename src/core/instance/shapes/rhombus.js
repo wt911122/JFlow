@@ -16,7 +16,9 @@ class Rhombus extends Node {
     constructor(configs = {}) {
         super(configs);
         this.type =             'Rhombus';
+        /** @member {Number}      - 内十字高度 */
         this.height =           configs.diagonalsV || 10;
+        /** @member {Number}      - 内十字宽度 */
         this.width =            configs.diagonalsH || 20;
     }
 

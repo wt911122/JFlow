@@ -26,57 +26,50 @@ class Instance extends EventTarget{
         Object.assign(this, configs);
         // this.anchor = configs.anchor || [0, 0];
         // this.belongs = undefined;
-        /** 
-         * @property {number} visible      - 元素可见 默认 true
-         */
+        /** @member {boolean}      - 元素可见 默认 true */
         this.visible = true;
         // this._jflow = undefined;
         this._belongs = undefined;
         this[ishitKey] = false; 
 
-        /** layout 抽象节点关联属性 */
+        /** @member {LayoutNode} 布局节点 */
         this._layoutNode = undefined;
-
-        /**
-         * 通用样式属性
-         * @property {number} borderWidth      - 边的宽度 默认是 2
-         * @property {string} borderColor      - 边框颜色 默认 black
-         * @property {string} backgroundColor  - 填充颜色 默认 white
-         * @property {string} shadowColor      - 阴影颜色
-         * @property {string} shadowBlur       - 阴影扩散范围
-         * @property {string} shadowOffsetX    - 阴影偏移 X
-         * @property {string} shadowOffsetX    - 阴影偏移 Y
-         */
+        /** @member {number}      - 边的宽度 默认是 0 */
         this.borderWidth =      configs.borderWidth || 0;
+        /** @member {string}     - 边框颜色 默认 transparent */
         this.borderColor =      configs.borderColor || 'transparent';
-        // this.hoverStyle =       configs.hoverStyle || 'transparent';
+        /** @member {string}     - 填充颜色 默认 transparent */
         this.backgroundColor =  configs.backgroundColor || 'transparent';
+        /** @member {string}     - 阴影颜色 空就不显示阴影 */
         this.shadowColor =      configs.shadowColor;
+        /** @member {string}     - 阴影扩散范围 默认 5 */
         this.shadowBlur  =      configs.shadowBlur || 5;
+        /** @member {string}     - 阴影偏移 X */
         this.shadowOffsetX =    configs.shadowOffsetX || 0;
+        /** @member {string}     - 阴影偏移 Y */
         this.shadowOffsetY =    configs.shadowOffsetY || 0;
 
     }
     /**
-     * @property {boolean} _isTargeting - 当前单元选中状态
+     * @member {boolean} - 当前单元选中状态
      */
     get _isTargeting() {
         return this === (this._jflow._target.instance || this._jflow._target.link);
     }
     /**
-     * @property {boolean} _isMoving - 当前单元移动状态
+     * @member {boolean} - 当前单元移动状态
      */
     get _isMoving() {
         return this === this._jflow._getMovingTarget();
     }
     /**
-     * @property {boolean} _isHit  - 当前单元碰撞检测状态
+     * @member {boolean}  - 当前单元碰撞检测状态
      */
     get _isHit() {
         return this[ishitKey];
     }
     /**
-     * @property {JFlow} _jflow -     * canvas上 jflow 实体
+     * @member {JFlow}  - canvas上 jflow 实体
      */
     get _jflow() {
         return this._belongs.uniqueName === 'jflow' ? this._belongs : this._belongs._jflow;

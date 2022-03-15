@@ -5,6 +5,11 @@ import { bounding_box } from '../utils/functions';
 import { DIRECTION } from '../utils/constance';
 
 /**
+ * @typedef {Object} Icon~ImageBounding
+ * @property {number} width   - 图片宽度
+ * @property {number} height   - 图片高度 
+ */
+/**
  * 图片单元 配置
  * @typedef {Rectangle~RectangleConfigs} Icon~IconConfigs
  * @property {number} image   - 图片地址
@@ -22,12 +27,14 @@ import { DIRECTION } from '../utils/constance';
 class Icon extends Rectangle {
     constructor(configs) {
         super(configs)
+        /** @member {CanvasImageSource}      - 图片 */
         this.image = configs.image;
         this.image.onload = () => {
             requestAnimationFrame(() => {
                 this._jflow._render();
             })
         }
+        /** @member {Icon~ImageBounding}      - 图片维度 */
         this.imageBounding = {
             width: configs.imageWidth || configs.width,
             height: configs.imageHeight ||  configs.height,

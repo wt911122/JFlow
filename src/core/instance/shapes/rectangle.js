@@ -1,6 +1,21 @@
 import Node from '../node';
 import { DIRECTION, oppositeDirection } from '../../utils/constance';
 /**
+ * @typedef Rectangle~border
+ * @type {object}
+ * @property {number} borderColor      - 边框宽度, 默认 0
+ * @property {number} borderWidth      - 边框颜色, 默认 transparent
+ */
+/**
+ * @typedef Rectangle~borders
+ * @type {object}
+ * @property {Rectangle~border} top      - 上边框
+ * @property {Rectangle~border} right      - 右边框
+ * @property {Rectangle~border} bottom      - 下边框
+ * @property {Rectangle~border} left      - 左边框
+ */
+
+/**
  * 矩形单元 配置
  * @typedef {Node~Configs} Rectangle~RectangleConfigs
  * @property {number} width - 宽
@@ -8,19 +23,7 @@ import { DIRECTION, oppositeDirection } from '../../utils/constance';
  * @property {number} borderRadius - 圆角矩形半径
  * @property {string} borderColor - 边框颜色, 默认 transparent
  * @property {string} borderWidth - 边框宽度, 默认 0
- * @property {Object} border      - 边框设置
- * @property {Object} border.top      - 上边框设置
- * @property {string} border.top.borderColor - 边框颜色, 默认 transparent
- * @property {number} border.top.borderWidth - 边框宽度, 默认 0
- * @property {Object} border.right    - 右边框设置
- * @property {string} border.right.borderColor - 边框颜色, 默认 transparent
- * @property {number} border.right.borderWidth - 边框宽度, 默认 0
- * @property {Object} border.bottom   - 下边框设置
- * @property {string} border.bottom.borderColor - 边框颜色, 默认 transparent
- * @property {number} border.bottom.borderWidth - 边框宽度, 默认 0
- * @property {Object} border.left     - 左边框设置
- * @property {string} border.left.borderColor - 边框颜色, 默认 transparent
- * @property {number} border.left.borderWidth - 边框宽度, 默认 0
+ * @property {Rectangle~borders} border      - 边框设置
  */
 /**
  * 矩形单元
@@ -32,13 +35,17 @@ class Rectangle extends Node {
     constructor(configs = {}) {
         super(configs);
         this.type =             'Rectangle';
+         /** @member {Number}      - 宽 */
         this.width =            configs.width || 10;
+         /** @member {Number}      - 高 */
         this.height =           configs.height || 10;
+         /** @member {Number}      - 圆角矩形半径 */
         this.borderRadius =     configs.borderRadius || 0;
         this._setBorder(configs);
     }
 
     _setBorder(configs){
+        /** @member {Rectangle~borders}      - 边框设置，优先级高于 borderWidth，borderColor */
         this.border = {
             top: {
                 color: configs.border?.top?.borderColor || configs.borderColor || 'transparent',

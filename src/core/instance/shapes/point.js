@@ -15,6 +15,7 @@ class Point extends Node {
     constructor(configs) {
         super(configs);
         this.type =             'Point';
+        /** @member {Number}      - 半径 */
         this.radius =           configs.radius || 10;
         this.radiusExpo2 =      this.radius * this.radius;
     }

@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="BaseLink.html">BaseLink</a></li><li><a href="BezierLink.html">BezierLink</a></li><li><a href="Capsule.html">Capsule</a></li><li><a href="CapsuleGroup.html">CapsuleGroup</a></li><li><a href="CapsuleVerticalGroup.html">CapsuleVerticalGroup</a></li><li><a href="Diamond.html">Diamond</a></li><li><a href="DiamondGroup.html">DiamondGroup</a></li><li><a href="DiamondVerticalGroup.html">DiamondVerticalGroup</a></li><li><a href="ERLayout.html">ERLayout</a></li><li><a href="EventAdapter.html">EventAdapter</a></li><li><a href="Icon.html">Icon</a></li><li><a href="Instance.html">Instance</a></li><li><a href="InstanceStack.html">InstanceStack</a></li><li><a href="JFlow.html">JFlow</a></li><li><a href="JFlowEvent.html">JFlowEvent</a></li><li><a href="LinearLayout.html">LinearLayout</a></li><li><a href="LowcodeLayout.html">LowcodeLayout</a></li><li><a href="Node.html">Node</a></li><li><a href="Point.html">Point</a></li><li><a href="PolyLink.html">PolyLink</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="RectangleGroup.html">RectangleGroup</a></li><li><a href="Rhombus.html">Rhombus</a></li><li><a href="RhombusGroup.html">RhombusGroup</a></li><li><a href="Text.html">Text</a></li>
+					<li><a href="BaseLink.html">BaseLink</a></li><li><a href="BezierLink.html">BezierLink</a></li><li><a href="Capsule.html">Capsule</a></li><li><a href="CapsuleGroup.html">CapsuleGroup</a></li><li><a href="CapsuleVerticalGroup.html">CapsuleVerticalGroup</a></li><li><a href="Diamond.html">Diamond</a></li><li><a href="DiamondGroup.html">DiamondGroup</a></li><li><a href="DiamondVerticalGroup.html">DiamondVerticalGroup</a></li><li><a href="ERLayout.html">ERLayout</a></li><li><a href="ERNode.html">ERNode</a></li><li><a href="ERProperty.html">ERProperty</a></li><li><a href="EventAdapter.html">EventAdapter</a></li><li><a href="Icon.html">Icon</a></li><li><a href="Instance.html">Instance</a></li><li><a href="InstanceStack.html">InstanceStack</a></li><li><a href="JFlow.html">JFlow</a></li><li><a href="JFlowEvent.html">JFlowEvent</a></li><li><a href="LinearLayout.html">LinearLayout</a></li><li><a href="LowcodeLayout.html">LowcodeLayout</a></li><li><a href="Node.html">Node</a></li><li><a href="Point.html">Point</a></li><li><a href="PolyLink.html">PolyLink</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="RectangleGroup.html">RectangleGroup</a></li><li><a href="Rhombus.html">Rhombus</a></li><li><a href="RhombusGroup.html">RhombusGroup</a></li><li><a href="Text.html">Text</a></li>
 				</ul>
 			</li>
 			
@@ -75,7 +75,7 @@
 			<li class="dropdown">
 				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="global.html#bounding_box">bounding_box</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#DIRECTION">DIRECTION</a></li><li><a href="global.html#eventAdapter">eventAdapter</a></li><li><a href="global.html#minZoom">minZoom</a></li><li><a href="global.html#padding">padding</a></li><li><a href="global.html#requestCacheCanvas">requestCacheCanvas</a></li><li><a href="global.html#TEXT_ALIGN">TEXT_ALIGN</a></li>
+					<li><a href="global.html#bounding_box">bounding_box</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#DIRECTION">DIRECTION</a></li><li><a href="global.html#eventAdapter">eventAdapter</a></li><li><a href="global.html#minZoom">minZoom</a></li><li><a href="global.html#padding">padding</a></li><li><a href="global.html#requestCacheCanvas">requestCacheCanvas</a></li><li><a href="global.html#TEXT_ALIGN">TEXT_ALIGN</a></li><li><a href="global.html#%25E5%25B8%2583%25E5%25B1%2580%25E8%258A%2582%25E7%2582%25B9">布局节点</a></li>
 				</ul>
 			</li>
 			
@@ -237,6 +237,30 @@ class Dot3 extends Rectangle {
     }
 }
 export default Dot3;
+</code></pre>
+<p>在Vue中，可以在通过插件配置注入新的组件</p>
+<pre class="prettyprint source lang-javascript"><code>Vue.use(JFlowVuePlugin, {
+    custom: {
+        Angle,
+        Dot3,
+    },
+});
+</code></pre>
+<p>之后就可以在工程中通过标签正常使用了，configs传入对象具体的setConfigs函数</p>
+<pre class="prettyprint source lang-vue"><code>&lt;template>
+    &lt;j-angle :configs=&quot;{
+        wing: 6,
+        borderWidth: 1.5,
+        borderColor: '#999',
+        rotation: 180,
+    }&quot;>&lt;/j-angle>
+&lt;/template>
+</code></pre>
+<pre class="prettyprint source lang-vue"><code>&lt;template>
+    &lt;j-dot3 :configs=&quot;{
+        backgroundColor: '#323747',
+    }&quot;>&lt;/j-dot3>
+&lt;/template>
 </code></pre>
 <h2>点线布局和组布局</h2>
 <p>参考</p>

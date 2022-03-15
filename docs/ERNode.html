@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>JFlow Mixin: LayoutMixin</title>
+	<title>JFlow Class: ERNode</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -107,14 +107,16 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Mixin: LayoutMixin</h1>
+	<h1 class="page-title">Class: ERNode</h1>
 <section>
 
 <header>
     
         <h2>
-        LayoutMixin
+        ERNode
         </h2>
+        
+            <div class="class-description"><p>ER Node</p></div>
         
     
 </header>
@@ -124,10 +126,74 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>布局 mixin 用于注册和方便控制布局</p></div>
+<hr>
+<dt>
+    <h4 class="name" id="ERNode"><span class="type-signature"></span>new ERNode(source)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
         
 
         
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
 <dl class="details">
     
 
@@ -141,6 +207,13 @@
 
     
 
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="LayoutNode.html">LayoutNode</a></li>
+        
+    </ul></dd>
     
 
     
@@ -167,7 +240,21 @@
 </dl>
 
 
-        
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
     
     </div>
 
@@ -187,67 +274,33 @@
         <dl>
             
 <hr>
-<dt class="name" id="._layout">
-    <h4 id="._layout"><span class="type-signature">&lt;static> </span>_layout<span class="type-signature"></span></h4>
+<dt class="name" id="getJflowInstance">
+    <h4 id="getJflowInstance"><span class="type-signature"></span>getJflowInstance<span class="type-signature"> :<a href="LayoutNode.html#~getJflowInstance">LayoutNode~getJflowInstance</a></span></h4>
 
     
 </dt>
 <dd>
     
-
+    <div class="description">
+        <p>获取jflow对象</p>
+    </div>
     
 
     
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
+        <h5>Type:</h5>
+        <ul>
+            <li>
                 
-<span class="param-type"><a href="Layout.html">Layout</a></span>
+<span class="param-type"><a href="LayoutNode.html#~getJflowInstance">LayoutNode~getJflowInstance</a></span>
 
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>布局对象</p></td>
-        </tr>
+            </li>
+        </ul>
+    
 
     
-    </tbody>
-</table>
-</dl>
-
+<dl class="details">
     
 
 	
@@ -289,83 +342,32 @@
     
 </dd>
 
-        </dl>
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        <dl>
+        
             
 <hr>
-<dt>
-    <h4 class="name" id=".initLayout"><span class="type-signature">&lt;static> </span>initLayout(configs)</h4>
-    
+<dt class="name" id="id">
+    <h4 id="id"><span class="type-signature"></span>id<span class="type-signature"> :String</span></h4>
+
     
 </dt>
 <dd>
-
     
     <div class="description">
-        <p>初始化布局</p>
+        <p>唯一标识</p>
     </div>
     
 
     
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>configs</code></td>
-            
-
-            <td class="type">
-            
+        <h5>Type:</h5>
+        <ul>
+            <li>
                 
-<span class="param-type"><a href="LayoutMixin.html#~LayoutConfigs">LayoutMixin~LayoutConfigs</a></span>
+<span class="param-type">String</span>
 
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>配置</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
+            </li>
+        </ul>
     
 
     
@@ -409,426 +411,91 @@
 
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
 </dd>
 
         
             
 <hr>
-<dt>
-    <h4 class="name" id=".recalculate"><span class="type-signature">&lt;static> </span>recalculate()</h4>
-    
+<dt class="name" id="isDraggable">
+    <h4 id="isDraggable"><span class="type-signature"></span>isDraggable<span class="type-signature"> :Boolean</span></h4>
+
     
 </dt>
 <dd>
-
     
     <div class="description">
-        <p>重新计算布局，相当于浏览器里面重排，并重算当前布局下的最小外接矩形</p>
+        <p>true, 可拖动</p>
     </div>
     
 
     
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".recalculateUp"><span class="type-signature">&lt;static> </span>recalculateUp()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>从当前层出发，向上层递归重排</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".reflow"><span class="type-signature">&lt;static> </span>reflow()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>重新计算布局，相当于浏览器里面重排</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".staticCheck"><span class="type-signature">&lt;static> </span>staticCheck(instance)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>布局静态检查</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>instance</code></td>
-            
-
-            <td class="type">
-            
+        <h5>Type:</h5>
+        <ul>
+            <li>
                 
-<span class="param-type"><a href="Instance.html">Instance</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>检查单元</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <ul>
-<li>检查结果</li>
-</ul>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
 <span class="param-type">Boolean</span>
 
 
 
-    </dd>
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
 </dl>
 
-
-        
 
     
 </dd>
 
-        </dl>
-    
-
-    
-        <h3 class="subsection-title">Type Definitions</h3>
-
-        <dl>
-                
+        
+            
 <hr>
-<dt class="name" id="~LayoutConfigs">
-    <h4 id="~LayoutConfigs">LayoutConfigs</h4>
+<dt class="name" id="source">
+    <h4 id="source"><span class="type-signature"></span>source<span class="type-signature"> :Object</span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        <p>Layout mixin 配置</p>
+        <p>数据源</p>
     </div>
     
 
@@ -849,57 +516,75 @@
 <dl class="details">
     
 
-    <h5 class="subsection-title">Properties:</h5>
+	
 
-    <dl>
+	
 
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>layout</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Layout.html">Layout</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>布局对象</p></td>
-        </tr>
+	
 
     
-    </tbody>
-</table>
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
 </dl>
 
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="type">
+    <h4 id="type"><span class="type-signature"></span>type<span class="type-signature"> :String</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>布局节点类型</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">String</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
     
 
 	
@@ -941,7 +626,11 @@
     
 </dd>
 
-            </dl>
+        </dl>
+    
+
+    
+
     
 
     

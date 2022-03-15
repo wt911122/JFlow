@@ -29,15 +29,25 @@ class PolyLink extends BaseLink {
      **/
     constructor(configs) {
         super(configs);
+        /** @member {Number}   - 点击响应范围 */
         this.approximate   = configs.approximate || APPROXIMATE;
+        /** @member {Number}   - 拐角弧度 */
         this.radius        = configs.radius || 0;
+        /** @member {Number}   - 起点终点在 x 方向最小的跨度 */
         this.minSpanX      = configs.minSpanX || 10;
+        /** @member {Number}   - 起点终点在 y 方向最小的跨度 */
         this.minSpanY      = configs.minSpanY || 10;
+        /** @member {Number}    - 虚线数组 */
         this.lineDash      = configs.lineDash;
+        /** @member {Number}    - 双向箭头 */
         this.doubleLink    = configs.doubleLink;
+        /** @member {Number}    - 连线上的文字字体 */
         this.fontFamily    = configs.fontFamily = '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji'
+        /** @member {Number}    - 连线上的文字大小 */
         this.fontSize      = configs.fontSize || '12px';
+        /** @member {Number}    - 连线上的文字 */
         this.content       = configs.content || '';
+        /** @member {Number}    - 是否为自连接 */
         this.isSelf        = !!configs.isSelf
     }
 

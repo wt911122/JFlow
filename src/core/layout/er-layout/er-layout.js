@@ -1,6 +1,18 @@
 
 import { makeER } from './er-node';
 /**
+ * ER source
+ * @typedef {Object} ERLayout~sourceConfigs
+ * @property {string} type - node
+ * @property {string} id - 唯一标识
+ * @property {Object[]} properties - 描述
+ */
+/**
+ * ER布局数据源配置
+ * @typedef {Object} ERLayout~Configs
+ * @property {ERLayout~sourceConfigs[]} entityRelationship - 关系
+ */
+/**
     ER layout
 
     Entity Relationship Structure
@@ -25,9 +37,13 @@ import { makeER } from './er-node';
 
 class ERLayout {
     constructor(configs) {
+        /** @member {boolean}      - false 不需要布局变化检查 */
         this.static = false;
+        /** @member {Layout~NodeMeta[]}      - 布局节点单元数组 */
         this.flowStack = [];
+        /** @member {Layout~LinkMeta[]}      - 布局连线单元数组 */
         this.flowLinkStack = [];
+        /** @member {LayoutNode[]}      - 布局节点数组 */
         this.erNodes = [];
         this.reOrder(configs.entityRelationship);
     }
@@ -35,7 +51,7 @@ class ERLayout {
      * 从 tree 计算布局
      * @param {AstNode} tree - ER 树
      */
-    reOrder(er, root) {
+    reOrder(er) {
         this.er = er;
         this.flowStack = [];
         this.flowLinkStack = [];

@@ -32,7 +32,9 @@ module.exports = {
                     let configName;
                     if(doclet.params) {
                         const configDoclet = doclet.params.find(p => p.name === 'configs');
-                        configName = configDoclet.type.names[0];
+                        if(configDoclet) {
+                            configName = configDoclet.type.names[0];
+                        }
                     }
                     // if(configName) {
                         classes.push({

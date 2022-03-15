@@ -18,8 +18,11 @@ class Diamond extends Node {
     constructor(configs = {}) {
         super(configs);
         this.type =             'Diamond';
+        /** @member {Number}      - 内部矩形宽 */
         this.width =            configs.width || 20;
+        /** @member {Number}      - 内部矩形高 */
         this.height =           configs.height || 10;
+        /** @member {Number}      - 两侧三角形的宽 */
         this.side =             configs.side || 6;
         this._cacheSide();
     }
