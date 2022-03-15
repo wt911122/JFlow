@@ -68,7 +68,7 @@
 			<li class="dropdown">
 				<a href="tutorials.list.html" class="dropdown-toggle" data-toggle="dropdown">Tutorials<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="tutorial-事件与冒泡.html">事件与冒泡</a></li><li><a href="tutorial-坐标系统.html">坐标系统</a></li><li><a href="tutorial-对象、连线和布局.html">对象、连线和布局</a></li><li><a href="tutorial-开始.html">开始</a></li><li><a href="tutorial-扩展JFlow.html">扩展JFlow</a></li><li><a href="tutorial-组与组布局.html">组与组布局</a></li>
+					<li><a href="tutorial-事件与冒泡.html">事件与冒泡</a></li><li><a href="tutorial-坐标系统.html">坐标系统</a></li><li><a href="tutorial-对象、连线和布局.html">对象、连线和布局</a></li><li><a href="tutorial-对象、连线布局和Vue动态插槽.html">对象、连线布局和Vue动态插槽</a></li><li><a href="tutorial-开始.html">开始</a></li><li><a href="tutorial-扩展JFlow.html">扩展JFlow</a></li><li><a href="tutorial-组与组布局.html">组与组布局</a></li>
 				</ul>
 			</li>
 			
@@ -350,9 +350,11 @@ Vue.use(JFlowVuePlugin);
     &lt;j-jflow
         style=&quot;width: 600px; height: 300px; border: 1px solid #000&quot;
         :configs=&quot;configs&quot;>
+        &lt;!-- VirtualNode 为 Layout~NodeMeta 的 type -->
         &lt;template #VirtualNode=&quot;{ meta }&quot;>
             &lt;virtual-node :node=&quot;meta&quot;>&lt;/virtual-node>
         &lt;/template>
+        &lt;!-- 当没有为 Layout~LinkMeta 指定type的时候，将默认使用 plainlink 插槽 -->
         &lt;template #plainlink=&quot;{ configs }&quot;>
             &lt;jBezierLink
                 :configs=&quot;{
@@ -438,6 +440,7 @@ export default {
 <h3>初级</h3>
 <ol>
 <li><a href="https://wt911122.github.io/JFlow/tutorial-%E5%AF%B9%E8%B1%A1%E3%80%81%E8%BF%9E%E7%BA%BF%E5%92%8C%E5%B8%83%E5%B1%80.html">对象、连线和布局</a></li>
+<li><a href="https://wt911122.github.io/JFlow/tutorial-%E5%AF%B9%E8%B1%A1%E3%80%81%E8%BF%9E%E7%BA%BF%E5%B8%83%E5%B1%80%E5%92%8CVue%E5%8A%A8%E6%80%81%E6%8F%92%E6%A7%BD.html">对象、连线布局和Vue动态插槽</a></li>
 <li><a href="https://wt911122.github.io/JFlow/tutorial-%E4%BA%8B%E4%BB%B6%E4%B8%8E%E5%86%92%E6%B3%A1.html">事件和冒泡</a></li>
 <li><a href="https://wt911122.github.io/JFlow/tutorial-%E7%BB%84%E4%B8%8E%E7%BB%84%E5%B8%83%E5%B1%80.html">组与组布局</a></li>
 </ol>

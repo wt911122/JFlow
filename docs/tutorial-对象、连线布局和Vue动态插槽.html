@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>JFlow Module: j-diamond-group</title>
+	<title>JFlow Tutorial: 对象、连线布局和Vue动态插槽</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -102,204 +102,97 @@
 <div class="row">
 
 	
-	<div class="col-md-8">
+	<div class="col-md-12">
 	
 		<div id="main">
-			
-
-	<h1 class="page-title">Module: j-diamond-group</h1>
-<section>
+			<section class="tutorial-section">
 
 <header>
     
+
+    <h2>对象、连线布局和Vue动态插槽</h2>
 </header>
 
-
 <article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>JFlow <a href="DiamondGroup.html">DiamondGroup</a> 的 vue 封装</p></div>
-        
-
-        
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>configs</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="DiamondGroup.html#~DiamondGroupConfigs">DiamondGroup~DiamondGroupConfigs</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>传给 DiamondGroup 的配置</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>visible</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>可见状态</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>jflowId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>全局唯一ID，用于连线单元</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-</dl>
-
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
+    <p>在定义好布局节点单元、连线单元和布局后，可以将布局应用于jflow，在Vue中使用时，布局节点单元和布局连线单元的<code>type</code>会被映射到<a href="https://wt911122.github.io/JFlow/module-j-jflow.html"><code>&lt;j-jflow&gt;</code></a>组件下的动态插槽中，插槽名称为<code>type</code>，布局节点单元和连线单元会以插槽属性(slotProps)的形式传入模板。</p>
+<p>以下是一个示例：</p>
+<pre class="prettyprint source lang-javascript"><code>// 定义几个LayoutNode
+class ClassNode{
+    get type(){
+        return 'ClassNode'
+    }
+    ...
+    makelink(callback) {
+        callback({
+            type: 'extendsLink',
+            ...
+        })
+    }
+}
+class MixinNode{
+    get type(){
+        return 'MixinNode'
+    }
+    ...
+    makelink(callback) {
+        callback({
+            type: 'mixinLink',
+            ...
+        })
+    }
+}
+class InterfaceNode{
+    get type(){
+        return 'InterfaceNode'
+    }
+    ...
+    makelink(callback) {
+        callback({
+            ...
+        })
+    }
+}
+</code></pre>
+<p>在Vue中使用时：</p>
+<pre class="prettyprint source lang-vue"><code>&lt;template>
+    &lt;j-jflow ...>
+        &lt;!-- 以下分别对应了三种节点的显示形式 -->
+        &lt;!-- typeof slotProps = j-jflow-Node -->
+        &lt;template #ClassNode=&quot;{ meta }&quot;>
+            &lt;class-node :node=&quot;meta&quot;>&lt;/class-node>
+        &lt;/template>
+        &lt;template #MixinNode=&quot;{ meta }&quot;>
+            &lt;mixin-node :node=&quot;meta&quot;>&lt;/mixin-node>
+        &lt;/template>
+        &lt;template #InterfaceNode=&quot;{ meta }&quot;>
+            &lt;interface-node :node=&quot;meta&quot;>&lt;/interface-node>
+        &lt;/template>
+
+        &lt;!-- 以下分别对应了三种连线的显示形式 -->
+        &lt;!-- typeof slotProps = Layout~LinkMeta -->
+        &lt;template #plainlink=&quot;{ configs }&quot;>
+            &lt;jBezierLink ...>&lt;/jBezierLink>
+        &lt;/template>
+        &lt;template #mixinLink=&quot;{ configs }&quot;>
+            &lt;jPolyLink ...>&lt;/jPolyLink>
+        &lt;/template>
+        &lt;template #extendsLink=&quot;{ configs }&quot;>
+            &lt;jOtherLink ...>&lt;/jOtherLink>
+        &lt;/template>
+    &lt;/j-jflow>
+&lt;/template>
+</code></pre>
+<h2>继续了解</h2>
+<p><a href="https://wt911122.github.io/JFlow/tutorial-%E4%BA%8B%E4%BB%B6%E4%B8%8E%E5%86%92%E6%B3%A1.html">事件和冒泡</a></p>
 </article>
 
 </section>
-
-
-
 
 		</div>
 	</div>
 
 	<div class="clearfix"></div>
 
-	
-		<div class="col-md-3">
-			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
-		</div>
 	
 
 </div>
