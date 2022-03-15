@@ -350,11 +350,11 @@ Vue.use(JFlowVuePlugin);
     &lt;j-jflow
         style=&quot;width: 600px; height: 300px; border: 1px solid #000&quot;
         :configs=&quot;configs&quot;>
-        &lt;!-- VirtualNode 为 Layout~NodeMeta 的 type -->
+        &lt;!-- VirtualNode 为 <a href="Layout.html#~NodeMeta">Layout~NodeMeta</a> 的 type -->
         &lt;template #VirtualNode=&quot;{ meta }&quot;>
             &lt;virtual-node :node=&quot;meta&quot;>&lt;/virtual-node>
         &lt;/template>
-        &lt;!-- 当没有为 Layout~LinkMeta 指定type的时候，将默认使用 plainlink 插槽 -->
+        &lt;!-- 当没有为 <a href="Layout.html#~LinkMeta">Layout~LinkMeta</a> 指定type的时候，将默认使用 plainlink 插槽 -->
         &lt;template #plainlink=&quot;{ configs }&quot;>
             &lt;jBezierLink
                 :configs=&quot;{

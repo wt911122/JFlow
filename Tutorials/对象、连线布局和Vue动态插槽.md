@@ -2,7 +2,7 @@
 
 以下是一个示例：
 ```javascript
-// 定义几个LayoutNode
+// 定义几个 {@link LayoutNode}
 class ClassNode{
     get type(){
         return 'ClassNode'
@@ -44,7 +44,7 @@ class InterfaceNode{
 <template>
     <j-jflow ...>
         <!-- 以下分别对应了三种节点的显示形式 -->
-        <!-- typeof slotProps = j-jflow-Node -->
+        <!-- typeof slotProps = {@link j-jflow-Node} -->
         <template #ClassNode="{ meta }">
             <class-node :node="meta"></class-node>
         </template>
@@ -56,7 +56,7 @@ class InterfaceNode{
         </template>
 
         <!-- 以下分别对应了三种连线的显示形式 -->
-        <!-- typeof slotProps = Layout~LinkMeta -->
+        <!-- typeof slotProps = {@link Layout~LinkMeta} -->
         <template #plainlink="{ configs }">
             <jBezierLink ...></jBezierLink>
         </template>

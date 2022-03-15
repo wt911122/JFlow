@@ -116,7 +116,7 @@
 <article>
     <p>在定义好布局节点单元、连线单元和布局后，可以将布局应用于jflow，在Vue中使用时，布局节点单元和布局连线单元的<code>type</code>会被映射到<a href="https://wt911122.github.io/JFlow/module-j-jflow.html"><code>&lt;j-jflow&gt;</code></a>组件下的动态插槽中，插槽名称为<code>type</code>，布局节点单元和连线单元会以插槽属性(slotProps)的形式传入模板。</p>
 <p>以下是一个示例：</p>
-<pre class="prettyprint source lang-javascript"><code>// 定义几个LayoutNode
+<pre class="prettyprint source lang-javascript"><code>// 定义几个 <a href="LayoutNode.html">LayoutNode</a>
 class ClassNode{
     get type(){
         return 'ClassNode'
@@ -157,7 +157,7 @@ class InterfaceNode{
 <pre class="prettyprint source lang-vue"><code>&lt;template>
     &lt;j-jflow ...>
         &lt;!-- 以下分别对应了三种节点的显示形式 -->
-        &lt;!-- typeof slotProps = j-jflow-Node -->
+        &lt;!-- typeof slotProps = <a href="global.html#j-jflow-Node">j-jflow-Node</a> -->
         &lt;template #ClassNode=&quot;{ meta }&quot;>
             &lt;class-node :node=&quot;meta&quot;>&lt;/class-node>
         &lt;/template>
@@ -169,7 +169,7 @@ class InterfaceNode{
         &lt;/template>
 
         &lt;!-- 以下分别对应了三种连线的显示形式 -->
-        &lt;!-- typeof slotProps = Layout~LinkMeta -->
+        &lt;!-- typeof slotProps = <a href="Layout.html#~LinkMeta">Layout~LinkMeta</a> -->
         &lt;template #plainlink=&quot;{ configs }&quot;>
             &lt;jBezierLink ...>&lt;/jBezierLink>
         &lt;/template>
