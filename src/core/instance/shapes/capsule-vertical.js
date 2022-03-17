@@ -1,7 +1,6 @@
 import Capsule from './capsule';
 /**
- * 胶囊组单元
- * @description 组单元包含绘图栈，能够包裹内部单元，具有独立的坐标系，目前为中心对齐的坐标系
+ * 垂直胶囊单元
  * @constructor CapsuleVertical
  * @extends Capsule
  * @param {Capsule~CapsuleConfigs} configs - 配置

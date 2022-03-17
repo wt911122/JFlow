@@ -82,7 +82,7 @@ const JFLOW_GROUPS = [
     /**
      * JFlow {@link CapsuleGroup} 的 vue 封装 
      * @module j-capsule-group
-     * @property {CapsuleGroup~CapsuleGroupConfigs} configs - 传给 CapsuleGroup 的配置
+     * @property {(Capsule~CapsuleConfigs|GroupTemplate~GroupConfigs)} configs - 传给 CapsuleGroup 的配置
      * @property {Boolean} visible - 可见状态
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
@@ -90,7 +90,7 @@ const JFLOW_GROUPS = [
     /**
      * JFlow {@link CapsuleVerticalGroup} 的 vue 封装 
      * @module j-capsule-vertical-group
-     * @property {CapsuleGroup~CapsuleGroupConfigs} configs - 传给 CapsuleVerticalGroup 的配置
+     * @property {(Capsule~CapsuleConfigs|GroupTemplate~GroupConfigs)} configs - 传给 CapsuleVerticalGroup 的配置
      * @property {Boolean} visible - 可见状态
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
@@ -98,7 +98,7 @@ const JFLOW_GROUPS = [
     /**
      * JFlow {@link DiamondGroup} 的 vue 封装 
      * @module j-diamond-group
-     * @property {DiamondGroup~DiamondGroupConfigs} configs - 传给 DiamondGroup 的配置
+     * @property {(Diamond~DiamondConfigs|GroupTemplate~GroupConfigs)} configs - 传给 DiamondGroup 的配置
      * @property {Boolean} visible - 可见状态
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
@@ -106,7 +106,7 @@ const JFLOW_GROUPS = [
     /**
      * JFlow {@link DiamondVerticalGroup} 的 vue 封装 
      * @module j-diamond-vertical-group
-     * @property {DiamondGroup~DiamondGroupConfigs} configs - 传给 DiamondVerticalGroup 的配置
+     * @property {(Diamond~DiamondConfigs|GroupTemplate~GroupConfigs)} configs - 传给 DiamondVerticalGroup 的配置
      * @property {Boolean} visible - 可见状态
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
@@ -114,7 +114,7 @@ const JFLOW_GROUPS = [
     /**
      * JFlow {@link RhombusGroup} 的 vue 封装 
      * @module j-rhombus-group
-     * @property {RhombusGroup~RhombusGroupConfigs} configs - 传给 DiamondGroup 的配置
+     * @property {(Rhombus~RhombusConfigs|GroupTemplate~GroupConfigs)} configs - 传给 RhombusGroup 的配置
      * @property {Boolean} visible - 可见状态
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */

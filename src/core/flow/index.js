@@ -8,6 +8,13 @@ import { setUniqueId, getUniqueId } from '../utils/functions';
 import JFlowEvent from '../events';
 
 import EventAdapter from '../events/adapter';
+/**
+ * 组工厂函数，用于通过JFlow 绘图节点来创建不同的组
+ * @global 
+ * @function GroupFactory
+ * @param {Node} jflowNodeConstructor - 绘图节点构造器
+ * @return {Group} - 绘图节点构造器
+ */
 import GroupFactory from '../instance/groupFactory';
 import Rectangle from '../instance/shapes/rectangle';
 import Capsule from '../instance/shapes/capsule';
@@ -15,11 +22,59 @@ import CapsuleVertical from '../instance/shapes/capsule-vertical';
 import Rhombus from '../instance/shapes/rhombus';
 import Diamond from '../instance/shapes/diamond';
 import DiamondVertical from '../instance/shapes/diamond-vertical';
+/** 
+ * @class Group
+ * @classdesc 矩形组单元 由 {@link GroupFactory} 通过 {@link Rectangle} 生成
+ * @groupfrom Rectangle
+ * @augments GroupTemplate
+ * @augments Rectangle
+ * @param {(Rectangle~RectangleConfigs|GroupTemplate~GroupConfigs)} configs - 配置
+ */
 export const Group = GroupFactory(Rectangle);
+/** 
+ * @class CapsuleGroup
+ * @classdesc 胶囊组单元 由 {@link GroupFactory} 通过 {@link Capsule} 生成
+ * @groupfrom Capsule
+ * @augments GroupTemplate
+ * @augments Capsule
+ * @param {(Capsule~CapsuleConfigs|GroupTemplate~GroupConfigs)} configs - 配置
+ */
 export const CapsuleGroup = GroupFactory(Capsule);
+/** 
+ * @class RhombusGroup
+ * @classdesc 菱形组单元 由 {@link GroupFactory} 通过 {@link Rhombus} 生成
+ * @augments GroupTemplate
+ * @augments Rhombus
+ * @groupfrom Rhombus
+ * @param {(Rhombus~RhombusConfigs|GroupTemplate~GroupConfigs)} configs - 配置
+ */
 export const RhombusGroup = GroupFactory(Rhombus);
+/** 
+ * @class DiamondGroup
+ * @classdesc 钻石形组单元 由 {@link GroupFactory} 通过 {@link Diamond} 生成
+ * @groupfrom Diamond
+ * @augments GroupTemplate
+ * @augments Diamond
+ * @param {(Diamond~DiamondConfigs|GroupTemplate~GroupConfigs)} configs - 配置
+ */
 export const DiamondGroup = GroupFactory(Diamond);
+/** 
+ * @class DiamondVerticalGroup
+ * @classdesc 垂直钻石形组单元 由 {@link GroupFactory} 通过 {@link DiamondVertical} 生成
+ * @groupfrom DiamondVertical
+ * @augments GroupTemplate
+ * @augments DiamondVertical
+ * @param {(Diamond~DiamondConfigs|GroupTemplate~GroupConfigs)} configs - 配置
+ */
 export const DiamondVerticalGroup = GroupFactory(DiamondVertical);
+/** 
+ * @class CapsuleVerticalGroup
+ * @classdesc 垂直钻石形组单元 由 {@link GroupFactory} 通过 {@link CapsuleVertical} 生成
+ * @groupfrom CapsuleVertical
+ * @augments GroupTemplate
+ * @augments CapsuleVertical
+ * @param {(Capsule~CapsuleConfigs|GroupTemplate~GroupConfigs)} configs - 配置
+ */
 export const CapsuleVerticalGroup = GroupFactory(CapsuleVertical);
 
 /**
@@ -54,27 +109,22 @@ class JFlow extends EventTarget{
         this.eventAdapter = new EventAdapter(configs.eventAdapter);
         this.initStack(configs);
         this.initLayout(configs);
-        /**
-         * @member {Context2d} ctx        - Context2d 对象
-         * @member {Element} canvas       - canvas 元素
-         * @member {number} dpr           - 设备DPR
-         * @member {number} padding       - 内边距
-         */
+        /** @member {Context2d}     - Context2d 对象 */
         this.ctx = null;
+        /** @member {Element}       - canvas 元素 */
         this.canvas = null;
+        /** @member {number}       - 设备DPR */
         this.dpr = 1;
+        /** @member {number}       - 内边距 */
         this.padding = 20;
-        /**
-         * for zoom and pinch
-         * @member {Context2d} position       - 平移位置
-         * @member {Element} scale            - 当前缩放比
-         * @member {number} maxZoom           - 最大缩放比
-         * @member {number} minZoom           - 最小缩放比
-         */
         this.position = null;
+        /** @member {number}     - 缩放 */
 		this.scale = null;
+        /** @member {number}     - 初始缩放 */
         this.initialZoom = configs.initialZoom;
+        /** @member {number}     - 最大缩放 */
         this.maxZoom = configs.maxZoom || 3;
+        /** @member {number}     - 最小缩放 */
         this.minZoom = configs.minZoom || .5;
 		// this.initScale = 1;
 		// this.initPosition = null

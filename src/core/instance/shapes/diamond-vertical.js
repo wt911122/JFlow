@@ -2,8 +2,7 @@ import Diamond from './diamond';
 const backsqrt3 = 1/Math.sqrt(3)
 
 /**
- * 垂直钻石形组单元
- * @description 组单元包含绘图栈，能够包裹内部单元，具有独立的坐标系，目前为中心对齐的坐标系
+ * 垂直钻石形单元
  * @constructor DiamondVertical
  * @param {Diamond~DiamondConfigs} configs - 配置
  * @extends Diamond

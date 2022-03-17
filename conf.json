@@ -1,5 +1,5 @@
 {
-    "plugins": ["plugins/markdown", "node_modules/jsdoc-vuejs", "./jsdoc-plugin/er.js"],
+    "plugins": ["plugins/markdown", "./jsdoc-plugin/er.js"],
     "recurseDepth": 10,
     "source": {
         "includePattern": ".+\\.js(doc|x)?$",

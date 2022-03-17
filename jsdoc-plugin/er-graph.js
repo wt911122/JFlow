@@ -33,10 +33,10 @@ function renderNode(erNode) {
         });
         td1.addToStack(className);
         td1.recalculate();
-        console.log(td1.height);
+        // console.log(td1.height);
         td2.addToStack(moduleName);
         td2.recalculate();
-        console.log(td2.height)
+        // console.log(td2.height)
 
         const w2 = new Group({
             layout: new LinearLayout({
@@ -47,7 +47,7 @@ function renderNode(erNode) {
         w2.addToStack(td1);
         w2.addToStack(td2);
         w2.recalculate();
-        console.log(w2.height)
+        // console.log(w2.height)
         
         wrapper.addToStack(w2);
         const w3 = new Group({
@@ -80,7 +80,7 @@ function renderNode(erNode) {
         }
         wrapper.addToStack(w3)
         wrapper.recalculate();
-        console.log(erNode.id, wrapper.height)
+        // console.log(erNode.id, wrapper.height)
     } else {
         wrapper.addToStack(className);
         wrapper.setConfig({
@@ -90,7 +90,7 @@ function renderNode(erNode) {
             borderWidth: 2,
         })
         wrapper.recalculate();
-        console.log(erNode.id, wrapper.height)
+        // console.log(erNode.id, wrapper.height)
     }
     wrapper._ERnode = erNode;
     erNode.getJflowInstance = () => wrapper;
@@ -115,6 +115,7 @@ function renderLink(linkmeta) {
 
 function render (data, elemId) {
     const layout = new erLayout(data);
+    console.log(data)
     const jflowStage = new JFlow({
         allowDrop: false,
         layout,

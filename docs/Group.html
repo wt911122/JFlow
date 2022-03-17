@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>JFlow Class: Icon</title>
+	<title>JFlow Class: Group</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -107,14 +107,16 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: Icon</h1>
+	<h1 class="page-title">Class: Group</h1>
 <section>
 
 <header>
     
         <h2>
-        Icon
+        Group
         </h2>
+        
+            <div class="class-description"><p>矩形组单元 由 <a href="global.html#GroupFactory">GroupFactory</a> 通过 <a href="Rectangle.html">Rectangle</a> 生成</p></div>
         
     
 </header>
@@ -126,16 +128,12 @@
         
 <hr>
 <dt>
-    <h4 class="name" id="Icon"><span class="type-signature"></span>new Icon(configs)</h4>
+    <h4 class="name" id="Group"><span class="type-signature"></span>new Group(configs)</h4>
     
     
 </dt>
 <dd>
 
-    
-    <div class="description">
-        <p>图片单元可以绘制图片，图片加载后会自动重新绘制</p>
-    </div>
     
 
     
@@ -175,7 +173,10 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="Icon.html#~IconConfigs">Icon~IconConfigs</a></span>
+<span class="param-type"><a href="Rectangle.html#~RectangleConfigs">Rectangle~RectangleConfigs</a></span>
+|
+
+<span class="param-type"><a href="GroupTemplate.html#~GroupConfigs">GroupTemplate~GroupConfigs</a></span>
 
 
 
@@ -260,6 +261,8 @@
 
 
     <ul>
+        <li><a href="GroupTemplate.html">GroupTemplate</a></li>
+    
         <li><a href="Rectangle.html">Rectangle</a></li>
     </ul>
 
@@ -278,6 +281,372 @@
         <h3 class="subsection-title">Members</h3>
 
         <dl>
+            
+<hr>
+<dt class="name" id="_layout">
+    <h4 id="_layout"><span class="type-signature"></span>_layout<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Layout.html">Layout</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>布局对象</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#_layout">GroupTemplate#_layout</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="LayoutMixin.html#._layout">LayoutMixin._layout</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="_linkStack">
+    <h4 id="_linkStack"><span class="type-signature"></span>_linkStack<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="InstanceStack.html">InstanceStack</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>连线栈</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#_linkStack">GroupTemplate#_linkStack</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="StackMixin.html#._linkStack">StackMixin._linkStack</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="_stack">
+    <h4 id="_stack"><span class="type-signature"></span>_stack<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="InstanceStack.html">InstanceStack</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>对象栈</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#_stack">GroupTemplate#_stack</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="StackMixin.html#._stack">StackMixin._stack</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
             
 <hr>
 <dt class="name" id="absolutePosition">
@@ -672,39 +1041,82 @@
         
             
 <hr>
-<dt class="name" id="image">
-    <h4 id="image"><span class="type-signature"></span>image<span class="type-signature"> :CanvasImageSource</span></h4>
+<dt class="name" id="instances">
+    <h4 id="instances"><span class="type-signature"></span>instances<span class="type-signature"></span></h4>
 
     
 </dt>
 <dd>
     
-    <div class="description">
-        <p>图片</p>
-    </div>
-    
 
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">CanvasImageSource</span>
-
-
-
-            </li>
-        </ul>
     
 
     
 <dl class="details">
     
 
-	
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="Node.html">Node</a>></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>对象数组</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
 
 	
 
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#instances">GroupTemplate#instances</a>
+			</li>
+		</ul>
+	</dd>
 	
 
     
@@ -713,6 +1125,14 @@
 
     
 
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="StackMixin.html#.instances">StackMixin.instances</a></li>
+        
+        </ul></dd>
     
 
 	
@@ -743,39 +1163,82 @@
         
             
 <hr>
-<dt class="name" id="imageBounding">
-    <h4 id="imageBounding"><span class="type-signature"></span>imageBounding<span class="type-signature"> :<a href="Icon.html#~ImageBounding">Icon~ImageBounding</a></span></h4>
+<dt class="name" id="links">
+    <h4 id="links"><span class="type-signature"></span>links<span class="type-signature"></span></h4>
 
     
 </dt>
 <dd>
     
-    <div class="description">
-        <p>图片维度</p>
-    </div>
-    
 
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type"><a href="Icon.html#~ImageBounding">Icon~ImageBounding</a></span>
-
-
-
-            </li>
-        </ul>
     
 
     
 <dl class="details">
     
 
-	
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="BaseLink.html">BaseLink</a>></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>连线数组</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
 
 	
 
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#links">GroupTemplate#links</a>
+			</li>
+		</ul>
+	</dd>
 	
 
     
@@ -784,6 +1247,14 @@
 
     
 
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="StackMixin.html#.links">StackMixin.links</a></li>
+        
+        </ul></dd>
     
 
 	
@@ -901,6 +1372,296 @@
             
 <hr>
 <dt>
+    <h4 class="name" id="addToLinkStack"><span class="type-signature"></span>addToLinkStack(instance)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>加入连线对象</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>instance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="BaseLink.html">BaseLink</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>连线对象</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#addToLinkStack">GroupTemplate#addToLinkStack</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="StackMixin.html#.addToLinkStack">StackMixin.addToLinkStack</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="addToStack"><span class="type-signature"></span>addToStack(instance)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>加入节点对象</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>instance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Node.html">Node</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>节点对象</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#addToStack">GroupTemplate#addToStack</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="StackMixin.html#.addToStack">StackMixin.addToStack</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
     <h4 class="name" id="clone"><span class="type-signature"></span>clone()</h4>
     
     
@@ -1008,49 +1769,32 @@
     
 </dd>
 
-        </dl>
-    
-
-    
-        <h3 class="subsection-title">Type Definitions</h3>
-
-        <dl>
-                
+        
+            
 <hr>
-<dt class="name" id="~IconConfigs">
-    <h4 id="~IconConfigs">IconConfigs</h4>
-
+<dt>
+    <h4 class="name" id="initLayout"><span class="type-signature"></span>initLayout(configs)</h4>
+    
     
 </dt>
 <dd>
+
     
     <div class="description">
-        <p>图片单元 配置</p>
+        <p>初始化布局</p>
     </div>
     
 
     
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type"><a href="Rectangle.html#~RectangleConfigs">Rectangle~RectangleConfigs</a></span>
 
-
-
-            </li>
-        </ul>
     
 
     
-<dl class="details">
     
+        <h5>Parameters:</h5>
+        
 
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
+<table class="params table table-striped">
     <thead>
     <tr>
         
@@ -1072,13 +1816,13 @@
 
         <tr>
             
-                <td class="name"><code>image</code></td>
+                <td class="name"><code>configs</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type"><a href="LayoutMixin.html#~LayoutConfigs">LayoutMixin~LayoutConfigs</a></span>
 
 
 
@@ -1089,69 +1833,71 @@
 
             
 
-            <td class="description last"><p>图片地址</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>imageWidth</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>图片宽度</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>imageHeight</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>图片高度</p></td>
+            <td class="description last"><p>配置</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#initLayout">GroupTemplate#initLayout</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="LayoutMixin.html#.initLayout">LayoutMixin.initLayout</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
 </dl>
 
-    
-
-	
-
-	
-
-	
 
     
 
@@ -1161,53 +1907,179 @@
 
     
 
-	
+    
 
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
+    
 
     
 </dd>
 
+        
             
-                
 <hr>
-<dt class="name" id="~ImageBounding">
-    <h4 id="~ImageBounding">ImageBounding</h4>
-
+<dt>
+    <h4 class="name" id="initStack"><span class="type-signature"></span>initStack(configs)</h4>
+    
     
 </dt>
 <dd>
+
+    
+    <div class="description">
+        <p>初始化对象栈</p>
+    </div>
     
 
     
-        <h5>Type:</h5>
-        <ul>
-            <li>
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>configs</code></td>
+            
+
+            <td class="type">
+            
                 
-<span class="param-type">Object</span>
+<span class="param-type">JflowConfigs</span>
 
 
 
-            </li>
-        </ul>
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>配置</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#initStack">GroupTemplate#initStack</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="StackMixin.html#.initStack">StackMixin.initStack</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="interateNodeStack"><span class="type-signature"></span>interateNodeStack()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>循环当前栈中节点</p>
+    </div>
+    
+
+    
+
+    
+
+    
     
 
     
@@ -1240,13 +2112,13 @@
 
         <tr>
             
-                <td class="name"><code>width</code></td>
+                <td class="name"><code>循环访问栈中每个节点</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">stackIteratorCallback</span>
 
 
 
@@ -1257,31 +2129,7 @@
 
             
 
-            <td class="description last"><p>图片宽度</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>height</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>图片高度</p></td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -1296,6 +2144,15 @@
 	
 
 	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#interateNodeStack">GroupTemplate#interateNodeStack</a>
+			</li>
+		</ul>
+	</dd>
+	
 
     
 
@@ -1303,6 +2160,14 @@
 
     
 
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="StackMixin.html#.interateNodeStack">StackMixin.interateNodeStack</a></li>
+        
+        </ul></dd>
     
 
 	
@@ -1328,9 +2193,1033 @@
 
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dd>
 
-            </dl>
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="recalculate"><span class="type-signature"></span>recalculate()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>重新计算布局，相当于浏览器里面重排，并重算当前布局下的最小外接矩形</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#recalculate">GroupTemplate#recalculate</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="LayoutMixin.html#.recalculate">LayoutMixin.recalculate</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="recalculateUp"><span class="type-signature"></span>recalculateUp()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>从当前层出发，向上层递归重排</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#recalculateUp">GroupTemplate#recalculateUp</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="LayoutMixin.html#.recalculateUp">LayoutMixin.recalculateUp</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="reflow"><span class="type-signature"></span>reflow()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>重新计算布局，相当于浏览器里面重排</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#reflow">GroupTemplate#reflow</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="LayoutMixin.html#.reflow">LayoutMixin.reflow</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="removeFromLinkStack"><span class="type-signature"></span>removeFromLinkStack(target)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>删除连线对象</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Node.html">Node</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>连线对象</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#removeFromLinkStack">GroupTemplate#removeFromLinkStack</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="StackMixin.html#.removeFromLinkStack">StackMixin.removeFromLinkStack</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="removeFromStack"><span class="type-signature"></span>removeFromStack(target)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>删除节点对象</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Node.html">Node</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>节点对象</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#removeFromStack">GroupTemplate#removeFromStack</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="StackMixin.html#.removeFromStack">StackMixin.removeFromStack</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="replaceFromStack"><span class="type-signature"></span>replaceFromStack(target, instance)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>替换对象</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Instance.html">Instance</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>被替换的对象</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>instance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Instance.html">Instance</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>替换对象</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#replaceFromStack">GroupTemplate#replaceFromStack</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="StackMixin.html#.replaceFromStack">StackMixin.replaceFromStack</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="resetChildrenPosition"><span class="type-signature"></span>resetChildrenPosition()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>重置当前栈中对象的位置</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#resetChildrenPosition">GroupTemplate#resetChildrenPosition</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="StackMixin.html#.resetChildrenPosition">StackMixin.resetChildrenPosition</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="staticCheck"><span class="type-signature"></span>staticCheck(instance)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>布局静态检查</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>instance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Instance.html">Instance</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>检查单元</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="GroupTemplate.html#staticCheck">GroupTemplate#staticCheck</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li><a href="LayoutMixin.html#.staticCheck">LayoutMixin.staticCheck</a></li>
+        
+        </ul></dd>
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <ul>
+<li>检查结果</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        </dl>
+    
+
     
 
     

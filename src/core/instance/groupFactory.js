@@ -116,20 +116,50 @@ const GroupMixin = {
     }
 }
 
+
 function GroupFactory(jflowNodeConstructor) {
+    /**
+     * Group 配置
+     * @typedef {Object} GroupTemplate~GroupConfigs
+     * @property {number} width             - 设定宽度
+     * @property {number} minWidth          - 最小宽度
+     * @property {number} height            - 设定高度
+     * @property {number} padding          - 内边距
+     * @property {number} paddingTop          - 内上边距
+     * @property {number} paddingRight         - 内右边距
+     * @property {number} paddingBottom        - 内下边距
+     * @property {number} paddingLeft          - 内左边距
+     * @property {number} margin            - 外边距
+     * @property {number} marginTop          - 外上边距
+     * @property {number} marginRight         - 外右边距
+     * @property {number} marginBottom        - 外下边距
+     * @property {number} marginLeft          - 外左边距
+     * @property {boolean} lock            - 布局锁定状态 默认 true
+     */
     class t extends Node {
+        /**
+        * @constructs GroupTemplate
+        * @param {GroupTemplate~GroupConfigs} configs - 组配置
+        * @mixes LayoutMixin
+        * @mixes StackMixin 
+        */
         constructor(configs) {
             super(configs);
                 this.initStack(configs);
                 this.initLayout(configs);
+                /** @member {Node}      - 壳绘图单元 */
                 this._shape = new jflowNodeConstructor(configs);
                 this._shape.anchor = [0, 0];
                 this._shape._belongs = this;
                 this._setPadding(configs);
                 this._setMargin(configs);  
+                /** @member {Number}      - 设定宽度 */
                 this.definedWidth =     configs.width;
+                /** @member {Number}      - 最小宽度 */
                 this.minWidth =         configs.minWidth;
+                /** @member {Number}      - 设定的高度 */
                 this.definedHeight =    configs.height;
+                /** @member {Boolean}      - 组内元素是否锁定， 默认true */
                 this.lock =             configs.lock ?? true ;
                 this._getBoundingGroupRect();
                 this.reflow();

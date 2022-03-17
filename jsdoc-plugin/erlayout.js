@@ -12,32 +12,48 @@ class ERNode {
 
     makeLink(callback) {
         const {
-            extends: ext, mixins, implements: impl
+            extends: ext, 
+            mixins, 
+            implements: impl,
+            groupfrom,
         } = this.source;
-        if(ext) {
+        if(groupfrom) {
             callback({
-                from: ext,
+                from: groupfrom,
                 to: this.id,
-                part: 'extends',
+                part: 'groupfrom',
+            });
+            callback({
+                from: 'GroupTemplate',
+                to: this.id,
+                part: 'generate',
             })
-        }
-
-        if(mixins) {
-            mixins.forEach(t => {
+        } else {
+            if(ext) {
                 callback({
-                    from: t,
+                    from: ext,
                     to: this.id,
-                    part: 'mixins',
-                    lineDash: [5, 2]
+                    part: 'extends',
                 })
-            })
-        }
-        if(impl) {
-            callback({
-                from: impl,
-                to: this.id,
-                part: 'implements',
-            })
+            }
+
+            if(mixins) {
+                mixins.forEach(t => {
+                    callback({
+                        from: t,
+                        to: this.id,
+                        part: 'mixins',
+                        lineDash: [5, 2]
+                    })
+                })
+            }
+            if(impl) {
+                callback({
+                    from: impl,
+                    to: this.id,
+                    part: 'implements',
+                })
+            }
         }
     }
 }
@@ -112,8 +128,9 @@ class ERLayout {
         const links = this.flowLinkStack;
         const nodes = this.flowStack;
         let reduceWidth = 0;
+        let i = 0;
         Object.keys(this.levelMapping)
-            .sort((a, b) => (+b) - (+a))
+            // .sort((a, b) => (+b) - (+a))
             .forEach(key => {
                 const levelNodes = this.levelMapping[key];
                 let columnWidth = 0;
@@ -131,14 +148,14 @@ class ERLayout {
                 });
                 columnHeight -= 20;
                 const h = columnHeight/2;
+                reduceWidth += i === 0 ? 0 : columnWidth/2;
                 levelNodes.forEach(erNode => {
                     const instance = erNode.getJflowInstance();
                     instance.anchor[0] = reduceWidth;
                     instance.anchor[1] -= h;
-                    console.log(instance._ERnode.id, instance.anchor[1])
                 });
-
-                reduceWidth += columnWidth + 150;
+                reduceWidth += (columnWidth/2 + 150);
+                i++;
             })
     }
 }

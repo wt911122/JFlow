@@ -16,6 +16,12 @@ module.exports = {
                 doclet._isERDiagram = true;
             },
         })
+
+        dictionary.defineTag('groupfrom', {
+            onTagged(doclet, tag) {
+                doclet.groupfrom = tag.value;
+            },
+        })
     },
     handlers: {
         processingComplete({ doclets }) {
@@ -28,6 +34,7 @@ module.exports = {
             Object.keys(documented).forEach(name => {
                 const doclet = documented[name][0];
                 if(doclet.kind === 'class') {
+                    console.log(doclet.name)
                     //const configs = documented[`${doclet.name}~${doclet.name}Configs`]
                     let configName;
                     if(doclet.params) {
@@ -42,6 +49,7 @@ module.exports = {
                             extends: doclet.augments ? doclet.augments[0] : undefined,
                             mixins: doclet.mixes,
                             implements: doclet.implements ? doclet.implements[0] : undefined,
+                            groupfrom: doclet.groupfrom,
                             configName,
                             kind: 'class'
                         })
@@ -92,10 +100,11 @@ module.exports = {
                 });
             })
             if(erDiagram) {
+                console.log(classes)
                 const diagram = [...classes, ...mixins, ...interfaces];
                 erDiagram.description = render(diagram);
             }
-            console.log(erDiagram)
+            // console.log(erDiagram)
         }
     }
 }
