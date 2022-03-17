@@ -167,16 +167,16 @@ class LinearLayout {
         const hh = height / 2;
         let y = 0;
         let x = 0;
-        if(top) {
+        if(typeof top === 'number') {
             y = top + hh - h;
         }
-        if(right) {
+        if(typeof right === 'number') {
             x = w - right - hw;
         }
-        if(bottom) {
+        if(typeof bottom === 'number') {
             y = h - bottom - hh;
         }
-        if(left) {
+        if(typeof left === 'number') {
             x = left + hw - w;
         }
         return [x, y]

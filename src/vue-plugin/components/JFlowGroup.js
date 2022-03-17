@@ -1,8 +1,8 @@
 import * as JFlowInstance from '../../core/flow';
 import StackMixin from './StackMixin';
 export default function (nameNode) {
-    const bulder =  typeof nameNode === 'string' 
-        ? JFlowInstance[nameNode] 
+    const builder =  typeof nameNode === 'string'
+        ? JFlowInstance[nameNode]
         : nameNode;
     return {
         mixins: [StackMixin],
@@ -78,7 +78,7 @@ export default function (nameNode) {
             },
         },
         created() {
-            this._jflowInstance =  new bulder(this.configs);
+            this._jflowInstance =  new builder(this.configs);
             this._jflowInstance.visible = this.visible;
             Object.keys(this.$listeners).map(event => {
                 const func = this.$listeners[event].bind(this);

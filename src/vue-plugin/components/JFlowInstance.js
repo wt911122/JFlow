@@ -1,8 +1,8 @@
 import * as JFlowInstance from '../../core/flow';
 import diff from 'object-diff';
 export default function (nameNode) {
-    const bulder =  typeof nameNode === 'string' 
-        ? JFlowInstance[nameNode] 
+    const builder =  typeof nameNode === 'string'
+        ? JFlowInstance[nameNode]
         : nameNode;
     return {
         inject: ['addToStack', 'removeFromStack','addNameToRootStack'],
@@ -28,7 +28,7 @@ export default function (nameNode) {
                 if(Object.keys(diffed).length === 0){
                     return;
                 }
-                // 
+                //
                 // const reflowKeys = Object.keys(diffed).filter(k => {
                 //     const lk = k.toLowerCase();
                 //     return !(lk.endsWith('color') || k.endsWith('style'));
@@ -39,7 +39,7 @@ export default function (nameNode) {
                 // console.log(reflowKeys.length, val)
                 // if(reflowKeys.length) {
                 //     this._jflowInstance._belongs.recalculateUp();
-                // } 
+                // }
                 // this._jflowInstance._jflow._render();
             },
             '$listeners' (val, oldVal) {
@@ -76,15 +76,15 @@ export default function (nameNode) {
         render: function (createElement) {
             return null;
         },
-        created() { 
-            this._jflowInstance =  new bulder(this.configs);
+        created() {
+            this._jflowInstance =  new builder(this.configs);
             this._jflowInstance.visible = this.visible;
             this.bindListeners();
             this.addToStack(this._jflowInstance, this.jflowId);
         },
         // updated() {
         //     console.log('recalculateUp')
-            
+
         // },
         destroyed() {
             this.removeFromStack(this._jflowInstance);
