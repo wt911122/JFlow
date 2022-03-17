@@ -6,7 +6,22 @@ import LayoutMixin from '../instance/layoutMixin';
 import MessageMixin from '../instance/messageMixin';
 import { setUniqueId, getUniqueId } from '../utils/functions';
 import JFlowEvent from '../events';
+
 import EventAdapter from '../events/adapter';
+import GroupFactory from '../instance/groupFactory';
+import Rectangle from '../instance/shapes/rectangle';
+import Capsule from '../instance/shapes/capsule';
+import CapsuleVertical from '../instance/shapes/capsule-vertical';
+import Rhombus from '../instance/shapes/rhombus';
+import Diamond from '../instance/shapes/diamond';
+import DiamondVertical from '../instance/shapes/diamond-vertical';
+export const Group = GroupFactory(Rectangle);
+export const CapsuleGroup = GroupFactory(Capsule);
+export const RhombusGroup = GroupFactory(Rhombus);
+export const DiamondGroup = GroupFactory(Diamond);
+export const DiamondVerticalGroup = GroupFactory(DiamondVertical);
+export const CapsuleVerticalGroup = GroupFactory(CapsuleVertical);
+
 /**
  * @typedef JFlow~JFlowConfigs
  * @type {object}
@@ -984,15 +999,15 @@ export { default as Node } from '../instance/node';
 export { default as BaseLink } from '../instance/base-link';
 export { default as Point } from '../instance/shapes/point';
 export { default as Rectangle } from '../instance/shapes/rectangle';
-export { default as Group } from '../instance/shapes/rectangle-group';
+// export { default as Group } from '../instance/shapes/rectangle-group';
 export { default as Capsule } from '../instance/shapes/capsule';
-export { default as CapsuleGroup } from '../instance/shapes/capsule-group';
-export { default as CapsuleVerticalGroup } from '../instance/shapes/capsule-vertical-group';
+// export { default as CapsuleGroup } from '../instance/shapes/capsule-group';
+// export { default as CapsuleVerticalGroup } from '../instance/shapes/capsule-vertical-group';
 export { default as Diamond } from '../instance/shapes/diamond';
-export { default as DiamondGroup } from '../instance/shapes/diamond-group';
-export { default as DiamondVerticalGroup } from '../instance/shapes/diamond-vertical-group';
+// export { default as DiamondGroup } from '../instance/shapes/diamond-group';
+// export { default as DiamondVerticalGroup } from '../instance/shapes/diamond-vertical-group';
 export { default as Rhombus } from '../instance/shapes/rhombus';
-export { default as RhombusGroup } from '../instance/shapes/rhombus-group';
+// export { default as RhombusGroup } from '../instance/shapes/rhombus-group';
 export { default as Text } from '../instance/text';
 export { default as Icon } from '../instance/image';
 export { default as Link } from '../instance/link';
@@ -1002,3 +1017,4 @@ export { default as LinearLayout} from '../layout/linear-layout';
 // export { default as TreeLayout } from '../ler-layouta;yout/tree-layout';
 export { default as Lowcodelayout } from '../layout/low-code-layout';
 export { default as ERLayout } from '../layout/er-layout/er-layout';
+

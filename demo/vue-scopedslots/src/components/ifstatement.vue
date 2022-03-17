@@ -11,10 +11,19 @@
             borderColor: '#33B88C',
             borderWidth: 2,
             absolutePosition: {
-                top: 2,
+                top: 10,
                 right: 10,
             }
         }" @click="shrink = !shrink"/>
+        <j-text :configs="{
+            fontSize: '12px',
+            textColor: '#585c63',
+            content: '条件分支',
+            lineHeight: 26,
+            absolutePosition: {
+                top: -13,
+            }
+        }"/>
         <j-group>
             <j-text v-if="shrink" :configs="{
                 fontSize: '12px',
@@ -65,6 +74,7 @@ export default {
                 borderWidth: 2,
                 borderRadius: 5,
                 padding: 30,
+                marginTop: 30,
             }
         }
     },
