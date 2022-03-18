@@ -116,8 +116,13 @@ const GroupMixin = {
     }
 }
 
+function defaultShift(width, height) {
+    return [width, height];
+}
 
-function GroupFactory(jflowNodeConstructor) {
+function GroupFactory(jflowNodeConstructor, options = {}) {
+    const shapeShift = typeof options.shapeShift === 'function' ? options.shapeShift : defaultShift;
+
     /**
      * Group 配置
      * @typedef {Object} GroupTemplate~GroupConfigs
@@ -175,19 +180,26 @@ function GroupFactory(jflowNodeConstructor) {
         },
         _getBoundingGroupRect() {
             const points = this._stack.getBoundingRectPoints();
-            // const shapePoints = this._shape.getBoundingRect();
+            // content box 
             const bbox = bounding_box(points);
+
+             // padding box 
             const padding = this.padding;
             const minWidth = this.minWidth - padding.left - padding.right;
             const definedWidth = this.definedWidth - padding.left - padding.right;
             const w = bbox.width + padding.left + padding.right;
             const h = bbox.height + padding.top + padding.bottom;
-            
-            const shapeWidth = minWidth ? Math.max(minWidth, w) : definedWidth || w;
-            const shapeHeight = this.definedHeight || h;
+            const paddingWidth = minWidth ? Math.max(minWidth, w) : definedWidth || w;
+            const paddingHeight = this.definedHeight || h;
+            this._paddingWidth = paddingWidth;
+            this._paddingHeight = paddingHeight;
+
+            // shapeBox
+            const [shapeWidth, shapeHeight] = shapeShift(paddingWidth, paddingHeight)
             this._shape.width = shapeWidth;
             this._shape.height = shapeHeight;
 
+            // marginBox
             const margin = this.margin;
             this.width = shapeWidth + margin.left + margin.right;
             this.height = shapeHeight + margin.top + margin.bottom;
@@ -199,7 +211,6 @@ function GroupFactory(jflowNodeConstructor) {
             }
             const [cx, cy] = this._getCenter(); 
             ctx.translate(cx, cy);
-            // ctx.fillRect(-this.width/2,-this.height/2,this.width, this.height)
             this._shape.render(ctx);
             this._stack.render(ctx);
             this._linkStack.render(ctx);    

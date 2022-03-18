@@ -57,7 +57,11 @@ export const RhombusGroup = GroupFactory(Rhombus);
  * @augments Diamond
  * @param {(Diamond~DiamondConfigs|GroupTemplate~GroupConfigs)} configs - 配置
  */
-export const DiamondGroup = GroupFactory(Diamond);
+export const DiamondGroup = GroupFactory(Diamond, {
+    shapeShift(width, height) {
+        return [width + height * 0.28865, height]
+    }
+});
 /** 
  * @class DiamondVerticalGroup
  * @classdesc 垂直钻石形组单元 由 {@link GroupFactory} 通过 {@link DiamondVertical} 生成
@@ -66,7 +70,11 @@ export const DiamondGroup = GroupFactory(Diamond);
  * @augments DiamondVertical
  * @param {(Diamond~DiamondConfigs|GroupTemplate~GroupConfigs)} configs - 配置
  */
-export const DiamondVerticalGroup = GroupFactory(DiamondVertical);
+export const DiamondVerticalGroup = GroupFactory(DiamondVertical, {
+    shapeShift(width, height) {
+        return [width, height + width * 0.5773]
+    }
+});
 /** 
  * @class CapsuleVerticalGroup
  * @classdesc 垂直钻石形组单元 由 {@link GroupFactory} 通过 {@link CapsuleVertical} 生成
