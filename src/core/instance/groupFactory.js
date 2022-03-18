@@ -120,6 +120,23 @@ function defaultShift(width, height) {
     return [width, height];
 }
 
+/**
+ * 根据paddingbox宽高来计算shapeshiftbox的宽高
+ * @function shapeShift
+ * @param {number} width            - paddingBox宽
+ * @param {number} height           - paddingBox高
+ * @return {number[]}
+ */
+
+/**
+ * 组工厂函数，用于通过JFlow 绘图节点来创建不同的组
+ * @global 
+ * @function GroupFactory
+ * @param {Node} jflowNodeConstructor - 绘图节点构造器
+ * @param {object} options            - 配置项
+ * @param {shapeShift} options.shapeShift - shift层适配方法
+ * @return {Group} - 绘图节点构造器
+ */
 function GroupFactory(jflowNodeConstructor, options = {}) {
     const shapeShift = typeof options.shapeShift === 'function' ? options.shapeShift : defaultShift;
 

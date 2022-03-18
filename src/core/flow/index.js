@@ -8,13 +8,7 @@ import { setUniqueId, getUniqueId } from '../utils/functions';
 import JFlowEvent from '../events';
 
 import EventAdapter from '../events/adapter';
-/**
- * 组工厂函数，用于通过JFlow 绘图节点来创建不同的组
- * @global 
- * @function GroupFactory
- * @param {Node} jflowNodeConstructor - 绘图节点构造器
- * @return {Group} - 绘图节点构造器
- */
+
 import GroupFactory from '../instance/groupFactory';
 import Rectangle from '../instance/shapes/rectangle';
 import Capsule from '../instance/shapes/capsule';

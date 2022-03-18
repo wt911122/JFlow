@@ -75,7 +75,7 @@
 			<li class="dropdown">
 				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="global.html#bounding_box">bounding_box</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#DIRECTION">DIRECTION</a></li><li><a href="global.html#eventAdapter">eventAdapter</a></li><li><a href="global.html#GroupFactory">GroupFactory</a></li><li><a href="global.html#requestCacheCanvas">requestCacheCanvas</a></li><li><a href="global.html#TEXT_ALIGN">TEXT_ALIGN</a></li>
+					<li><a href="global.html#bounding_box">bounding_box</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#DIRECTION">DIRECTION</a></li><li><a href="global.html#eventAdapter">eventAdapter</a></li><li><a href="global.html#GroupFactory">GroupFactory</a></li><li><a href="global.html#requestCacheCanvas">requestCacheCanvas</a></li><li><a href="global.html#shapeShift">shapeShift</a></li><li><a href="global.html#TEXT_ALIGN">TEXT_ALIGN</a></li>
 				</ul>
 			</li>
 			
@@ -131,21 +131,23 @@
     &lt;/j-text>
 &lt;/j-group>
 </code></pre>
-<p><a href="https://wt911122.github.io/JFlow/GroupMixin.html">组</a>依附于一种固有外型，目前JFlow支持的固有外型包括：</p>
+<p>每个<a href="https://wt911122.github.io/JFlow/GroupMixin.html">组</a>都有一个盒模型：</p>
+<p><img src="box.png" alt="盒模型说明图" title="盒模型说明图">
+padding 和 margin 与css的盒模型基本一致，另外为了能够适应非矩形形状，在 padding 和 margin 之间存在一个shapeshiftbox，这层没有left和right，top和bottom之分，只是 paddingbox 的 width 与 height 的一个线性计算。</p>
+<p>组内可以添加多个<a href="https://wt911122.github.io/JFlow/Node.html">单元</a>，<a href="https://wt911122.github.io/JFlow/Node.html">单元</a>按照设定的<a href="https://wt911122.github.io/JFlow/Layout.html">组布局</a>来排列。</p>
+<p><a href="https://wt911122.github.io/JFlow/GroupMixin.html">组</a>可以由基本形状加 <a href="https://wt911122.github.io/JFlow/global.html#GroupFactory">GroupFactory</a> 来创建，目前内置的组包括：</p>
 <ul>
-<li><a href="https://wt911122.github.io/JFlow/RectangleGroup.html">RectangleGroup</a> 等价于 <a href="https://wt911122.github.io/JFlow/module-j-group.html">j-group</a></li>
+<li><a href="https://wt911122.github.io/JFlow/Group.html">Group</a> 等价于 <a href="https://wt911122.github.io/JFlow/module-j-group.html">j-group</a></li>
 <li><a href="https://wt911122.github.io/JFlow/CapsuleGroup.html">CapsuleGroup</a> 等价于 <a href="https://wt911122.github.io/JFlow/module-j-capsule-group.html">j-capsule-group</a></li>
 <li><a href="https://wt911122.github.io/JFlow/CapsuleVerticalGroup.html">CapsuleVerticalGroup</a> 等价于 <a href="https://wt911122.github.io/JFlow/module-j-capsule-vertical-group.html">j-capsule-vertical-group</a></li>
 <li><a href="https://wt911122.github.io/JFlow/DiamondGroup.html">DiamondGroup</a> 等价于 <a href="https://wt911122.github.io/JFlow/module-j-diamond-group.html">j-diamond-group</a></li>
 <li><a href="https://wt911122.github.io/JFlow/DiamondVerticalGroup.html">DiamondVerticalGroup</a> 等价于 <a href="https://wt911122.github.io/JFlow/module-j-diamond-vertical-group.html">j-diamond-vertical-group</a></li>
 <li><a href="https://wt911122.github.io/JFlow/RhombusGroup.html">RhombusGroup</a> 等价于 <a href="https://wt911122.github.io/JFlow/module-j-rhombus-group.html">j-rhombus-group</a></li>
 </ul>
-<p>组内可以添加多个<a href="https://wt911122.github.io/JFlow/Node.html">单元</a>，<a href="https://wt911122.github.io/JFlow/Node.html">单元</a>按照设定的<a href="https://wt911122.github.io/JFlow/Layout.html">组布局</a>来排列。</p>
 <p>目前 JFlow 支持的组布局为：</p>
 <ul>
 <li><a href="https://wt911122.github.io/JFlow/LinearLayout.html">LinearLayout</a></li>
 </ul>
-<p>若不设置组的宽高，内部单元的最小外接矩形将决定组内容的宽高。可以把组理解为<code>&lt;div&gt;</code>，另外组也可以设置自己宽高，内边距(padding)等。</p>
 <blockquote>
 <p>组布局区别于 对象、连线的布局：</p>
 <ul>

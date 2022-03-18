@@ -75,7 +75,7 @@
 			<li class="dropdown">
 				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="global.html#bounding_box">bounding_box</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#DIRECTION">DIRECTION</a></li><li><a href="global.html#eventAdapter">eventAdapter</a></li><li><a href="global.html#GroupFactory">GroupFactory</a></li><li><a href="global.html#requestCacheCanvas">requestCacheCanvas</a></li><li><a href="global.html#TEXT_ALIGN">TEXT_ALIGN</a></li>
+					<li><a href="global.html#bounding_box">bounding_box</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#DIRECTION">DIRECTION</a></li><li><a href="global.html#eventAdapter">eventAdapter</a></li><li><a href="global.html#GroupFactory">GroupFactory</a></li><li><a href="global.html#requestCacheCanvas">requestCacheCanvas</a></li><li><a href="global.html#shapeShift">shapeShift</a></li><li><a href="global.html#TEXT_ALIGN">TEXT_ALIGN</a></li>
 				</ul>
 			</li>
 			
@@ -826,7 +826,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="GroupFactory"><span class="type-signature"></span>GroupFactory(jflowNodeConstructor)</h4>
+    <h4 class="name" id="GroupFactory"><span class="type-signature"></span>GroupFactory(jflowNodeConstructor, options)</h4>
     
     
 </dt>
@@ -887,6 +887,80 @@
             
 
             <td class="description last"><p>绘图节点构造器</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>配置项</p>
+                <h6 class="method-params-label method-subparams-label">Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>shapeShift</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#shapeShift">shapeShift</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>shift层适配方法</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -1100,6 +1174,178 @@
     
 
     
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="shapeShift"><span class="type-signature"></span>shapeShift(width, height)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>根据paddingbox宽高来计算shapeshiftbox的宽高</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>paddingBox宽</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>paddingBox高</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;number></span>
+
+
+
+    </dd>
+</dl>
+
+
+        
 
     
 </dd>
