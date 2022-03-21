@@ -79,10 +79,12 @@ export default {
         }
     },
     watch: {
-        touch(val) {
-
+        shrink(val){
             console.log(val)
-        }
+        },
+        touch(val) {
+            console.log(val)
+        },
     },
     updated() {
         this.renderJFlow();

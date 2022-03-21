@@ -12,6 +12,7 @@
         <j-jflow ref="jflow" 
             :class="$style.wrapper" 
             :configs="configs"
+            :loading.sync="jflowloading"
             @click="onClickNoWhere"
             @drop="onDrop"
             @pressEnd="onPressEnd">
@@ -70,9 +71,9 @@
             </ul>
         </div>
       </div>
-      <div :class="$style.ast">
+      <!-- <div :class="$style.ast">
           <pre v-html="prettyJson(ast)"></pre>
-      </div>
+      </div> -->
   </div>
 </template>
 
@@ -118,6 +119,77 @@ function getPath(object, condition) {
 }
 console.log(commonEventAdapter)
 let uniqueId = 0;
+let uuuuid = 0;
+function getuuuuid() {
+    return uuuuid++;
+}
+function makeAst(number) {
+    const ast = { type: 'Root', body: [ { type: 'start', id: 'start' }, ], playground: [] }
+    function randomVariable() {
+        const id = getuuuuid();
+        return {
+            type: 'variable',
+            content: `variable-${id}`,
+            id: `variable${id}`,
+        };
+    }
+
+    function randomCallLogic() {
+        const id = getuuuuid();
+        return {
+            type: 'CallLogic',
+            id: `CallLogic-${id}`,
+            content: `CallLogic-${id}`,
+            params: [],
+        }
+    }
+    
+    function randomIFstatement() {
+        const id = getuuuuid();
+        return {
+            type: 'IfStatement',
+            content: `IfStatement-${id}`,
+            id: `IfStatement-${id}`,
+            consequent: [randomVariable()],
+            alternate: [randomVariable()],
+        }
+    }
+    let lastObj = ast.body;
+    function randomStateMachine() {
+        const p = Math.floor(Math.random() * 10);
+        let b;
+        switch (p) {
+            case 0:
+            case 1:
+                b = randomIFstatement();
+                lastObj.push(b);
+                const d = Math.floor(Math.random() * 2);
+                lastObj = (d === 0 ? b.consequent: b.alternate)
+                break;
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                b = randomCallLogic();
+                lastObj.push(b);
+                break;
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+                b = randomVariable();
+                lastObj.push(b);
+                break;
+        }
+    }
+
+    while(number--){
+        randomStateMachine();
+    }
+    return ast;
+}
+const astrandom = makeAst(1000)
+// console.log(astrandom)
 export default {
     components: {
         'j-variable': variable,
@@ -245,22 +317,30 @@ export default {
             playground: [],
         };
         const layout = new Lowcodelayout({
-            linkLength: 30,
+            linkLength: 60,
             ast,
         });
+        this.ast = ast;
+        const configs = Object.freeze({
+            allowDrop: true,
+            layout,
+            initialZoom: 1,
+            minZoom: .2,
+            setInitialPosition(realboxX, realboxY, realboxW, realboxH, c_x, c_y, c_width, c_height) {
+                return {
+                    x: realboxX + c_width / 2,
+                    y: c_y
+                }
+            }
+        })
         return {
-            ast,
-            configs: {
-                allowDrop: true,
-                layout,
-                initialZoom: 1,
-                // eventAdapter: commonEventAdapter
-            },
+            configs,
             isHover: false,
             offsetX: 0,
             offsetY: 0,
             currentTarget: null,
             prepareBody: [],
+            jflowloading: false,
             logics: [{
                 content: 'aaa',
                 params: [{
@@ -296,8 +376,11 @@ export default {
             return this.ast.body.filter(b => !b.outflow)
         }
     },
-    mounted() {
-        console.log(this.$refs.jflow.getInstance())
+    watch: {
+        jflowloading(val) {
+            console.log(Date.now())
+            console.log(val);
+        }
     },
     methods: {
         prettyJson() {
@@ -356,12 +439,9 @@ export default {
             this.offsetY = offsetY;
         },
         onPressStart(configs) {
-            console.log('pressStart')
-            console.log(configs);
             this.currentTarget = configs;
         },
         onPressEnd() {
-            console.log('pressEnd')
             this.currentTarget = null;
         },
         onDropToLink(e, linkConfigs) {

@@ -3,14 +3,15 @@
         :configs="configs"
         :from="configs.from"
         :to="configs.to"
-        @dragover="onDragOver"
-        @dragoverend="onDragOverEnd"
+        @dragenter="onDragEnter"
+        @dragleave="onDragOverEnd"
         @drop="onDropToLink">
     </jPolyLink>
 </template>
 
 <script>
 export default {
+    inject: ['renderJFlow'],
     props: {
         linkConfigs: Object,
     },
@@ -36,13 +37,16 @@ export default {
         onDropToLink($event) {
             this.$emit('drop', $event);
         },
-        onDragOver($event) {
+        onDragEnter($event) {
             this.isDragOver = true;
         },
         onDragOverEnd() {
             this.isDragOver = false;
         },
     },
+    updated() {
+        this.renderJFlow();
+    }
 };
 </script>
 
