@@ -66,7 +66,7 @@ class Angle extends Node {
     isHit(point) {
         return false;
     }
-    // 最小外接矩形
+    // 最小外接矩形，矩形使用左上顶点和右下顶点表示
     getBoundingRect() {
         const anchor = this.anchor;
         const w = this.width / 2;
@@ -76,10 +76,8 @@ class Angle extends Node {
         const rbx = anchor[0] + w;
         const rby = anchor[1] + h;
         return [
-            [ltx, lty],
-            [rbx, lty],
-            [rbx, rby],
-            [ltx, rby],
+            ltx, lty,
+            rbx, rby,
         ];
     }
     // 维度
@@ -155,7 +153,18 @@ Vue.use(JFlowVuePlugin, {
 </template>
 ```
     
-
+## 拓展组
+通过 {@link GroupFactory} 来拓展组，如下：
+```javascript
+// 拓展 Diamond 形状为一个组
+GroupFactory(Diamond, {
+    // shapeShift 是 shapeshiftbox
+    // 这里定义了该层的宽高，是基于内部paddingbox的宽高来计算。
+    shapeShift(width, height) {
+        return [width + height * 0.28865, height]
+    }
+});
+```
 
 ## 点线布局和组布局
 参考 
@@ -167,3 +176,6 @@ Vue.use(JFlowVuePlugin, {
 
 自定义事件监听策略可参考 [https://github.com/wt911122/JFlow/blob/master/src/core/events/commonAdapter.js](https://github.com/wt911122/JFlow/blob/master/src/core/events/commonAdapter.js) 来制定。
 
+
+## 继续了解
+[内部性能优化](https://wt911122.github.io/JFlow/tutorial-内部性能优化.html)

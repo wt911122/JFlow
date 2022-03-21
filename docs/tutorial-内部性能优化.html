@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>JFlow Index</title>
+	<title>JFlow Tutorial: 内部性能优化</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -102,173 +102,40 @@
 <div class="row">
 
 	
-	<div class="col-md-8">
+	<div class="col-md-12">
 	
 		<div id="main">
-			
-
-	
-	
-
-
-
-
-
-
-
-
-
-
-
-	
-	
-
-
-
-
-
-    <section class="readme-section">
-        <article><h1>JFlow</h1>
-<p>JFlow 的目标是设计一套基于 canvas 的轻量级流程图引擎，支持 vue 开发者与 canvas 高级开发人员共同开发。</p>
-<p><a href="https://wt911122.github.io/JFlow/tutorial-%E5%BC%80%E5%A7%8B.html">导引</a>
-<a href="https://wt911122.github.io/JFlow/vue-demo.html">DEMO</a></p>
-<h2>Features</h2>
-<p>目前的实现包含了：</p>
-<ul>
-<li>可自由缩放移动的画布</li>
-<li>多层级
-<ul>
-<li>坐标换算</li>
-<li>事件冒泡</li>
-<li>布局系统</li>
-</ul>
-</li>
-<li>dragdrop</li>
-<li>vue 框架支持</li>
-</ul>
-<h2>Motivation</h2>
-<p>在设计实现过程中，我一直在问自己一个问题，在关于点线图的业务开发过程中，什么是业务开发者需要关心的，什么是框架维护者需要提供的。在开发过程中，这个答案逐渐明晰了起来，业务开发者关心的是：</p>
-<ul>
-<li>自己处理的数据结构与图上的一个直接映射关系</li>
-<li>能够方便的对用户行为的监听和处理</li>
-</ul>
-<p>并不关心的是：</p>
-<ul>
-<li>点与线是如何连接的</li>
-<li>坐标是如何换算的</li>
-<li>事件是如何抛出的</li>
-</ul>
-<p>而这些就是JFlow应该去解决的问题</p></article>
-    </section>
-
-
-
-
-
-
-
-	<h1 class="page-title">Index</h1>
-<section>
+			<section class="tutorial-section">
 
 <header>
     
-        <h2>
-        ERDiagram.jsdoc
-        </h2>
-        
-    
+
+    <h2>内部性能优化</h2>
 </header>
 
-
 <article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><div id='jflow_erdiagram' style="height: 500px;border:1px solid #2780E3;"></div>
-    <script src="ergraphbundle.js"></script>
-    <script>
-        const data = [{"name":"EventAdapter","kind":"class"},{"name":"JFlowEvent","extends":"CustomEvent","kind":"class"},{"name":"Group","extends":"GroupTemplate","groupfrom":"Rectangle","configName":"Rectangle~RectangleConfigs","kind":"class"},{"name":"CapsuleGroup","extends":"GroupTemplate","groupfrom":"Capsule","configName":"Capsule~CapsuleConfigs","kind":"class","module":{"name":"j-capsule-group","configName":"Capsule~CapsuleConfigs","kind":"module"}},{"name":"RhombusGroup","extends":"GroupTemplate","groupfrom":"Rhombus","configName":"Rhombus~RhombusConfigs","kind":"class","module":{"name":"j-rhombus-group","configName":"Rhombus~RhombusConfigs","kind":"module"}},{"name":"DiamondGroup","extends":"GroupTemplate","groupfrom":"Diamond","configName":"Diamond~DiamondConfigs","kind":"class","module":{"name":"j-diamond-group","configName":"Diamond~DiamondConfigs","kind":"module"}},{"name":"DiamondVerticalGroup","extends":"GroupTemplate","groupfrom":"DiamondVertical","configName":"Diamond~DiamondConfigs","kind":"class","module":{"name":"j-diamond-vertical-group","configName":"Diamond~DiamondConfigs","kind":"module"}},{"name":"CapsuleVerticalGroup","extends":"GroupTemplate","groupfrom":"CapsuleVertical","configName":"Capsule~CapsuleConfigs","kind":"class","module":{"name":"j-capsule-vertical-group","configName":"Capsule~CapsuleConfigs","kind":"module"}},{"name":"JFlow","mixins":["LayoutMixin","StackMixin","MessageMixin"],"configName":"JFlow~JFlowLayoutConfigs","kind":"class"},{"name":"BaseLink","extends":"Instance","configName":"BaseLink~Configs","kind":"class"},{"name":"BezierLink","extends":"BaseLink","configName":"BezierLink~Configs","kind":"class","module":{"name":"j-bezier-link","configName":"BezierLink~Configs","kind":"module"}},{"name":"GroupTemplate","mixins":["LayoutMixin","StackMixin"],"configName":"GroupTemplate~GroupConfigs","kind":"class"},{"name":"Icon","extends":"Rectangle","configName":"Icon~IconConfigs","kind":"class","module":{"name":"j-icon","configName":"Icon~IconConfigs","kind":"module"}},{"name":"Instance","extends":"EventTarget","configName":"Instance~Configs","kind":"class"},{"name":"Node","extends":"Instance","configName":"Node~Configs","kind":"class"},{"name":"PolyLink","extends":"BaseLink","configName":"PolyLink~Configs","kind":"class"},{"name":"CapsuleVertical","extends":"Capsule","configName":"Capsule~CapsuleConfigs","kind":"class"},{"name":"Capsule","extends":"Node","configName":"Capsule~CapsuleConfigs","kind":"class","module":{"name":"j-capsule","configName":"Capsule~CapsuleConfigs","kind":"module"}},{"name":"DiamondVertical","extends":"Diamond","configName":"Diamond~DiamondConfigs","kind":"class"},{"name":"Diamond","extends":"Node","configName":"Diamond~DiamondConfigs","kind":"class","module":{"name":"j-diamond","configName":"Diamond~DiamondConfigs","kind":"module"}},{"name":"Point","extends":"Node","configName":"Point~PointConfigs","kind":"class","module":{"name":"j-point","configName":"Point~PointConfigs","kind":"module"}},{"name":"Rectangle","extends":"Node","configName":"Rectangle~RectangleConfigs","kind":"class","module":{"name":"j-rectangle","configName":"Rectangle~RectangleConfigs","kind":"module"}},{"name":"Rhombus","extends":"Node","configName":"Rhombus~RhombusConfigs","kind":"class","module":{"name":"j-rhombus","configName":"Rhombus~RhombusConfigs","kind":"module"}},{"name":"InstanceStack","extends":"Array","kind":"class"},{"name":"Text","extends":"Rectangle","configName":"Text~TextConfigs","kind":"class","module":{"name":"j-text","configName":"Text~TextConfigs","kind":"module"}},{"name":"ERLayout","implements":"Layout","kind":"class"},{"name":"ERProperty","implements":"LayoutNode","kind":"class"},{"name":"ERNode","implements":"LayoutNode","kind":"class"},{"name":"LinearLayout","implements":"Layout","configName":"LinearLayout~Configs","kind":"class"},{"name":"LowcodeLayout","implements":"Layout","configName":"LowcodeLayout~Configs","kind":"class"},{"name":"LayoutMixin","kind":"mixin"},{"name":"MessageMixin","kind":"mixin"},{"name":"StackMixin","kind":"mixin"},{"name":"LayoutNode","kind":"interface"},{"name":"Layout","kind":"interface"}];
-        window.renderErGraph(data, "jflow_erdiagram")
-    </script></div>
-        
-
-        
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
+    <p>JFlow 内置了一些常规的性能优化，具体包括：</p>
+<ul>
+<li>设置 viewBox</li>
+<li>vue 节点切片初始化渲染</li>
+</ul>
+<h2>viewBox</h2>
+<p>Jflow 内置了一个 viewBox 对象，表示当前用户正在交互的视窗，在渲染和碰撞检测时，Jflow 会自动比对目标渲染对象是否在 viewBox 范围内，减少不必要的渲染和计算损耗，大幅提升了多节点时，用户交互的渲染性能。</p>
+<ul>
+<li>节点根据 <a href="Instance.html#getBoundingRect">Instance#getBoundingRect</a> 检测</li>
+<li>连线根据 <a href="BaseLink.html#isInViewBox">BaseLink#isInViewBox</a> 检测</li>
+</ul>
+<h2>vue 节点切片初始化渲染</h2>
+<p>在使用Vue插件时，Jflow内绘图对象的是基于Vue组件对模板的渲染，在多节点的场景下，Vue初始化Vnode的过程会造成浏览器卡死无法交互，影响用户体验。因此在初始化渲染时，Jflow在vue插件中使用节点切片渲染策略，在每个requestAnitionFrame周期内做有限次的节点生成操作，并缓存已生成的vnode，直到所有节点都被生成，期间抛出 loading 态，一定程度上提升了初始化的体验。</p>
 </article>
 
 </section>
-
-
-
 
 		</div>
 	</div>
 
 	<div class="clearfix"></div>
 
-	
-		<div class="col-md-3">
-			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
-		</div>
 	
 
 </div>

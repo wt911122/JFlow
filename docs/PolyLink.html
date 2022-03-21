@@ -68,14 +68,14 @@
 			<li class="dropdown">
 				<a href="tutorials.list.html" class="dropdown-toggle" data-toggle="dropdown">Tutorials<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="tutorial-事件与冒泡.html">事件与冒泡</a></li><li><a href="tutorial-坐标系统.html">坐标系统</a></li><li><a href="tutorial-对象、连线和布局.html">对象、连线和布局</a></li><li><a href="tutorial-对象、连线布局和Vue动态插槽.html">对象、连线布局和Vue动态插槽</a></li><li><a href="tutorial-开始.html">开始</a></li><li><a href="tutorial-扩展JFlow.html">扩展JFlow</a></li><li><a href="tutorial-组与组布局.html">组与组布局</a></li>
+					<li><a href="tutorial-事件与冒泡.html">事件与冒泡</a></li><li><a href="tutorial-内部性能优化.html">内部性能优化</a></li><li><a href="tutorial-坐标系统.html">坐标系统</a></li><li><a href="tutorial-对象、连线和布局.html">对象、连线和布局</a></li><li><a href="tutorial-对象、连线布局和Vue动态插槽.html">对象、连线布局和Vue动态插槽</a></li><li><a href="tutorial-开始.html">开始</a></li><li><a href="tutorial-扩展JFlow.html">扩展JFlow</a></li><li><a href="tutorial-组与组布局.html">组与组布局</a></li>
 				</ul>
 			</li>
 			
 			<li class="dropdown">
 				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="global.html#bounding_box">bounding_box</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#DIRECTION">DIRECTION</a></li><li><a href="global.html#eventAdapter">eventAdapter</a></li><li><a href="global.html#GroupFactory">GroupFactory</a></li><li><a href="global.html#requestCacheCanvas">requestCacheCanvas</a></li><li><a href="global.html#shapeShift">shapeShift</a></li><li><a href="global.html#TEXT_ALIGN">TEXT_ALIGN</a></li>
+					<li><a href="global.html#=">=</a></li><li><a href="global.html#bounding_box">bounding_box</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#DIRECTION">DIRECTION</a></li><li><a href="global.html#eventAdapter">eventAdapter</a></li><li><a href="global.html#GroupFactory">GroupFactory</a></li><li><a href="global.html#requestCacheCanvas">requestCacheCanvas</a></li><li><a href="global.html#shapeShift">shapeShift</a></li><li><a href="global.html#TEXT_ALIGN">TEXT_ALIGN</a></li>
 				</ul>
 			</li>
 			
@@ -3058,7 +3058,7 @@
     
             
 <div class="param-desc">
-    <p>[lefttop: [number,number], rightbottom: [number, number]]</p>
+    <p>[leftx, lefty, rightx, righty]</p>
 </div>
 
 
@@ -3069,7 +3069,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Array.&lt;Array.&lt;number>></span>
+<span class="param-type">Array.&lt;number></span>
 
 
 
@@ -3550,6 +3550,148 @@
 
 
         
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="isInViewBox"><span class="type-signature"></span>isInViewBox(viewbox)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>是否出现在当前视窗内</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>viewbox</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="BaseLink.html#isInViewBox">BaseLink#isInViewBox</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="BaseLink.html#isInViewBox">BaseLink#isInViewBox</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 </dd>
@@ -8607,7 +8749,7 @@
     
             
 <div class="param-desc">
-    <p>[lefttop: [number,number], rightbottom: [number, number]]</p>
+    <p>[leftx, lefty, rightx, righty]</p>
 </div>
 
 
@@ -8618,7 +8760,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Array.&lt;Array.&lt;number>></span>
+<span class="param-type">Array.&lt;number></span>
 
 
 
@@ -9099,6 +9241,148 @@
 
 
         
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="isInViewBox"><span class="type-signature"></span>isInViewBox(viewbox)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>是否出现在当前视窗内</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>viewbox</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="BaseLink.html#isInViewBox">BaseLink#isInViewBox</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="BaseLink.html#isInViewBox">BaseLink#isInViewBox</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 </dd>
@@ -11255,7 +11539,7 @@
 	</span>
 
 <!-- <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a>
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a>
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span> -->
