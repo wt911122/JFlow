@@ -21,7 +21,7 @@ export default function (nameNode) {
             }
         },
         render: function (createElement) {
-            return createElement('template', this.$slots.default);
+            return createElement('jflow-group', this.$slots.default);
         },
         props: {
             configs: {

@@ -188,19 +188,19 @@ export function getBezierAngle(t, sx, sy, cp1x, cp1y, cp2x, cp2y, ex, ey) {
 
 export function getInstanceHeight(instance) {
     const rect = instance.getBoundingRect();
-    let min_y = Infinity;
-    let max_y = -Infinity;
-    let min_x = Infinity;
-    let max_x = -Infinity;
-    rect.forEach(point => {
-        max_y = Math.max(max_y, point[1]);
-        min_y = Math.min(min_y, point[1]);
-        max_x = Math.max(max_x, point[0]);
-        min_x = Math.min(min_x, point[0]);
-    });
+    // let min_y = Infinity;
+    // let max_y = -Infinity;
+    // let min_x = Infinity;
+    // let max_x = -Infinity;
+    // rect.forEach(point => {
+    //     max_y = Math.max(max_y, point[1]);
+    //     min_y = Math.min(min_y, point[1]);
+    //     max_x = Math.max(max_x, point[0]);
+    //     min_x = Math.min(min_x, point[0]);
+    // });
     return {
-        height: max_y - min_y,
-        width: max_x - min_x,
+        height: rect[3] - rect[1],
+        width: rect[2] - rect[0],
     }
 }
 
@@ -305,4 +305,43 @@ export function makeRadiusFromVector(pbefore, p, pnext, radius) {
         p1: minusVec(p, r1),
         p2: minusVec(p, r2),
     }
+}
+// 矩形重叠计算
+export function doOverlap(rec1, rec2) {
+    if (rec1[0] == rec1[2] || rec1[1] == rec1[3] ||
+        rec2[0] == rec2[2] || rec2[1] == rec2[3]) {
+        // the line cannot have positive overlap
+        return false;
+    }
+
+    return !(rec1[2] <= rec2[0] ||   // left
+                rec1[3] <= rec2[1] ||   // bottom
+                rec1[0] >= rec2[2] ||   // right
+                rec1[1] >= rec2[3]);    // top
+}
+
+export function isPolyLineIntersectionRectange(polyline, rect) {
+    let p = polyline[0];
+    let l = polyline.length;
+    let i = 1;
+    const [l0, l1, r0, r1] = rect;
+    while (i < l) {
+        const cp = polyline[i];
+        if(p[0] === cp[0]) {
+            // vertical
+            if(p[0] < r0 && p[0] > l0 
+                && !((p[1] > r1 && cp[1] > r1) || (p[1] < l1 && cp[1] < l1))){
+                    return true;
+                } 
+        } else {
+            // horizontal
+            if(p[1] < r1 && p[1] > l1
+                && !((p[0] > r0 && cp[0] > r0) || (p[0] < l0 && cp[0] < l0))){
+                    return true;
+                } 
+        }
+        p = cp;
+        i++;
+    }
+    return false;
 }

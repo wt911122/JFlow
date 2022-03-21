@@ -14,7 +14,9 @@ import { makeBezierPoints } from '../../utils/functions';
  * @param {Diamond~DiamondConfigs} configs - 配置
  * @extends Node
  */
+
 class Diamond extends Node {
+
     constructor(configs = {}) {
         super(configs);
         this.type =             'Diamond';
@@ -24,7 +26,7 @@ class Diamond extends Node {
         this.height =           configs.height || 10;
         /** @member {Number}      - 两侧三角形的宽 */
         this.side =             configs.side || 6;
-        this._cacheSide();
+        this._doCache();
     }
 
     setConfig(configs) {
@@ -34,21 +36,15 @@ class Diamond extends Node {
                 this._rawConfigs[k] = configs[k];
             }
         });
-        this._cacheSide();
+        this._doCache();
     }
 
-    _cacheSide() {
+    _doCache() {
         this.sinSIDE = Math.sin(Math.PI/3) * this.side;
         this.cosSIDE = Math.cos(Math.PI/3) * this.side;
-        // console.log(this.sinSIDE, this.cosSIDE);
     }
 
     render(ctx) {
-        ctx.save();
-        if(this._isMoving){
-            ctx.globalAlpha = 0.6
-        }
-        ctx.beginPath();
         const [x, y] = this.anchor;
         const hw = this.width/2;
         const hh = this.height/2;
@@ -59,8 +55,21 @@ class Diamond extends Node {
         const left = x - hw;
         const top = y - hh;
         const bottom = y + hh;
-        // const angle = Math.PI / 6;
-        // const radius = 6;
+
+        this._cachePoints = [
+            [rightCenter, top],
+            [right, y],
+            [rightCenter, bottom],
+            [leftCenter, bottom],
+            [left, y],
+            [leftCenter, top]
+        ];
+
+        ctx.save();
+        if(this._isMoving){
+            ctx.globalAlpha = 0.6
+        }
+        ctx.beginPath();
         const {
             side, sinSIDE, cosSIDE
         } = this;
@@ -97,17 +106,11 @@ class Diamond extends Node {
 
         ctx.restore();
 
-        this._cachePoints = [
-            [rightCenter, top],
-            [right, y],
-            [rightCenter, bottom],
-            [leftCenter, bottom],
-            [left, y],
-            [leftCenter, top]
-        ];
+
     }
 
     isHit(point) {
+        if(!this._cachePoints) return false;
         const polygon = this._cachePoints;
         let odd = false;
         // For each edge (In this case for each point of the polygon and the previous one)
@@ -134,10 +137,8 @@ class Diamond extends Node {
         const rbx = anchor[0] + w;
         const rby = anchor[1] + h;
         return [
-            [ltx, lty],
-            [rbx, lty],
-            [rbx, rby],
-            [ltx, rby],
+            ltx, lty,
+            rbx, rby,
         ]
     }
 

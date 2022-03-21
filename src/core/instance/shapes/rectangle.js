@@ -229,10 +229,8 @@ class Rectangle extends Node {
         const rbx = anchor[0] + w;
         const rby = anchor[1] + h;
         return [
-            [ltx, lty],
-            [rbx, lty],
-            [rbx, rby],
-            [ltx, rby],
+            ltx, lty,
+            rbx, rby,
         ]
     }
 

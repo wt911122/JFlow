@@ -53,10 +53,8 @@ class Point extends Node {
         const rbx = anchor[0] + r;
         const rby = anchor[1] + r;
         return [
-            [ltx, lty],
-            [rbx, lty],
-            [rbx, rby],
-            [ltx, rby],
+            ltx, lty,
+            rbx, rby,
         ]
     }
 

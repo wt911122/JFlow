@@ -11,14 +11,14 @@ class InstanceStack extends Array {
      * 绘制当前栈
      * @param {Context2d} ctx - canvas context2d
      */
-    render(ctx) {
+    render(ctx, condition) {
         let movingTarget;
         this.forEach(instance => {
             if(instance._isMoving) {
                 movingTarget = instance;
                 return;
             }
-            if(instance.visible) {
+            if(instance.visible && (!condition || condition(instance))) {
                 ctx.save();
                 // if(instance.reflow && !instance._reflowed) {
                 //     instance.reflow();
@@ -51,7 +51,7 @@ class InstanceStack extends Array {
      * @param {InstanceStack~InstanceFilter} condition - 碰撞对象过滤条件
      * @return {Instance}
      */
-    checkHit(point, condition){
+    checkHit(point, condition, currentConstraint){
         let i = this.length - 1;
         while(i >= 0) {
             const instance = this[i];
@@ -60,6 +60,10 @@ class InstanceStack extends Array {
                 if(condition && condition(instance)) {
                     i--
                     continue;
+                }
+                if(currentConstraint && !currentConstraint(instance)) {
+                    i--
+                    continue
                 }
                 const ishit = instance.isHit(point, condition);
                 instance._isHit = !!ishit;
@@ -90,7 +94,9 @@ class InstanceStack extends Array {
         const points = [];
         this.forEach(instance => {
             if(instance.visible && !instance.absolutePosition) {
-                points.splice(points.length, 0, ...instance.getBoundingRect());
+                const rect = instance.getBoundingRect()
+                points.push([rect[0], rect[1]]);
+                points.push([rect[2], rect[3]]);
             }
         });
         return points;

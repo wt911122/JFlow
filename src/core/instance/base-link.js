@@ -33,6 +33,14 @@ class BaseLink extends Instance{
         /** @member {string}     - 连线颜色，默认为 #000 */
         this.backgroundColor = configs.backgroundColor || '#000';
     }
+
+    /**
+     * 是否出现在当前视窗内
+     * @param {number[]} viewbox
+     */
+    isInViewBox(viewbox){
+        return true;
+    }
 }
 
 export default BaseLink;

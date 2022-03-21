@@ -128,7 +128,7 @@ class Instance extends EventTarget{
     }
     /**
      * 计算当前的最大外接矩形的
-     * @return {number[][]} [lefttop: [number,number], rightbottom: [number, number]]
+     * @return {number[]} [leftx, lefty, rightx, righty]
      */
     getBoundingRect() {
         throw 'require getBoundingRect implement'

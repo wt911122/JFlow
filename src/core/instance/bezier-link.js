@@ -86,7 +86,6 @@ class BezierLink extends BaseLink {
     // }
 
     _calculateAnchorPoints() {
-
         const dmsfrom = this.from.getIntersectionsInFourDimension();
         const dmsto = this.to.getIntersectionsInFourDimension();
         if(this.isSelf) {
@@ -99,7 +98,6 @@ class BezierLink extends BaseLink {
                 this.minSpanY);
 
             this._cachePoints = [...dmsfrom[this.fromDir], ...points] 
-            console.log(points)
             this._cacheAngle = [this.fromDir, DIRECTION.BOTTOM]
         } else if(this.fromDir !== undefined && this.toDir !== undefined) {
             const points = bezierPoints(
@@ -186,11 +184,6 @@ class BezierLink extends BaseLink {
         const points = this._cachePoints;
         const dist = distToBezierSegmentSquared(point, points)
         return dist < this.approximate;
-    }
-
-    getBoundingRect() {
-        const { startX, startY, endX, endY } = this._calculateAnchorPoints(); 
-        return [[startX, startY], [endX, endY]]
     }
 }
 

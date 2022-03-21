@@ -26,8 +26,11 @@ const GroupMixin = {
         const anchor = this.anchor;
         const padding = this.padding;
         const margin = this.margin;
-        const centerX = (padding.left - padding.right)/2 + (margin.left - margin.right)/2;
-        const centerY = (padding.top - padding.bottom)/2 + (margin.top - margin.bottom)/2;
+        const mx = (margin.left - margin.right)/2;
+        const my = (margin.top - margin.bottom)/2;
+        const centerX = (padding.left - padding.right)/2 + mx;
+        const centerY = (padding.top - padding.bottom)/2 + my;
+        this._shape.anchor = [anchor[0] + mx, anchor[1] + my];
         return [anchor[0] + centerX, anchor[1] + centerY];
     },
 
@@ -61,7 +64,7 @@ const GroupMixin = {
     calculateToRealWorld(point) {
         const [gx, gy] = point;
         const [cx, cy] = this._getCenter(); 
-        const p = [gx + cx, cy]
+        const p = [gx + cx, gy + cy]
         if(this._belongs && this._belongs.calculateToRealWorld) {
             return this._belongs.calculateToRealWorld(p);
         }
@@ -93,8 +96,8 @@ const GroupMixin = {
         const rbx = anchor[0] + w;
         const rby = anchor[1] + h;
         return [
-            [ltx, lty],
-            [rbx, rby],
+            ltx, lty,
+            rbx, rby,
         ]
     },
     getIntersectionsInFourDimension() {
@@ -215,7 +218,6 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             const [shapeWidth, shapeHeight] = shapeShift(paddingWidth, paddingHeight)
             this._shape.width = shapeWidth;
             this._shape.height = shapeHeight;
-
             // marginBox
             const margin = this.margin;
             this.width = shapeWidth + margin.left + margin.right;
@@ -226,20 +228,28 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             if(this._isMoving){
                 ctx.globalAlpha = 0.6
             }
+
             const [cx, cy] = this._getCenter(); 
-            ctx.translate(cx, cy);
             this._shape.render(ctx);
+            ctx.translate(cx, cy);
             this._stack.render(ctx);
             this._linkStack.render(ctx);    
             ctx.translate(-cx, -cy);
             ctx.restore();
+
+            // ctx.save();
+            // ctx.beginPath();
+            // ctx.arc(cx, cy, 5, 0, Math.PI*2);
+            // ctx.fillStyle = 'rgb(0,0,0)'
+            // ctx.fill();
+            // ctx.restore();
         },
         isHit(point, condition) {
             const p = this._calculatePointBack(point);
             this._currentp = p; // 暂存，为了后续计算别的位置
             const target = this._stack.checkHit(p, condition);
             if(target) return target;
-            return this._shape.isHit(p);
+            return this._shape.isHit(point);
         },
         
     });

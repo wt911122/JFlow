@@ -1,5 +1,5 @@
 import { createCanvas } from '../utils/canvas';
-import { bounding_box } from '../utils/functions';
+import { bounding_box, doOverlap } from '../utils/functions';
 import StackMixin from '../instance/stackMixin';
 import InstanceStack from '../instance/stack';
 import LayoutMixin from '../instance/layoutMixin';
@@ -16,6 +16,17 @@ import CapsuleVertical from '../instance/shapes/capsule-vertical';
 import Rhombus from '../instance/shapes/rhombus';
 import Diamond from '../instance/shapes/diamond';
 import DiamondVertical from '../instance/shapes/diamond-vertical';
+/**
+ * @funtion setInitialPosition
+ * @param {Number} RealboxX - 内容映射到canvas上的 X
+ * @param {Number} RealboxY - 内容映射到canvas上的 Y 
+ * @param {Number} RealboxW - 内容映射到canvas上的宽度
+ * @param {Number} RealboxH - 内容映射到canvas上的高度 
+ * @param {Number} CanvasWidth  - 视窗宽度
+ * @param {Number} CanvasHeight  - 视窗高度
+ * @return {Object} - 初始位置 { x, y }
+ */
+
 /** 
  * @class Group
  * @classdesc 矩形组单元 由 {@link GroupFactory} 通过 {@link Rectangle} 生成
@@ -124,6 +135,8 @@ class JFlow extends EventTarget{
 		this.scale = null;
         /** @member {number}     - 初始缩放 */
         this.initialZoom = configs.initialZoom;
+        /** @member {setInitialPosition} = 初始位置计算 */
+        this.initialPosition = configs.setInitialPosition;
         /** @member {number}     - 最大缩放 */
         this.maxZoom = configs.maxZoom || 3;
         /** @member {number}     - 最小缩放 */
@@ -259,12 +272,23 @@ class JFlow extends EventTarget{
         if(scaleRatio < this.minZoom) {
             this.minZoom = scaleRatio;
         }
-
-        position.x = align === 'x' ? contentBox.x : (contentBox.width - p_width * scaleRatio) / 2 + padding
-        position.y = align === 'y' ? contentBox.y : (contentBox.height - p_height * scaleRatio) / 2 + padding
-        position.offsetX = position.x - x * scaleRatio;
-        position.offsetY = position.y - y * scaleRatio;
+        const realboxX = x * scaleRatio;
+        const realboxY = y * scaleRatio;
+        const realboxW = contentBox.width;
+        const realboxH = contentBox.height;
+        if(this.initialPosition) {
+            const { x, y } = this.initialPosition(realboxX, realboxY, realboxW, realboxH, contentBox.x, contentBox.y, c_width, c_height);
+            position.x = x;
+            position.y = y;
+        } else {
+            position.x = align === 'x' ? contentBox.x : (realboxW - p_width * scaleRatio) / 2 + padding
+            position.y = align === 'y' ? contentBox.y : (realboxH - p_height * scaleRatio) / 2 + padding
+        }
+        
+        position.offsetX = position.x - realboxX;
+        position.offsetY = position.y - realboxY;
         this.position = position;
+        this._readyToRender = true;
         this._render();
     }
     
@@ -312,24 +336,38 @@ class JFlow extends EventTarget{
         const topLayerPoint = point;
         this._currentp = point;
         let stack = this._stack;
-        const target = stack.checkHit(point, (instance) => {
-            return this._target.status.dragging && (instance === this._getMovingTarget())
-        });
+        const br = this._getViewBox();
+        const target = stack.checkHit(
+            point, 
+            // 应用于所有
+            (instance) => {
+                return (this._target.status.dragging 
+                    && (instance === this._getMovingTarget()))
+            },
+            // 仅对于本层过滤
+            (instance) => {
+                return doOverlap(br, instance.getBoundingRect())
+            });
         let linkStack = this._linkStack;
         let belongs = this;
+        /*
         if(target) {
             linkStack = target._belongs._linkStack;
             point = target._belongs._currentp;
             stack = target._belongs._stack;
             belongs = target._belongs
+        }*/
+        // 暂时设定只有顶层有连线
+        let targetLink;
+        if(!target || target._belongs === this) {
+            targetLink = linkStack.checkHit(point, (link) => {
+                if(!this._target.status.dragging) {
+                    return false;
+                }
+                const movingtarget = this._getMovingTarget();
+                return link.from === movingtarget || link.to === movingtarget;
+            });
         }
-        const targetLink = linkStack.checkHit(point, (link) => {
-            if(!this._target.status.dragging) {
-                return false;
-            }
-            const movingtarget = this._getMovingTarget();
-            return link.from === movingtarget || link.to === movingtarget;
-        });
 
         Object.assign(this._target, {
             instance: target,
@@ -1023,15 +1061,23 @@ class JFlow extends EventTarget{
         ctx.scale(this.dpr, this.dpr);
         ctx.transform(scale, 0, 0, scale, position.offsetX, position.offsetY);
     }
+
+    _getViewBox() {
+        return [
+            ...this._calculatePointBack([0,0]),
+            ...this._calculatePointBack([this.canvasMeta.width,this.canvasMeta.height]),
+        ];
+    }
      /**
      * 绘制画布
      */
     _render() {
+        if(!this._readyToRender) return;
         this._resetTransform();
         const ctx = this.ctx;
-        
-        this._stack.render(ctx);
-        this._linkStack.render(ctx);
+        const br = this._getViewBox();
+        this._stack.render(ctx, (instance) => doOverlap(br, instance.getBoundingRect()));
+        this._linkStack.render(ctx, (link) => link.isInViewBox(br));
         if(this._tempInstance) {
             ctx.save();
             this._tempInstance.render(ctx)

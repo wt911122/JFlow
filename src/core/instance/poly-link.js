@@ -1,5 +1,11 @@
 import BaseLink from './base-link';
-import { polylinePoints, distToSegmentSquared, makeRadiusFromVector, minIntersectionBetweenNodes } from '../utils/functions';
+import { 
+    polylinePoints, 
+    distToSegmentSquared, 
+    makeRadiusFromVector, 
+    minIntersectionBetweenNodes,
+    isPolyLineIntersectionRectange
+} from '../utils/functions';
 import { APPROXIMATE, DIRECTION } from '../utils/constance';
 // import { dist2, bezierPoint } from '../utils/functions';
 const PIINRATIO = Math.PI / 180
@@ -83,7 +89,6 @@ class PolyLink extends BaseLink {
             this._cacheAngle = [this.fromDir, this.toDir]
         } else {
             const meta = minIntersectionBetweenNodes(dmsfrom, dmsto);
-            console.log(meta)
             const points = polylinePoints(
                 meta.fromP,
                 meta.toP,
@@ -94,8 +99,14 @@ class PolyLink extends BaseLink {
             this._cacheAngle = [meta.fromDir, meta.toDir]
         }
     }
-    render(ctx) {
+    
+    isInViewBox(br) {
         this._calculateAnchorPoints();
+        return isPolyLineIntersectionRectange(this._cachePoints, br);
+    }
+
+    render(ctx) {
+        // this._calculateAnchorPoints();
         const radius = this.radius;
         const points = this._cachePoints;
         const p = points[0];
