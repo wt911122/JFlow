@@ -89,7 +89,6 @@ export const DiamondVerticalGroup = GroupFactory(DiamondVertical, {
  * @param {(Capsule~CapsuleConfigs|GroupTemplate~GroupConfigs)} configs - 配置
  */
 export const CapsuleVerticalGroup = GroupFactory(CapsuleVertical);
-
 /**
  * @typedef JFlow~JFlowConfigs
  * @type {object}
@@ -1108,6 +1107,7 @@ export { default as Rhombus } from '../instance/shapes/rhombus';
 // export { default as RhombusGroup } from '../instance/shapes/rhombus-group';
 export { default as Text } from '../instance/text';
 export { default as Icon } from '../instance/image';
+export { default as GroupFactory } from '../instance/groupFactory';
 export { default as Link } from '../instance/link';
 export { default as PolyLink } from '../instance/poly-link';
 export { default as BezierLink } from '../instance/bezier-link';
