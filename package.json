@@ -1,9 +1,11 @@
 {
   "name": "@joskii/jflow",
-  "version": "0.0.52-beta",
+  "version": "0.0.53-beta",
   "description": "",
   "main": "dist/jflow.bundle.js",
-  "files": ["dist/*.js"],
+  "files": [
+    "dist/*.js"
+  ],
   "scripts": {
     "dev:demo": "cd demo/vue-scopedslots && npm run serve",
     "build:doc": "rm -rf docs && cd jsdoc-plugin && npm run build && cd ../demo/vue-scopedslots && npm run build && cd ../../ && npm run build:jsdoc",
