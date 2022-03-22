@@ -71,9 +71,9 @@
             </ul>
         </div>
       </div>
-      <!-- <div :class="$style.ast">
+      <div :class="$style.ast">
           <pre v-html="prettyJson(ast)"></pre>
-      </div> -->
+      </div>
   </div>
 </template>
 
@@ -188,7 +188,7 @@ function makeAst(number) {
     }
     return ast;
 }
-const astrandom = makeAst(1000)
+// const astrandom = makeAst(1000)
 // console.log(astrandom)
 export default {
     components: {
