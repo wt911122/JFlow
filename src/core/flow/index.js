@@ -134,7 +134,7 @@ class JFlow extends EventTarget{
 		this.scale = null;
         /** @member {number}     - 初始缩放 */
         this.initialZoom = configs.initialZoom;
-        /** @member {setInitialPosition} = 初始位置计算 */
+        /** @member {setInitialPosition} - 初始位置计算 */
         this.initialPosition = configs.setInitialPosition;
         /** @member {number}     - 最大缩放 */
         this.maxZoom = configs.maxZoom || 3;
