@@ -29,6 +29,7 @@ export function createCanvas(wrapper) {
 
     if(wrapper) {
         wrapper.style.position = 'relative';
+        wrapper.style.overflow = 'hidden';
         wrapper.append(canvas);
     }
     return {

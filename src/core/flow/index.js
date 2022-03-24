@@ -1064,7 +1064,7 @@ class JFlow extends EventTarget{
     _getViewBox() {
         return [
             ...this._calculatePointBack([0,0]),
-            ...this._calculatePointBack([this.canvasMeta.width,this.canvasMeta.height]),
+            ...this._calculatePointBack([this.canvasMeta.actual_width,this.canvasMeta.actual_height]),
         ];
     }
      /**
@@ -1075,7 +1075,14 @@ class JFlow extends EventTarget{
         this._resetTransform();
         const ctx = this.ctx;
         const br = this._getViewBox();
-        this._stack.render(ctx, (instance) => doOverlap(br, instance.getBoundingRect()));
+        this._viewBox = br;
+        // console.log(this._viewBox)
+        this._stack.render(ctx, (instance) => {
+            const result = doOverlap(br, instance.getBoundingRect());
+            // console.log(instance._layoutNode.type, result)
+            instance._isInViewBox = result;
+            return result;
+        });
         this._linkStack.render(ctx, (link) => link.isInViewBox(br));
         if(this._tempInstance) {
             ctx.save();
@@ -1107,6 +1114,7 @@ export { default as Rhombus } from '../instance/shapes/rhombus';
 // export { default as RhombusGroup } from '../instance/shapes/rhombus-group';
 export { default as Text } from '../instance/text';
 export { default as Icon } from '../instance/image';
+export { default as ShadowDom } from '../instance/shadowDom';
 export { default as GroupFactory } from '../instance/groupFactory';
 export { default as Link } from '../instance/link';
 export { default as PolyLink } from '../instance/poly-link';

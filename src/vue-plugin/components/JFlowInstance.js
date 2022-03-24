@@ -87,6 +87,7 @@ export default function (nameNode) {
 
         // },
         destroyed() {
+            this._jflowInstance.destroy();
             this.removeFromStack(this._jflowInstance);
         },
         methods: {

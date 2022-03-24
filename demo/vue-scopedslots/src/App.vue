@@ -7,6 +7,9 @@
         <div>
             <div draggable="true" :class="$style.part" type="variable" @dragstart="onDragStartPoint">Variable</div>
         </div>
+        <div>
+            <div draggable="true" :class="$style.part" type="jsblock" @dragstart="onDragjsBlock">jsBlock</div>
+        </div>
       </div>
       <div style="position: relative;">
         <j-jflow ref="jflow" 
@@ -54,6 +57,11 @@
                         @outOfFlow="onOutOfFlow($event, meta)">
                     </j-calllogic>
                 </template>
+                <template #JSblock="{ configs, meta }">
+                    <j-jsblock :node="configs"
+                    @demojsblock="onclickdemojsblock">
+                    </j-jsblock>
+                </template>
                 <template #plainlink="{ configs }">
                     <instance-link
                         :linkConfigs="configs"
@@ -91,6 +99,7 @@ import switchComp from './components/switch.vue';
 import whileComp from './components/whilestatement.vue';
 import CallLogicComp from './components/callLogic.vue';
 import instanceLink from './components/instance-link.vue';
+import JSBlockComp from './components/jsBlock.vue';
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -200,6 +209,7 @@ export default {
         'j-ifstatement': ifStatement,
         'j-whilestatement': whileComp,
         'j-calllogic': CallLogicComp,
+        'j-jsblock': JSBlockComp,
         instanceLink,
     },
      provide() {
@@ -221,6 +231,13 @@ export default {
                    
                     id: 'start',
                 }, 
+                {
+                    type: 'JSblock',
+                    id: 'JSblock',
+                    content: `function(args) {
+                        console.log("hello world!");
+                    }`
+                },
                {
                     type: 'IfStatement',
                     content: 'aaaa',
@@ -409,6 +426,18 @@ export default {
                 }
             })
         },
+        onDragjsBlock() {
+            const jflowInstance = this.$refs.jflow.getInstance();
+            jflowInstance.sendMessage({ 
+                instance: {
+                    type: 'JSblock',
+                    id: `JSblock-${uniqueId ++}`,
+                    content: `function(args) {
+                        console.log("hello world!");
+                    }`
+                },
+            })
+        },
         onOutOfFlow(e, meta) {
             const type = meta.parentIterateType;
             const idx = meta.idx;
@@ -483,6 +512,11 @@ export default {
         renderJFlow() {
             this.$refs.jflow.renderJFlow();
         },
+        onclickdemojsblock() {
+            this.ast.body.splice(1, 1);
+            this.configs.layout.reOrder(this.ast);
+            this.$refs.jflow.reflow();
+        }
     }
 }
 </script>

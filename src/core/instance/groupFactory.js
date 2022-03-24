@@ -116,7 +116,23 @@ const GroupMixin = {
             [DIRECTION.TOP]:    [x2, y2-h],
             [DIRECTION.SELF]:   [x2+w*0.618, y2+h*0.618]
         }
-    }
+    },
+    onEnterViewbox() {
+        this.interateNodeStack((instance) => {
+            instance.onEnterViewbox();
+        })
+    },
+    onLeaveViewbox() {
+        this.interateNodeStack((instance) => {
+            instance.onLeaveViewbox();
+        })
+    },
+    destroy() {
+        this._shape.destroy();
+        this.interateNodeStack((instance) => {
+            instance.destroy();
+        })
+    }, 
 }
 
 function defaultShift(width, height) {
@@ -250,8 +266,7 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             const target = this._stack.checkHit(p, condition);
             if(target) return target;
             return this._shape.isHit(point);
-        },
-        
+        },        
     });
     return t
 }

@@ -61,6 +61,8 @@ const JFLOW_NODES = [
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
     'Icon',
+
+    'ShadowDom',
 ];
 /**
  * @typedef {BezierLink~Configs} j-bezier-link~Configs

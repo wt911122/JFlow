@@ -95,6 +95,7 @@ export default function (nameNode) {
             this._jflowInstance.recalculateUp();
         },
         destroyed() {
+            this._jflowInstance.destroy();
             this.removeFromBelongStack(this._jflowInstance);
         },
     }

@@ -2,6 +2,7 @@ import { setUniqueId, getUniqueId } from '../utils/functions';
 import { nextDirection } from '../utils/constance';
 const margin = 5;
 const ishitKey = Symbol('ishit');
+const isInViewBox = Symbol('isInViewBox');
 /**
  * @typedef Instance~Configs
  * @type {object}
@@ -98,6 +99,32 @@ class Instance extends EventTarget{
             }));
         }
         this[ishitKey] = ishit; // validation could be checked here such as only allowing non numerical values
+    }
+
+    set _isInViewBox(val) {
+        const oldval = this[isInViewBox];
+        if(val !== oldval) {
+            if(val) {
+                this.onEnterViewbox();
+            } else {
+                this.onLeaveViewbox();
+            } 
+        }    
+        this[isInViewBox] = val;
+    }
+
+    /**
+     * 当节点离开可视区域的回调
+     */
+    onEnterViewbox() {
+        return;
+    }
+
+    /**
+     * 当节点离开可视区域的回调
+     */
+    onLeaveViewbox() {
+        return;
     }
 
     /**
@@ -224,6 +251,12 @@ class Instance extends EventTarget{
         if(this.belongs) {
             this.belongs.recalculateUp();
         }
+    }
+
+    destroy() {
+        this._belongs = undefined;
+        this._layoutNode = undefined;
+        // this.removeEventListener();
     }
 }
 
