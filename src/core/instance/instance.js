@@ -33,8 +33,6 @@ class Instance extends EventTarget{
         this._belongs = undefined;
         this[ishitKey] = false; 
 
-        /** @member {LayoutNode} - 布局节点 */
-        this._layoutNode = undefined;
         /** @member {number}      - 边的宽度 默认是 0 */
         this.borderWidth =      configs.borderWidth || 0;
         /** @member {string}     - 边框颜色 默认 transparent */
@@ -241,11 +239,11 @@ class Instance extends EventTarget{
     /**
      * 从当前布局中删除虚拟布局节点
      */
-    removeFromLayoutSource() {
-        if(this._layoutNode) {
-            this._layoutNode.remove();
-        }
-    }
+    // removeFromLayoutSource() {
+    //     if(this._layoutNode) {
+    //         this._layoutNode.remove();
+    //     }
+    // }
 
     recalculateUp() {
         if(this.belongs) {
@@ -255,7 +253,6 @@ class Instance extends EventTarget{
 
     destroy() {
         this._belongs = undefined;
-        this._layoutNode = undefined;
         // this.removeEventListener();
     }
 }

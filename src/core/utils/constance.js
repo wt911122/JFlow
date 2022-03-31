@@ -26,3 +26,13 @@ export function oppositeDirection(direction) {
 }
 
 export const APPROXIMATE = 6;
+
+export const JFLOW_MODE = {
+    DEFAULT: 'DEFAULT',
+    LINKING: 'LINKING',
+}
+
+export const LINE_DIR = {
+    FROM: 'from',
+    TO: 'to',
+}

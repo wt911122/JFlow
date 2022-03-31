@@ -1,5 +1,8 @@
 import { createCanvas } from '../utils/canvas';
 import { bounding_box, doOverlap } from '../utils/functions';
+import { JFLOW_MODE } from '../utils/constance';
+import GhostNode from '../instance/ghostNode';
+import { NodeWeakMapMixin } from '../instance/nodeWeakMap';
 import StackMixin from '../instance/stackMixin';
 import InstanceStack from '../instance/stack';
 import LayoutMixin from '../instance/layoutMixin';
@@ -10,6 +13,7 @@ import JFlowEvent from '../events';
 import EventAdapter from '../events/adapter';
 
 import GroupFactory from '../instance/groupFactory';
+import Point from '../instance/shapes/point';
 import Rectangle from '../instance/shapes/rectangle';
 import Capsule from '../instance/shapes/capsule';
 import CapsuleVertical from '../instance/shapes/capsule-vertical';
@@ -89,6 +93,15 @@ export const DiamondVerticalGroup = GroupFactory(DiamondVertical, {
  * @param {(Capsule~CapsuleConfigs|GroupTemplate~GroupConfigs)} configs - 配置
  */
 export const CapsuleVerticalGroup = GroupFactory(CapsuleVertical);
+
+export const PointGroup = GroupFactory(Point, {
+    shapeShift(width, height, p) {
+        const r = Math.ceil(Math.sqrt(width * width + height * height) / 2);
+        p.radius = r;
+        const w = r * 2;
+        return [w, w];
+    }
+});
 /**
  * @typedef JFlow~JFlowConfigs
  * @type {object}
@@ -119,6 +132,7 @@ class JFlow extends EventTarget{
          * @member {EventAdapter} eventAdapter    - eventAdapter 对象
          **/
         this.eventAdapter = new EventAdapter(configs.eventAdapter);
+        this.initNodeWeakMap();
         this.initStack(configs);
         this.initLayout(configs);
         /** @member {Context2d}     - Context2d 对象 */
@@ -187,19 +201,29 @@ class JFlow extends EventTarget{
         this._dragOverTarget = null;
         // this.lock = configs.lock;
 
-        // this._belongs = 
         this.allowDrop = configs.allowDrop;
-        this._tempInstance = null;
+        // 临时绘制的对象
+        this._tempNode = null;
+        this._tempLink = null;
+
+        this.mode = JFLOW_MODE.DEFAULT;
     }
+
+    setMovingTargets(targets) {
+        Object.assign(this._target, {
+            moving: targets,       
+        })
+    }
+
     /**
      * 设置当前拖动的 JFlow 对象
      * @param {Instance} instance - JFlow 对象
      */
     setTempDraggingInstance(instance) {
         instance._belongs = this;
-        this._tempInstance = instance;
+        this._tempNode = instance;
         Object.assign(this._target, {
-            moving: [this._tempInstance],
+            moving: [this._tempNode],
             dragging: true,
         })
     }
@@ -209,10 +233,10 @@ class JFlow extends EventTarget{
      * @return {number[]} point - JFlow 坐标
      */
     removeTempDraggingInstance() {
-        if(this._tempInstance) {
-            // this.removeFromStack(this._tempInstance);
-            const anchor = this._tempInstance.anchor;
-            this._tempInstance = null;
+        if(this._tempNode) {
+            // this.removeFromStack(this._tempNode);
+            const anchor = this._tempNode.anchor;
+            this._tempNode = null;
             return anchor;
         }
     }
@@ -289,6 +313,19 @@ class JFlow extends EventTarget{
         this.position = position;
         this._readyToRender = true;
         this._render();
+    }
+
+    setLinkingMode(source, linkGen) {
+        const renderNode = this.getRenderNodeBySource(source)
+        this._tempNode = new GhostNode();
+        this._tempLink = linkGen({
+            from: renderNode,
+            to: this._tempNode,
+        })
+        this.sendMessage({
+            instance: source
+        });
+        this.mode = JFLOW_MODE.LINKING;
     }
     
     _getBoundingGroupRect() {
@@ -390,13 +427,12 @@ class JFlow extends EventTarget{
             while (movingtarget && movingtarget._belongs.lock && movingtarget !== this) {
                 movingtarget = movingtarget._belongs;
             }
-            // if(movingtarget === this) {
-            //     movingtarget = undefined;
-            // }
+            /* 
             if(movingtarget) {
+                
                 if(movingtarget._layoutNode) {
-                    if(movingtarget._layoutNode.isLocked) {
-                        movingtarget = movingtarget._layoutNode.getNodes()
+                    if(movingtarget._layoutNode.isLocked ) {
+                        movingtarget = movingtarget._layoutNode.getNodes(this)
                     } else if(!movingtarget._layoutNode.isDraggable) {
                         movingtarget = undefined;
                     } else {
@@ -405,11 +441,15 @@ class JFlow extends EventTarget{
                 } else {
                     movingtarget = [movingtarget];
                 }
-            } 
-            Object.assign(this._target, {
-                moving: movingtarget,
-                // isMovingDirty: movingtarget[0] === this._target.moving[0],
-            })
+            } */ 
+            this.setMovingTargets(movingtarget && [ movingtarget ])
+            if(movingtarget) {
+                movingtarget.dispatchEvent(new JFlowEvent('afterResolveMovingTarget', {
+                    event,
+                    target: movingtarget,
+                    jflow: this,
+                }))
+            }
         }
         return this._target;
     }
@@ -660,11 +700,13 @@ class JFlow extends EventTarget{
      * @param {Number} event - 原生事件
      */
     pressStartHandler(offsetX, offsetY, event) {
-        this._targetLockOn([offsetX, offsetY], 'pressStart');
         Object.assign(this._target.meta, {
             initialX: offsetX,
             initialY: offsetY,
         })
+        this._targetLockOn([offsetX, offsetY], 'pressStart');
+        // 后续只支持 click 动作
+        if(this.mode === JFLOW_MODE.LINKING) return;
         Object.assign(this._target.status, {
             dragging: true,
             processing: false,
@@ -740,6 +782,17 @@ class JFlow extends EventTarget{
                     jflow: this,
                 }))
             }
+
+            if(this.mode === JFLOW_MODE.LINKING) {
+                this._tempNode.anchor = this._currentp;
+                requestAnimationFrame(() => {
+                    this._render();
+                    this._target.isLinkDirty = false; 
+                    this._target.isInstanceDirty = false;
+                    this._target.status.processing = false;
+                })
+                return;
+            }
         }
         /**
          * canvas mousemove 原生事件
@@ -758,7 +811,7 @@ class JFlow extends EventTarget{
         this.canvas.style.cursor = 'grabbing';
         if(processing) return;
         
-        const movingtarget = this._target.moving;// this._tempInstance ? [this._tempInstance] : this._target.moving;
+        const movingtarget = this._target.moving;// this._tempNode ? [this._tempNode] : this._target.moving;
 
         this._target.status.processing = true;
         const deltaX = offsetX - x;
@@ -792,48 +845,82 @@ class JFlow extends EventTarget{
         const meta = this._target.meta;
         if(meta.initialX === meta.x
             && meta.initialY === meta.y) {
-                if(event.target !== this.canvas){
-                    this._clearTarget();
-                    return;
-                }
-                if(this._target.instance && !isDocument) {
+                if(this.mode === JFLOW_MODE.LINKING) {
                     const t = this._target.instance;
-                    /**
-                    * 点击事件（冒泡）
-                    *
-                    * @event Node#click
-                    * @type {object}
-                    * @property {Event} event          - 原始事件 
-                    * @property {Instance} target      - 点击的对象 
-                    * @property {JFlow} jflow          - 当前JFlow对象 
-                    * @property {Boolean} bubbles      - 冒泡
-                    */
-                    t.bubbleEvent(new JFlowEvent('click', {
-                        event,
-                        target: t,
-                        jflow: this,
-                        bubbles: true,
-                    }))
+                    const payload = this.consumeMessage();
+                    if(t) {
+                        t.bubbleEvent(new JFlowEvent('link', {
+                            event,
+                            target: t,
+                            jflow: this,
+                            payload,
+                            bubbles: true,
+                        }))        
+                    } else {
+                        const { offsetX, offsetY } = event
+                        this.dispatchEvent(new JFlowEvent('link', {
+                            event,
+                            jflow: this,
+                            payload,
+                            anchor: this._calculatePointBack([offsetX, offsetY]),
+                        }));
+                    }
                     this._clearTarget();
-                    this._render();
+                    if(this._tempNode) {
+                        this._tempNode.destroy();
+                        this._tempNode = null;
+                    }
+                    if(this._tempLink) {
+                        this._tempLink.destroy();
+                        this._tempLink = null;
+                    }
+                    this.mode = JFLOW_MODE.DEFAULT;
                     return;
                 } else {
-                    /**
-                    * 点击事件
-                    *
-                    * @event JFlow#click
-                    * @type {object}
-                    * @property {Event} event          - 原始事件 
-                    * @property {JFlow} jflow          - 当前JFlow对象 
-                    */
-                    this.dispatchEvent(new JFlowEvent('click', {
-                        event,
-                        jflow: this,
-                    }));
-                    this._clearTarget();
-                    this._render();
-                    return
+                    if(event.target !== this.canvas){
+                        this._clearTarget();
+                        return;
+                    }
+                    if(this._target.instance && !isDocument) {
+                        const t = this._target.instance;
+                        /**
+                        * 点击事件（冒泡）
+                        *
+                        * @event Node#click
+                        * @type {object}
+                        * @property {Event} event          - 原始事件 
+                        * @property {Instance} target      - 点击的对象 
+                        * @property {JFlow} jflow          - 当前JFlow对象 
+                        * @property {Boolean} bubbles      - 冒泡
+                        */
+                        t.bubbleEvent(new JFlowEvent('click', {
+                            event,
+                            target: t,
+                            jflow: this,
+                            bubbles: true,
+                        }))
+                        this._clearTarget();
+                        this._render();
+                        return;
+                    } else {
+                        /**
+                        * 点击事件
+                        *
+                        * @event JFlow#click
+                        * @type {object}
+                        * @property {Event} event          - 原始事件 
+                        * @property {JFlow} jflow          - 当前JFlow对象 
+                        */
+                        this.dispatchEvent(new JFlowEvent('click', {
+                            event,
+                            jflow: this,
+                        }));
+                        this._clearTarget();
+                        this._render();
+                        return
+                    }
                 }
+                
             
         } else if(this._target.moving) {
             let checkresult = false;
@@ -1084,9 +1171,14 @@ class JFlow extends EventTarget{
             return result;
         });
         this._linkStack.render(ctx, (link) => link.isInViewBox(br));
-        if(this._tempInstance) {
+        if(this._tempNode) {
             ctx.save();
-            this._tempInstance.render(ctx)
+            this._tempNode.render(ctx)
+            ctx.restore();
+        }
+        if(this._tempLink) {
+            ctx.save();
+            this._tempLink.render(ctx)
             ctx.restore();
         }
     }
@@ -1094,6 +1186,7 @@ class JFlow extends EventTarget{
 Object.assign(JFlow.prototype, MessageMixin);
 Object.assign(JFlow.prototype, StackMixin);
 Object.assign(JFlow.prototype, LayoutMixin);
+Object.assign(JFlow.prototype, NodeWeakMapMixin);
 
 export default JFlow;
 export { default as JFlowEvent } from '../events';
@@ -1123,4 +1216,4 @@ export { default as LinearLayout} from '../layout/linear-layout';
 // export { default as TreeLayout } from '../ler-layouta;yout/tree-layout';
 export { default as Lowcodelayout } from '../layout/low-code-layout';
 export { default as ERLayout } from '../layout/er-layout/er-layout';
-
+// export { default as Orange } from '../instance/nodeWrapper/orange/orange'

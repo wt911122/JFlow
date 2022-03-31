@@ -17,7 +17,6 @@ class Point extends Node {
         this.type =             'Point';
         /** @member {Number}      - 半径 */
         this.radius =           configs.radius || 10;
-        this.radiusExpo2 =      this.radius * this.radius;
     }
 
     render(ctx) {
@@ -42,7 +41,7 @@ class Point extends Node {
 
     isHit(point) {
         const anchor = this.anchor;
-        return Math.pow(point[0] - anchor[0], 2) + Math.pow(point[1] - anchor[1], 2) < this.radiusExpo2
+        return Math.pow(point[0] - anchor[0], 2) + Math.pow(point[1] - anchor[1], 2) < this.radius * this.radius
     }
 
     getBoundingRect() {

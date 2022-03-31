@@ -18,7 +18,7 @@ export default {
     provide(){
         return {
             renderJFlow: this.renderJFlow,
-            addNameToRootStack: this.addNameToRootStack
+            getJFlow: this.getInstance,
         }
     },
     props: {
@@ -29,6 +29,9 @@ export default {
             },
         },
         loading: Boolean,
+        genVueComponentKey: {
+            type: Function,
+        }
     },
     data() {
         return {
@@ -42,7 +45,7 @@ export default {
         if(!this.renderNodes.length) {
             return createElement('div', this.$slots.default);
         } else {
-            const vnodes = this.renderNodes.map(({ type, configs, meta }) => {
+            const vnodes = this.renderNodes.map(({ type, source, layoutNode }) => {
                 if(!this.$scopedSlots[type]) {
                     if(this.$scopedSlots['jflowcommon']){
                         type = 'jflowcommon';
@@ -50,22 +53,15 @@ export default {
                         return
                     }
                 }
-                if(meta.__vnode__) {
-                    return meta.__vnode__;
+                if(layoutNode.__vnode__) {
+                    return layoutNode.__vnode__;
                 }
-                const [vnode] = this.$scopedSlots[type]({ configs, meta });
-                meta.getJflowInstance = function() {
-                    // 只支持一个元素
-                    let instance = vnode.componentInstance;
-                    while(instance && !instance._jflowInstance)  {
-                        instance = instance.$children[0];
-                    }
-                    // TODO 优化下这里的逻辑
-                    instance._jflowInstance._layoutNode = meta;
-                    return instance._jflowInstance;
+                const [vnode] = this.$scopedSlots[type]({ source, layoutNode });
+                if(this.genVueComponentKey) {
+                    vnode.key = this.genVueComponentKey(source);
                 }
-                vnode.key = configs.id;
-                meta.__vnode__ = vnode;
+                
+                layoutNode.__vnode__ = vnode;
                 return vnode;
             });
             const vlinks = this.renderLinks.map(meta => {
@@ -77,7 +73,12 @@ export default {
                     return meta.__vnode__;
                 }
                 const [vnode] = this.$scopedSlots[type]({ configs: meta });
-                vnode.key = `${meta.from}-${meta.to}-${meta.part}`
+                if(this.genVueComponentKey) {
+                    const k1 = this.genVueComponentKey(meta.from.source);
+                    const k2 = this.genVueComponentKey(meta.to.source);
+                    const k3 = meta.part;
+                    vnode.key = `${k1}-${k2}-${k3}`
+                }
                 meta.__vnode__ = vnode;
                 return vnode
             })
@@ -138,11 +139,16 @@ export default {
             * @member {j-jflow-Node[]} nodes
             */
             this.nodes = this._jflowInstance._layout.flowStack.map(meta => {
-                return {
-                    type: meta.type,
-                    configs: meta.configs,
-                    meta: meta.layoutMeta,
+                const { type, layoutNode, source } = meta;
+                const map = this._jflowInstance.source_Layout_Render_NodeMap;
+                let obj;
+                if(map.has(source)) {
+                    obj = map.get(source);
+                } else {
+                    obj = map.set(source);
                 }
+                obj.layoutNode = layoutNode;
+                return meta;
             });
             /** 
             * @member {Layout~LinkMeta[]} links
@@ -193,11 +199,5 @@ export default {
                 this.__renderInSchedule__ = false;
             });
         },
-        addNameToRootStack(instance, jflowId) {
-             this.stack.push({
-                jflowId,
-                instance,
-            });
-        }
     }
 }

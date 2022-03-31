@@ -61,8 +61,8 @@ class LowcodeLayout {
             }
             this.flowStack.push({
                 type: node.type,
-                configs: node.source,
-                layoutMeta: node,
+                source: node.source,
+                layoutNode: node,
             });
         });
 
@@ -141,7 +141,7 @@ class LowcodeLayout {
         return false;
     }
 
-    reflowByMapping(layoutMapping, x = 0, y = 0) {
+    reflowByMapping(jflow, layoutMapping, x = 0, y = 0) {
         const linkLength = this.linkLength;
         const gap = this.gap;
         const {
@@ -156,14 +156,14 @@ class LowcodeLayout {
             const rows = Object.keys(column)
             rows.forEach(rowNumber => {
                 const ast = column[rowNumber];
-                const instance = ast.getJflowInstance();
+                const instance = jflow.getRenderNodeBySource(ast.source) // ast.getJflowInstance();
                 const { width } = instance.getBoundingDimension();
                 rowWidth = Math.max(width, rowWidth);
             });
             reduceWidth += idx === 0 ? 0: rowWidth/2
             rows.forEach(rowNumber => {
                 const ast = column[rowNumber];
-                const instance = ast.getJflowInstance();
+                const instance = jflow.getRenderNodeBySource(ast.source);
                 instance.anchor[0] = reduceWidth;
             });
             reduceWidth += (rowWidth/2 + gap) ;
@@ -177,14 +177,14 @@ class LowcodeLayout {
             const columns = Object.keys(row)
             columns.forEach(columnNumber => {
                 const ast = row[columnNumber];
-                const instance = ast.getJflowInstance();
+                const instance = jflow.getRenderNodeBySource(ast.source);
                 const { height, width } = instance.getBoundingDimension();
                 rowHeight = Math.max(height, rowHeight);
             });
             reduceHeight += idx === 0 ? 0 : rowHeight/2;
             columns.forEach(columnNumber => {
                 const ast = row[columnNumber];
-                const instance = ast.getJflowInstance();
+                const instance = jflow.getRenderNodeBySource(ast.source);
                 instance.anchor[1] = reduceHeight;
             });
             reduceHeight += (rowHeight/2 + linkLength) ;
@@ -201,10 +201,11 @@ class LowcodeLayout {
     }
 
     reflow(jflow){
-        this.reflowByMapping(this.layoutMapping);
+        this.reflowByMapping(jflow, this.layoutMapping);
         Object.values(this.playgroundLayoutMapping).forEach(mapping => {
-            const node = mapping.node.getJflowInstance();
-            this.reflowByMapping(mapping, node.anchor[0], node.anchor[1]);
+            // const node = mapping.node.getJflowInstance();
+            const node = jflow.getRenderNodeBySource(mapping.node.source)
+            this.reflowByMapping(jflow, mapping, node.anchor[0], node.anchor[1]);
         })
     }
 }
