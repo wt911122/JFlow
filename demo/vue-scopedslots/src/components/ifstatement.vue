@@ -1,10 +1,11 @@
 <template>
     <j-rhombus-group
-        :jflowId="node.id" 
+        :source="node" 
         :configs="groupConfig"
         v-on="$listeners"
         @mouseenter="touch = true"
-        @mouseleave="touch = false">
+        @mouseleave="touch = false"
+        @afterResolveMovingTarget="onAfterResolveMovingTarget">
         <j-point :configs="{
             backgroundColor: '#99DBC5',
             radius: 8,
@@ -47,6 +48,7 @@ import { LinearLayout } from '@joskii/jflow';
 export default {
     props: {
         node: Object,
+        layoutNode: Object,
     },
     inject: ['renderJFlow'],
     data() {
@@ -88,6 +90,14 @@ export default {
     },
     updated() {
         this.renderJFlow();
+    },
+    methods: {
+        onAfterResolveMovingTarget(event) {
+            const jflow = event.detail.jflow;
+            const layoutNode = jflow.getLayoutNodeBySource(this.node);
+            const renderNodes = layoutNode.getNodes(jflow);
+            jflow.setMovingTargets(renderNodes);
+        }
     }
 }
 </script>

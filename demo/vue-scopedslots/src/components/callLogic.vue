@@ -1,5 +1,7 @@
 <template>
-    <j-group v-on="$listeners" :jflowId="node.id" :configs="configs">
+    <j-group v-on="$listeners" 
+        :source="node" 
+        :configs="configs">
         <j-group :configs="headerConfigs">
             <j-icon :configs="imageConfig" />
             <j-text :configs="{

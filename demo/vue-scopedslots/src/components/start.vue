@@ -1,6 +1,6 @@
 <template>
     <j-group 
-        :jflowId="node.id" 
+        :source="node" 
         :configs="configs">
         <j-text ref="start" :configs="{
             fontSize: '12px',

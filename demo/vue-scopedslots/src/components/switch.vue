@@ -1,8 +1,9 @@
 <template>
     <j-capsule-vertical-group 
-        :jflowId="node.id" 
+        :source="node" 
         :configs="configs"
-        v-on="$listeners">
+        v-on="$listeners"
+        @afterResolveMovingTarget="onAfterResolveMovingTarget">
         <j-text :configs="{
             fontSize: '12px',
             textColor,
@@ -40,6 +41,14 @@ export default {
                 paddingTop: 20,
                 paddingBottom: 20
             }
+        }
+    },
+    methods: {
+        onAfterResolveMovingTarget(event) {
+            const jflow = event.detail.jflow;
+            const layoutNode = jflow.getLayoutNodeBySource(this.node);
+            const renderNodes = layoutNode.getNodes(jflow);
+            jflow.setMovingTargets(renderNodes);
         }
     }
 }
