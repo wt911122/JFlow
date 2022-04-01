@@ -3,7 +3,6 @@ class ERNode {
         this.type = 'ERNode';
         this.source = source;
         this.id = source.name;
-        this.getJflowInstance = undefined;
         this.linkIn = 0;
         this.linkOut = 0;
         this.level = 0;
@@ -83,7 +82,12 @@ class ERLayout {
         const nodeMap = makeER(source);
         const nodes = Object.values(nodeMap);
         nodes.forEach(node => {
-            this.flowStack.push(node)
+            // this.flowStack.push(node);
+            this.flowStack.push({
+                type: node.type,
+                source: node.source,
+                layoutNode: node,
+            });
             node.makeLink((configs) => {
                 const fromNode = nodeMap[configs.from];
                 const toNode = nodeMap[configs.to];
@@ -95,10 +99,8 @@ class ERLayout {
                 
                 this.flowLinkStack.push({
                     ...configs,
-                    meta: {
-                        from: fromNode,
-                        to: toNode,
-                    }
+                    from: fromNode.source,
+                    to: toNode.source,
                 })
             })
         });
@@ -136,7 +138,7 @@ class ERLayout {
                 let columnWidth = 0;
                 let columnHeight = 0;
                 levelNodes.forEach((erNode, idx) => {
-                    const instance = erNode.getJflowInstance();
+                    const instance = jflow.getRenderNodeBySource(erNode.source);
                     const { width, height } = instance.getBoundingDimension();
                     columnWidth = Math.max(width, columnWidth);
                     if(idx > 0) {
@@ -150,7 +152,7 @@ class ERLayout {
                 const h = columnHeight/2;
                 reduceWidth += i === 0 ? 0 : columnWidth/2;
                 levelNodes.forEach(erNode => {
-                    const instance = erNode.getJflowInstance();
+                    const instance = jflow.getRenderNodeBySource(erNode.source);
                     instance.anchor[0] = reduceWidth;
                     instance.anchor[1] -= h;
                 });

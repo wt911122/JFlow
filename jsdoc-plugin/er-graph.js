@@ -92,21 +92,20 @@ function renderNode(erNode) {
         wrapper.recalculate();
         // console.log(erNode.id, wrapper.height)
     }
-    wrapper._ERnode = erNode;
-    erNode.getJflowInstance = () => wrapper;
+    // wrapper._ERnode = erNode;
+    // erNode.getJflowInstance = () => wrapper;
     // wrapper.addEventListener('click', () => {
 
     // })
     return wrapper;
 }
 
-function renderLink(linkmeta) {
-    const meta = linkmeta.meta;
+function renderLink(linkmeta, jflowStage) {
     const link = new BezierLink({
         ...linkmeta,
+        from: jflowStage.getRenderNodeBySource(linkmeta.from),
+        to:  jflowStage.getRenderNodeBySource(linkmeta.to),
         content: linkmeta.part,
-        to: meta.from.getJflowInstance(),
-        from: meta.to.getJflowInstance(),
         backgroundColor: '#2780E3',
         fontSize: '16px'
     });
@@ -122,13 +121,16 @@ function render (data, elemId) {
         eventAdapter: commonEventAdapter
     });
 
-    layout.flowStack.forEach(erNode => {
-        const Node = renderNode(erNode);
+    layout.flowStack.forEach(({ type, layoutNode, source }) => {
+        const Node = renderNode(layoutNode);
+        jflowStage.setLayoutNodeBySource(source, layoutNode);
+        jflowStage.setRenderNodeBySource(source, Node)
         jflowStage.addToStack(Node);
+        
     });
 
     layout.flowLinkStack.forEach(linkMeta => {
-        const link = renderLink(linkMeta);
+        const link = renderLink(linkMeta, jflowStage);
         jflowStage.addToLinkStack(link);
     });
 
