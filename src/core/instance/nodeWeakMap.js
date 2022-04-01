@@ -42,20 +42,32 @@ export const NodeWeakMapMixin = {
             return mapping.jflowNode;
         }
         return undefined;
-    },
-    setRenderNodeBySource(source, instance) {
-        const mapping = this.source_Layout_Render_NodeMap.get(source);
-        if(mapping) {
-            mapping.jflowNode = instance;
-        }
-    },
+    },  
     getLayoutNodeBySource(source) {
         const mapping = this.source_Layout_Render_NodeMap.get(source);
         if(mapping) {
             return mapping.layoutNode;
         }
         return undefined;
-    }
+    },
+    _getMap(source) {
+        const map = this.source_Layout_Render_NodeMap;
+        let obj;
+        if(map.has(source)) {
+            obj = map.get(source);
+        } else {
+            obj = map.set(source);
+        }
+        return obj
+    },
+    setLayoutNodeBySource(source, layoutNode) {
+        let obj = this._getMap(source);
+        obj.layoutNode = layoutNode;
+    },
+    setRenderNodeBySource(source, instance) {
+        let obj = this._getMap(source);
+        obj.jflowNode = instance;
+    },
 }
 
 export default NodeWeakMap;
