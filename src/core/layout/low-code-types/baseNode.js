@@ -6,16 +6,18 @@ class BaseNode {
         this.source = source;
         this.id = source.id;
         this.type = source.type;
-        this.isDraggable = true;
-        this.getJflowInstance = undefined;
+        // this.isDraggable = true;
+        // this.getJflowInstance = undefined;
         this.level = undefined;
         this.sequence = undefined;
-        this.isLocked = false;
+        // this.isLocked = false;
         this.isFree = false;
         this.parent = undefined;
         this.idx = undefined;
         this.parentIterateType = undefined;
-        source._getAstNode = () => this;
+        
+        this.hasEndPoint = false;
+        // source._getAstNode = () => this;
     }
 
     reflowPreCalculate(level = 0, sequence = 0, callback) {
@@ -43,11 +45,12 @@ class BaseNode {
         callback(this);
     }
 
-    getNodes() {
+    getNodes(jflow) {
         const nodes = [];
         this.traverse(n => {
-            if(n.getJflowInstance)
-                nodes.push(n.getJflowInstance());
+            const renderNode = jflow.getRenderNodeBySource(n.source);
+            if(renderNode)
+                nodes.push(renderNode);
         })
         return nodes;
     }
@@ -112,15 +115,11 @@ class Root extends BaseNode {
                 return;
             }
             callback({
-                from: last.id,
-                to: b.id,
+                from: last,
+                to: b,
                 part: 'body',
                 fromDir: DIRECTION.BOTTOM,
                 toDir: DIRECTION.TOP,
-                meta: {
-                    from: last,
-                    to: b
-                }
             })
             
             b = b.makeLink(callback);
@@ -150,6 +149,7 @@ class IfStatement extends BaseNode {
         this.consequent = (source.consequent || []).map(mapFunc('consequent').bind(this));
         this.alternate = (source.alternate || []).map(mapFunc('alternate').bind(this));
         this.isLocked = true;
+        this.hasEndPoint = true;
     }
     
     reflowPreCalculate(level = 0, sequence = 0, callback) {
@@ -194,15 +194,11 @@ class IfStatement extends BaseNode {
         let lastc = this;
         this.consequent.forEach(c => {
             callback({
-                from: lastc.id,
-                to: c.id,
+                from: lastc,
+                to: c,
                 part: 'consequent',
                 fromDir: DIRECTION.BOTTOM,
                 toDir: DIRECTION.TOP,
-                meta: {
-                    from: lastc,
-                    to: c
-                }
             });
 
             c = c.makeLink(callback)
@@ -210,57 +206,47 @@ class IfStatement extends BaseNode {
         })
 
         callback({
-            from: lastc.id,
-            to: this.Endpoint.id,
+            from: lastc,
+            to: this.Endpoint,
             fromDir: DIRECTION.BOTTOM,
             toDir: DIRECTION.TOP,
             part: 'consequent',
-            meta: {
-                from: lastc,
-                to: this.Endpoint
-            }
         });
 
         let lasta = this;
         this.alternate.forEach(a => {
             callback({
-                from: lasta.id,
-                to: a.id,
+                from: lasta,
+                to: a,
                 fromDir: lasta === this ? DIRECTION.RIGHT : DIRECTION.BOTTOM,
                 toDir: DIRECTION.TOP,
                 part: 'alternate',
-                meta: {
-                    from: lasta,
-                    to: a
-                }
             })
             a = a.makeLink(callback)
             lasta = a;
         });
         callback({
-            from: lasta.id,
-            to: this.Endpoint.id,
+            from: lasta,
+            to: this.Endpoint,
             fromDir: lasta === this ? DIRECTION.RIGHT : DIRECTION.BOTTOM,
             toDir: DIRECTION.RIGHT,
             part: 'alternate',
-            meta: {
-                from: lasta,
-                to: this.Endpoint
-            }
         });
 
         return this.Endpoint;
     }
 
-    makeEndpoint() {
-        this.Endpoint = makeAST({
-            type: 'endpoint',
-            id: `${this.id}-endpoint`,
-        });
-        this.Endpoint.parent = this.parent;
-        this.Endpoint.idx = this.idx;
-        this.Endpoint.parentIterateType = this.parentIterateType;     
-    }
+    // makeEndpoint() {
+    //     const fakeSource = {
+    //         type: 'endpoint',
+    //         id: `${this.id}-endpoint`,
+    //     };
+    //     this.Endpoint = makeAST(fakeSource);
+    //     this.Endpoint.parent = this.parent;
+    //     this.Endpoint.idx = this.idx;
+    //     this.Endpoint.parentIterateType = this.parentIterateType;
+    //     return fakeSource;     
+    // }
 
     traverse(callback) {
         callback(this);
@@ -270,6 +256,7 @@ class IfStatement extends BaseNode {
         this.alternate.forEach(n => {
             n.traverse(callback);
         });
+        console.log(this.Endpoint)
         callback(this.Endpoint);
     }
 
@@ -286,6 +273,7 @@ class SwitchStatement extends BaseNode {
             this.cases[this.cases.length - 1].lastCase = true;
         }
         this.isLocked = true;
+        this.hasEndPoint = true;
     }
 
     reflowPreCalculate(level = 0, sequence = 0, callback) {
@@ -348,74 +336,59 @@ class SwitchStatement extends BaseNode {
             const consequent = this.cases[this.cases.length - 1].consequent;
             consequent.forEach((c, idx) => {
                 callback({
-                    from: lastc.id,
-                    to: c.id,
+                    from: lastc,
+                    to: c,
                     fromDir: DIRECTION.BOTTOM,
                     toDir: DIRECTION.TOP,
                     part: 'consequent',
-                    meta: {
-                        from: lastc,
-                        to: c
-                    }
                 });
                 lastc = c.makeLink(callback)
             });
         }
+        console.log(lastc)
         callback({
-            from: lastc.id,
-            to: this.Endpoint.id,
+            from: lastc,
+            to: this.Endpoint,
             fromDir: DIRECTION.BOTTOM,
             toDir: DIRECTION.TOP,
-            part: 'alternate',
-            meta: {
-                from: lastc,
-                to: this.Endpoint
-            }
+            part: 'consequent',
         });
 
         this.cases.forEach((c, idx) => {
             let lasta = c;
             c.alternate.forEach(a => {
                 callback({
-                    from: lasta.id,
-                    to: a.id,
+                    from: lasta,
+                    to: a,
                     fromDir: lasta === c ? DIRECTION.RIGHT : DIRECTION.BOTTOM,
                     toDir: DIRECTION.TOP,
                     part: 'alternate',
-                    meta: {
-                        from: lasta,
-                        to: a
-                    }
                 });
                 lasta = a.makeLink(callback)
             })
             
             callback({
-                from: lasta.id,
-                to: this.Endpoint.id,
+                from: lasta,
+                to: this.Endpoint,
                 fromDir: lasta === c ? DIRECTION.RIGHT : DIRECTION.BOTTOM,
                 toDir: DIRECTION.RIGHT,
                 part: 'alternate',
                 minSpanX: 32 * (idx + 1),
-                meta: {
-                    from: lasta,
-                    to: this.Endpoint
-                }
             });
         });
 
         return this.Endpoint;
     }
 
-    makeEndpoint() {
-        this.Endpoint = makeAST({
-            type: 'endpoint',
-            id: `${this.id}-endpoint`,
-        });
-        this.Endpoint.parent = this.parent;
-        this.Endpoint.parentIterateType = this.parentIterateType;     
-        this.Endpoint.idx = this.idx;
-    }
+    // makeEndpoint() {
+    //     this.Endpoint = makeAST({
+    //         type: 'endpoint',
+    //         id: `${this.id}-endpoint`,
+    //     });
+    //     this.Endpoint.parent = this.parent;
+    //     this.Endpoint.parentIterateType = this.parentIterateType;     
+    //     this.Endpoint.idx = this.idx;
+    // }
 
     traverse(callback) {
         callback(this);
@@ -423,6 +396,23 @@ class SwitchStatement extends BaseNode {
             n.traverse(callback);
         });
         callback(this.Endpoint);
+    }
+
+    getNodes(jflow) {
+        const nodes = [];
+        this.traverse(n => {
+            if(n.type === 'SwitchCase') return
+            const renderNode = jflow.getRenderNodeBySource(n.source);
+            if(renderNode)
+                nodes.push(renderNode);
+        })
+        return nodes;
+    }
+
+    linkSource(source, linkMeta) {
+        const cases = this.source.cases;
+        const consequent = cases[cases.length - 1].consequent;
+        consequent.unshift(source);
     }
 }
 
@@ -466,23 +456,19 @@ class WhileStatement extends BaseNode {
         // const lastIdx = this.body.length - 1;
         this.body.forEach((b, idx) => {
             callback({
-                from: last.id,
-                to: b.id,
+                from: last,
+                to: b,
                 part: 'body',
                 fromDir: last === this ? DIRECTION.RIGHT: DIRECTION.BOTTOM,
                 toDir: DIRECTION.TOP,
-                meta: {
-                    from: last,
-                    to: b
-                }
             })
             
             b = b.makeLink(callback);
             last = b;
         });
         callback({
-            from: last.id,
-            to: this.id,
+            from: last,
+            to: this,
             part: 'body',
             fromDir: last === this ? DIRECTION.RIGHT : DIRECTION.BOTTOM,
             anticlock: last === this,
@@ -490,10 +476,6 @@ class WhileStatement extends BaseNode {
             isSelf: true,
             minSpanX: 20,
             minSpanY: 20,
-            meta: {
-                from: last,
-                to: this
-            }
         });
         return this;
     }
@@ -571,6 +553,8 @@ class SwitchCase extends BaseNode {
     linkSource(source, linkMeta) {
         this.source[linkMeta.part].unshift(source);
     }
+
+    // makeLink()
 }
  
 const TYPE_MAPPING = {
@@ -589,7 +573,21 @@ function mapFunc(type)  {
         p.parent = this;
         p.idx = idx;
         p.parentIterateType = type;
-        p.makeEndpoint();
+
+        // 重要！！！ weakMap 功能需要 endPoint source 保持一致
+        if(p.hasEndPoint) {
+            if(!n.__endpoint__) {
+                n.__endpoint__ = {
+                    type: 'endpoint',
+                    id: `${p.id}-endpoint`,
+                };
+            }
+            const e = makeAST(n.__endpoint__);
+            e.parent = this;
+            e.idx = idx;
+            e.parentIterateType = type;
+            p.Endpoint = e;
+        }
         return p;
     }
 }

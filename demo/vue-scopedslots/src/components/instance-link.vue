@@ -1,8 +1,8 @@
 <template>
     <jPolyLink
         :configs="configs"
-        :from="configs.from"
-        :to="configs.to"
+        :from="linkConfigs.from.source"
+        :to="linkConfigs.to.source"
         @dragenter="onDragEnter"
         @dragleave="onDragOverEnd"
         @drop="onDropToLink">
@@ -36,11 +36,14 @@ export default {
     methods: {
         onDropToLink($event) {
             this.$emit('drop', $event);
+            this.isDragOver = false;
         },
         onDragEnter($event) {
+            console.log('dragenter')
             this.isDragOver = true;
         },
         onDragOverEnd() {
+            console.log('onDragOverEnd')
             this.isDragOver = false;
         },
     },

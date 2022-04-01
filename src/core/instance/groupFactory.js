@@ -231,7 +231,7 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             this._paddingHeight = paddingHeight;
 
             // shapeBox
-            const [shapeWidth, shapeHeight] = shapeShift(paddingWidth, paddingHeight)
+            const [shapeWidth, shapeHeight] = shapeShift(paddingWidth, paddingHeight, this._shape)
             this._shape.width = shapeWidth;
             this._shape.height = shapeHeight;
             // marginBox

@@ -5,7 +5,7 @@ export default function (nameNode) {
         ? JFlowInstance[nameNode]
         : nameNode;
     return {
-        inject: ['addToStack', 'removeFromStack','addNameToRootStack'],
+        inject: ['addToStack', 'removeFromStack'],
         props: {
             configs: {
                 type: Object,
@@ -17,8 +17,8 @@ export default function (nameNode) {
                 type: Boolean,
                 default: true,
             },
-            jflowId: {
-                type: String,
+            source: {
+                type: Object,
             }
         },
         watch: {
@@ -80,7 +80,7 @@ export default function (nameNode) {
             this._jflowInstance =  new builder(this.configs);
             this._jflowInstance.visible = this.visible;
             this.bindListeners();
-            this.addToStack(this._jflowInstance, this.jflowId);
+            this.addToStack(this._jflowInstance, this.source);
         },
         // updated() {
         //     console.log('recalculateUp')

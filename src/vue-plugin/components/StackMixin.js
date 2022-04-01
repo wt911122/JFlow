@@ -5,7 +5,6 @@ export default {
             addToLinkStack: this.addToLinkStack,
             removeFromStack: this.removeFromStack,
             removeFromLinkStack: this.removeFromLinkStack,
-            getInstanceByJFlowId: this.getInstanceByJFlowId,
         }
     },
     data() {
@@ -14,38 +13,24 @@ export default {
         }
     },
     methods: {
-        getInstanceByJFlowId(jflowId) {
-            const obj = this.stack.find(i => i.jflowId === jflowId);
-            if(obj) {
-                return obj.instance;
-            }
-            return null;
-        },
-        addToStack(instance, jflowId) {
+        addToStack(instance, source) {
             this._jflowInstance.addToStack(instance);
-            if(!jflowId) return;
-            this.stack.push({
-                jflowId,
-                instance,
-            });
-            // this.$nextTick(this.onStackChangeHandler)
+            if(source) {
+                instance._jflow.setRenderNodeBySource(source, instance)
+            }
         },
         addToLinkStack(link) {
             this._jflowInstance.addToLinkStack(link);
-            // this.$nextTick(this.onStackChangeHandler)
         },
         removeFromStack(instance) {
             this._jflowInstance.removeFromStack(instance);
-            // this.$nextTick(this.onStackChangeHandler)
         },
         removeFromLinkStack(link) {
             this._jflowInstance.removeFromLinkStack(link);
-            // this.$nextTick(this.onStackChangeHandler)
         },
         onStackChangeHandler() {
             this._jflowInstance.recalculate();
             this._jflowInstance.reflow();
-            // this.$nextTick(this.renderJFlow)
         }
     }
 }

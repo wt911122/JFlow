@@ -1,6 +1,6 @@
 <template>
      <j-diamond-group 
-        :jflowId="node.id" 
+        :source="node" 
         :configs="groupConfig"
         v-on="$listeners">
         <j-text :configs="{

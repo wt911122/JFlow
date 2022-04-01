@@ -16,50 +16,55 @@
             :class="$style.wrapper" 
             :configs="configs"
             :loading.sync="jflowloading"
+            :genVueComponentKey="genVueComponentKey"
             @click="onClickNoWhere"
             @drop="onDrop"
             @pressEnd="onPressEnd">
-                <template #start="{ configs }">
-                    <j-start :node="configs"></j-start>
+                <template #start="{ source }">
+                    <j-start :node="source"></j-start>
                 </template>
-                <template #end="{ configs }">
-                    <j-end :node="configs"></j-end>
+                <template #end="{ source }">
+                    <j-end :node="source"></j-end>
                 </template>
-                <template #variable="{ configs, meta }">
-                    <j-variable :node="configs" 
-                    @pressStart="onPressStart(configs)" 
-                    @outOfFlow="onOutOfFlow($event, meta)"
-                    @change="onChangeContent($event, configs)"></j-variable>
+                <template #variable="{ source }">
+                    <j-variable :node="source" 
+                    @pressStart="onPressStart(source)" 
+                    @outOfFlow="onOutOfFlow($event, source)"
+                    @change="onChangeContent($event, source)"></j-variable>
                 </template>
-                <template #IfStatement="{ configs, meta }">
-                    <j-ifstatement :node="configs" 
-                    @pressStart="onPressStart(configs)" 
-                    @outOfFlow="onOutOfFlow($event, meta)"></j-ifstatement>
+                <template #IfStatement="{ source }">
+                    <j-ifstatement 
+                        :node="source" 
+                        @pressStart="onPressStart(source)" 
+                        @outOfFlow="onOutOfFlow($event, source)"></j-ifstatement>
                 </template>
-                <template #SwitchStatement="{ configs, meta }" >
-                    <j-switch :node="configs" 
-                    @pressStart="onPressStart(configs)" 
-                    @outOfFlow="onOutOfFlow($event, meta)"/>
+                <template #SwitchStatement="{ source }" >
+                    <j-switch :node="source" 
+                    @pressStart="onPressStart(source)" 
+                    @outOfFlow="onOutOfFlow($event, source)"/>
                 </template>
-                <template #WhileStatement="{ configs, meta }">
-                    <j-whilestatement :node="configs" 
-                    @pressStart="onPressStart(configs)" 
-                    @outOfFlow="onOutOfFlow($event, meta)"></j-whilestatement>
+                <template #WhileStatement="{ source }">
+                    <j-whilestatement :node="source" 
+                    @pressStart="onPressStart(source)" 
+                    @outOfFlow="onOutOfFlow($event,source )"></j-whilestatement>
                 </template>
-                <template #endpoint="{ configs }">
-                    <j-endpoint :node="configs"></j-endpoint>
+                <template #endpoint="{ source }">
+                    <j-endpoint :node="source"></j-endpoint>
                 </template>
-                <template #CallLogic="{ configs, meta }" >
+                <template #CallLogic="{ source }" >
                     <j-calllogic 
-                        :node="configs"
-                        @toggle-select="onToggleSelect($event, configs)"
-                        @pressStart="onPressStart(configs)" 
-                        @outOfFlow="onOutOfFlow($event, meta)">
+                        :node="source"
+                        @toggle-select="onToggleSelect($event, source)"
+                        @pressStart="onPressStart(source)" 
+                        @outOfFlow="onOutOfFlow($event, source)">
                     </j-calllogic>
                 </template>
-                <template #JSblock="{ configs, meta }">
-                    <j-jsblock :node="configs"
-                    @demojsblock="onclickdemojsblock">
+                <template #JSblock="{ source }">
+                    <j-jsblock :node="source"
+                    @pressStart="onPressStart(source)" 
+                    @outOfFlow="onOutOfFlow($event, source)"
+                    @demojsblock="onclickdemojsblock"
+                    @change="onContentChange($event, source)">
                     </j-jsblock>
                 </template>
                 <template #plainlink="{ configs }">
@@ -79,9 +84,9 @@
             </ul>
         </div>
       </div>
-      <div :class="$style.ast">
+      <!-- <div :class="$style.ast">
           <pre v-html="prettyJson(ast)"></pre>
-      </div>
+      </div> -->
   </div>
 </template>
 
@@ -197,7 +202,7 @@ function makeAst(number) {
     }
     return ast;
 }
-// const astrandom = makeAst(1000)
+const astrandom = makeAst(1000)
 // console.log(astrandom)
 export default {
     components: {
@@ -232,13 +237,37 @@ export default {
                     id: 'start',
                 }, 
                 {
-                    type: 'JSblock',
-                    id: 'JSblock',
-                    content: `function(args) {
-                        console.log("hello world!");
-                    }`
+                    type: 'variable',
+                    content: 'vvvkjhkjhvvvv',
+                    id: 'logic5',
                 },
-               {
+                // {
+                //     type: 'JSblock',
+                //     id: 'JSblock',
+                //     content: `function(args) {
+                //         console.log("hello world!");
+                //     }`
+                // },
+                {
+                    type: 'IfStatement',
+                    content: 'ggggggg',
+                    id: 'logic6',
+                    consequent: [
+                        {
+                            type: 'variable',
+                            content: 'jkhvvvv',
+                            id: 'logic77',
+                        },
+                    ], 
+                    alternate: [
+                        {
+                            type: 'variable',
+                            content: 'yuuo',
+                            id: 'logic88',
+                        },
+                    ]
+                },
+            /* {
                     type: 'IfStatement',
                     content: 'aaaa',
                     id: 'logic1',
@@ -276,8 +305,8 @@ export default {
                             params: [],
                         }
                     ]
-                },
-                {
+                },*/
+                /* {
                     type: 'SwitchStatement',
                     id: 'swtch1',
                     cases: [
@@ -319,13 +348,13 @@ export default {
                     id: 'while1',
                     content: 'while1',
                     body: [
-                        // {
-                        //     type: 'variable',
-                        //     content: 'dfhsdfg',
-                        //     id: 'whiel1body1',
-                        // },
+                        {
+                            type: 'variable',
+                            content: 'dfhsdfg',
+                            id: 'whiel1body1',
+                        },
                     ]
-                },
+                },*/
                 {
                     type: 'end',
                     id: 'end',
@@ -335,9 +364,9 @@ export default {
         };
         const layout = new Lowcodelayout({
             linkLength: 60,
-            ast,
+            ast: astrandom,
         });
-        this.ast = ast;
+        this.ast = astrandom;
         const configs = Object.freeze({
             allowDrop: true,
             layout,
@@ -438,24 +467,23 @@ export default {
                 },
             })
         },
-        onOutOfFlow(e, meta) {
-            const type = meta.parentIterateType;
-            const idx = meta.idx;
-            const [astnode] = meta.parent.source[type].splice(idx, 1);
-            this.ast.playground.push(astnode);
+        onOutOfFlow(e, source) {
+            const jflowInstance = this.$refs.jflow.getInstance();
+            const layoutNode = jflowInstance.getLayoutNodeBySource(source);
+            layoutNode.remove();
+            this.ast.playground.push(source);
             this.configs.layout.reOrder(this.ast);
             this.$refs.jflow.reflow();
-            meta.getJflowInstance().anchor = e.detail.point;    
+            jflowInstance.getRenderNodeBySource(source).anchor = e.detail.point;
+            // meta.getJflowInstance().anchor = e.detail.point;    
         },
         onDrop(e) {
+            const jflowInstance = this.$refs.jflow.getInstance();
             const astblock = e.detail.instance;
             this.ast.playground.push(astblock);
             this.configs.layout.reOrder(this.ast);
             this.$refs.jflow.reflow(() => {
-                const meta = this.configs.layout.findLayoutNode(astblock);
-                if(meta) {
-                     meta.getJflowInstance().anchor = e.detail.point;
-                }
+                jflowInstance.getRenderNodeBySource(astblock).anchor = e.detail.point;
             });
         },
         onClick(e) {
@@ -467,21 +495,21 @@ export default {
             this.offsetX = offsetX;
             this.offsetY = offsetY;
         },
-        onPressStart(configs) {
-            this.currentTarget = configs;
+        onPressStart(source) {
+            this.currentTarget = source;
         },
         onPressEnd() {
             this.currentTarget = null;
         },
         onDropToLink(e, linkConfigs) {
-            console.log(e, linkConfigs);
+            const jflowInstance = this.$refs.jflow.getInstance();
             let node = e.detail.instance;
             if(this.currentTarget) {
-                node.removeFromLayoutSource();
                 node = this.currentTarget;
+                const layoutNode = jflowInstance.getLayoutNodeBySource(node);
+                layoutNode.remove();
             }
-
-            linkConfigs.meta.from.linkSource(node, linkConfigs);
+            linkConfigs.from.linkSource(node, linkConfigs);
             this.configs.layout.reOrder(this.ast);
             this.$refs.jflow.reflow();
         },
@@ -516,6 +544,13 @@ export default {
             this.ast.body.splice(1, 1);
             this.configs.layout.reOrder(this.ast);
             this.$refs.jflow.reflow();
+        },
+        onContentChange(content, configs) {
+            configs.content = content;
+            console.log(content, configs)
+        },
+        genVueComponentKey(source){
+            return source.id;
         }
     }
 }

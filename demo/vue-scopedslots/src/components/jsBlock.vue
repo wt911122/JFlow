@@ -1,8 +1,9 @@
 <template>
     <j-group 
-        :jflowId="node.id"
+        :source="node"
         :configs="configs"
-        @click="onClick">
+        @click="onClick"
+        v-on="$listeners">
         <j-group :configs="headerConfigs">
             <j-icon :configs="imageConfig" />
             <j-text :configs="{
@@ -68,6 +69,10 @@ export default {
                     div.style.color = "#c9d1d9"
                     div.innerText = this.node.content;
                     div.setAttribute('contenteditable', true)
+                    div.addEventListener('input', () => {
+                        console.log(div.innerText)
+                        this.$emit('change', div.innerText);
+                    })
                     container.appendChild(div)
                 }
             },

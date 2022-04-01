@@ -16,9 +16,6 @@ export default function (nameNode) {
             renderJFlow: {
                 from: 'renderJFlow',
             },
-            addNameToRootStack: {
-                from: 'addNameToRootStack',
-            }
         },
         render: function (createElement) {
             return createElement('jflow-group', this.$slots.default);
@@ -34,8 +31,8 @@ export default function (nameNode) {
                 type: Boolean,
                 default: true,
             },
-            jflowId: {
-                type: String,
+            source: {
+                type: Object,
             }
         },
         watch: {
@@ -84,9 +81,7 @@ export default function (nameNode) {
                 const func = this.$listeners[event].bind(this);
                 this._jflowInstance.addEventListener(event, func);
             })
-            // console.log(this.name, this.)
-            this.addToBelongStack(this._jflowInstance, this.jflowId);
-            this.addNameToRootStack(this._jflowInstance, this.jflowId);
+            this.addToBelongStack(this._jflowInstance, this.source);
         },
         mounted(){
             this._jflowInstance.recalculate();

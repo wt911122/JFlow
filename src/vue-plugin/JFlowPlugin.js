@@ -16,7 +16,7 @@ const JFLOW_NODES = [
     /**
      * JFlow {@link Rectangle} 的 vue 封装 
      * @module j-rectangle
-     * @property {Rectangle~RectangleConfigs} configs - 传给 Rectangle 的配置
+     * @property {Rectangle~RectangleConfigs|GroupTemplate~GroupConfigs} configs - 传给 Rectangle 的配置
      * @property {Boolean} visible - 可见状态
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
@@ -24,7 +24,7 @@ const JFLOW_NODES = [
     /**
      * JFlow {@link Capsule} 的 vue 封装 
      * @module j-capsule
-     * @property {Capsule~CapsuleConfigs} configs - 传给 Capsule 的配置
+     * @property {(Capsule~CapsuleConfigs|GroupTemplate~GroupConfigs)} configs - 传给 Capsule 的配置
      * @property {Boolean} visible - 可见状态
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
@@ -32,7 +32,7 @@ const JFLOW_NODES = [
     /**
      * JFlow {@link Diamond} 的 vue 封装 
      * @module j-diamond
-     * @property {Diamond~DiamondConfigs} configs - 传给 Diamond 的配置
+     * @property {(Diamond~DiamondConfigs|GroupTemplate~GroupConfigs)} configs - 传给 Diamond 的配置
      * @property {Boolean} visible - 可见状态
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
@@ -40,7 +40,7 @@ const JFLOW_NODES = [
     /**
      * JFlow {@link Rhombus} 的 vue 封装 
      * @module j-rhombus
-     * @property {Rhombus~RhombusConfigs} configs - 传给 Diamond 的配置
+     * @property {(Rhombus~RhombusConfigs|GroupTemplate~GroupConfigs)} configs - 传给 Diamond 的配置
      * @property {Boolean} visible - 可见状态
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
@@ -121,6 +121,8 @@ const JFLOW_GROUPS = [
      * @property {String} jflowId - 全局唯一ID，用于连线单元
      */
     'RhombusGroup',
+
+    'PointGroup',
 ]
 
 const components = [

@@ -1,8 +1,9 @@
 <template>
     <j-rhombus-group
-        :jflowId="node.id" 
+        :source="node" 
         :configs="groupConfig"
-        v-on="$listeners">
+        v-on="$listeners"
+        @afterResolveMovingTarget="onAfterResolveMovingTarget">
         <j-text :configs="{
             fontSize: '12px',
             textColor: '#585c63',
@@ -33,6 +34,14 @@ export default {
             }
         }
     },
+    methods: {
+        onAfterResolveMovingTarget(event) {
+            const jflow = event.detail.jflow;
+            const layoutNode = jflow.getLayoutNodeBySource(this.node);
+            const renderNodes = layoutNode.getNodes(jflow);
+            jflow.setMovingTargets(renderNodes);
+        }
+    }
 }
 </script>
 
