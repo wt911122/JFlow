@@ -154,6 +154,8 @@ class JFlow extends EventTarget{
         this.maxZoom = configs.maxZoom || 3;
         /** @member {number}     - 最小缩放 */
         this.minZoom = configs.minZoom || .5;
+        
+        this.NodeRenderTop = !!configs.NodeRenderTop
 		// this.initScale = 1;
 		// this.initPosition = null
 		this.offeset = null;
@@ -1197,13 +1199,23 @@ class JFlow extends EventTarget{
         const br = this._getViewBox();
         this._viewBox = br;
         // console.log(this._viewBox)
-        this._stack.render(ctx, (instance) => {
-            const result = doOverlap(br, instance.getBoundingRect());
-            // console.log(instance._layoutNode.type, result)
-            instance._isInViewBox = result;
-            return result;
-        });
-        this._linkStack.render(ctx, (link) => link.isInViewBox(br));
+        if(this.NodeRenderTop) {
+            this._linkStack.render(ctx, (link) => link.isInViewBox(br));
+            this._stack.render(ctx, (instance) => {
+                const result = doOverlap(br, instance.getBoundingRect());
+                // console.log(instance._layoutNode.type, result)
+                instance._isInViewBox = result;
+                return result;
+            });
+        } else {
+            this._stack.render(ctx, (instance) => {
+                const result = doOverlap(br, instance.getBoundingRect());
+                // console.log(instance._layoutNode.type, result)
+                instance._isInViewBox = result;
+                return result;
+            });
+            this._linkStack.render(ctx, (link) => link.isInViewBox(br));
+        }
         if(this._tempNode) {
             ctx.save();
             this._tempNode.render(ctx)
@@ -1214,6 +1226,7 @@ class JFlow extends EventTarget{
             this._tempLink.render(ctx)
             ctx.restore();
         }
+        
     }
 }
 Object.assign(JFlow.prototype, MessageMixin);

@@ -4,19 +4,10 @@ import { APPROXIMATE } from '../utils/constance';
 class Link extends BaseLink {
     constructor(configs) {
         super(configs);
-        this.from   = configs.from; // Instance
-        this.to     = configs.to;   // Instance
         this.controlPoints = [0, 1, -10, 1, -10, 5];
-        this._cachePoints = null;
-        this.defaultStyle = 'black';
-        this.hoverStyle = 'cornflowerblue';
-    }
-
-    getColor() {
-        if(this._isTargeting) {
-            return this.hoverStyle;
-        }
-        return this.defaultStyle;
+        this.fontFamily    = configs.fontFamily = '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji'
+        this.fontSize      = configs.fontSize || '12px';
+        this.content       = configs.content || '';
     }
 
     _calculateAnchorPoints() {
@@ -53,7 +44,7 @@ class Link extends BaseLink {
             a.push(x < 0 ? len + x : x, -y);
         }
         a.push(0, 0);
-        ctx.fillStyle = ctx.strokeStyle = this.getColor();
+        ctx.fillStyle = ctx.strokeStyle = this.backgroundColor;
         ctx.beginPath();
         for (var i = 0; i < a.length; i += 2) {
             var x = a[i] * cos - a[i + 1] * sin + startX;
@@ -62,6 +53,13 @@ class Link extends BaseLink {
             else ctx.lineTo(x, y);
         }
         ctx.fill();
+
+        if(this.content){ 
+            ctx.beginPath();
+            ctx.textAlign = 'center';
+            ctx.font = `${this.fontSize} ${this.fontFamily}`;
+            ctx.fillText(this.content, dx /2 + startX , dy /2 + startY);
+        }
     }
 
     isHit(point) {

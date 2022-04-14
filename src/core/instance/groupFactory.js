@@ -129,6 +129,27 @@ const GroupMixin = {
             [DIRECTION.SELF]:   [x2+w*0.618, y2+h*0.618]
         }
     },
+    calculateIntersection(point) {
+        const [x1, y1] = point;
+        const [x2, y2] = this.anchor;
+        const w = this.width/2;
+        const h = this.height/2;
+        const vecx = x2 - x1;
+        const vecy = y2 - y1;
+        const theta1 = h/w;
+        const theta2 = Math.abs(vecy/vecx);
+        const dirx = x1 > x2;
+        const diry = y1 > y2;
+        let x, y;
+        if(theta2 < theta1) {
+            x = x2 + (dirx?w:-w);
+            y = w * (diry?theta2:-theta2) + y2;
+        } else {
+            y = y2 + (diry?h:-h);
+            x = h / (dirx?theta2:-theta2) + x2;
+        }
+        return [x, y];
+    },
     onEnterViewbox() {
         this.interateNodeStack((instance) => {
             instance.onEnterViewbox();
