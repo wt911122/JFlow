@@ -2,7 +2,7 @@
 import JFlowComponent from './components/JFlow';
 import JFlowInstance from './components/JFlowInstance';
 import JFlowLink from './components/JFlowLink';
-import JFLowGroup from './components/JFlowGroup';
+import JFlowGroup from './components/JFlowGroup';
  
 const JFLOW_NODES = [
     /**
@@ -137,11 +137,11 @@ const components = [
          * @property {RectangleGroup~RectangleGroupConfigs} configs - 传给 RectangleGroup 的配置
          */
         name: 'Group',
-        component: JFLowGroup('Group'),
+        component: JFlowGroup('Group'),
     }, 
     ...JFLOW_GROUPS.map(name => ({
         name,
-        component: JFLowGroup(name)
+        component: JFlowGroup(name)
     })),
     ...JFLOW_NODES.map(name => ({
         name,
@@ -180,12 +180,16 @@ export default {
             Vue.component(`${prefixToUse}${k.name}`, k.component);
         });
 
-        if(options.custom) {
-            Object.keys(options.custom).forEach(name => {
-                Vue.component(`${prefixToUse}${name}`, JFlowInstance(options.custom[name]));
+        if(options.customInstance) {
+            Object.keys(options.customInstance).forEach(name => {
+                Vue.component(`${prefixToUse}${name}`, JFlowInstance(options.customInstance[name]));
             })
         }
-        
+        if(options.customGroups) {
+            Object.keys(options.customGroups).forEach(name => {
+                Vue.component(`${prefixToUse}${name}`, JFlowGroup(options.customGroups[name]));
+            })
+        }
     }
 }
 

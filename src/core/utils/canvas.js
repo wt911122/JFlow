@@ -45,6 +45,21 @@ export function createCanvas(wrapper) {
     }
 }
 
+export function resizeCanvas(canvas, wrapper) {
+    const { width, height, left, top } = wrapper.getBoundingClientRect();
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
+    const scale = window.devicePixelRatio;
+    canvas.width = Math.floor(width * scale);
+    canvas.height = Math.floor(height * scale);
+    return {
+        width,
+        height,
+        raw_width: canvas.width,
+        raw_height: canvas.height,
+    }
+}
+
 const caheCanvas = document.createElement('canvas');
 caheCanvas.width = 1;
 caheCanvas.height = 1;

@@ -55,6 +55,8 @@ class PolyLink extends BaseLink {
         this.content       = configs.content || '';
         /** @member {Number}    - 是否为自连接 */
         this.isSelf        = !!configs.isSelf
+
+        this.noArrow       = !!configs.noArrow 
     }
 
     _calculateAnchorPoints() {
@@ -65,13 +67,13 @@ class PolyLink extends BaseLink {
                 dmsfrom[this.fromDir],
                 dmsto[DIRECTION.SELF],
                 this.fromDir,
-                DIRECTION.BOTTOM, 
+                this.toDir, 
                 this.minSpanX, 
                 this.minSpanY,
                 true);
 
             this._cachePoints = points
-            this._cacheAngle = [this.fromDir, DIRECTION.BOTTOM]
+            this._cacheAngle = [this.fromDir, this.toDir]
             // const points = polylinePoints(
             //     dmsfrom[this.fromDir],
             //     dmsto[this.toDir],
@@ -154,16 +156,34 @@ class PolyLink extends BaseLink {
             ctx.restore();
         }
 
-        ctx.beginPath();
-        ctx.translate(pEnd[0], pEnd[1]);
-        ctx.rotate(angleEnd);
-        ctx.moveTo(0, 0);
-        ctx.lineTo(-5, -4);
-        ctx.lineTo(-5, 4);
-        ctx.lineTo(0, 0);
-        ctx.fill();
-        ctx.rotate(-angleEnd);
-        ctx.translate(-pEnd[0], -pEnd[1]);
+        if(!this.noArrow) {
+            ctx.beginPath();
+            ctx.translate(pEnd[0], pEnd[1]);
+            ctx.rotate(angleEnd);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(-5, -4);
+            ctx.lineTo(-5, 4);
+            ctx.lineTo(0, 0);
+            ctx.fill();
+            ctx.rotate(-angleEnd);
+            ctx.translate(-pEnd[0], -pEnd[1]);
+        }
+        if(this.content) {
+            ctx.beginPath();
+            ctx.font = `${this.fontSize} ${this.fontFamily}`;
+            switch (this.fromDir) {
+                case DIRECTION.BOTTOM:
+                    ctx.textAlign = 'left';
+                    ctx.fillText(this.content, p[0] + 2, p[1] + 10);
+                    break;
+                case DIRECTION.RIGHT:
+                    ctx.textAlign = 'left';
+                    ctx.fillText(this.content, p[0] + 10, p[1] - 2);
+                    break;
+                default:
+                    break;
+            }
+        }
 
     }
 

@@ -1,4 +1,4 @@
-import { createCanvas } from '../utils/canvas';
+import { createCanvas, resizeCanvas } from '../utils/canvas';
 import { bounding_box, doOverlap } from '../utils/functions';
 import { JFLOW_MODE } from '../utils/constance';
 import GhostNode from '../instance/ghostNode';
@@ -326,6 +326,39 @@ class JFlow extends EventTarget{
             instance: source
         });
         this.mode = JFLOW_MODE.LINKING;
+    }
+
+    resizeCanvas() {
+        const {
+            width: c_width, 
+            height: c_height, 
+            raw_width,
+            raw_height,
+        } = resizeCanvas(this.canvas, this.DOMwrapper);
+        this.canvasMeta = {
+            width: raw_width,
+            height: raw_height,
+            actual_width: c_width,
+            actual_height: c_height
+        }
+    }
+
+    focusOn(node) {
+        const center = this._calculatePointBack([
+            this.canvasMeta.actual_width/2,
+            this.canvasMeta.actual_height/2
+        ]);
+        let offset = node.anchor;
+        if(node._belongs.calculateToCoordination) {
+            offset = node._belongs.calculateToCoordination(offeset);
+        }
+
+        const deltaX = (center[0] - offset[0]) * this.scale;
+        const deltaY = (center[1] - offset[1]) * this.scale;
+        
+
+        this._recalculatePosition(deltaX, deltaY)
+        this._render();
     }
     
     _getBoundingGroupRect() {
@@ -1198,6 +1231,7 @@ export { default as Point } from '../instance/shapes/point';
 export { default as Rectangle } from '../instance/shapes/rectangle';
 // export { default as Group } from '../instance/shapes/rectangle-group';
 export { default as Capsule } from '../instance/shapes/capsule';
+export { default as CapsuleVertical } from '../instance/shapes/capsule-vertical';
 // export { default as CapsuleGroup } from '../instance/shapes/capsule-group';
 // export { default as CapsuleVerticalGroup } from '../instance/shapes/capsule-vertical-group';
 export { default as Diamond } from '../instance/shapes/diamond';

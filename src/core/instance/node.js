@@ -40,6 +40,16 @@ class Node extends Instance {
             }
         });
     }
+    setAnchorX(x) {
+        this.anchor[0] = x;
+    }
+    setAnchorY(y) {
+        this.anchor[1] = y;
+    }
+    setAnchor(x, y) {
+        this.anchor[0] = x;
+        this.anchor[1] = y;
+    }
     /**
      * 克隆当前节点.
      * @return {Node} 当前节点的副本

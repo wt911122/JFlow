@@ -33,7 +33,19 @@ const GroupMixin = {
         this._shape.anchor = [anchor[0] + mx, anchor[1] + my];
         return [anchor[0] + centerX, anchor[1] + centerY];
     },
-
+    setAnchorX(x) {
+        this.anchor[0] = x;
+        this._getCenter(); 
+    },
+    setAnchorY(y) {
+        this.anchor[1] = y;
+        this._getCenter(); 
+    },
+    setAnchor(x, y) {
+        this.anchor[0] = x;
+        this.anchor[1] = y;
+        this._getCenter(); 
+    },
     _calculatePointBack(point) {
         const [gx, gy] = point;
         const [cx, cy] = this._getCenter(); 
@@ -202,6 +214,7 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
                 this.definedHeight =    configs.height;
                 /** @member {Boolean}      - 组内元素是否锁定， 默认true */
                 this.lock =             configs.lock ?? true ;
+                this.display =          configs.display || 'default';
                 this._getBoundingGroupRect();
                 this.reflow();
                 this._getBoundingGroupRect();  

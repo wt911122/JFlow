@@ -52,7 +52,6 @@ class LinearLayout {
         const stack = group._stack.filter(instance => instance.visible && !instance.absolutePosition);
         const absoluteStack = group._stack.filter(instance => instance.visible && instance.absolutePosition)
         const groupWidth = group.width - group.padding.left - group.padding.right;
-        // console.log(groupWidth, group.height, group)
         if(this.direction === 'vertical') {
             let reduceHeight = 0;
             let lastInstanceHeight = 0;
@@ -68,6 +67,15 @@ class LinearLayout {
                 lastInstanceHeight = height / 2;
                 instance.anchor = [0, reduceHeight];
             });
+            stack.concat(absoluteStack).forEach((instance, idx) =>  {
+                if(instance.display === 'block') {
+                    // instance.definedWidth = maxWidth;
+                    instance.resetChildrenPosition();
+                    instance.width = maxWidth;
+                    instance.reflow();
+                }
+            });
+
             maxWidth = Math.max(groupWidth, maxWidth);
             
             allHeight = allHeight/2;
@@ -129,6 +137,7 @@ class LinearLayout {
                 })                
             }
             if(this.justify === 'space-between' && stack.length > 1) {
+                
                 const width = Math.max(groupWidth, allWidth);
                 const gapAverage = (width - allWidth) / (stack.length - 1);
                 const withdraw = width/2;
@@ -151,7 +160,11 @@ class LinearLayout {
         }
 
         if(absoluteStack.length) {
-            group._getBoundingGroupRect();
+            if(group.display === 'block') {
+                group.getBoundingDimension();
+            } else {
+                group._getBoundingGroupRect();
+            }
             const WIDTH = group.width /2;
             const HEIGHT = group.height /2;
             absoluteStack.forEach(instance => {
