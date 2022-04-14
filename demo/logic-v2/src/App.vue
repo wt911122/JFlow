@@ -4,33 +4,48 @@
         :class="$style.wrapper" 
         :configs="configs"
         :loading.sync="jflowloading"
-        :genVueComponentKey="genVueComponentKey"
-        @link="onLink">
-            <template #FreeNode="{ source }">
-                <orange-Node :node="source" @toLink="onLinking"></orange-Node>
+        :genVueComponentKey="genVueComponentKey">
+            <template #LogicBasic="{ source }">
+                <logic-Node :node="source"></logic-Node>
+            </template>
+            <template #Start="{ source }">
+                <start-Node :node="source"></start-Node>
+            </template>
+            <template #endpoint="{ source }">
+                <end-point-node :node="source"></end-point-node>
+            </template>
+            <template #End="{ source }">
+                <end-Node :node="source"></end-Node>
             </template>
             <template #plainlink="{ configs }">
-                <jBezierLink
+                <jLink
                     :configs="{
                         ...configs,
-                        backgroundColor: '#EB6864',
+                        backgroundColor: '#919499',
                     }"
                     :from="configs.from.source"
                     :to="configs.to.source"
                     @contextclick="removelink(configs)">
-                </jBezierLink>
+                </jLink>
             </template>
     </j-jflow>
 </div>
 </template>
 
 <script>
-import FreeLayout from './freeLayout';
-import OrangeNode from './orangeNode.vue';
+import sourceData from '../data/data.json';
+import logicLayout from '../layout/logic-layout';
+import logicNode from './logic-node.vue';
+import startNode from './start-node.vue';
+import EndPointNode from './endpoint-node.vue';
+import endNode from './end-node.vue';
 let uuid = 0;
 export default {    
     components: {
-        OrangeNode
+        startNode,
+        endNode,
+        logicNode,
+        EndPointNode
     },
     provide() {
         return {
@@ -38,17 +53,13 @@ export default {
         }
     },
     data() {
-        const sourceData = [
-            { id: 'a', next: ['b'] },
-            { id: 'b' },
-            { id: 'c' }
-        ]
-        const layout = new FreeLayout(sourceData);
+        const layout = new logicLayout(sourceData);
         const configs = Object.freeze({
             allowDrop: true,
             layout,
             initialZoom: 1,
             minZoom: .2,
+            NodeRenderTop: true,
         })
         return {
             configs,
