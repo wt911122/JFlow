@@ -1,6 +1,6 @@
 const path = require('path');
 module.exports = {
-    indexPath: 'vue-demo.html',
+    indexPath: 'logic-v2-demo.html',
     publicPath: '',
     chainWebpack(config) {
         console.log(path.resolve(__dirname, '../../index.js'))

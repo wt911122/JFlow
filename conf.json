@@ -17,6 +17,7 @@
           "staticFiles": {
             "include": [
                 "./demo/vue-scopedslots/dist",
+                "./demo/logic-v2/dist",
                 "./jsdoc-plugin/dist/ergraphbundle.js",
                 "./Tutorials/statics"
             ]

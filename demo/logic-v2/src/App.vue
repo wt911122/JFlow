@@ -127,7 +127,7 @@ export default {
   margin-top: 60px;
 }
 .wrapper{
-    width: 800px;
+    width: 1200px;
     height: 600px;
     border: 1px solid #ccc;
 }
