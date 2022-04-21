@@ -243,10 +243,22 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
     }
     Object.assign(t.prototype, GroupMixin);
     Object.assign(t.prototype, { 
+        reflow() {
+            GroupMixin.reflow.call(this);
+            const margin = this.margin;
+            const [shapeWidth, shapeHeight] = shapeShift(
+                    this.width - margin.left - margin.right,
+                    this.height - margin.top - margin.bottom, this._shape);
+            this._shape.width = shapeWidth;
+            this._shape.height = shapeHeight;
+        },
         setConfig(configs) {
             this._shape.setConfig(configs);
             this._setPadding(configs);
             this._setMargin(configs);  
+            if(configs.layout && this._layout !== configs.layout) {
+                this._layout = configs.layout;
+            }
         },
         _getBoundingGroupRect() {
             const points = this._stack.getBoundingRectPoints();
@@ -273,6 +285,7 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             this.width = shapeWidth + margin.left + margin.right;
             this.height = shapeHeight + margin.top + margin.bottom;
         },
+        
         render(ctx) {
             ctx.save();
             if(this._isMoving){
