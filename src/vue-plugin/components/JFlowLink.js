@@ -49,7 +49,7 @@ export default function (nameNode, isLink) {
             }
         },
         mounted() {
-            this.$watch(() => [this.from, this.to, this.configs], () => {
+            this.unwatch = this.$watch(() => [this.from, this.to, this.configs], () => {
                 this.refreshConfig();
             })
         },
@@ -88,6 +88,7 @@ export default function (nameNode, isLink) {
             }
         },
         destroyed() {
+            this.unwatch();
             if(this._jflowInstance) {
                 this.removeFromLinkStack(this._jflowInstance);
             }
