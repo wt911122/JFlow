@@ -43,6 +43,12 @@ class Capsule extends Node {
         ctx.arc(leftCenter, y, hh, Math.PI/2, Math.PI/2*3);
 
         ctx.fillStyle = this.backgroundColor;
+        if (this.shadowColor) {
+            ctx.shadowColor = this.shadowColor;
+            ctx.shadowBlur = this.shadowBlur;
+            ctx.shadowOffsetX = this.shadowOffsetX;
+            ctx.shadowOffsetY = this.shadowOffsetY;
+        }
         ctx.fill();
         if(this.borderWidth) {
             ctx.lineWidth = this.borderWidth;

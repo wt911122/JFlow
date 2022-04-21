@@ -27,6 +27,12 @@ class CapsuleVertical extends Capsule {
         ctx.closePath();
 
         ctx.fillStyle = this.backgroundColor;
+        if (this.shadowColor) {
+            ctx.shadowColor = this.shadowColor;
+            ctx.shadowBlur = this.shadowBlur;
+            ctx.shadowOffsetX = this.shadowOffsetX;
+            ctx.shadowOffsetY = this.shadowOffsetY;
+        }
         ctx.fill();
         if(this.borderWidth) {
             ctx.lineWidth = this.borderWidth;
