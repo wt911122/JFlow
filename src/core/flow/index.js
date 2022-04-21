@@ -1085,6 +1085,30 @@ class JFlow extends EventTarget{
         }
     }
 
+    dblclickHandler(offsetX, offsetY, event) {
+        const {
+            link,
+            instance
+        } = this._targetLockOn([offsetX, offsetY]);
+        const { topLayerPoint } = this._target.cache
+        if(instance || link) {
+            const target = (instance || link);
+            target.bubbleEvent(new JFlowEvent('dblclick', {
+                event,
+                jflow: this,
+                target,
+                topLayerPoint,
+                bubbles: true
+            }));
+        } else {
+            this.dispatchEvent(new JFlowEvent('dblclick', {
+                event,
+                jflow: this,
+                topLayerPoint,
+            }));
+        }
+    }
+
     /*_onZoom(event) {
         event.preventDefault();
         let { offsetX, offsetY, deltaX, deltaY } = event

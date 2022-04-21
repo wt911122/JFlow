@@ -50,6 +50,12 @@ function getDefaultPlugin() {
                 const { offsetX, offsetY } = event;
                 jflow.contextMenuHanlder(offsetX, offsetY, event);
             },
+            dblclick: function (event, jflow) {
+                event.preventDefault();
+                event.stopPropagation();
+                const { offsetX, offsetY } = event;
+                jflow.dblclickHandler(offsetX, offsetY, event);
+            }
         },
         document: {
             pointerup: function(event, jflow) {
