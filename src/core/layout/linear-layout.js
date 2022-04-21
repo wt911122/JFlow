@@ -57,6 +57,17 @@ class LinearLayout {
             let lastInstanceHeight = 0;
             let maxWidth = 0;
             let allHeight = 0;
+            const childAll = stack.concat(absoluteStack);
+            childAll.forEach((instance, idx) =>  {
+                if(instance.display === 'block') {
+                    instance.width = 0;
+                    // instance.definedWidth = maxWidth;
+                    instance.resetChildrenPosition();
+                    instance.reflow();
+                    instance._getBoundingGroupRect();
+                }
+            });
+
             stack.forEach((instance, idx) =>  {
                 const { width, height } = instance.getBoundingDimension();
                 // console.log(height, instance.type);
@@ -67,12 +78,13 @@ class LinearLayout {
                 lastInstanceHeight = height / 2;
                 instance.anchor = [0, reduceHeight];
             });
-            stack.concat(absoluteStack).forEach((instance, idx) =>  {
+            childAll.forEach((instance, idx) =>  {
                 if(instance.display === 'block') {
                     // instance.definedWidth = maxWidth;
                     instance.resetChildrenPosition();
                     instance.width = maxWidth;
                     instance.reflow();
+                    // instance._getBoundingGroupRect();
                 }
             });
 
