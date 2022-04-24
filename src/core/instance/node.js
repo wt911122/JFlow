@@ -57,6 +57,7 @@ class Node extends Instance {
     clone() {
         const C = this.constructor;
         const t = new C(this._rawConfigs);
+        t.visible = this.visible;
         return t;
     }
     // end: from | to

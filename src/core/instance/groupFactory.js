@@ -91,6 +91,7 @@ const GroupMixin = {
             t.addToStack(instance.clone());
         })
         t.recalculate();
+        t.visible = this.visible;
         return t;
     },
     getBoundingDimension() {
