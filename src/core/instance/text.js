@@ -70,12 +70,14 @@ class Text extends Rectangle {
         this.backgroundColor =  configs.backgroundColor;
         /** @member {Boolean}      - 是否可编辑 */
         this.editable =         configs.editable;
-        this.acceptPatten =     configs.acceptPatten;
+        // this.acceptPatten =     configs.acceptPatten;
         /** @member {number}      - 最小宽度 */
         this.minWidth =         configs.minWidth || 0;
-        // this.editStatus = {
-        //     editting: false,
-        // }
+
+        this.placeholder =          configs.placeholder || '';
+        this.emptyWhenInput =       configs.emptyWhenInput || false;
+        // this.status =    
+        this.editting =  false;
         requestCacheCanvas((ctx) => {
             this.renderShadowText(ctx);
         });
@@ -102,7 +104,7 @@ class Text extends Rectangle {
                 const [offsetX, offsetY] = this.calculateToRealWorld(p);
                 let inputElement = createInputElement();
                 const wrapper = this._jflow.DOMwrapper;
-                const oldVal = this.content;
+                let oldVal = this.content;
                 inputElement.style.transform =`translate(${offsetX}px, ${offsetY}px)`;
                 inputElement.style.width = this.calculateToRealWorldWithScalar(this.width) + 'px';
                 inputElement.style.height = this.calculateToRealWorldWithScalar(this.height) + 'px';
@@ -111,39 +113,44 @@ class Text extends Rectangle {
                 inputElement.style.fontSize = `${fontSize * this._jflow.scale}px`;
                 inputElement.style.lineHeight = `${this.lineHeight * this._jflow.scale}px`;
                 inputElement.style.textIndent = `${this.indent * this._jflow.scale}px`;
-                inputElement.value = this.content;
+                inputElement.value = this.emptyWhenInput ? '' : this.content;
                 inputElement.style.color = this.textColor;
-                inputElement.addEventListener("focus",  () => {
+                inputElement.setAttribute('placeholder', this.placeholder);
+
+                inputElement.addEventListener("focus",  (e) => {
+                    // e.preventDefault();
                     this.content = '';
+                    this.editting = true;
                     this._jflow._render();
                     inputElement.style.outline = "none";
                 });
                 let blurHandler = () => {
-                    if(this.acceptPatten){
-
-                    } else {
-                        const val = inputElement.value;
-                        /**
-                         * 文字改变事件
-                         * @event Text#change
-                         * @type {object}
-                         * @property {Text} target           - 当前文字对象
-                         * @property {String} oldVal         - 原始文字
-                         * @property {String} val            - 当前文字
-                         */
-                        this.dispatchEvent(new JFlowEvent('change', {
-                            target: this,
-                            oldVal,
-                            val,
-                        }))
-                        this.content = oldVal;
-                        this._jflow._render();
-                        this._jflow.removeEventListener('zoompan', blurHandler)
-                        inputElement.removeEventListener('blur', blurHandler)
-                        wrapper.removeChild(inputElement);
-                        inputElement = null;
-                        blurHandler = null;
-                    }
+                    this.editting = false;
+                    this.dispatchEvent(new JFlowEvent('blur', {
+                        target: this,
+                    }))
+                    const val = inputElement.value;
+                    /**
+                        * 文字改变事件
+                        * @event Text#change
+                        * @type {object}
+                        * @property {Text} target           - 当前文字对象
+                        * @property {String} oldVal         - 原始文字
+                        * @property {String} val            - 当前文字
+                        */
+                    this.dispatchEvent(new JFlowEvent('change', {
+                        target: this,
+                        oldVal,
+                        val,
+                    }))
+                    this.content = oldVal;
+                    this._jflow._render();
+                    this._jflow.removeEventListener('zoompan', blurHandler)
+                    inputElement.removeEventListener('blur', blurHandler)
+                    wrapper.removeChild(inputElement);
+                    inputElement = null;
+                    blurHandler = null;
+                    this.inputElement = null;
                 };
                 this._jflow.addEventListener('zoompan', blurHandler);
                 inputElement.addEventListener('blur', blurHandler);
@@ -155,8 +162,27 @@ class Text extends Rectangle {
                     }
                 };
                 inputElement.addEventListener('keypress', keyUpHandler)
+                inputElement.addEventListener('input', (e) => {
+                    let changed = false;
+                    this.dispatchEvent(new JFlowEvent('input', {
+                        target: this,
+                        oldVal,
+                        val: e.target.value,
+                        handler(val) {
+                            oldVal = val;
+                            inputElement.value = val;
+                            changed = true;
+                        }
+                    }))
+                    if(!changed) {
+                        oldVal = e.target.value
+                    }
+                })
                 wrapper.append(inputElement);
-                inputElement.focus();
+                inputElement.focus({
+                    preventScroll: true
+                });
+                this.inputElement = inputElement;
             })
         }
     }
@@ -188,6 +214,9 @@ class Text extends Rectangle {
     setConfig(configs) {
         Object.keys(configs).forEach(k => {
             if(configs[k] !== undefined && configs[k] !== null) {
+                // if(this.editting && k === 'content') {
+                //     return;
+                // }
                 this[k] = configs[k];
                 this._rawConfigs[k] = configs[k];
             }
@@ -237,8 +266,11 @@ class Text extends Rectangle {
         //     }
         //     ctx.restore();
         // }
-
+        if(this.editting) {
+            return;
+        }
         ctx.beginPath();
+       
         ctx.font = `${this.fontSize} ${this.fontFamily}`;
         ctx.textAlign = this.textAlign;
         ctx.textBaseline = this.textBaseline;
