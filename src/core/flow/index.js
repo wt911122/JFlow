@@ -811,11 +811,17 @@ class JFlow extends EventTarget{
                 * @property {Node} instance           - 原始事件
                 * @property {JFlow} jflow           - 当前JFlow对象 
                 */
-                instance.dispatchEvent(new JFlowEvent('instancemousemove', {
+                // instance.dispatchEvent(new JFlowEvent('instancemousemove', {
+                //     event,
+                //     instance,
+                //     jflow: this,
+                // }))
+                instance.bubbleEvent(new JFlowEvent('instancemousemove', {
                     event,
                     instance,
                     jflow: this,
-                }))
+                    bubbles: true
+                }));
             }
 
             if(this.mode === JFLOW_MODE.LINKING) {
