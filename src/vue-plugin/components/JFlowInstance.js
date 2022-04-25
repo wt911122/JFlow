@@ -71,6 +71,9 @@ export default function (nameNode) {
                 this._jflowInstance.visible = val;
                 // this._jflowInstance._belongs.recalculateUp();
                 // this._jflowInstance._jflow._render();
+            },
+            source(val) {
+                this._jflowInstance._jflow.setRenderNodeBySource(val, this._jflowInstance);
             }
         },
         render: function (createElement) {
