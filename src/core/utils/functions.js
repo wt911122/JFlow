@@ -9,6 +9,14 @@ import { DIRECTION } from './constance';
  * @return {Object} demension 宽高，坐标
  */
 export function bounding_box(points) {
+    if(points.length === 0) {
+        return {
+            width: 1,
+            height: 1,
+            x: 0,
+            y: 0,
+        }
+    }
     let min_x = Infinity; 
     let min_y = Infinity; 
     let max_x = -Infinity; 

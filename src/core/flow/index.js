@@ -330,6 +330,20 @@ class JFlow extends EventTarget{
         this.mode = JFLOW_MODE.LINKING;
     }
 
+    setLinkingLink(configs) {
+        if(this.mode === JFLOW_MODE.LINKING) {
+            this._tempLink.setConfig(configs);
+        }
+    }
+
+    resetLinkingLink() {
+        if(this.mode === JFLOW_MODE.LINKING) {
+            this._tempLink.setConfig({
+                to: this._tempNode
+            })
+        }
+    }
+
     resizeCanvas() {
         const {
             width: c_width, 
@@ -456,33 +470,19 @@ class JFlow extends EventTarget{
             x: offsetPoint[0],
             y: offsetPoint[1],
         });
-
+     
         if(event === 'pressStart' && !this._target.status.dragging && !this._target.status.dragovering) {
             let movingtarget = target;
             while (movingtarget && movingtarget._belongs.lock && movingtarget !== this) {
                 movingtarget = movingtarget._belongs;
             }
-            /* 
-            if(movingtarget) {
-                
-                if(movingtarget._layoutNode) {
-                    if(movingtarget._layoutNode.isLocked ) {
-                        movingtarget = movingtarget._layoutNode.getNodes(this)
-                    } else if(!movingtarget._layoutNode.isDraggable) {
-                        movingtarget = undefined;
-                    } else {
-                        movingtarget = [movingtarget];
-                    }
-                } else {
-                    movingtarget = [movingtarget];
-                }
-            } */ 
             this.setMovingTargets(movingtarget && [ movingtarget ])
             if(movingtarget) {
-                movingtarget.dispatchEvent(new JFlowEvent('afterResolveMovingTarget', {
+                target.bubbleEvent(new JFlowEvent('afterResolveMovingTarget', {
                     event,
                     target: movingtarget,
                     jflow: this,
+                    bubbles: true,
                 }))
             }
         }
@@ -801,7 +801,9 @@ class JFlow extends EventTarget{
                 link,
                 instance
             } = this._targetLockOn([offsetX, offsetY]);
-            if(instance) {
+            const t = instance || link;
+            if(t) {
+                
                 /**
                 * instance mousemove 原生事件，仅在无拖拽时触发
                 *
@@ -816,16 +818,29 @@ class JFlow extends EventTarget{
                 //     instance,
                 //     jflow: this,
                 // }))
-                instance.bubbleEvent(new JFlowEvent('instancemousemove', {
+                t.bubbleEvent(new JFlowEvent('instancemousemove', {
                     event,
-                    instance,
+                    instance: t,
                     jflow: this,
                     bubbles: true
                 }));
             }
 
             if(this.mode === JFLOW_MODE.LINKING) {
+                // if(instance) {
+                //     instance.bubbleEvent(new JFlowEvent('linking', {
+                //         event,
+                //         target: instance,
+                //         jflow: this,
+                //         bubbles: true,
+                //         callback: (p) => {
+                //             this._currentp = p;
+                //         }
+                //     }))
+                // }
+
                 this._tempNode.anchor = this._currentp;
+                
                 requestAnimationFrame(() => {
                     this._render();
                     this._target.isLinkDirty = false; 
@@ -884,85 +899,84 @@ class JFlow extends EventTarget{
      */
     pressUpHanlder(isDocument, event) {
         const meta = this._target.meta;
+        if(this.mode === JFLOW_MODE.LINKING) {
+            const t = this._target.instance;
+            const payload = this.consumeMessage();
+            console.log(payload)
+            if(t) {
+                t.bubbleEvent(new JFlowEvent('link', {
+                    event,
+                    target: t,
+                    jflow: this,
+                    payload,
+                    bubbles: true,
+                }))        
+            } else {
+                const { offsetX, offsetY } = event
+                this.dispatchEvent(new JFlowEvent('link', {
+                    event,
+                    jflow: this,
+                    payload,
+                    anchor: this._calculatePointBack([offsetX, offsetY]),
+                }));
+            }
+            this._clearTarget();
+            if(this._tempNode) {
+                this._tempNode.destroy();
+                this._tempNode = null;
+            }
+            if(this._tempLink) {
+                this._tempLink.destroy();
+                this._tempLink = null;
+            }
+            this.mode = JFLOW_MODE.DEFAULT;
+            this._render();
+            return;
+        }
         if(meta.initialX === meta.x
-            && meta.initialY === meta.y) {
-                if(this.mode === JFLOW_MODE.LINKING) {
-                    const t = this._target.instance;
-                    const payload = this.consumeMessage();
-                    if(t) {
-                        t.bubbleEvent(new JFlowEvent('link', {
-                            event,
-                            target: t,
-                            jflow: this,
-                            payload,
-                            bubbles: true,
-                        }))        
-                    } else {
-                        const { offsetX, offsetY } = event
-                        this.dispatchEvent(new JFlowEvent('link', {
-                            event,
-                            jflow: this,
-                            payload,
-                            anchor: this._calculatePointBack([offsetX, offsetY]),
-                        }));
-                    }
+            && meta.initialY === meta.y) { 
+                if(event.target !== this.canvas){
                     this._clearTarget();
-                    if(this._tempNode) {
-                        this._tempNode.destroy();
-                        this._tempNode = null;
-                    }
-                    if(this._tempLink) {
-                        this._tempLink.destroy();
-                        this._tempLink = null;
-                    }
-                    this.mode = JFLOW_MODE.DEFAULT;
+                    return;
+                }
+                const t = this._target.instance || this._target.link;
+                if(t && !isDocument) {
+                    /**
+                    * 点击事件（冒泡）
+                    *
+                    * @event Node#click
+                    * @type {object}
+                    * @property {Event} event          - 原始事件 
+                    * @property {Instance} target      - 点击的对象 
+                    * @property {JFlow} jflow          - 当前JFlow对象 
+                    * @property {Boolean} bubbles      - 冒泡
+                    */
+                    t.bubbleEvent(new JFlowEvent('click', {
+                        event,
+                        target: t,
+                        jflow: this,
+                        bubbles: true,
+                    }))
+                    this._clearTarget();
+                    this._render();
                     return;
                 } else {
-                    if(event.target !== this.canvas){
-                        this._clearTarget();
-                        return;
-                    }
-                    if(this._target.instance && !isDocument) {
-                        const t = this._target.instance;
-                        /**
-                        * 点击事件（冒泡）
-                        *
-                        * @event Node#click
-                        * @type {object}
-                        * @property {Event} event          - 原始事件 
-                        * @property {Instance} target      - 点击的对象 
-                        * @property {JFlow} jflow          - 当前JFlow对象 
-                        * @property {Boolean} bubbles      - 冒泡
-                        */
-                        t.bubbleEvent(new JFlowEvent('click', {
-                            event,
-                            target: t,
-                            jflow: this,
-                            bubbles: true,
-                        }))
-                        this._clearTarget();
-                        this._render();
-                        return;
-                    } else {
-                        /**
-                        * 点击事件
-                        *
-                        * @event JFlow#click
-                        * @type {object}
-                        * @property {Event} event          - 原始事件 
-                        * @property {JFlow} jflow          - 当前JFlow对象 
-                        */
-                        this.dispatchEvent(new JFlowEvent('click', {
-                            event,
-                            jflow: this,
-                        }));
-                        this._clearTarget();
-                        this._render();
-                        return
-                    }
-                }
-                
-            
+                    /**
+                    * 点击事件
+                    *
+                    * @event JFlow#click
+                    * @type {object}
+                    * @property {Event} event          - 原始事件 
+                    * @property {JFlow} jflow          - 当前JFlow对象 
+                    */
+                    this.dispatchEvent(new JFlowEvent('click', {
+                        event,
+                        jflow: this,
+                    }));
+                    this._clearTarget();
+                    this._render();
+                    return
+                }  
         } else if(this._target.moving) {
             let checkresult = false;
             if(this._layout.static) {
@@ -1253,6 +1267,7 @@ class JFlow extends EventTarget{
         }
         if(this._tempLink) {
             ctx.save();
+            this._tempLink.isInViewBox(br)
             this._tempLink.render(ctx)
             ctx.restore();
         }
@@ -1265,6 +1280,7 @@ Object.assign(JFlow.prototype, LayoutMixin);
 Object.assign(JFlow.prototype, NodeWeakMapMixin);
 
 export default JFlow;
+export { JFLOW_MODE } from '../utils/constance';
 export { default as JFlowEvent } from '../events';
 export { default as commonEventAdapter } from '../events/commonAdapter';
 export { default as Instance } from '../instance/instance';

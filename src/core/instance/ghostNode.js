@@ -11,6 +11,9 @@ class GhostNode extends Node {
     isHit(point) {
         return false;
     }
+    calculateIntersection(point) {
+        return this.anchor;
+    }
 
     getIntersectionsInFourDimension() {
         const [x2, y2] = this.anchor;

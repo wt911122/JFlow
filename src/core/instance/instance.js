@@ -93,6 +93,7 @@ class Instance extends EventTarget{
             this.dispatchEvent(new CustomEvent(ishit ? 'mouseenter': 'mouseleave' , {
                 detail: {
                     instance: this,
+                    jflow: this._jflow
                 }
             }));
         }
@@ -209,6 +210,7 @@ class Instance extends EventTarget{
      * @param {JFlowEvent} customEvent 自定义事件
      */
     bubbleEvent(customEvent){
+        customEvent.detail.currentTarget = this;
         this.dispatchEvent(customEvent);
         if(customEvent.detail.bubbles){
             if(this._belongs.bubbleEvent) {
