@@ -76,7 +76,6 @@ class Text extends Rectangle {
 
         this.placeholder =          configs.placeholder || '';
         this.emptyWhenInput =       configs.emptyWhenInput || false;
-        // this.status =    
         this.editting =  false;
         requestCacheCanvas((ctx) => {
             this.renderShadowText(ctx);
@@ -106,7 +105,7 @@ class Text extends Rectangle {
                 const wrapper = this._jflow.DOMwrapper;
                 let oldVal = this.content;
                 inputElement.style.transform =`translate(${offsetX}px, ${offsetY}px)`;
-                inputElement.style.width = this.calculateToRealWorldWithScalar(this.width) + 'px';
+                inputElement.style.width = this.calculateToRealWorldWithScalar(this.width + 5) + 'px';
                 inputElement.style.height = this.calculateToRealWorldWithScalar(this.height) + 'px';
                 inputElement.style.fontFamily = this.fontFamily;
                 wrapper.style.fontSize = `${fontSize * this._jflow.scale}px`;
@@ -231,41 +230,6 @@ class Text extends Rectangle {
         if(this._isMoving){
             ctx.globalAlpha = 0.6
         }
-        // this.renderShadowText(ctx);
-
-
-        // const {
-        //     borderRadius: radius, anchor, width, height
-        // } = this;
-        // if(this.backgroundColor || this.borderColor){
-        //     ctx.save();
-        //     ctx.beginPath();
-        //     if(this.borderRadius) {
-        //         const x = this.anchor[0] - this.width / 2;
-        //         const y = this.anchor[1] - this.height / 2;
-        //         ctx.moveTo(x + radius, y);
-        //         ctx.lineTo(x + width - radius, y);
-        //         ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-        //         ctx.lineTo(x + width, y + height - radius);
-        //         ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-        //         ctx.lineTo(x + radius, y + height);
-        //         ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-        //         ctx.lineTo(x, y + radius);
-        //         ctx.quadraticCurveTo(x, y, x + radius, y);
-        //         ctx.closePath();
-        //     } else {
-        //         ctx.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
-        //     }
-        //     if (this.backgroundColor){
-        //         ctx.fillStyle = this.backgroundColor;
-        //         ctx.fill();
-        //     }
-        //     if(this.borderColor) {
-        //         ctx.strokeStyle = this.borderColor;
-        //         ctx.stroke();
-        //     }
-        //     ctx.restore();
-        // }
         if(this.editting) {
             return;
         }
@@ -284,8 +248,6 @@ class Text extends Rectangle {
         } else {
             ctx.fillText(this.content, this.anchor[0] + this.indent / 2, this.anchor[1]);
         }
-        // ctx.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
-        // ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         ctx.fill();
         ctx.restore();
     }

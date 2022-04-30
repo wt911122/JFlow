@@ -10,6 +10,7 @@ class Link extends BaseLink {
         this.fontSize      = configs.fontSize || '12px';
         this.content       = configs.content || '';
         this.lineDash      = configs.lineDash;
+        this.hittestrange  = configs.hittestrange || APPROXIMATE;
     }
 
     _calculateAnchorPoints() {
@@ -30,7 +31,7 @@ class Link extends BaseLink {
     
     isInViewBox(br) {
         this._calculateAnchorPoints();
-        return isPolyLineIntersectionRectange(this._cachePoints, br);
+        return true;
     }
 
     render(ctx) {
@@ -40,6 +41,34 @@ class Link extends BaseLink {
         const dy = p1[1] - p0[1];
         ctx.fillStyle = ctx.strokeStyle = this.backgroundColor;
         ctx.beginPath();
+        if(this.content){ 
+
+            ctx.textAlign = 'center';
+            ctx.font = `${this.fontSize} ${this.fontFamily}`;
+            ctx.textBaseline = 'middle';
+            const {
+                actualBoundingBoxLeft,
+                actualBoundingBoxRight,
+                fontBoundingBoxAscent,
+                fontBoundingBoxDescent
+            } = ctx.measureText(this.content);
+            const x = dx /2 + p0[0];
+            const y = dy /2 + p0[1];
+            ctx.fillText(this.content, x, y);
+            const width = Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight) + 20;
+            const height = (Math.abs(fontBoundingBoxAscent) + Math.abs(fontBoundingBoxDescent)) * 1.5;
+            ctx.beginPath();
+            let region = new Path2D();
+            region.rect(x - width/2 , y - height/2, width, height);
+            const rx = Math.min(p1[0], p0[0]) - 10;
+            const ry = Math.min(p1[1], p0[1]) - 10;
+            const rw = Math.abs(dx) + 20;
+            const rh = Math.abs(dy) + 20;
+            region.rect(rx , ry, rw, rh);
+            ctx.clip(region, "evenodd");
+        }
+
+
         ctx.moveTo(p0[0], p0[1]);
         ctx.lineTo(p1[0], p1[1]);
         if(this.lineDash) {
@@ -90,19 +119,14 @@ class Link extends BaseLink {
         // }
         // ctx.fill();
 
-        if(this.content){ 
-            ctx.beginPath();
-            ctx.textAlign = 'center';
-            ctx.font = `${this.fontSize} ${this.fontFamily}`;
-            ctx.fillText(this.content, dx /2 + p0[0] , dy /2 + p0[1]);
-        }
+        
     }
 
     isHit(point) {
         if(!this._cachePoints) return false;
         const [ start, end ] = this._cachePoints;
         const dist = distToSegmentSquared(point, start, end)
-        return dist < APPROXIMATE;
+        return dist < this.hittestrange;
     }
 
     getBoundingRect() {
