@@ -1,5 +1,19 @@
 import Rectangle from './shapes/rectangle';
-// import { doOverlap } from '../utils/functions';
+/**
+ * @funtion domFactory
+ * @param {Element} container - DOM容器
+ */
+/**
+ * DOM元素容器 配置
+ * @typedef {Rectangle~Configs} ShadowDom~RectangleConfigs
+ * @property {domFactory} createDocument - 宽
+ */
+/**
+ * DOM元素容器 内容可贴 DOM 元素，支持缩放平移
+ * @constructor ShadowDom
+ * @extends Rectangle
+ * @param {ShadowDom~RectangleConfigs} configs
+ */
 class ShadowDom extends Rectangle {
     constructor(configs) {
         super(configs);

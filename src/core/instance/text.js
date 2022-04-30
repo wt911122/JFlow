@@ -39,6 +39,8 @@ const TEXT_ALIGN = {
  * @property {number} indent        - 缩进
  * @property {Boolean} editable      - 是否可编辑
  * @property {number} minWidth      - 最小宽度
+ * @property {string} placeholder   - 占位文字
+ * @property {Boolean} emptyWhenInput - 输入状态时是否清空input框
  */
 /**
  * 文字对象

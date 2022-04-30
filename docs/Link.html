@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>JFlow Class: Icon</title>
+	<title>JFlow Class: Link</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -107,13 +107,13 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: Icon</h1>
+	<h1 class="page-title">Class: Link</h1>
 <section>
 
 <header>
     
         <h2>
-        Icon
+        Link
         </h2>
         
     
@@ -126,7 +126,7 @@
         
 <hr>
 <dt>
-    <h4 class="name" id="Icon"><span class="type-signature"></span>new Icon(configs)</h4>
+    <h4 class="name" id="Link"><span class="type-signature"></span>new Link(configs)</h4>
     
     
 </dt>
@@ -134,7 +134,7 @@
 
     
     <div class="description">
-        <p>图片单元可以绘制图片，图片加载后会自动重新绘制</p>
+        <p>直线</p>
     </div>
     
 
@@ -175,7 +175,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="Icon.html#~IconConfigs">Icon~IconConfigs</a></span>
+<span class="param-type"><a href="Link.html#~Configs">Link~Configs</a></span>
 
 
 
@@ -260,7 +260,7 @@
 
 
     <ul>
-        <li><a href="Rectangle.html">Rectangle</a></li>
+        <li><a href="BaseLink.html">BaseLink</a></li>
     </ul>
 
 
@@ -280,12 +280,16 @@
         <dl>
             
 <hr>
-<dt class="name" id="absolutePosition">
-    <h4 id="absolutePosition"><span class="type-signature"></span>absolutePosition<span class="type-signature"> :<a href="Node.html#~AbsolutePosition">Node~AbsolutePosition</a></span></h4>
+<dt class="name" id="_cachePoints">
+    <h4 id="_cachePoints"><span class="type-signature"></span>_cachePoints<span class="type-signature"> :Array.&lt;Array.&lt;number>></span></h4>
 
     
 </dt>
 <dd>
+    
+    <div class="description">
+        <p>连线控制点缓存</p>
+    </div>
     
 
     
@@ -293,7 +297,7 @@
         <ul>
             <li>
                 
-<span class="param-type"><a href="Node.html#~AbsolutePosition">Node~AbsolutePosition</a></span>
+<span class="param-type">Array.&lt;Array.&lt;number>></span>
 
 
 
@@ -314,7 +318,92 @@
 	<dd class="inherited-from">
 		<ul class="dummy">
 			<li>
-				<a href="Node.html#absolutePosition">Node#absolutePosition</a>
+				<a href="BaseLink.html#_cachePoints">BaseLink#_cachePoints</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="BaseLink.html#_cachePoints">BaseLink#_cachePoints</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="_isHit">
+    <h4 id="_isHit"><span class="type-signature"></span>_isHit<span class="type-signature"> :boolean</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>当前单元碰撞检测状态</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">boolean</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#_isHit">Instance#_isHit</a>
 			</li>
 		</ul>
 	</dd>
@@ -356,12 +445,16 @@
         
             
 <hr>
-<dt class="name" id="anchor">
-    <h4 id="anchor"><span class="type-signature"></span>anchor<span class="type-signature"> :Array.&lt;number></span></h4>
+<dt class="name" id="_isMoving">
+    <h4 id="_isMoving"><span class="type-signature"></span>_isMoving<span class="type-signature"> :boolean</span></h4>
 
     
 </dt>
 <dd>
+    
+    <div class="description">
+        <p>当前单元移动状态</p>
+    </div>
     
 
     
@@ -369,7 +462,7 @@
         <ul>
             <li>
                 
-<span class="param-type">Array.&lt;number></span>
+<span class="param-type">boolean</span>
 
 
 
@@ -390,7 +483,7 @@
 	<dd class="inherited-from">
 		<ul class="dummy">
 			<li>
-				<a href="Node.html#anchor">Node#anchor</a>
+				<a href="Instance.html#_isMoving">Instance#_isMoving</a>
 			</li>
 		</ul>
 	</dd>
@@ -432,15 +525,15 @@
         
             
 <hr>
-<dt class="name" id="border">
-    <h4 id="border"><span class="type-signature"></span>border<span class="type-signature"> :<a href="Rectangle.html#~borders">Rectangle~borders</a></span></h4>
+<dt class="name" id="_isTargeting">
+    <h4 id="_isTargeting"><span class="type-signature"></span>_isTargeting<span class="type-signature"> :boolean</span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        <p>边框设置，优先级高于 borderWidth，borderColor</p>
+        <p>当前单元选中状态</p>
     </div>
     
 
@@ -449,7 +542,7 @@
         <ul>
             <li>
                 
-<span class="param-type"><a href="Rectangle.html#~borders">Rectangle~borders</a></span>
+<span class="param-type">boolean</span>
 
 
 
@@ -470,7 +563,7 @@
 	<dd class="inherited-from">
 		<ul class="dummy">
 			<li>
-				<a href="Rectangle.html#border">Rectangle#border</a>
+				<a href="Instance.html#_isTargeting">Instance#_isTargeting</a>
 			</li>
 		</ul>
 	</dd>
@@ -512,15 +605,15 @@
         
             
 <hr>
-<dt class="name" id="borderRadius">
-    <h4 id="borderRadius"><span class="type-signature"></span>borderRadius<span class="type-signature"> :Number</span></h4>
+<dt class="name" id="_jflow">
+    <h4 id="_jflow"><span class="type-signature"></span>_jflow<span class="type-signature"> :<a href="JFlow.html">JFlow</a></span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        <p>圆角矩形半径</p>
+        <p>canvas上 jflow 实体</p>
     </div>
     
 
@@ -529,7 +622,7 @@
         <ul>
             <li>
                 
-<span class="param-type">Number</span>
+<span class="param-type"><a href="JFlow.html">JFlow</a></span>
 
 
 
@@ -550,7 +643,7 @@
 	<dd class="inherited-from">
 		<ul class="dummy">
 			<li>
-				<a href="Rectangle.html#borderRadius">Rectangle#borderRadius</a>
+				<a href="Instance.html#_jflow">Instance#_jflow</a>
 			</li>
 		</ul>
 	</dd>
@@ -592,15 +685,15 @@
         
             
 <hr>
-<dt class="name" id="height">
-    <h4 id="height"><span class="type-signature"></span>height<span class="type-signature"> :Number</span></h4>
+<dt class="name" id="backgroundColor">
+    <h4 id="backgroundColor"><span class="type-signature"></span>backgroundColor<span class="type-signature"> :string</span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        <p>高</p>
+        <p>连线颜色，默认为 #000</p>
     </div>
     
 
@@ -609,7 +702,7 @@
         <ul>
             <li>
                 
-<span class="param-type">Number</span>
+<span class="param-type">string</span>
 
 
 
@@ -630,7 +723,7 @@
 	<dd class="inherited-from">
 		<ul class="dummy">
 			<li>
-				<a href="Rectangle.html#height">Rectangle#height</a>
+				<a href="BaseLink.html#backgroundColor">BaseLink#backgroundColor</a>
 			</li>
 		</ul>
 	</dd>
@@ -672,15 +765,15 @@
         
             
 <hr>
-<dt class="name" id="image">
-    <h4 id="image"><span class="type-signature"></span>image<span class="type-signature"> :CanvasImageSource</span></h4>
+<dt class="name" id="borderColor">
+    <h4 id="borderColor"><span class="type-signature"></span>borderColor<span class="type-signature"> :string</span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        <p>图片</p>
+        <p>边框颜色 默认 transparent</p>
     </div>
     
 
@@ -689,149 +782,7 @@
         <ul>
             <li>
                 
-<span class="param-type">CanvasImageSource</span>
-
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt class="name" id="imageBounding">
-    <h4 id="imageBounding"><span class="type-signature"></span>imageBounding<span class="type-signature"> :<a href="Icon.html#~ImageBounding">Icon~ImageBounding</a></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>图片维度</p>
-    </div>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type"><a href="Icon.html#~ImageBounding">Icon~ImageBounding</a></span>
-
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt class="name" id="width">
-    <h4 id="width"><span class="type-signature"></span>width<span class="type-signature"> :Number</span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>宽</p>
-    </div>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">Number</span>
+<span class="param-type">string</span>
 
 
 
@@ -852,7 +803,807 @@
 	<dd class="inherited-from">
 		<ul class="dummy">
 			<li>
-				<a href="Rectangle.html#width">Rectangle#width</a>
+				<a href="Instance.html#borderColor">Instance#borderColor</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="borderWidth">
+    <h4 id="borderWidth"><span class="type-signature"></span>borderWidth<span class="type-signature"> :number</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>边的宽度 默认是 0</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#borderWidth">Instance#borderWidth</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="from">
+    <h4 id="from"><span class="type-signature"></span>from<span class="type-signature"> :<a href="Instance.html">Instance</a></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>起始单元</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="Instance.html">Instance</a></span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="BaseLink.html#from">BaseLink#from</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="fromDir">
+    <h4 id="fromDir"><span class="type-signature"></span>fromDir<span class="type-signature"> :<a href="global.html#DIRECTION">DIRECTION</a></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>起始方向</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="global.html#DIRECTION">DIRECTION</a></span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="BaseLink.html#fromDir">BaseLink#fromDir</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="shadowBlur">
+    <h4 id="shadowBlur"><span class="type-signature"></span>shadowBlur<span class="type-signature"> :string</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>阴影扩散范围 默认 5</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">string</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#shadowBlur">Instance#shadowBlur</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="shadowColor">
+    <h4 id="shadowColor"><span class="type-signature"></span>shadowColor<span class="type-signature"> :string</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>阴影颜色 空就不显示阴影</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">string</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#shadowColor">Instance#shadowColor</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="shadowOffsetX">
+    <h4 id="shadowOffsetX"><span class="type-signature"></span>shadowOffsetX<span class="type-signature"> :string</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>阴影偏移 X</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">string</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#shadowOffsetX">Instance#shadowOffsetX</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="shadowOffsetY">
+    <h4 id="shadowOffsetY"><span class="type-signature"></span>shadowOffsetY<span class="type-signature"> :string</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>阴影偏移 Y</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">string</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#shadowOffsetY">Instance#shadowOffsetY</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="to">
+    <h4 id="to"><span class="type-signature"></span>to<span class="type-signature"> :<a href="Instance.html">Instance</a></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>终止单元</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="Instance.html">Instance</a></span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="BaseLink.html#to">BaseLink#to</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="toDir">
+    <h4 id="toDir"><span class="type-signature"></span>toDir<span class="type-signature"> :<a href="global.html#DIRECTION">DIRECTION</a></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>终止方向</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="global.html#DIRECTION">DIRECTION</a></span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="BaseLink.html#toDir">BaseLink#toDir</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="visible">
+    <h4 id="visible"><span class="type-signature"></span>visible<span class="type-signature"> :boolean</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>元素可见 默认 true</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">boolean</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#visible">Instance#visible</a>
 			</li>
 		</ul>
 	</dd>
@@ -901,7 +1652,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="clone"><span class="type-signature"></span>clone()</h4>
+    <h4 class="name" id="bubbleEvent"><span class="type-signature"></span>bubbleEvent(customEvent)</h4>
     
     
 </dt>
@@ -909,7 +1660,7 @@
 
     
     <div class="description">
-        <p>克隆当前节点.</p>
+        <p>冒泡事件</p>
     </div>
     
 
@@ -918,6 +1669,56 @@
     
 
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>customEvent</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="JFlowEvent.html">JFlowEvent</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>自定义事件</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
     
 
     
@@ -933,7 +1734,144 @@
 	<dd class="inherited-from">
 		<ul class="dummy">
 			<li>
-				<a href="Node.html#clone">Node#clone</a>
+				<a href="Instance.html#bubbleEvent">Instance#bubbleEvent</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="calculateToRealWorld"><span class="type-signature"></span>calculateToRealWorld(point)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>反算回页面的像素坐标</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>point</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Number></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#calculateToRealWorld">Instance#calculateToRealWorld</a>
 			</li>
 		</ul>
 	</dd>
@@ -984,7 +1922,7 @@
     
             
 <div class="param-desc">
-    <p>当前节点的副本</p>
+    <p>世界坐标</p>
 </div>
 
 
@@ -995,7 +1933,7 @@
     </dt>
     <dd>
         
-<span class="param-type"><a href="Node.html">Node</a></span>
+<span class="param-type">Array.&lt;Number></span>
 
 
 
@@ -1004,6 +1942,1426 @@
 
 
         
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="getBoundingDimension"><span class="type-signature"></span>getBoundingDimension()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>获取宽高</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#getBoundingDimension">Instance#getBoundingDimension</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    <ul>
+            <li>
+<div class="param-desc">
+    <p>demension 宽高</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+
+    </dd>
+</dl>
+
+</li>
+        
+            <li>
+<div class="param-desc">
+    <p>demension.width 宽</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+
+    </dd>
+</dl>
+
+</li>
+        
+            <li>
+<div class="param-desc">
+    <p>demension.height 高</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+
+    </dd>
+</dl>
+
+</li>
+        </ul>
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="getBoundingRect"><span class="type-signature"></span>getBoundingRect()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>计算当前的最大外接矩形的</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#getBoundingRect">Instance#getBoundingRect</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>[leftx, lefty, rightx, righty]</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;number></span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="getCenter"><span class="type-signature"></span>getCenter()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>获取当前所在层级的坐标</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#getCenter">Instance#getCenter</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>坐标</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;Number></span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="getIntersectionsInFourDimension"><span class="type-signature"></span>getIntersectionsInFourDimension()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>计算当前连线接入点的位置</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#getIntersectionsInFourDimension">Instance#getIntersectionsInFourDimension</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    <ul>
+            <li>
+<div class="param-desc">
+    <p>intersection 交叉点</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+
+    </dd>
+</dl>
+
+</li>
+        
+            <li>
+<div class="param-desc">
+    <p>intersection[DIRECTION.TOP] 上</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+
+    </dd>
+</dl>
+
+</li>
+        
+            <li>
+<div class="param-desc">
+    <p>intersection[DIRECTION.BOTTOM] 下</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+
+    </dd>
+</dl>
+
+</li>
+        
+            <li>
+<div class="param-desc">
+    <p>intersection[DIRECTION.LEFT] 上</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+
+    </dd>
+</dl>
+
+</li>
+        
+            <li>
+<div class="param-desc">
+    <p>intersection[DIRECTION.RIGHT] 右</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+
+    </dd>
+</dl>
+
+</li>
+        </ul>
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="isHit"><span class="type-signature"></span>isHit(point)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>判断当前单元是否被命中</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>point</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#isHit">Instance#isHit</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="BaseLink.html#isHit">BaseLink#isHit</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="isInViewBox"><span class="type-signature"></span>isInViewBox(viewbox)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>是否出现在当前视窗内</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>viewbox</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="BaseLink.html#isInViewBox">BaseLink#isInViewBox</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="BaseLink.html#isInViewBox">BaseLink#isInViewBox</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="onEnterViewbox"><span class="type-signature"></span>onEnterViewbox()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>当节点离开可视区域的回调</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#onEnterViewbox">Instance#onEnterViewbox</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="onLeaveViewbox"><span class="type-signature"></span>onLeaveViewbox()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>当节点离开可视区域的回调</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#onLeaveViewbox">Instance#onLeaveViewbox</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="recalculateUp"><span class="type-signature"></span>recalculateUp()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>从当前布局中删除虚拟布局节点</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#recalculateUp">Instance#recalculateUp</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="render"><span class="type-signature"></span>render(ctx)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>绘制单元</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ctx</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Context2d</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#render">Instance#render</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="BaseLink.html#render">BaseLink#render</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="setConfig"><span class="type-signature"></span>setConfig(configs)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>改变当前配置</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>configs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Configs</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The string containing two comma-separated numbers.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#setConfig">Instance#setConfig</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 </dd>
@@ -1017,16 +3375,12 @@
         <dl>
                 
 <hr>
-<dt class="name" id="~IconConfigs">
-    <h4 id="~IconConfigs">IconConfigs</h4>
+<dt class="name" id="~Configs">
+    <h4 id="~Configs">Configs</h4>
 
     
 </dt>
 <dd>
-    
-    <div class="description">
-        <p>图片单元 配置</p>
-    </div>
     
 
     
@@ -1034,7 +3388,7 @@
         <ul>
             <li>
                 
-<span class="param-type"><a href="Rectangle.html#~RectangleConfigs">Rectangle~RectangleConfigs</a></span>
+<span class="param-type"><a href="BaseLink.html#~Configs">BaseLink~Configs</a></span>
 
 
 
@@ -1072,13 +3426,13 @@
 
         <tr>
             
-                <td class="name"><code>image</code></td>
+                <td class="name"><code>approximate</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">Number</span>
 
 
 
@@ -1089,20 +3443,20 @@
 
             
 
-            <td class="description last"><p>图片地址</p></td>
+            <td class="description last"><p>点击响应范围</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>imageWidth</code></td>
+                <td class="name"><code>lineDash</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">Array.&lt;Number></span>
 
 
 
@@ -1113,20 +3467,20 @@
 
             
 
-            <td class="description last"><p>图片宽度</p></td>
+            <td class="description last"><p>虚线数组</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>imageHeight</code></td>
+                <td class="name"><code>doubleLink</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">Boolean</span>
 
 
 
@@ -1137,140 +3491,20 @@
 
             
 
-            <td class="description last"><p>图片高度</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-</dl>
-
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-            
-                
-<hr>
-<dt class="name" id="~ImageBounding">
-    <h4 id="~ImageBounding">ImageBounding</h4>
-
-    
-</dt>
-<dd>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">Object</span>
-
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>width</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>图片宽度</p></td>
+            <td class="description last"><p>双向箭头</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>height</code></td>
+                <td class="name"><code>fontFamily</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">String</span>
 
 
 
@@ -1281,7 +3515,55 @@
 
             
 
-            <td class="description last"><p>图片高度</p></td>
+            <td class="description last"><p>连线上的文字字体</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fontSize</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>连线上的文字大小</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>content</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>连线上的文字</p></td>
         </tr>
 
     
@@ -1340,7 +3622,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="event:click">click</h4>
+    <h4 class="name" id="event:contextclick">contextclick</h4>
     
     
 </dt>
@@ -1348,7 +3630,7 @@
 
     
     <div class="description">
-        <p>点击事件（冒泡）</p>
+        <p>右键事件（冒泡）</p>
     </div>
     
 
@@ -1436,7 +3718,7 @@
 
             
 
-            <td class="description last"><p>点击的对象</p></td>
+            <td class="description last"><p>右键对象</p></td>
         </tr>
 
     
@@ -1461,6 +3743,30 @@
             
 
             <td class="description last"><p>当前JFlow对象</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>topLayerPoint</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>jflow坐标系上的位置</p></td>
         </tr>
 
     
@@ -1503,7 +3809,589 @@
 	<dd class="inherited-from">
 		<ul class="dummy">
 			<li>
-				<a href="Node.html#event:click">Node#event:click</a>
+				<a href="Instance.html#event:contextclick">Instance#event:contextclick</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="event:dragenter">dragenter</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>dragenter 进入事件</p>
+    </div>
+    
+
+    
+
+    
+        <h5>Type: 
+<span class="param-type">object</span>
+
+
+</h5>
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>原始事件</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>instance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>dragenter的对象</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">target</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>drag 携带的对象（特指从外面拖进canvas的对象）</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#event:dragenter">Instance#event:dragenter</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="event:dragleave">dragleave</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>dragleave 退出事件</p>
+    </div>
+    
+
+    
+
+    
+        <h5>Type: 
+<span class="param-type">object</span>
+
+
+</h5>
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>原始事件</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>instance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>dragleave的对象</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">target</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>drag 携带的对象（特指从外面拖进canvas的对象）</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#event:dragleave">Instance#event:dragleave</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="event:dragover">dragover</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>dragover 进入事件</p>
+    </div>
+    
+
+    
+
+    
+        <h5>Type: 
+<span class="param-type">object</span>
+
+
+</h5>
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>原始事件</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>instance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>dragover的对象</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">target</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>drag 携带的对象（特指从外面拖进canvas的对象）</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Instance.html#event:dragover">Instance#event:dragover</a>
 			</li>
 		</ul>
 	</dd>
@@ -1566,7 +4454,7 @@
 
     
     <div class="description">
-        <p>丢在节点上事件</p>
+        <p>丢在线上事件</p>
     </div>
     
 
@@ -1661,6 +4549,30 @@
 
         <tr>
             
+                <td class="name"><code>link</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="BaseLink.html">BaseLink</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>目标连线</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>jflow</code></td>
             
 
@@ -1685,13 +4597,16 @@
 
         <tr>
             
-                <td class="name"><code>target</code></td>
+                <td class="name"><code>belongs</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="Node.html">Node</a></span>
+<span class="param-type"><a href="Group.html">Group</a></span>
+|
+
+<span class="param-type"><a href="JFlow.html">JFlow</a></span>
 
 
 
@@ -1702,7 +4617,7 @@
 
             
 
-            <td class="description last"><p>目标节点</p></td>
+            <td class="description last"><p>连线所在的绘图栈的对象</p></td>
         </tr>
 
     
@@ -1745,12 +4660,17 @@
 	<dd class="inherited-from">
 		<ul class="dummy">
 			<li>
-				<a href="Node.html#event:drop">Node#event:drop</a>
+				<a href="BaseLink.html#event:drop">BaseLink#event:drop</a>
 			</li>
 		</ul>
 	</dd>
 	
 
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="BaseLink.html#event:drop">BaseLink#event:drop</a>
+    </li></ul></dd>
     
 
     
@@ -1800,7 +4720,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="event:instancemousemove">instancemousemove</h4>
+    <h4 class="name" id="event:mouseenter">mouseenter</h4>
     
     
 </dt>
@@ -1808,7 +4728,7 @@
 
     
     <div class="description">
-        <p>instance mousemove 原生事件，仅在无拖拽时触发</p>
+        <p>鼠标移入事件</p>
     </div>
     
 
@@ -1855,491 +4775,7 @@
 
         <tr>
             
-                <td class="name"><code>event</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Event</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>原始事件</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>instance</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Node.html">Node</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>原始事件</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>jflow</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="JFlow.html">JFlow</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>当前JFlow对象</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-</dl>
-
-    
-
-	
-
-	
-
-	
-	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
-	<dd class="inherited-from">
-		<ul class="dummy">
-			<li>
-				<a href="Node.html#event:instancemousemove">Node#event:instancemousemove</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="event:instancePressStart">instancePressStart</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>开始拖动对象事件（就是目标对象的拖动事件，事件支持冒泡）</p>
-    </div>
-    
-
-    
-
-    
-        <h5>Type: 
-<span class="param-type">object</span>
-
-
-</h5>
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>event</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Event</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>原始事件</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>instance</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Node.html">Node</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>拖动的对象</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>jflow</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="JFlow.html">JFlow</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>当前JFlow对象</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>bubbles</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>冒泡</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-</dl>
-
-    
-
-	
-
-	
-
-	
-	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
-	<dd class="inherited-from">
-		<ul class="dummy">
-			<li>
-				<a href="Node.html#event:instancePressStart">Node#event:instancePressStart</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="event:pressEnd">pressEnd</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>拖动后放置到 Instance 上的事件，由被拖动到的对象触发</p>
-    </div>
-    
-
-    
-
-    
-        <h5>Type: 
-<span class="param-type">object</span>
-
-
-</h5>
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>event</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Event</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>原始事件</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>instance</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Node.html">Node</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>拖动的对象</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>jflow</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="JFlow.html">JFlow</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>当前JFlow对象</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -2356,31 +4792,7 @@
 
             
 
-            <td class="description last"><p>拖动到的对象</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>bubbles</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>冒泡</p></td>
+            <td class="description last"><p>移入的对象</p></td>
         </tr>
 
     
@@ -2399,7 +4811,7 @@
 	<dd class="inherited-from">
 		<ul class="dummy">
 			<li>
-				<a href="Node.html#event:pressEnd">Node#event:pressEnd</a>
+				<a href="Instance.html#event:mouseenter">Instance#event:mouseenter</a>
 			</li>
 		</ul>
 	</dd>
@@ -2454,7 +4866,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="event:pressStart">pressStart</h4>
+    <h4 class="name" id="event:mouseleave">mouseleave</h4>
     
     
 </dt>
@@ -2462,7 +4874,7 @@
 
     
     <div class="description">
-        <p>开始拖动组的事件（特指lock的顶层组）</p>
+        <p>鼠标移出事件</p>
     </div>
     
 
@@ -2509,37 +4921,13 @@
 
         <tr>
             
-                <td class="name"><code>event</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Event</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>原始事件</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>instance</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="Node.html">Node</a></span>
+<span class="param-type"><a href="Instance.html">Instance</a></span>
 
 
 
@@ -2550,31 +4938,7 @@
 
             
 
-            <td class="description last"><p>拖动的对象</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>jflow</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="JFlow.html">JFlow</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>当前JFlow对象</p></td>
+            <td class="description last"><p>移入的对象</p></td>
         </tr>
 
     
@@ -2593,7 +4957,7 @@
 	<dd class="inherited-from">
 		<ul class="dummy">
 			<li>
-				<a href="Node.html#event:pressStart">Node#event:pressStart</a>
+				<a href="Instance.html#event:mouseleave">Instance#event:mouseleave</a>
 			</li>
 		</ul>
 	</dd>

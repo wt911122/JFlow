@@ -11,7 +11,6 @@
 const LayoutMixin = {
     /** @property {Layout}      - 布局对象 */
     _layout: null,
-    // _reflowed: false,
     /**
      * 初始化布局
      * @param {LayoutMixin~LayoutConfigs} configs - 配置
@@ -49,15 +48,10 @@ const LayoutMixin = {
      * 重新计算布局，相当于浏览器里面重排，并重算当前布局下的最小外接矩形
      */
     recalculate() {
-        // this._reflowed = true;
         this.reflow();
         if(this._getBoundingGroupRect){
             this._getBoundingGroupRect();
         }
-        // 这个地方到底是手动还是自动？自动时机再试试看好了
-        // if(this._belongs) {
-        //     this._belongs.recalculate();
-        // }
     },
     /**
      * 布局静态检查

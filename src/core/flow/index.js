@@ -31,6 +31,14 @@ import DiamondVertical from '../instance/shapes/diamond-vertical';
  * @return {Object} - 初始位置 { x, y }
  */
 
+/**
+ * @funtion linkGen
+ * @param {Node} from - 出发绘图节点
+ * @param {Node} to - 临时节点，当前鼠标指的地方
+ * @return {BaseeLink} - 连线对象
+ */
+
+
 /** 
  * @class Group
  * @classdesc 矩形组单元 由 {@link GroupFactory} 通过 {@link Rectangle} 生成
@@ -210,7 +218,10 @@ class JFlow extends EventTarget{
 
         this.mode = JFLOW_MODE.DEFAULT;
     }
-
+    /**
+     * 设置当前拖动的 JFlow 对象
+     * @param {Object[]} targets - 具有 anchor 属性的对象
+     */
     setMovingTargets(targets) {
         Object.assign(this._target, {
             moving: targets,       
@@ -317,6 +328,11 @@ class JFlow extends EventTarget{
         this._render();
     }
 
+    /**
+     * 设置Jflow进入连线模式
+     * @param {Object} source - 当前连线的出发原始数据
+     * @param {linkGen} linkGen - 生成连线单元的方法
+     */
     setLinkingMode(source, linkGen) {
         const renderNode = this.getRenderNodeBySource(source)
         this._tempNode = new GhostNode();
@@ -330,12 +346,18 @@ class JFlow extends EventTarget{
         this.mode = JFLOW_MODE.LINKING;
     }
 
+    /**
+     * 连线模式下，设置当前临时连线的属性
+     * @param {BaseLink~Configs} configs - 当前连线的出发原始数据
+     */
     setLinkingLink(configs) {
         if(this.mode === JFLOW_MODE.LINKING) {
             this._tempLink.setConfig(configs);
         }
     }
-
+    /**
+     * 连线模式下，重连回临时鼠标节点
+     */
     resetLinkingLink() {
         if(this.mode === JFLOW_MODE.LINKING) {
             this._tempLink.setConfig({
@@ -344,6 +366,9 @@ class JFlow extends EventTarget{
         }
     }
 
+    /**
+     * 外层容器大小变化后，调用此方法可以改变当前canvas的状态
+     */
     resizeCanvas() {
         const {
             width: c_width, 
@@ -359,6 +384,10 @@ class JFlow extends EventTarget{
         }
     }
 
+    /**
+     * 移动画布到以目标绘图节点为中心的位置上
+     * @param {Node} node - 绘图节点
+     */
     focusOn(node) {
         const center = this._calculatePointBack([
             this.canvasMeta.actual_width/2,

@@ -1,16 +1,29 @@
 import BaseLink from './base-link';
 import { distToSegmentSquared, isPolyLineIntersectionRectange } from '../utils/functions';
 import { APPROXIMATE } from '../utils/constance';
-// const PIINRATIO = Math.PI / 180
+/**
+ * @typedef {BaseLink~Configs} Link~Configs
+ * @property {Number} approximate   - 点击响应范围
+ * @property {Number[]} lineDash    - 虚线数组
+ * @property {Boolean} doubleLink   - 双向箭头
+ * @property {String} fontFamily    - 连线上的文字字体
+ * @property {Number} fontSize      - 连线上的文字大小
+ * @property {String} content       - 连线上的文字
+ */
+/**
+ * 直线
+ * @constructor Link
+ * @extends BaseLink
+ * @param {Link~Configs} configs - 配置
+ */
 class Link extends BaseLink {
     constructor(configs) {
         super(configs);
-        // this.controlPoints = [0, 1, -10, 1, -10, 5];
         this.fontFamily    = configs.fontFamily = '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji'
         this.fontSize      = configs.fontSize || '12px';
         this.content       = configs.content || '';
         this.lineDash      = configs.lineDash;
-        this.hittestrange  = configs.hittestrange || APPROXIMATE;
+        this.approximate  = configs.approximate || APPROXIMATE;
     }
 
     _calculateAnchorPoints() {
@@ -21,12 +34,6 @@ class Link extends BaseLink {
         const dy = p1[1] - p0[1];
         const angle = Math.atan2(dy, dx);
         this._cacheAngle = angle;
-        // return {
-        //     startX: start[0], 
-        //     startY: start[1],
-        //     endX  : end[0],
-        //     endY  : end[1],
-        // }
     }
     
     isInViewBox(br) {
@@ -89,49 +96,13 @@ class Link extends BaseLink {
         ctx.fill();
         ctx.rotate(-angle);
         ctx.translate(-p1[0], -p1[1]);
-        // const controlPoints = this.controlPoints;
-        // var dx = endX - startX;
-        // var dy = endY - startY;
-        // var len = Math.sqrt(dx * dx + dy * dy);
-        // var sin = dy / len;
-        // var cos = dx / len;
-        // var a = [];
-        // a.push(0, 0);
-        // for (var i = 0; i < controlPoints.length; i += 2) {
-        //     var x = controlPoints[i];
-        //     var y = controlPoints[i + 1];
-        //     a.push(x < 0 ? len + x : x, y);
-        // }
-        // a.push(len, 0);
-        // for (var i = controlPoints.length; i > 0; i -= 2) {
-        //     var x = controlPoints[i - 2];
-        //     var y = controlPoints[i - 1];
-        //     a.push(x < 0 ? len + x : x, -y);
-        // }
-        // a.push(0, 0);
-        // ctx.fillStyle = ctx.strokeStyle = this.backgroundColor;
-        // ctx.beginPath();
-        // for (var i = 0; i < a.length; i += 2) {
-        //     var x = a[i] * cos - a[i + 1] * sin + startX;
-        //     var y = a[i] * sin + a[i + 1] * cos + startY;
-        //     if (i === 0) ctx.moveTo(x, y);
-        //     else ctx.lineTo(x, y);
-        // }
-        // ctx.fill();
-
-        
     }
 
     isHit(point) {
         if(!this._cachePoints) return false;
         const [ start, end ] = this._cachePoints;
         const dist = distToSegmentSquared(point, start, end)
-        return dist < this.hittestrange;
-    }
-
-    getBoundingRect() {
-        const { startX, startY, endX, endY } = this._calculateAnchorPoints(); 
-        return [[startX, startY], [endX, endY]]
+        return dist < this.approximate;
     }
 }
 

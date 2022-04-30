@@ -2,7 +2,8 @@
      <j-diamond-group 
         :source="node" 
         :configs="groupConfig"
-        v-on="$listeners">
+        v-on="$listeners"
+        @dblclick="onDbClick">
         <j-text :configs="{
             fontSize: '12px',
             textColor: '#585c63',
@@ -41,6 +42,9 @@ export default {
                 val: event.detail.val,
                 oldVal: event.detail.oldVal,
             });
+        },
+        onDbClick(event) {
+            console.log('dblclick')
         }
     }
 }

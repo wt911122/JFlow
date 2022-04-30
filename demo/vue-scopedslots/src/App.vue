@@ -364,9 +364,9 @@ export default {
         };
         const layout = new Lowcodelayout({
             linkLength: 60,
-            ast: astrandom,
+            ast,
         });
-        this.ast = astrandom;
+        this.ast = ast;
         const configs = Object.freeze({
             allowDrop: true,
             layout,
