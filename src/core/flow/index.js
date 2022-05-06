@@ -395,7 +395,7 @@ class JFlow extends EventTarget{
         ]);
         let offset = node.anchor;
         if(node._belongs.calculateToCoordination) {
-            offset = node._belongs.calculateToCoordination(offeset);
+            offset = node._belongs.calculateToCoordination(offset);
         }
 
         const deltaX = (center[0] - offset[0]) * this.scale;
