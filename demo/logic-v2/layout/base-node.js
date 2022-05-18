@@ -1,3 +1,4 @@
+import { DIRECTION } from '../src/custom/utils';
 function getType(concept) {
     switch (concept) {
         case "Assignment":
@@ -7,6 +8,7 @@ function getType(concept) {
         case "callInterface":
         case "callLogic":
         case "datasearch":
+        case "SwitchCase":
         case "if":
             return "LogicBasic"
         
@@ -15,22 +17,43 @@ function getType(concept) {
     }
 }
 
+function toNode(node) {
+    if(node.concept === 'Switch') {
+        return node.cases[0];
+    }
+    return node
+}
+
 class BaseNode {
     constructor(source) {
         this.source = source;
         this.id = source.id;
+        this.concept = source.concept;
         this.type = getType(source.concept);
         this.parent = undefined;
         this.parentIterateType = undefined;
         this.idx = undefined;
+
+        this.row = undefined;
+        this.column = undefined;
+        this.spanX = undefined;
+        this.spanY = undefined;
     }
 
     reflowPreCalculate(row, column, callback) {
-        callback({
+        this.row = row;
+        this.column = column;
+        this.spanX = 1;
+        this.spanY = 1;
+        if(callback) {
+            callback(row, column, this);
+        }
+        return {
+            spanX: this.spanX,
+            spanY: this.spanY,
             row,
             column,
-            layoutNode: this,
-        });
+        };
     }
 
     makeLink(callback) {
@@ -62,24 +85,23 @@ class Logic extends BaseNode {
             }
             callback({
                 from: last,
-                to: b,
-                part: 'body',
-                rootNode: 'bodyroot',
+                to: toNode(b),
+                fromDir: DIRECTION.BOTTOM,
+                toDir: DIRECTION.TOP,
             });
 
             b = b.makeLink((configs) => {
-                configs.rootNode = 'bodyroot';
                 callback(configs);
             });
             last = b;
         });
 
-        this.playground.forEach((n) => {
-            n.makeLink((configs) => {
-                configs.rootNode = n;
-                callback(configs);
-            });
-        });
+        // this.playground.forEach((n) => {
+        //     n.makeLink((configs) => {
+        //         configs.rootNode = n;
+        //         callback(configs);
+        //     });
+        // });
         return this;
     }
 
@@ -93,20 +115,26 @@ class Logic extends BaseNode {
         })
     }
 
-    reflowPreCalculate(row = 0, column = 0, callback) {
-        this.body.forEach((b, idx) => {
-            b.reflowPreCalculate(row + idx, column, callback);
+    reflowBodyPreCalculate(row = 0, column = 0, callback) {
+        let spanX = 1;
+        let spanY = 1;
+        this.row = row;
+        this.column = column;
+        // if (callback) {
+        //     callback(row, column, this);
+        // }
+        this.body.forEach((b) => {
+            const { spanY: sy } = b.reflowPreCalculate(row, column, callback);
+            // spanX = Math.max(sx, spanX);
+            spanY += sy;
+            row += sy;
         });
 
-        // this.playground.forEach((proot) => {
-        //     const newCallback = (meta) => {
-        //         callback({
-        //             ...meta,
-        //             root: proot
-        //         });
-        //     }
-        //     proot.reflowPreCalculate(0, 0, newCallback);
-        // })
+        this.spanX = spanX;
+        this.spanY = spanY;
+        return {
+            spanX, spanY, row, column,
+        };
     }
 }
 
@@ -116,30 +144,54 @@ class SwitchStatement extends BaseNode {
         this.hasEndPoint = true;
         this.Endpoint = null;
         this.cases = (source.cases || []).map(mapFunc('cases').bind(this));
+        this.preCases = this.cases.slice(0, this.cases.length - 1);
+        this.defaultCase = this.cases[this.cases.length - 1];
+        this.defaultCase.isDefault = true;
     }
 
     makeLink(callback) {
-        let lastc
-        this.cases.forEach((c) => {
-            if(c.consequent.length) {
-                const firstConsquent = c.consequent[0];
-                callback({
-                    from: this,
-                    to: firstConsquent,
-                    content: c.source.content,
-                    part: 'consequent',
-                });
-                console.log(c)
-                lastc = c.makeLink(callback);
+        let last;
+        let lastCase;
+        this.cases.forEach((b, idx) => {
+            const lastInCase = b.makeLink(callback);
+            const isDefault = b.isDefault;
+            const remainCases = this.cases.slice(idx + 1);
+            let remainSpanX = 0;
+            remainCases.forEach(c => {
+                remainSpanX = Math.max(remainSpanX, c.spanX);
+            })
+            // const columnEnd = remainSpanX + b.column - 1;
+            // const columnBegin = b.column + 1;
+            // const rowBegin = b.row + b.spanY;
+            // const rowEnd = this.Endpoint.row;
+            let roundCorner
+            if(remainSpanX > 1) {
+                roundCorner = [remainSpanX + b.column - 1, b.row + b.spanY]
             }
+            // 回来的线
             callback({
-                from: lastc || this,
+                from: lastInCase || b,
                 to: this.Endpoint,
-                part: 'consequent',
+                fromDir: (lastInCase || isDefault) ? DIRECTION.BOTTOM : DIRECTION.RIGHT,
+                toDir: DIRECTION.RIGHT,
+                roundCorner
             });
-        });
-        return this.Endpoint
-        
+            if(lastCase) {
+                // case 间的线
+                callback({
+                    type: 'switchcaselink',
+                    from: lastCase,
+                    to: b,
+                    fromDir: DIRECTION.BOTTOM,
+                    toDir: DIRECTION.TOP,
+                    lineDash: [5, 5],
+                     
+                });
+            }
+
+            lastCase = b
+        })
+        return this.Endpoint;
     }
     traverse(callback) {
         callback(this);
@@ -149,39 +201,65 @@ class SwitchStatement extends BaseNode {
         this.Endpoint.traverse(callback);
     }
 
-    reflowPreCalculate(row, column, callback) {
-        super.reflowPreCalculate(row, column, callback);
-        // const nextColumn = column + 1;
-        this.cases.forEach((c, idx) => {
-            c.reflowPreCalculate(row + 1, column + idx, callback);
+    reflowPreCalculate(row = 0, column = 0, callback) {
+        let spanX = 1;
+        let spanY = 0;
+        this.row = row;
+        this.column = column;
+        
+        this.preCases.forEach((c, idx) => {
+            const { spanY: sy, spanX: sx } = c.reflowPreCalculate(row + spanY, column, callback);
+            spanY += sy;
+            spanX = Math.max(spanX, sx);
         });
-
-        this.Endpoint.reflowPreCalculate(row + 2, column, callback)
+        const { spanY: sy, spanX: sx } = this.defaultCase.reflowPreCalculate(row + spanY, column, callback, true);
+        spanY += sy;
+        spanX = Math.max(spanX, sx);
+        const { spanY: syend, spanX: sxend } = this.Endpoint.reflowPreCalculate(row + spanY, column, callback);
+        spanY += syend;
+        spanX = Math.max(spanX, sxend);
+        this.spanX = spanX;
+        this.spanY = spanY;
+        
+        return {
+            spanX, spanY, row, column,
+        };
     }
+
+    // reflowPreCalculate(row, column, callback) {
+    //     super.reflowPreCalculate(row, column, callback);
+    //     // const nextColumn = column + 1;
+    //     this.cases.forEach((c, idx) => {
+    //         c.reflowPreCalculate(row, column, callback);
+    //     });
+
+    //     this.Endpoint.reflowPreCalculate(row + 2, column, callback)
+    // }
 }
 
 class SwitchCase extends BaseNode {
     constructor(source) {
         super(source);
+        this.isDefault = false;
         this.consequent = (source.consequent || []).map(mapFunc('consequent').bind(this));
     }
 
     makeLink(callback) {
+        let last;
         if(this.consequent.length) {
-            let last = this.consequent[0].makeLink(callback);
-            this.consequent.slice(1).forEach(c => {
+            this.consequent.forEach((b, idx) => {
                 callback({
-                    from: last,
-                    to: c,
-                    part: 'body',
-                    rootNode: 'bodyroot',
+                    from: last || this,
+                    to: toNode(b),
+                    fromDir: (last || this.isDefault) ? DIRECTION.BOTTOM : DIRECTION.RIGHT,
+                    toDir: DIRECTION.TOP,
                 });
-                last = c.makeLink(callback);
+
+                b = b.makeLink(callback);
+                last = b;
             });
-            return last;
         }
-        
-        return null;
+        return last;
     }
     traverse(callback) {
         callback(this);
@@ -189,12 +267,37 @@ class SwitchCase extends BaseNode {
             b.traverse(callback);
         });
     }
-    reflowPreCalculate(row, column, callback) {
-        this.consequent.forEach((c, idx) => {
-            c.reflowPreCalculate(row + idx, column, callback);
+
+    reflowPreCalculate(row, column, callback, isDefault) {
+        console.log(isDefault)
+        let spanX = 0;
+        let spanY = 1;
+        this.row = row;
+        this.column = column;
+        if (callback) {
+            callback(row, column, this);
+        }
+        this.consequent.forEach((b, idx) => {
+            const { spanY: sy, spanX: sx } = b.reflowPreCalculate(
+                row + idx + 1,
+                column + (isDefault ? 0 : 1),
+                callback);
+            spanX = Math.max(sx, spanX);
+            spanY += sy;
         });
+        this.spanX = spanX + (isDefault ? 0 : 1);
+        this.spanY = spanY;
+        return {
+            spanX: this.spanX, spanY, row, column,
+        };
     }
 }
+//     reflowPreCalculate(row, column, callback) {
+//         this.consequent.forEach((c, idx) => {
+//             c.reflowPreCalculate(row + idx, column, callback);
+//         });
+//     }
+// }
 
 class ForEachStatement extends BaseNode {
     constructor(source) {
@@ -208,8 +311,9 @@ class ForEachStatement extends BaseNode {
             this.body.forEach((b, idx) => {
                 callback({
                     from: last || this,
-                    to: b,
-                    part: 'foreachbody',
+                    to: toNode(b),
+                    fromDir: last ? DIRECTION.BOTTOM : DIRECTION.STARTLOOP,
+                    toDir: DIRECTION.TOP,
                 });
 
                 b = b.makeLink(callback);
@@ -217,8 +321,10 @@ class ForEachStatement extends BaseNode {
             });
         }
         callback({
-            from: last,
+            from: last || this,
             to: this,
+            fromDir: last ? DIRECTION.BOTTOM : DIRECTION.STARTLOOP,
+            toDir: DIRECTION.ENDLOOP,
         })
         return this;
     }
@@ -229,12 +335,32 @@ class ForEachStatement extends BaseNode {
         });
     }
     reflowPreCalculate(row, column, callback) {
-        super.reflowPreCalculate(row, column, callback);
-        const nextColumn = column + 1;
-        this.body.forEach((c, idx) => {
-            c.reflowPreCalculate(row + idx, nextColumn, callback);
+        let spanX = 0;
+        let spanY = 1;
+        this.row = row;
+        this.column = column;
+        if (callback) {
+            callback(row, column, this);
+        }
+        row += 1
+        this.body.forEach((b) => {
+            const { spanY: sy, spanX: sx } = b.reflowPreCalculate(row, column + 1, callback);
+            spanX = Math.max(sx, spanX);
+            row += sy;
         });
+        this.spanX = spanX + 1;
+        this.spanY = spanY;
+        return {
+            spanX: this.spanX, spanY, row, column,
+        };
     }
+    // reflowPreCalculate(row, column, callback) {
+    //     super.reflowPreCalculate(row, column, callback);
+    //     const nextColumn = column + 1;
+    //     this.body.forEach((c, idx) => {
+    //         c.reflowPreCalculate(row + idx, nextColumn, callback);
+    //     });
+    // }
 }
 
 class WhileStatement extends BaseNode {
@@ -248,12 +374,12 @@ class WhileStatement extends BaseNode {
     makeLink(callback) {
         let last;
         if(this.body.length) {
-            console.log('while makeLink')
             this.body.forEach((b, idx) => {
                 callback({
                     from: last || this,
-                    to: b,
-                    part: 'whilebody',
+                    to: toNode(b),
+                    fromDir: last ? DIRECTION.BOTTOM : DIRECTION.STARTLOOP,
+                    toDir: DIRECTION.TOP,
                 });
 
                 b = b.makeLink(callback);
@@ -261,8 +387,10 @@ class WhileStatement extends BaseNode {
             });
         }
         callback({
-            from: last,
+            from: last || this,
             to: this,
+            fromDir: last ? DIRECTION.BOTTOM : DIRECTION.STARTLOOP,
+            toDir: DIRECTION.ENDLOOP,
         })
         return this;
     }
@@ -274,12 +402,33 @@ class WhileStatement extends BaseNode {
         });
     }
     reflowPreCalculate(row, column, callback) {
-        super.reflowPreCalculate(row, column, callback);
-        const nextColumn = column + 1;
-        this.body.forEach((c, idx) => {
-            c.reflowPreCalculate(row + idx + 1, nextColumn, callback);
+        let spanX = 0;
+        let spanY = 1;
+        this.row = row;
+        this.column = column;
+        if (callback) {
+            callback(row, column, this);
+        }
+        row += 1
+        this.body.forEach((b) => {
+            const { spanY: sy, spanX: sx } = b.reflowPreCalculate(row, column + 1, callback);
+            spanX = Math.max(sx, spanX);
+            row += sy;
         });
+
+        this.spanX = spanX + 1;
+        this.spanY = spanY;
+        return {
+            spanX: this.spanX, spanY, row, column,
+        };
     }
+    // reflowPreCalculate(row, column, callback) {
+    //     super.reflowPreCalculate(row, column, callback);
+    //     const nextColumn = column + 1;
+    //     this.body.forEach((c, idx) => {
+    //         c.reflowPreCalculate(row + idx + 1, nextColumn, callback);
+    //     });
+    // }
 }
 
 

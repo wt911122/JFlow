@@ -20,6 +20,7 @@
           "id": 4,
           "concept": "Switch",
           "cases": [
+            
             {
               "id": 5,
                "concept": "SwitchCase",
@@ -72,8 +73,25 @@
                     "content": "TotalPay = TotalPay+item.productList.price*5"
                   }
                ]
+            },
+            {
+              "id": 88,
+               "concept": "SwitchCase",
+               "content": "defaultcase",
+               "consequent": [
+                  {
+                    "id": 99,
+                    "concept": "Assignment",
+                    "content": "TotalPay = TotalPay+item.productList.price*2"
+                  }
+               ]
             }
           ]
+        },
+        {
+          "id": 8776,
+          "concept": "Assignment",
+          "content": "TotalPay = TotalPay+item.productList.price*2"
         }
       ]
     },

@@ -1,6 +1,7 @@
 <template>
+<j-logic-node-group
+    :source="node">
     <j-point
-        :source="node"
         :configs="{
             backgroundColor: '#666E80',
             borderWidth: 1,
@@ -8,6 +9,7 @@
             ignoreHit: true,
         }">
     </j-point>
+</j-logic-node-group>
 </template>
 
 <script>

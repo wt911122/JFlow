@@ -1,6 +1,7 @@
 import AssignmentIcon from './assets/Assignment.png'
 import ForEachIcon from './assets/ForEach.png'
 import SwitchIcon from './assets/Switch.png'
+import SwitchCaseIcon from './assets/SwitchCase.png'
 import WhileIcon from './assets/While.png'
 import callInterfaceIcon from './assets/callInterface.png'
 import callLogicIcon from './assets/callLogic.png'
@@ -21,6 +22,7 @@ export const ConceptIconMap = {
     'callInterface': makeImage(callInterfaceIcon),
     'callLogic': makeImage(callLogicIcon),
     'datasearch': makeImage(datasearchIcon),
+    'SwitchCase': makeImage(SwitchCaseIcon),
     'if': makeImage(ifIcon),
 }
 
@@ -28,6 +30,7 @@ export const ConceptColorMap = {
     'Assignment': '#EBBC00',
     'ForEach': '#A567F5',
     'Switch': '#4C88FF',
+    'SwitchCase': '#4C88FF',
     'While': '#97B20E',
     'callInterface': '#756BFF',
     'callLogic': '#F56CC7',
@@ -39,6 +42,7 @@ export const ConceptSubColorMap = {
     'Assignment': '#FDF9E6',
     'ForEach': '#F6F0FE',
     'Switch': '#EEF4FF',
+    'SwitchCase': '#EEF4FF',
     'While': '#F5F8E7',
     'callInterface': '#756BFF',
     'callLogic': '#fff',

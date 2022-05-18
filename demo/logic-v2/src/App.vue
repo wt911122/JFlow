@@ -17,16 +17,25 @@
             <template #End="{ source }">
                 <end-Node :node="source"></end-Node>
             </template>
+            <template #switchcaselink="{configs}" >
+                <j-switch-case-link
+                    :configs="{
+                        ...configs,
+                        backgroundColor: '#4C88FF',
+                    }"
+                    :from="configs.from.source"
+                    :to="configs.to.source">
+                </j-switch-case-link>
+            </template>
             <template #plainlink="{ configs }">
-                <jLink
+                <j-logic-link
                     :configs="{
                         ...configs,
                         backgroundColor: '#919499',
                     }"
                     :from="configs.from.source"
-                    :to="configs.to.source"
-                    @contextclick="removelink(configs)">
-                </jLink>
+                    :to="configs.to.source">
+                </j-logic-link>
             </template>
     </j-jflow>
 </div>
@@ -57,7 +66,7 @@ export default {
         const configs = Object.freeze({
             allowDrop: true,
             layout,
-            initialZoom: 1,
+            // initialZoom: 1,
             minZoom: .2,
             NodeRenderTop: true,
         })

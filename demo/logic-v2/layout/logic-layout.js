@@ -3,13 +3,20 @@ import { makeAST } from './base-node';
 
 class LogicLayout {
     constructor(source) {
-        this.rowGap = 60;
-        this.columnGap = 20;
+        this.rowGap = 58;
+        this.columnGap = 75;
+        this.columnWidth = 189;
+        this.rowHeight = 32;
         this.flowStack = [];
         this.flowLinkStack = [];
         this.source = null;
-        this.static = false;
+        this.static = true;
         this.reOrder(source)
+    }
+
+    staticCheck(instance, jflow) {
+        jflow.reflow();
+        return false;
     }
 
     reOrder(source) {
@@ -20,7 +27,7 @@ class LogicLayout {
         this.root = makeAST(this.source);
 
         this.root.traverse((node) => {
-            if (node.type === 'SwitchCase') {
+            if (node.concept === 'Switch' || node.concept === 'Logic') {
                 return;
             }
 
@@ -31,53 +38,78 @@ class LogicLayout {
             }); 
         });
 
+        const layoutMapping = {
+            vertical: {},
+            horizontal: {},
+        };
+        this.root.reflowBodyPreCalculate(0, 0, (row, column, node) => {
+            if (!layoutMapping.vertical[row]) {
+                layoutMapping.vertical[row] = {};
+            }
+            layoutMapping.vertical[row][column] = node;
+
+            if (!layoutMapping.horizontal[column]) {
+                layoutMapping.horizontal[column] = {};
+            }
+            layoutMapping.horizontal[column][row] = node;
+        });
+
+        this.layoutMapping = layoutMapping;
+
+
         this.root.makeLink((configs) => {
-            if (configs.from.type !== 'End') {
-                this.flowLinkStack.push(configs);
+            // console.log(configs)
+            if(configs.roundCorner) {
+                // console.log(configs.roundCorner);
+                const [x, y] = configs.roundCorner;
+                configs.bendPoint = [
+                    x * (this.columnWidth + this.columnGap) + this.columnWidth /2 + 15,
+                    y * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
+                ]
             }
+            this.flowLinkStack.push(configs);
         });
-
-        const columnMap = {};
-        this.root.reflowPreCalculate(0, 0, ({column, layoutNode }) => {
-            if(!columnMap[column]) {
-                columnMap[column] = [];
-            }
-            columnMap[column].push(layoutNode);
-        });
-
-        this.columnMap = columnMap;
-        console.log(columnMap)
-        console.log(this.source);
-        console.log(this.flowStack.map(t => t.type))
+        console.log(layoutMapping)
+        // console.log(this.source);
+        // console.log(this.flowStack.map(t => t.type))
     }
 
     reflow(jflow) {
         const rowGap = this.rowGap;
         const columnGap = this.columnGap;
 
-        const columnMap = this.columnMap;
-        const columnAnchor = [];
-        let reduceWidth = 0;
+        const layoutMapping = this.layoutMapping;
+
+        // const {
+        //     vertical: verticalMapping,
+        //     horizontal: horizontalMapping,
+        // } = layoutMapping;
         
-        Object.keys(columnMap)
-            .sort((a, b) => parseInt(a) - parseInt(b))
-            .forEach((k, idx) => {
-                let w = 0;
-                columnMap[k].forEach(layoutNode => {
-                    const instance = jflow.getRenderNodeBySource(layoutNode.source);
-                    const { width } = instance.getBoundingDimension();
-                    w = Math.max(width, w);
-                });
-                reduceWidth += (idx === 0 ? 0 : w / 2);
-                columnAnchor.push(reduceWidth);
-                reduceWidth += (w / 2 + columnGap);
-            });
-        console.log(columnAnchor)
-        this.root.reflowPreCalculate(0, 0, ({ row, column, layoutNode }) => {
-            console.log(row, column, layoutNode.source.concept)
-            const instance = jflow.getRenderNodeBySource(layoutNode.source);
-            instance.setAnchor(columnAnchor[column], row * (rowGap + 32));
+        this.flowStack.forEach(({ layoutNode }) => {
+            const { row, column, source } = layoutNode;
+            const instance = jflow.getRenderNodeBySource(source);
+            instance.anchor = [
+                column * (this.columnWidth + this.columnGap),
+                row * (this.rowHeight + this.rowGap)
+            ];
         });
+
+        this.flowLinkStack.forEach(linkConfig => {
+            if (linkConfig.roundCorner) {
+                const [x, y] = linkConfig.roundCorner;
+                linkConfig.bendPoint = [
+                    x * (this.columnWidth + this.columnGap) + 10,
+                    y * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
+                ]
+            }
+        });
+
+       
+        // this.root.reflowPreCalculate(0, 0, ({ row, column, layoutNode }) => {
+        //     console.log(row, column, layoutNode.source.concept)
+        //     const instance = jflow.getRenderNodeBySource(layoutNode.source);
+        //     instance.setAnchor(columnAnchor[column], row * (rowGap + 32));
+        // });
         
     }
 }

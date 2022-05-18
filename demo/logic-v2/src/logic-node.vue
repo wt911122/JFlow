@@ -1,5 +1,5 @@
 <template>
-    <j-group 
+    <j-logic-node-group 
         :source="node" 
         :configs="configs">
         <j-group :configs="iconGroup">
@@ -11,10 +11,13 @@
                 fontSize: '12px',
                 textColor: '#222',
                 content: node.content,
+                maxWidth: 159,
+                ellipsis: true,
+                textAlign: 'left'
             }">
-        </j-text>
+            </j-text>
         </j-group>
-    </j-group>
+    </j-logic-node-group>
 </template>
 
 <script>
@@ -44,16 +47,16 @@ export default {
                 borderColor: color,
                 backgroundColor: '#fff',
                 borderRadius: 4,
+                height: 32,
             },
             iconGroup: {
                 padding: 8,
                 backgroundColor: subcolor,
             },
             textGroup: {
+                width: 159,
                 paddingTop: 10,
                 paddingBottom: 10,
-                paddingLeft: 12,
-                paddingRight: 12,
             },
             imageConfig: {
                 image: icon,

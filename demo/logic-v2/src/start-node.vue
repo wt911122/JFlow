@@ -1,5 +1,5 @@
 <template>
-    <j-group 
+    <j-logic-node-group  
         :source="node" 
         :configs="configs">
         <j-text :configs="{
@@ -11,7 +11,7 @@
         <j-group :configs="iconGroup">
             <j-icon :configs="imageConfig" />
         </j-group>
-    </j-group>
+    </j-logic-node-group >
 </template>
 
 <script>
