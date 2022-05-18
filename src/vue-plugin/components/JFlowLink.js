@@ -7,6 +7,9 @@ import * as JFlowInstance from '../../core/flow';
  * @property {String} to - source
  */
 export default function (nameNode, isLink) {
+    const builder =  typeof nameNode === 'string'
+        ? JFlowInstance[nameNode]
+        : nameNode;
     return {
         inject: [ 'addToLinkStack', 'removeFromLinkStack', 'getJFlow' ],
         props: {
@@ -39,7 +42,7 @@ export default function (nameNode, isLink) {
             const toInstance = jflow.getRenderNodeBySource(this.to);
             // const key = this.$vnode.key;
             if(fromInstance && toInstance) {
-                this._jflowInstance = new JFlowInstance[nameNode]({
+                this._jflowInstance = new builder({
                     ...this.configs,
                     from: fromInstance,
                     to: toInstance,
