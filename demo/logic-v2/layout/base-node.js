@@ -24,6 +24,72 @@ function toNode(node) {
     return node
 }
 
+function verticalFlow(
+    node, list,
+    spanX = 1,
+    spanY = 1,
+    row = 0,
+    column = 0,
+    callback
+) {
+    let lastNode;
+
+    let reducedStartSpan = spanY;
+    let reducedEndSpan = spanY;
+
+    list.forEach((e, idx) => {
+        const { spanX: sx, spanY: sy } = e.reflowPreCalculate(row + reducedStartSpan, column, callback);
+
+        if ((!lastNode || lastNode.concept !== 'Switch') && sy === 1 && sx === 1) {
+            // 单个块，顺序排列
+            reducedStartSpan += 1
+            reducedEndSpan = Math.max(reducedStartSpan, reducedEndSpan);
+        } else {
+            // 存在多行或多列，间隔排列
+            
+            reducedStartSpan = reducedEndSpan;
+            reducedEndSpan += sy;
+            e.reflowPreCalculate(row + reducedStartSpan, column, callback);
+            reducedStartSpan += 1;
+            reducedEndSpan = Math.max(reducedStartSpan, reducedEndSpan);
+        }
+
+        spanX = Math.max(sx, spanX);
+        lastNode = e;
+    });
+    spanY = reducedEndSpan;
+
+    return { spanX, spanY };
+}
+
+/* 
+function verticalFlow(node, list, spanX = 1, spanY = 1, row = 0, column = 0, callback) {
+    let lastMaxRow = row;
+    let lastNode;
+    let spanYPlain = spanY;
+    
+    list.forEach((b, idx) => {
+        const { spanX: sx, spanY: sy } = b.reflowPreCalculate(lastMaxRow, column, callback);
+
+        if ((!lastNode || lastNode.concept !== 'Switch') && sy === 1) {
+            const idxRow = row + idx;
+            lastMaxRow = Math.max(lastMaxRow, idxRow);
+            b.reflowPreCalculate(idxRow, column, callback);
+            spanYPlain += 1;
+            console.log(spanYPlain);
+        } else {
+            lastMaxRow = lastMaxRow + sy
+            spanY += sy;
+        }
+        spanX = Math.max(sx, spanX);
+        lastNode = b;
+    });
+    spanY = Math.max(spanYPlain, spanY);
+    return {
+        spanX, spanY
+    };
+} */
+
 class BaseNode {
     constructor(source) {
         this.source = source;
@@ -116,20 +182,24 @@ class Logic extends BaseNode {
     }
 
     reflowBodyPreCalculate(row = 0, column = 0, callback) {
-        let spanX = 1;
-        let spanY = 1;
         this.row = row;
         this.column = column;
-        // if (callback) {
-        //     callback(row, column, this);
-        // }
-        this.body.forEach((b) => {
-            const { spanY: sy } = b.reflowPreCalculate(row, column, callback);
-            // spanX = Math.max(sx, spanX);
-            spanY += sy;
-            row += sy;
-        });
 
+
+        // let lastMaxRow = 0;
+        // this.body.forEach((b, idx) => {
+        //     const { spanY: sy } = b.reflowPreCalculate(row + spanY, column, callback);
+
+        //     // const { spanY: sy } = b.reflowPreCalculate(row, column, callback);
+        //     if (sy === 1) {
+        //         lastMaxRow = row + idx + 1
+        //         b.reflowPreCalculate(lastMaxRow, column, callback);
+        //     } else {
+        //         lastMaxRow = row + spanY
+        //     }
+        //     spanY += sy;
+        // });
+        const { spanX, spanY } = verticalFlow(this, this.body, 0, 0, 0, 0, callback);
         this.spanX = spanX;
         this.spanY = spanY;
         return {
@@ -209,10 +279,11 @@ class SwitchStatement extends BaseNode {
         
         this.preCases.forEach((c, idx) => {
             const { spanY: sy, spanX: sx } = c.reflowPreCalculate(row + spanY, column, callback);
+            console.log(sy, idx)
             spanY += sy;
             spanX = Math.max(spanX, sx);
         });
-        const { spanY: sy, spanX: sx } = this.defaultCase.reflowPreCalculate(row + spanY, column, callback, true);
+        const { spanY: sy, spanX: sx } = this.defaultCase.reflowPreCalculate(row + spanY, column, callback);
         spanY += sy;
         spanX = Math.max(spanX, sx);
         const { spanY: syend, spanX: sxend } = this.Endpoint.reflowPreCalculate(row + spanY, column, callback);
@@ -268,27 +339,38 @@ class SwitchCase extends BaseNode {
         });
     }
 
-    reflowPreCalculate(row, column, callback, isDefault) {
+    reflowPreCalculate(row, column, callback) {
         console.log(isDefault)
-        let spanX = 0;
-        let spanY = 1;
+        const isDefault = this.isDefault;
+        // let spanX = 0;
+        // let spanY = 1;
         this.row = row;
         this.column = column;
         if (callback) {
             callback(row, column, this);
         }
-        this.consequent.forEach((b, idx) => {
-            const { spanY: sy, spanX: sx } = b.reflowPreCalculate(
-                row + idx + 1,
-                column + (isDefault ? 0 : 1),
-                callback);
-            spanX = Math.max(sx, spanX);
-            spanY += sy;
-        });
+
+        const { spanX, spanY } = verticalFlow(this, this.consequent, 0, 0, row + 1, column + (isDefault ? 0 : 1), callback);
+        // this.spanX = spanX + 1;
+        // this.spanY = spanY;
+        // return {
+        //     spanX: this.spanX, spanY, row, column,
+        // };
+        
+        // this.consequent.forEach((b, idx) => {
+        //     const { spanY: sy, spanX: sx } = b.reflowPreCalculate(
+        //         row + idx + 1,
+        //         column + (isDefault ? 0 : 1),
+        //         callback);
+        //     spanX = Math.max(sx, spanX);
+        //     spanY += sy;
+        // });
         this.spanX = spanX + (isDefault ? 0 : 1);
-        this.spanY = spanY;
+        this.spanY = spanY + 1;
         return {
-            spanX: this.spanX, spanY, row, column,
+            spanX: this.spanX,
+            spanY: this.spanY, 
+            row, column,
         };
     }
 }
@@ -335,24 +417,30 @@ class ForEachStatement extends BaseNode {
         });
     }
     reflowPreCalculate(row, column, callback) {
-        let spanX = 0;
-        let spanY = 1;
+        // let spanX = 0;
+        // let spanY = 1;
         this.row = row;
         this.column = column;
         if (callback) {
             callback(row, column, this);
         }
-        row += 1
-        this.body.forEach((b) => {
-            const { spanY: sy, spanX: sx } = b.reflowPreCalculate(row, column + 1, callback);
-            spanX = Math.max(sx, spanX);
-            row += sy;
-        });
-        this.spanX = spanX + 1;
-        this.spanY = spanY;
+        // this.body.forEach((b) => {
+        //     const { spanY: sy, spanX: sx } = b.reflowPreCalculate(row + spanY + 1, column + 1, callback);
+        //     spanX = Math.max(sx, spanX);
+        //     spanY += sy;
+        // });
+
+        // this.spanX = spanX + 1;
+        // this.spanY = spanY;
+        const { spanX, spanY } = verticalFlow(this, this.body, 0, 0, row + 1, column + 1, callback);
+        this.spanX = Math.max(spanX + 1, 2);
+        this.spanY = spanY + 1;
         return {
-            spanX: this.spanX, spanY, row, column,
+            spanX: this.spanX, 
+            spanY: this.spanY, 
+            row, column,
         };
+        // return verticalFlow(this, this.body, row, column, callback);
     }
     // reflowPreCalculate(row, column, callback) {
     //     super.reflowPreCalculate(row, column, callback);
@@ -391,6 +479,7 @@ class WhileStatement extends BaseNode {
             to: this,
             fromDir: last ? DIRECTION.BOTTOM : DIRECTION.STARTLOOP,
             toDir: DIRECTION.ENDLOOP,
+            minSpanX: 170,
         })
         return this;
     }
@@ -402,25 +491,31 @@ class WhileStatement extends BaseNode {
         });
     }
     reflowPreCalculate(row, column, callback) {
-        let spanX = 0;
-        let spanY = 1;
+        // let spanX = 0;
+        // let spanY = 1;
         this.row = row;
         this.column = column;
         if (callback) {
             callback(row, column, this);
         }
-        row += 1
-        this.body.forEach((b) => {
-            const { spanY: sy, spanX: sx } = b.reflowPreCalculate(row, column + 1, callback);
-            spanX = Math.max(sx, spanX);
-            row += sy;
-        });
+        // this.body.forEach((b) => {
+        //     const { spanY: sy, spanX: sx } = b.reflowPreCalculate(row + spanY + 1, column + 1, callback);
+        //     spanX = Math.max(sx, spanX);
+        //     spanY += sy;
+        // });
 
-        this.spanX = spanX + 1;
-        this.spanY = spanY;
+        // this.spanX = spanX + 1;
+        // this.spanY = spanY;
+        const { spanX, spanY } = verticalFlow(this, this.body, 0, 0, row + 1, column + 1, callback);
+        console.log(spanY)
+        this.spanX = Math.max(spanX + 1, 2);
+        this.spanY = spanY + 1;
         return {
-            spanX: this.spanX, spanY, row, column,
+            spanX: this.spanX, 
+            spanY: this.spanY, 
+            row, column,
         };
+        // return verticalFlow(this, this.body, row, column, callback);
     }
     // reflowPreCalculate(row, column, callback) {
     //     super.reflowPreCalculate(row, column, callback);

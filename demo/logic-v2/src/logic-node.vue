@@ -1,5 +1,8 @@
 <template>
+    <j-logic-node-group  v-if="layoutNode.isDefault" :source="node">
+    </j-logic-node-group >
     <j-logic-node-group 
+        v-else
         :source="node" 
         :configs="configs">
         <j-group :configs="iconGroup">
@@ -31,6 +34,7 @@ import {
 export default { 
     props: {
         node: Object,
+        layoutNode: Object,
     },
     data() {
         const node = this.node;

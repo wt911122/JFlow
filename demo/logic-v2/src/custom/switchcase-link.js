@@ -14,7 +14,7 @@ class SwitchCaseLink extends BaseLink {
     }
 
     _calculateAnchorPoints() {
-        console.log(this.bendPoint)
+        // console.log(this.bendPoint)
         const dmsfrom = this.from.getIntersectionsSeprate();
         const dmsto = this.to.getIntersectionsSeprate();
         const points = [dmsfrom[this.fromDir], dmsto[this.toDir]];

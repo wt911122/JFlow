@@ -34,6 +34,7 @@ class LogicLink extends BaseLink {
         this.content       = configs.content || '';
         this.noArrow       = !!configs.noArrow 
         this.bendPoint     = configs.bendPoint;
+        console.log(this.minSpanX)
     }
 
     _calculateAnchorPoints() {
@@ -45,7 +46,7 @@ class LogicLink extends BaseLink {
             dmsto[this.toDir],
             this.fromDir,
             this.toDir, 
-            100, 55, 20, 15,
+            this.minSpanX || 100, 55, 20, 15,
             this.bendPoint);
         this._cachePoints = points
         this._cacheAngle = [this.fromDir, this.toDir]

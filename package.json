@@ -2,7 +2,7 @@
   "name": "@joskii/jflow",
   "version": "0.0.63-beta",
   "description": "",
-  "main": "dist/jflow.bundle.js",
+  "main": "src/index.js",
   "files": [
     "dist/*.js"
   ],

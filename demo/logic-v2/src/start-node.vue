@@ -2,12 +2,6 @@
     <j-logic-node-group  
         :source="node" 
         :configs="configs">
-        <j-text :configs="{
-            fontSize: '12px',
-            textColor: '#000',
-            content: '开始',
-        }">
-        </j-text>
         <j-group :configs="iconGroup">
             <j-icon :configs="imageConfig" />
         </j-group>

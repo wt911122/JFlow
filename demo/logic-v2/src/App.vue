@@ -5,8 +5,11 @@
         :configs="configs"
         :loading.sync="jflowloading"
         :genVueComponentKey="genVueComponentKey">
-            <template #LogicBasic="{ source }">
-                <logic-Node :node="source"></logic-Node>
+            <template #LogicBasic="{ source, layoutNode }">
+                <logic-Node 
+                    :node="source" 
+                    :layoutNode="layoutNode">
+                </logic-Node>
             </template>
             <template #Start="{ source }">
                 <start-Node :node="source"></start-Node>

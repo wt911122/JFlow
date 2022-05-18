@@ -3,7 +3,7 @@ import { makeAST } from './base-node';
 
 class LogicLayout {
     constructor(source) {
-        this.rowGap = 58;
+        this.rowGap = 30;
         this.columnGap = 75;
         this.columnWidth = 189;
         this.rowHeight = 32;

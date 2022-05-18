@@ -71,6 +71,7 @@ export function polylinePoints(
         if(end_dir === DIRECTION.ENDLOOP) {
             points.push([p1[0] + spanX, p1[1]]);
             points.push([p1[0] + spanX, p1[1] + spanY]);
+            points.push([p1[0] + gapX, p1[1] + spanY]);
             points.push([p1[0] + gapX, p2[1]]);
         }
     }
