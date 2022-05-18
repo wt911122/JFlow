@@ -75,6 +75,8 @@ class Text extends Rectangle {
         // this.acceptPatten =     configs.acceptPatten;
         /** @member {number}      - 最小宽度 */
         this.minWidth =         configs.minWidth || 0;
+        this.maxWidth =         configs.maxWidth;
+        this.ellipsis =         configs.ellipsis;
 
         this.placeholder =          configs.placeholder || '';
         this.emptyWhenInput =       configs.emptyWhenInput || false;
@@ -201,8 +203,19 @@ class Text extends Rectangle {
             fontBoundingBoxDescent
         } = ctx.measureText(this.content);
         this._textWidth = this.indent + Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight);
-
-        this.width = Math.max(this.minWidth, this._textWidth);
+        if(this.maxWidth && this.ellipsis) {
+            if(this._textWidth > this.maxWidth) {
+                const ratio =this.maxWidth / this._textWidth;
+                const l = Math.floor(this.content.length * ratio - 3);
+                this.ellipsisContent = this.content.substring(0, l) + '...'; 
+            }  else {
+                this.ellipsisContent = this.content;
+            }
+            this.width = this.maxWidth;
+        } else{ 
+            this.width = Math.max(this.minWidth, this._textWidth);
+        }
+        
         const height = Math.abs(fontBoundingBoxAscent) + Math.abs(fontBoundingBoxDescent);
         if(this.lineHeight) {
             this.height = this.lineHeight;
@@ -241,14 +254,18 @@ class Text extends Rectangle {
         ctx.textAlign = this.textAlign;
         ctx.textBaseline = this.textBaseline;
         ctx.fillStyle = this.textColor;
+        let content = this.content;
+        if(this.ellipsisContent) {
+            content = this.ellipsisContent;
+        }
         if(this.textAlign === TEXT_ALIGN.LEFT){
             const hw = this.width / 2;
-            ctx.fillText(this.content, this.anchor[0] - hw + this.indent / 2, this.anchor[1]);
+            ctx.fillText(content, this.anchor[0] - hw + this.indent / 2, this.anchor[1]);
         } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
             const hw = this.width / 2;
-            ctx.fillText(this.content, this.anchor[0] + hw, this.anchor[1]);
+            ctx.fillText(content, this.anchor[0] + hw, this.anchor[1]);
         } else {
-            ctx.fillText(this.content, this.anchor[0] + this.indent / 2, this.anchor[1]);
+            ctx.fillText(content, this.anchor[0] + this.indent / 2, this.anchor[1]);
         }
         ctx.fill();
         ctx.restore();
