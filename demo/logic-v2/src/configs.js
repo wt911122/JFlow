@@ -23,7 +23,19 @@ export const ConceptIconMap = {
     'callLogic': makeImage(callLogicIcon),
     'datasearch': makeImage(datasearchIcon),
     'SwitchCase': makeImage(SwitchCaseIcon),
-    'if': makeImage(ifIcon),
+    'If': makeImage(ifIcon),
+}
+
+export const ConceptIconURLMap = {
+    'Assignment': AssignmentIcon,
+    'ForEach': ForEachIcon,
+    'Switch': SwitchIcon,
+    'While': WhileIcon,
+    'callInterface': callInterfaceIcon,
+    'callLogic': callLogicIcon,
+    'datasearch': datasearchIcon,
+    'SwitchCase': SwitchCaseIcon,
+    'If': ifIcon,
 }
 
 export const ConceptColorMap = {
@@ -35,7 +47,7 @@ export const ConceptColorMap = {
     'callInterface': '#756BFF',
     'callLogic': '#F56CC7',
     'datasearch': '#00B5D9',
-    'if': '#F2A130',
+    'If': '#F2A130',
 }
 
 export const ConceptSubColorMap = {
@@ -47,5 +59,5 @@ export const ConceptSubColorMap = {
     'callInterface': '#756BFF',
     'callLogic': '#fff',
     'datasearch': '#fff',
-    'if': '#fff',
+    'If': '#fff',
 }

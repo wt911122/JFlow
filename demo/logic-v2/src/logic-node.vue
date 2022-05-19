@@ -4,7 +4,9 @@
     <j-logic-node-group 
         v-else
         :source="node" 
-        :configs="configs">
+        :configs="configs"
+        @contextclick="onContextClick"
+        @dblclick="onDblclick">
         <j-group :configs="iconGroup">
             <j-icon :configs="imageConfig" />
         </j-group>
@@ -32,6 +34,7 @@ import {
 } from './configs';
 
 export default { 
+    inject: ['renderJFlow', 'poppups', 'modal'],
     props: {
         node: Object,
         layoutNode: Object,
@@ -69,6 +72,37 @@ export default {
             }
         }
     },
+    computed: {
+        selectionMeta() {
+            return this.poppups.selectionMeta;
+        },
+        selectionActive() {
+            return this.selectionMeta.active && this.selectionMeta.target === this.linkConfigs;
+        },
+        modalMeta() {
+            return this.modal.modalMeta;
+        }
+    },
+    methods: {
+        onContextClick(event) {
+            event.detail.bubbles = false;
+            const { clientX, clientY } = event.detail.event;
+
+            Object.assign(this.selectionMeta, {
+                type: 'operate',
+                clientX,
+                clientY,
+                active: true,
+                target: this.layoutNode,
+            });
+        },
+        onDblclick() {
+            Object.assign(this.modalMeta, {
+                active: true,
+                target: this.node,
+            });
+        }
+    }
 }
 </script>
 

@@ -4,9 +4,25 @@ import {
     DIRECTION,
     DIRECTION_ANGLE,
     polylinePoints,
+    distToSegmentSquared,
     makeRadiusFromVector,
-    isPolyLineIntersectionRectange
+    isPolyLineIntersectionRectange,
 } from './utils';
+const APPROXIMATE = 6;
+
+function getInteratableSegment(points) {
+    let i = 1;
+    while (i < points.length) {
+        if(points[i-1][1] - points[i][1]){
+            return [points[i-1].slice(), points[i].slice()];
+        }
+        i++
+    }
+}
+function samepoint(a, b) {
+    return a[0] === b[0] && a[1] === b[1];
+}
+
 class LogicLink extends BaseLink {
      /**
      * 创建方形折线
@@ -15,7 +31,7 @@ class LogicLink extends BaseLink {
     constructor(configs) {
         super(configs);
         /** @member {Number}   - 点击响应范围 */
-        // this.approximate   = configs.approximate || APPROXIMATE;
+        this.approximate   = configs.approximate || APPROXIMATE;
         /** @member {Number}   - 拐角弧度 */
         this.radius        = configs.radius || 0;
         /** @member {Number}   - 起点终点在 x 方向最小的跨度 */
@@ -34,11 +50,12 @@ class LogicLink extends BaseLink {
         this.content       = configs.content || '';
         this.noArrow       = !!configs.noArrow 
         this.bendPoint     = configs.bendPoint;
-        console.log(this.minSpanX)
+        this.iterateEndY   = configs.iterateEndY;
+        this.minGapY       = configs.minGapY;
+        this.showAdd       = false;
     }
 
     _calculateAnchorPoints() {
-        console.log(this.bendPoint)
         const dmsfrom = this.from.getIntersectionsSeprate();
         const dmsto = this.to.getIntersectionsSeprate();
         const points = polylinePoints(
@@ -46,10 +63,17 @@ class LogicLink extends BaseLink {
             dmsto[this.toDir],
             this.fromDir,
             this.toDir, 
-            this.minSpanX || 100, 55, 20, 15,
+            this.minSpanX || 100, 
+            this.minSpanY || 55, 
+            20, 
+            this.minGapY || 15,
             this.bendPoint);
         this._cachePoints = points
-        this._cacheAngle = [this.fromDir, this.toDir]
+        this._cacheAngle = [this.fromDir, this.toDir];
+        this._cacheInteractableSegment = getInteratableSegment(points);
+        if(this.iterateEndY) {
+            this._cacheInteractableSegment[1][1] = Math.min(this.iterateEndY, this._cacheInteractableSegment[1][1])
+        }
     }
     
     isInViewBox(br) {
@@ -61,6 +85,7 @@ class LogicLink extends BaseLink {
         // this._calculateAnchorPoints();
         const radius = this.radius;
         const points = this._cachePoints;
+        const ItSegment = this._cacheInteractableSegment;
         const p = points[0];
         const pEnd = points[points.length - 1];
         const angleEnd = DIRECTION_ANGLE[this._cacheAngle[1]];
@@ -94,7 +119,53 @@ class LogicLink extends BaseLink {
             ctx.restore();
         }
 
+        if(this.showAdd){    
+            ctx.beginPath();
+            ctx.moveTo(ItSegment[0][0], ItSegment[0][1]);
+            ctx.lineTo(ItSegment[1][0], ItSegment[1][1]);
+            ctx.save();
+            
+            ctx.lineWidth = 2;
+            ctx.fillStyle = '#fff';
+            ctx.strokeStyle = '#4C88FF';
+            ctx.stroke();
+            const x = ItSegment[0][0];
+            const y = (ItSegment[1][1] - ItSegment[0][1])/2 + ItSegment[0][1]
+            ctx.translate(x, y);
+            ctx.beginPath();
+            ctx.moveTo(-4, -6);
+            ctx.lineTo(4, -6);
+            ctx.quadraticCurveTo(6, -6, 6, -4);
+            ctx.lineTo(6, 4);
+            ctx.quadraticCurveTo(6, 6, 4, 6);
+            ctx.lineTo(-4, 6);
+            ctx.quadraticCurveTo(-6, 6, -6, 4);
+            ctx.lineTo(-6, -4);
+            ctx.quadraticCurveTo(-6, -6, -4, -6);
+            ctx.closePath();
+            ctx.stroke();
+            ctx.fill();
+
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(-4, 0);
+            ctx.lineTo(4, 0);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(0, -4);
+            ctx.lineTo(0, 4);
+            ctx.stroke();
+            ctx.translate(-x, -y);
+            
+            ctx.restore();
+        }
+
         if(!this.noArrow) {
+            const atEnd = samepoint(ItSegment[1], points[points.length - 1])
+            if(atEnd && this.showAdd) {
+                ctx.save();
+                ctx.fillStyle = ctx.strokeStyle = '#4C88FF';
+            }
             ctx.beginPath();
             ctx.translate(pEnd[0], pEnd[1]);
             ctx.rotate(angleEnd);
@@ -105,6 +176,9 @@ class LogicLink extends BaseLink {
             ctx.fill();
             ctx.rotate(-angleEnd);
             ctx.translate(-pEnd[0], -pEnd[1]);
+            if(atEnd) {
+                ctx.restore();
+            }
         }
         if(this.content) {
             ctx.beginPath();
@@ -126,20 +200,11 @@ class LogicLink extends BaseLink {
     }
 
     isHit(point) {
-        // const points = this._cachePoints;
-        // let lastP = points[0];
-        // const remainPoints = points.slice(1)
-        // do {
-        //     const currentP = remainPoints.shift();
-        //     if(currentP) {
-        //         const dist = distToSegmentSquared(point, lastP, currentP);
-        //         if(dist < this.approximate){
-        //             return true;
-        //         }
-        //     }
-        //     lastP = currentP;
-        // } while(lastP)
-
+        const points = this._cacheInteractableSegment;
+        const dist = distToSegmentSquared(point, points[0], points[1]);
+        if(dist < this.approximate){
+            return true;
+        }
         return false
     }
 }

@@ -51,11 +51,48 @@ class SwitchCaseLink extends BaseLink {
         
         ctx.fill();
         ctx.stroke();
+
+        ctx.save();
+        
+        ctx.lineWidth = 2;
+        ctx.fillStyle = '#fff';
+        // ctx.strokeStyle = '#4C88FF';
+        const x = p0[0];
+        const y = (p1[1] - p0[1])/2 + p0[1]
+        ctx.translate(x, y);
+        ctx.beginPath();
+        ctx.moveTo(0, -8);
+        ctx.lineTo(6.9, -4);
+        ctx.lineTo(6.9, 4);
+        ctx.lineTo(0, 8);
+        ctx.lineTo(-6.9, 4);
+        ctx.lineTo(-6.9, -4);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(-4, 0);
+        ctx.lineTo(4, 0);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(0, -4);
+        ctx.lineTo(0, 4);
+        ctx.stroke();
+        ctx.translate(-x, -y);
+        
+        ctx.restore();
+
+
         ctx.restore();
     }
 
     isHit(point) {
-        return false
+        const [ p0, p1 ] = this._cachePoints;
+        const x = p0[0];
+        const y = (p1[1] - p0[1])/2 + p0[1]
+        return Math.pow(point[0] - x, 2) + Math.pow(point[1] - y, 2) < 64;
     }
 }
 

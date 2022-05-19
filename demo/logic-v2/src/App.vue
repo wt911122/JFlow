@@ -4,7 +4,8 @@
         :class="$style.wrapper" 
         :configs="configs"
         :loading.sync="jflowloading"
-        :genVueComponentKey="genVueComponentKey">
+        :genVueComponentKey="genVueComponentKey"
+        @click="closePopper">
             <template #LogicBasic="{ source, layoutNode }">
                 <logic-Node 
                     :node="source" 
@@ -21,26 +22,21 @@
                 <end-Node :node="source"></end-Node>
             </template>
             <template #switchcaselink="{configs}" >
-                <j-switch-case-link
-                    :configs="{
-                        ...configs,
-                        backgroundColor: '#4C88FF',
-                    }"
-                    :from="configs.from.source"
-                    :to="configs.to.source">
-                </j-switch-case-link>
+                <switch-link :linkConfigs="configs">
+                </switch-link>
             </template>
             <template #plainlink="{ configs }">
-                <j-logic-link
-                    :configs="{
-                        ...configs,
-                        backgroundColor: '#919499',
-                    }"
-                    :from="configs.from.source"
-                    :to="configs.to.source">
-                </j-logic-link>
+                <logic-link :linkConfigs="configs">
+                </logic-link>
             </template>
     </j-jflow>
+    
+    <poppup-comp
+            :meta="poppups.selectionMeta">
+        </poppup-comp>
+        <modal-comp 
+            :meta="modal.modalMeta">
+        </modal-comp>
 </div>
 </template>
 
@@ -51,17 +47,30 @@ import logicNode from './logic-node.vue';
 import startNode from './start-node.vue';
 import EndPointNode from './endpoint-node.vue';
 import endNode from './end-node.vue';
+import LogicLink from './link-component/logic-link.vue';
+import SwitchLink from './link-component/switch-link.vue';
+import poppupComp from './poppups/poppup';
+import modalComp from './model/modal.vue';
+
 let uuid = 0;
 export default {    
     components: {
         startNode,
         endNode,
         logicNode,
-        EndPointNode
+        EndPointNode,
+        LogicLink,
+        SwitchLink,
+        poppupComp,
+        modalComp
     },
     provide() {
         return {
             renderJFlow: this.renderJFlow,
+            reOrderAndReflow: this.reOrderAndReflow,
+            closePopper: this.closePopper,
+            poppups: this.poppups,
+            modal: this.modal,
         }
     },
     data() {
@@ -69,62 +78,103 @@ export default {
         const configs = Object.freeze({
             allowDrop: true,
             layout,
-            // initialZoom: 1,
+            initialZoom: 1,
             minZoom: .2,
             NodeRenderTop: true,
+            setInitialPosition(realboxX, realboxY, realboxW, realboxH, cx, cy, cwidth, cheight) {
+                return {
+                    x: realboxX + cwidth / 2,
+                    y: cy,
+                };
+            },
         })
         return {
             configs,
             sourceData,
             jflowloading: false,
+
+            poppups: {
+                selectionMeta: {
+                    type: undefined,
+                    active: false,
+                    clientX: 0,
+                    clientY: 0,
+                    target: null,
+                    payload: null,
+                },
+            },
+            modal: {
+                modalMeta: {
+                    active: false,
+                    target: null,
+                },
+            }
         }
     },
     methods: {
         renderJFlow() {
+            console.log('renderJFlow')
             this.$refs.jflow.renderJFlow();
         },
-        onLink(event) {
-            const jflowInstance = this.$refs.jflow.getInstance()
-            const source = event.detail.payload.instance;
-            console.log(source)
-            const anchor = event.detail.anchor;
-            const newNode = { id: `auto-${uuid++}`};
-            this.sourceData.push(newNode);
-            if(!source.next) {
-                source.next = [];
-            }
-            source.next.push(newNode.id);
+        reOrderAndReflow() {
+            // logger('reOrderAndReflow');
             this.configs.layout.reOrder(this.sourceData);
-            this.$refs.jflow.reflow(() => {
-                const renderNode = jflowInstance.getRenderNodeBySource(newNode) 
-                renderNode.anchor = anchor;
-            });
+            this.$refs.jflow.reflow();
         },
-        onLinking(meta) {
-            const { source, target } = meta;
-            if(!source.next) {
-                source.next = [];
-            }
-            const exist = source.next.find(t => t === target.id);
-            if(!exist) {
-                source.next.push(target.id);
-                this.configs.layout.reOrder(this.sourceData);
-                this.$refs.jflow.reflow();
-            }
-        },
+        // onLink(event) {
+        //     const jflowInstance = this.$refs.jflow.getInstance()
+        //     const source = event.detail.payload.instance;
+        //     console.log(source)
+        //     const anchor = event.detail.anchor;
+        //     const newNode = { id: `auto-${uuid++}`};
+        //     this.sourceData.push(newNode);
+        //     if(!source.next) {
+        //         source.next = [];
+        //     }
+        //     source.next.push(newNode.id);
+        //     this.configs.layout.reOrder(this.sourceData);
+        //     this.$refs.jflow.reflow(() => {
+        //         const renderNode = jflowInstance.getRenderNodeBySource(newNode) 
+        //         renderNode.anchor = anchor;
+        //     });
+        // },
+        // onLinking(meta) {
+        //     const { source, target } = meta;
+        //     if(!source.next) {
+        //         source.next = [];
+        //     }
+        //     const exist = source.next.find(t => t === target.id);
+        //     if(!exist) {
+        //         source.next.push(target.id);
+        //         this.configs.layout.reOrder(this.sourceData);
+        //         this.$refs.jflow.reflow();
+        //     }
+        // },
         genVueComponentKey(source){
             return source.id;
         },
-        removelink(linkConfigs) {
-            const sourceNext = linkConfigs.from.source.next;
-            const toId = linkConfigs.to.source.id;
+        // removelink(linkConfigs) {
+        //     const sourceNext = linkConfigs.from.source.next;
+        //     const toId = linkConfigs.to.source.id;
 
-            const idx = sourceNext.indexOf(toId);
-            sourceNext.splice(idx, 1);
+        //     const idx = sourceNext.indexOf(toId);
+        //     sourceNext.splice(idx, 1);
 
-            this.configs.layout.reOrder(this.sourceData);
-            this.$refs.jflow.reflow();
-        }
+        //     this.configs.layout.reOrder(this.sourceData);
+        //     this.$refs.jflow.reflow();
+        // }
+
+
+        closePopper() {
+            Object.assign(this.poppups.selectionMeta, {
+                type: undefined,
+                active: false,
+                clientX: 0,
+                clientY: 0,
+                target: null,
+                payload: null,
+            });
+        },
     }
 }
 </script>

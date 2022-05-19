@@ -41,7 +41,7 @@ export function polylinePoints(
             if (bendPoint) {
                 const [x, y] = bendPoint;
                 points.push([p1[0], y]);
-                points.push(bendPoint);
+                points.push([x, y]);
                 points.push([x, p2[1]]);
             } else {
                 points.push([p1[0], p2[1]]);
@@ -59,8 +59,16 @@ export function polylinePoints(
             points.push([p2[0], p1[1]]);
         }
         if(end_dir === DIRECTION.RIGHT) {
-            points.push([p1[0] + spanX, p1[1]]);
-            points.push([p1[0] + spanX, p2[1]]);
+            if (bendPoint && bendPoint.length === 4) {
+                const [x1, y1, x2, y2] = bendPoint;
+                points.push([x1, y1]);
+                points.push([x1, y2]);
+                points.push([x2, y2]);
+                points.push([x2, p2[1]]);
+            } else {
+                points.push([p1[0] + spanX, p1[1]]);
+                points.push([p1[0] + spanX, p2[1]]);
+            }
         }
     }
 
@@ -79,6 +87,17 @@ export function polylinePoints(
     points.unshift(p1);
     points.push(p2);
     return points;
+}
+function minusVec(p1, p2) {
+    return [p1[0] - p2[0], p1[1] - p2[1]]
+}
+
+function absVec(vec) {
+    return Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
+}
+
+function scaleVec(vec, scale) {
+    return [vec[0] * scale, vec[1] * scale];
 }
 
 export function makeRadiusFromVector(pbefore, p, pnext, radius) {
@@ -123,4 +142,30 @@ export function isPolyLineIntersectionRectange(polyline, rect) {
         i++;
     }
     return false;
+}
+
+export function distToSegmentSquared(p, v, w) {
+    const l2 = dist2(v, w);
+    if (l2 === 0) return dist2(p, v);
+    let t = ((p[0] - v[0]) * (w[0] - v[0]) + (p[1] - v[1]) * (w[1] - v[1])) / l2;
+    t = Math.max(0, Math.min(1, t));
+    return dist2(p, [ v[0] + t * (w[0] - v[0]), v[1] + t * (w[1] - v[1]) ]);
+}
+
+function sqr(x) {
+    return x * x;
+}
+export function dist2(v, w) {
+    return sqr(v[0] - w[0]) + sqr(v[1] - w[1]);
+}
+
+
+export function translateToClientCoord(jflowInstance) {
+    const p = [
+        -jflowInstance.width / 2,
+        jflowInstance.height / 2,
+    ];
+    const gp = jflowInstance.calculateToRealWorld(p);
+    const { x, y } = jflowInstance._jflow.DOMwrapper.getBoundingClientRect();
+    return [gp[0] + x, gp[1] + y];
 }

@@ -1,4 +1,5 @@
 import { DIRECTION } from '../src/custom/utils';
+import { layoutConstance } from './utils';
 function getType(concept) {
     switch (concept) {
         case "Assignment":
@@ -9,7 +10,7 @@ function getType(concept) {
         case "callLogic":
         case "datasearch":
         case "SwitchCase":
-        case "if":
+        case "If":
             return "LogicBasic"
         
         default:
@@ -129,6 +130,14 @@ class BaseNode {
     traverse(callback) {
         callback(this);
     }
+
+    linkSource(source) {
+        this.parent.source[this.parentIterateType].splice(this.idx + 1, 0, source);
+    }
+
+    delete() {
+        this.parent.source[this.parentIterateType].splice(this.idx, 1);
+    }
 }
 class Logic extends BaseNode {
     constructor(source) {
@@ -238,13 +247,23 @@ class SwitchStatement extends BaseNode {
             if(remainSpanX > 1) {
                 roundCorner = [remainSpanX + b.column - 1, b.row + b.spanY]
             }
+            if(b.consequent.length === 0 && remainSpanX > 2) {
+                // console.log(remainCases.map(c => c.spanX))
+                // console.log('no case', roundCorner, b.column);
+                roundCorner.unshift(b.row);
+                roundCorner.unshift(b.column + 1)
+                // console.log(roundCorner)
+            }
             // 回来的线
             callback({
                 from: lastInCase || b,
                 to: this.Endpoint,
                 fromDir: (lastInCase || isDefault) ? DIRECTION.BOTTOM : DIRECTION.RIGHT,
                 toDir: DIRECTION.RIGHT,
-                roundCorner
+                roundCorner,
+                minSpanX: layoutConstance.minSpanX,
+                endRow: (idx + 1 < this.cases.length - 1 ? this.cases[idx + 1].row : this.Endpoint.row),
+                part: 'consequent'
             });
             if(lastCase) {
                 // case 间的线
@@ -255,7 +274,7 @@ class SwitchStatement extends BaseNode {
                     fromDir: DIRECTION.BOTTOM,
                     toDir: DIRECTION.TOP,
                     lineDash: [5, 5],
-                     
+                    part: 'cases'
                 });
             }
 
@@ -279,7 +298,6 @@ class SwitchStatement extends BaseNode {
         
         this.preCases.forEach((c, idx) => {
             const { spanY: sy, spanX: sx } = c.reflowPreCalculate(row + spanY, column, callback);
-            console.log(sy, idx)
             spanY += sy;
             spanX = Math.max(spanX, sx);
         });
@@ -324,6 +342,7 @@ class SwitchCase extends BaseNode {
                     to: toNode(b),
                     fromDir: (last || this.isDefault) ? DIRECTION.BOTTOM : DIRECTION.RIGHT,
                     toDir: DIRECTION.TOP,
+                    part: 'consequent'
                 });
 
                 b = b.makeLink(callback);
@@ -340,7 +359,6 @@ class SwitchCase extends BaseNode {
     }
 
     reflowPreCalculate(row, column, callback) {
-        console.log(isDefault)
         const isDefault = this.isDefault;
         // let spanX = 0;
         // let spanY = 1;
@@ -350,7 +368,7 @@ class SwitchCase extends BaseNode {
             callback(row, column, this);
         }
 
-        const { spanX, spanY } = verticalFlow(this, this.consequent, 0, 0, row + 1, column + (isDefault ? 0 : 1), callback);
+        const { spanX, spanY } = verticalFlow(this, this.consequent, 1, 0, row + 1, column + (isDefault ? 0 : 1), callback);
         // this.spanX = spanX + 1;
         // this.spanY = spanY;
         // return {
@@ -372,6 +390,14 @@ class SwitchCase extends BaseNode {
             spanY: this.spanY, 
             row, column,
         };
+    }
+
+    linkSource(source, linkMeta) {
+        if(linkMeta.part === 'cases') {
+            super.linkSource(source);
+        } else {
+            this.source[linkMeta.part].unshift(source);
+        }   
     }
 }
 //     reflowPreCalculate(row, column, callback) {
@@ -396,6 +422,7 @@ class ForEachStatement extends BaseNode {
                     to: toNode(b),
                     fromDir: last ? DIRECTION.BOTTOM : DIRECTION.STARTLOOP,
                     toDir: DIRECTION.TOP,
+                    part: 'body',
                 });
 
                 b = b.makeLink(callback);
@@ -407,6 +434,10 @@ class ForEachStatement extends BaseNode {
             to: this,
             fromDir: last ? DIRECTION.BOTTOM : DIRECTION.STARTLOOP,
             toDir: DIRECTION.ENDLOOP,
+            minSpanX: layoutConstance.minSpanX,
+            minSpanY: layoutConstance.minSpanY,
+            minGapY: layoutConstance.minGapY,
+            part: 'body',
         })
         return this;
     }
@@ -441,6 +472,9 @@ class ForEachStatement extends BaseNode {
             row, column,
         };
         // return verticalFlow(this, this.body, row, column, callback);
+    }
+    linkSource(source, linkMeta) {
+        this.source[linkMeta.part].unshift(source);
     }
     // reflowPreCalculate(row, column, callback) {
     //     super.reflowPreCalculate(row, column, callback);
@@ -454,9 +488,7 @@ class ForEachStatement extends BaseNode {
 class WhileStatement extends BaseNode {
     constructor(source) {
         super(source);
-        console.log('WhileStatement', source.body)
         this.body = (source.body || []).map(mapFunc('body').bind(this));
-        console.log('WhileStatement', this.body)
     }
 
     makeLink(callback) {
@@ -468,6 +500,7 @@ class WhileStatement extends BaseNode {
                     to: toNode(b),
                     fromDir: last ? DIRECTION.BOTTOM : DIRECTION.STARTLOOP,
                     toDir: DIRECTION.TOP,
+                    part: 'body',
                 });
 
                 b = b.makeLink(callback);
@@ -479,7 +512,10 @@ class WhileStatement extends BaseNode {
             to: this,
             fromDir: last ? DIRECTION.BOTTOM : DIRECTION.STARTLOOP,
             toDir: DIRECTION.ENDLOOP,
-            minSpanX: 170,
+            minSpanX: layoutConstance.minSpanX,
+            minSpanY: layoutConstance.minSpanY,
+            minGapY: layoutConstance.minGapY,
+            part: 'body',
         })
         return this;
     }
@@ -491,23 +527,12 @@ class WhileStatement extends BaseNode {
         });
     }
     reflowPreCalculate(row, column, callback) {
-        // let spanX = 0;
-        // let spanY = 1;
         this.row = row;
         this.column = column;
         if (callback) {
             callback(row, column, this);
         }
-        // this.body.forEach((b) => {
-        //     const { spanY: sy, spanX: sx } = b.reflowPreCalculate(row + spanY + 1, column + 1, callback);
-        //     spanX = Math.max(sx, spanX);
-        //     spanY += sy;
-        // });
-
-        // this.spanX = spanX + 1;
-        // this.spanY = spanY;
         const { spanX, spanY } = verticalFlow(this, this.body, 0, 0, row + 1, column + 1, callback);
-        console.log(spanY)
         this.spanX = Math.max(spanX + 1, 2);
         this.spanY = spanY + 1;
         return {
@@ -515,28 +540,116 @@ class WhileStatement extends BaseNode {
             spanY: this.spanY, 
             row, column,
         };
-        // return verticalFlow(this, this.body, row, column, callback);
     }
-    // reflowPreCalculate(row, column, callback) {
-    //     super.reflowPreCalculate(row, column, callback);
-    //     const nextColumn = column + 1;
-    //     this.body.forEach((c, idx) => {
-    //         c.reflowPreCalculate(row + idx + 1, nextColumn, callback);
-    //     });
-    // }
+    linkSource(source, linkMeta) {
+        this.source[linkMeta.part].unshift(source);
+    }
 }
 
 
 class IFstatement extends BaseNode {
     constructor(source) {
         super(source);
+        this.hasEndPoint = true;
+        this.Endpoint = null;
         this.consequent = (source.consequent || []).map(mapFunc('consequent').bind(this));
         this.alternate = (source.alternate || []).map(mapFunc('alternate').bind(this));
+    }
+
+    makeLink(callback) {
+        let last;
+        // Alternate
+        if(this.alternate.length) {
+            this.alternate.forEach((b, idx) => {
+                callback({
+                    from: last || this,
+                    to: toNode(b),
+                    fromDir: last ? DIRECTION.BOTTOM : DIRECTION.RIGHT,
+                    toDir: DIRECTION.TOP,
+                    part: 'alternate',
+                });
+
+                b = b.makeLink(callback);
+                last = b;
+            });
+        }
+        callback({
+            from: last || this,
+            to: this.Endpoint,
+            fromDir: last ? DIRECTION.BOTTOM : DIRECTION.RIGHT,
+            toDir: DIRECTION.RIGHT,
+            part: 'alternate',
+            minSpanX: layoutConstance.minSpanX,
+        })
+
+        // Consequent
+        last = null;
+        if(this.consequent.length) {
+            this.consequent.forEach((b, idx) => {
+                callback({
+                    from: last || this,
+                    to: toNode(b),
+                    fromDir: DIRECTION.BOTTOM,
+                    toDir: DIRECTION.TOP,
+                    part: 'consequent',
+                });
+
+                b = b.makeLink(callback);
+                last = b;
+            });
+        }
+        callback({
+            from: last || this,
+            to: this.Endpoint,
+            fromDir: DIRECTION.BOTTOM,
+            toDir: DIRECTION.TOP,
+            part: 'consequent',
+        })
+
+        return this.Endpoint;
+    }
+
+    traverse(callback) {
+        callback(this);
+        this.consequent.forEach(b => {
+            b.traverse(callback);
+        });
+        this.alternate.forEach(b => {
+            b.traverse(callback);
+        });
+        this.Endpoint.traverse(callback);
+    }
+
+    reflowPreCalculate(row, column, callback) {
+        this.row = row;
+        this.column = column;
+        if (callback) {
+            callback(row, column, this);
+        }
+        const { spanX: csx, spanY: csy } = verticalFlow(this, this.alternate, 0, 0, row + 1, column + 1, callback);
+        const { spanX: asx, spanY: asy } = verticalFlow(this, this.consequent, 0, 0, row + 1, column, callback);
+        let spanY = Math.max(csy, asy) + 1;
+        let spanX = csx + asx;
+
+        const { spanY: syend, spanX: sxend } = this.Endpoint.reflowPreCalculate(row + spanY, column, callback);
+        spanY += syend;
+        spanX = Math.max(spanX, sxend);
+        this.spanX = spanX;
+        this.spanY = spanY;
+        return {
+            spanX: this.spanX, 
+            spanY: this.spanY, 
+            row, column,
+        };
+    }
+
+    linkSource(source, linkMeta) {
+        this.source[linkMeta.part].unshift(source);
     }
 }
 
 const TYPE_MAPPING = {
-    'if': IFstatement,
+    'If': IFstatement,
     "Switch": SwitchStatement,
     "SwitchCase": SwitchCase,
     "ForEach": ForEachStatement,
@@ -553,12 +666,14 @@ function mapFunc(type) {
         p.parentIterateType = type;
 
         if (p.hasEndPoint) {
+            
             if (!n.__endpoint__) {
                 n.__endpoint__ = {
                     concept: 'endpoint',
                     id: `${p.id}-endpoint`,
                 };
             }
+            console.log(n.__endpoint__ )
             const e = makeAST(n.__endpoint__);
             e.parent = this;
             e.idx = idx;

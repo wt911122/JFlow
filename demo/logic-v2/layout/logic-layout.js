@@ -1,12 +1,12 @@
 
 import { makeAST } from './base-node';
-
+import { layoutConstance } from './utils';
 class LogicLayout {
     constructor(source) {
-        this.rowGap = 30;
-        this.columnGap = 75;
-        this.columnWidth = 189;
-        this.rowHeight = 32;
+        this.rowGap = layoutConstance.rowGap;
+        this.columnGap = layoutConstance.columnGap;
+        this.columnWidth = layoutConstance.columnWidth;
+        this.rowHeight = layoutConstance.rowHeight;
         this.flowStack = [];
         this.flowLinkStack = [];
         this.source = null;
@@ -38,38 +38,56 @@ class LogicLayout {
             }); 
         });
 
-        const layoutMapping = {
-            vertical: {},
-            horizontal: {},
-        };
+        // const layoutMapping = {
+        //     vertical: {},
+        //     horizontal: {},
+        // };
         this.root.reflowBodyPreCalculate(0, 0, (row, column, node) => {
-            if (!layoutMapping.vertical[row]) {
-                layoutMapping.vertical[row] = {};
-            }
-            layoutMapping.vertical[row][column] = node;
+            //console.log(column, row, node.concept, node.source.content)
+        })
+        // this.root.reflowBodyPreCalculate(0, 0, (row, column, node) => {
+        //     if (!layoutMapping.vertical[row]) {
+        //         layoutMapping.vertical[row] = {};
+        //     }
+        //     layoutMapping.vertical[row][column] = node;
 
-            if (!layoutMapping.horizontal[column]) {
-                layoutMapping.horizontal[column] = {};
-            }
-            layoutMapping.horizontal[column][row] = node;
-        });
+        //     if (!layoutMapping.horizontal[column]) {
+        //         layoutMapping.horizontal[column] = {};
+        //     }
+        //     layoutMapping.horizontal[column][row] = node;
+        // });
 
-        this.layoutMapping = layoutMapping;
+        // this.layoutMapping = layoutMapping;
 
 
         this.root.makeLink((configs) => {
             // console.log(configs)
             if(configs.roundCorner) {
                 // console.log(configs.roundCorner);
-                const [x, y] = configs.roundCorner;
-                configs.bendPoint = [
-                    x * (this.columnWidth + this.columnGap) + this.columnWidth /2 + 15,
-                    y * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
-                ]
+                if (configs.roundCorner.length === 2) {
+                    const [x, y] = configs.roundCorner;
+                    configs.bendPoint = [
+                        x * (this.columnWidth + this.columnGap) + this.columnWidth /2 + 15,
+                        y * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
+                    ]
+                }
+                if (configs.roundCorner.length === 4) {
+                    const [x1, y1, x2, y2] = configs.roundCorner;
+                    configs.bendPoint = [
+                        x1 * (this.columnWidth + this.columnGap),
+                        y1 * (this.rowHeight + this.rowGap),
+                        x2 * (this.columnWidth + this.columnGap) + this.columnWidth /2 + 15,
+                        y2 * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
+                    ]
+                }
+            }
+            if(configs.endRow) {
+                const iterateEndY = configs.endRow * (this.rowHeight + this.rowGap);
+                configs.iterateEndY = iterateEndY;
             }
             this.flowLinkStack.push(configs);
         });
-        console.log(layoutMapping)
+        // console.log(layoutMapping)
         // console.log(this.source);
         // console.log(this.flowStack.map(t => t.type))
     }
@@ -78,7 +96,7 @@ class LogicLayout {
         const rowGap = this.rowGap;
         const columnGap = this.columnGap;
 
-        const layoutMapping = this.layoutMapping;
+        // const layoutMapping = this.layoutMapping;
 
         // const {
         //     vertical: verticalMapping,
@@ -94,15 +112,15 @@ class LogicLayout {
             ];
         });
 
-        this.flowLinkStack.forEach(linkConfig => {
-            if (linkConfig.roundCorner) {
-                const [x, y] = linkConfig.roundCorner;
-                linkConfig.bendPoint = [
-                    x * (this.columnWidth + this.columnGap) + 10,
-                    y * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
-                ]
-            }
-        });
+        // this.flowLinkStack.forEach(linkConfig => {
+        //     if (linkConfig.roundCorner) {
+        //         const [x, y] = linkConfig.roundCorner;
+        //         linkConfig.bendPoint = [
+        //             x * (this.columnWidth + this.columnGap) + 10,
+        //             y * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
+        //         ]
+        //     }
+        // });
 
        
         // this.root.reflowPreCalculate(0, 0, ({ row, column, layoutNode }) => {
