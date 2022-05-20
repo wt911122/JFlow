@@ -150,10 +150,6 @@ class BaseNode {
         });
         return nodes;
     }
-
-    remove() {
-        this.parent.source[this.parentIterateType].splice(this.idx, 1);
-    }
 }
 class Logic extends BaseNode {
     constructor(source) {
@@ -426,6 +422,14 @@ class SwitchCase extends BaseNode {
         //         nodes.push(renderNode);
         // });
         return this.parent.getNodes(jflow);
+    }
+
+    delete() {
+        if(this.parent.cases.length === 2) {
+            this.parent.delete();
+        } else {
+            super.delete();
+        }
     }
 }
 //     reflowPreCalculate(row, column, callback) {
