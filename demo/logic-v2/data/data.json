@@ -1,216 +1,216 @@
 {
-  "id": 0,
-  "concept": "Logic",
-  "body": [
-    {
-      "id": 1,
-      "concept": "Start"
-    },
-    {
-      "id": 2,
-      "concept": "Assignment",
-      "content": "ProductList = LoadProductList"
-    },
-    {
-      "id": 3,
-      "concept": "ForEach",
-      "content": "循环列表: ProductList.content",
-      "body": [
-        {
-          "id": 4,
-          "concept": "Switch",
-          "cases": [
-            
-            {
-              "id": 5,
-               "concept": "SwitchCase",
-               "content": "item.productList.price > 50",
-               "consequent": [
-                  {
-                    "id": 6,
-                    "concept": "Assignment",
-                    "content": "TotalPay = TotalPay+item.productList.price*2"
-                  }, 
-                  {
-                    "id": 348,
-                    "concept": "If",
-                    "content": "item.productList.price > 60",
-                    "consequent": [
-                      {
-                        "id": 63455,
-                        "concept": "Assignment",
-                        "content": "TotalPay = TotalPay+item.productList.price*2"
-                      }
-                    ],
-                    "alternate": [
-                      {
-                        "id": 8312,
-                        "concept": "While",
-                        "content": "Pay <= 100",
-                        "body" : [
-                          {
-                            "id": 92344,
-                            "concept": "Assignment",
-                            "content": "Number = Number+1"
-                          },
-                          {
-                            "id": 15460,
-                            "concept": "Assignment",
-                            "content": "Pay = Pay*Number"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-               ]
-            },
-            {
-              "id": 7,
-               "concept": "SwitchCase",
-               "content": "item.productList.price<=20",
-               "consequent": [
-                  {
-                    "id": 8,
-                    "concept": "While",
-                    "content": "Pay <= 100",
-                    "body" : [
-                      {
-                        "id": 9,
-                        "concept": "Assignment",
-                        "content": "Number = Number+1"
-                      },
-                      {
-                        "id": 10,
-                        "concept": "Assignment",
-                        "content": "Pay = Pay*Number"
-                      }
-                    ]
-                  },
-                  {
-                    "id": 11,
-                    "concept": "Assignment",
-                    "content": "TotalPay = TotalPay+Pay"
-                  }
-               ]
-            },
-            {
-              "id": 85645,
-               "concept": "SwitchCase",
-               "content": "10<item.productList.price<=20",
-               "consequent": []
-            },
-            {
-              "id": 12,
-               "concept": "SwitchCase",
-               "content": "20<item.productList.price<=50",
-               "consequent": [
-                 {
-                    "id": 84311,
-                    "concept": "While",
-                    "content": "Pay <= 100",
-                    "body" : [
-                      {
-                        "id": 9413,
-                        "concept": "Assignment",
-                        "content": "Number = Number+1"
-                      },
-                      {
-                        "id": 14016,
-                        "concept": "Assignment",
-                        "content": "Pay = Pay*Number"
-                      }
-                    ]
-                  },
-                  {
-                    "id": 13,
-                    "concept": "Assignment",
-                    "content": "TotalPay = TotalPay+item.productList.price*5"
-                  }
-               ]
-            },
-            {
-              "id": 856,
-               "concept": "SwitchCase",
-               "content": "10<item.productList.price<=20",
-               "consequent": []
-            },
-            {
-              "id": 855,
-               "concept": "SwitchCase",
-               "content": "10<item.productList.price<=20",
-               "consequent": []
-            },
-            {
-              "id": 88,
-               "concept": "SwitchCase",
-               "content": "defaultcase",
-               "consequent": [
-                  {
-                    "id": 99,
-                    "concept": "Assignment",
-                    "content": "TotalPay = TotalPay+item.productList.price*2"
-                  }
-               ]
-            }
-          ]
-        },
-        {
-          "id": 8776,
-          "concept": "Assignment",
-          "content": "TotalPay = TotalPay+item.productList.price*2"
-        }
-      ]
-    },
-    {
-      "id": 22,
-      "concept": "Assignment",
-      "content": "ProductList = LoadProductList"
-    },
-     {
-      "id": 223,
-      "concept": "Assignment",
-      "content": "ProductList = LoadProductList"
-    },
-    {
-      "id": 8411,
-      "concept": "While",
-      "content": "Pay <= 100",
-      "body" : [
-        {
-          "id": 913,
-          "concept": "Assignment",
-          "content": "Number = Number+1"
-        },
-        {
-          "id": 1401,
-          "concept": "Assignment",
-          "content": "Pay = Pay*Number"
-        }
-      ]
-    },
-    {
-      "id": 81,
-      "concept": "While",
-      "content": "Pay <= 100",
-      "body" : [
-        {
-          "id": 91,
-          "concept": "Assignment",
-          "content": "Number = Number+1"
-        },
-        {
-          "id": 101,
-          "concept": "Assignment",
-          "content": "Pay = Pay*Number"
-        }
-      ]
-    },
-    {
-      "id": 14,
-      "concept": "End"
-    }
-  ],
-  "playground": [
-
-  ]
-}
+    "id": 0,
+    "concept": "Logic",
+    "body": [
+      {
+        "id": 1,
+        "concept": "Start"
+      },
+      {
+        "id": 2,
+        "concept": "Assignment",
+        "content": "ProductList = LoadProductList"
+      },
+      {
+        "id": 3,
+        "concept": "ForEach",
+        "content": "循环列表: ProductList.content",
+        "body": [
+          {
+            "id": 4,
+            "concept": "Switch",
+            "cases": [
+              
+              {
+                "id": 5,
+                 "concept": "SwitchCase",
+                 "content": "item.productList.price > 50",
+                 "consequent": [
+                    {
+                      "id": 6,
+                      "concept": "Assignment",
+                      "content": "TotalPay = TotalPay+item.productList.price*2"
+                    }, 
+                    {
+                      "id": 348,
+                      "concept": "If",
+                      "content": "item.productList.price > 60",
+                      "consequent": [
+                        {
+                          "id": 63455,
+                          "concept": "Assignment",
+                          "content": "TotalPay = TotalPay+item.productList.price*2"
+                        }
+                      ],
+                      "alternate": [
+                        {
+                          "id": 8312,
+                          "concept": "While",
+                          "content": "Pay <= 100",
+                          "body" : [
+                            {
+                              "id": 92344,
+                              "concept": "Assignment",
+                              "content": "Number = Number+1"
+                            },
+                            {
+                              "id": 15460,
+                              "concept": "Assignment",
+                              "content": "Pay = Pay*Number"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                 ]
+              },
+              {
+                "id": 7,
+                 "concept": "SwitchCase",
+                 "content": "item.productList.price<=20",
+                 "consequent": [
+                    {
+                      "id": 8,
+                      "concept": "While",
+                      "content": "Pay <= 100",
+                      "body" : [
+                        {
+                          "id": 9,
+                          "concept": "Assignment",
+                          "content": "Number = Number+1"
+                        },
+                        {
+                          "id": 10,
+                          "concept": "Assignment",
+                          "content": "Pay = Pay*Number"
+                        }
+                      ]
+                    },
+                    {
+                      "id": 11,
+                      "concept": "Assignment",
+                      "content": "TotalPay = TotalPay+Pay"
+                    }
+                 ]
+              },
+              {
+                "id": 85645,
+                 "concept": "SwitchCase",
+                 "content": "10<item.productList.price<=20",
+                 "consequent": []
+              },
+              {
+                "id": 12,
+                 "concept": "SwitchCase",
+                 "content": "20<item.productList.price<=50",
+                 "consequent": [
+                   {
+                      "id": 84311,
+                      "concept": "While",
+                      "content": "Pay <= 100",
+                      "body" : [
+                        {
+                          "id": 9413,
+                          "concept": "Assignment",
+                          "content": "Number = Number+1"
+                        },
+                        {
+                          "id": 14016,
+                          "concept": "Assignment",
+                          "content": "Pay = Pay*Number"
+                        }
+                      ]
+                    },
+                    {
+                      "id": 13,
+                      "concept": "Assignment",
+                      "content": "TotalPay = TotalPay+item.productList.price*5"
+                    }
+                 ]
+              },
+              {
+                "id": 856,
+                 "concept": "SwitchCase",
+                 "content": "10<item.productList.price<=20",
+                 "consequent": []
+              },
+              {
+                "id": 855,
+                 "concept": "SwitchCase",
+                 "content": "10<item.productList.price<=20",
+                 "consequent": []
+              },
+              {
+                "id": 88,
+                 "concept": "SwitchCase",
+                 "content": "defaultcase",
+                 "consequent": [
+                    {
+                      "id": 99,
+                      "concept": "Assignment",
+                      "content": "TotalPay = TotalPay+item.productList.price*2"
+                    }
+                 ]
+              }
+            ]
+          },
+          {
+            "id": 8776,
+            "concept": "Assignment",
+            "content": "TotalPay = TotalPay+item.productList.price*2"
+          }
+        ]
+      },
+      {
+        "id": 22,
+        "concept": "Assignment",
+        "content": "ProductList = LoadProductList"
+      },
+       {
+        "id": 223,
+        "concept": "Assignment",
+        "content": "ProductList = LoadProductList"
+      },
+      {
+        "id": 8411,
+        "concept": "While",
+        "content": "Pay <= 100",
+        "body" : [
+          {
+            "id": 913,
+            "concept": "Assignment",
+            "content": "Number = Number+1"
+          },
+          {
+            "id": 1401,
+            "concept": "Assignment",
+            "content": "Pay = Pay*Number"
+          }
+        ]
+      },
+      {
+        "id": 81,
+        "concept": "While",
+        "content": "Pay <= 100",
+        "body" : [
+          {
+            "id": 91,
+            "concept": "Assignment",
+            "content": "Number = Number+1"
+          },
+          {
+            "id": 101,
+            "concept": "Assignment",
+            "content": "Pay = Pay*Number"
+          }
+        ]
+      },
+      {
+        "id": 14,
+        "concept": "End"
+      }
+    ],
+    "playground": [
+  
+    ]
+  }

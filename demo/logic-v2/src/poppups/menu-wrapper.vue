@@ -34,7 +34,7 @@ export default {
 <style module>
 .root {
     position: absolute;
-    width: 208px;
+    min-width: 208px;
     left: 0;
     top: 0;
     transform: translate(0, 0);

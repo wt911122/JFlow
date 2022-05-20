@@ -669,11 +669,10 @@ class IFstatement extends BaseNode {
         if (callback) {
             callback(row, column, this);
         }
-        const { spanX: csx, spanY: csy } = verticalFlow(this, this.alternate, 0, 0, row + 1, column + 1, callback);
-        const { spanX: asx, spanY: asy } = verticalFlow(this, this.consequent, 0, 0, row + 1, column, callback);
+        const { spanX: asx, spanY: asy } = verticalFlow(this, this.alternate, 0, 0, row + 1, column + 1, callback);
+        const { spanX: csx, spanY: csy } = verticalFlow(this, this.consequent, 0, 0, row + 1, column, callback);
         let spanY = Math.max(csy, asy) + 1;
-        let spanX = csx + asx;
-
+        let spanX = Math.max(csx, 1) + Math.max(asx, 1);
         const { spanY: syend, spanX: sxend } = this.Endpoint.reflowPreCalculate(row + spanY, column, callback);
         spanY += syend;
         spanX = Math.max(spanX, sxend);

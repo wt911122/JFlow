@@ -8,7 +8,9 @@
         v-on="$listeners"
         @contextclick="onContextClick"
         @dblclick="onDblclick"
-        @afterResolveMovingTarget="onAfterResolveMovingTarget">
+        @afterResolveMovingTarget="onAfterResolveMovingTarget"
+        @mouseenter="onMouseEnter"
+        @mouseleave="onMouseLeave">
         <j-group :configs="iconGroup">
             <j-icon :configs="imageConfig" />
         </j-group>
@@ -35,8 +37,19 @@ import {
     ConceptIconMap,
 } from './configs';
 
+function translateToClientCoord(jflowInstance) {
+    const p = [
+        -jflowInstance.width/2,
+        -jflowInstance.height/2,
+    ];
+    const gp = jflowInstance.calculateToRealWorld(p);
+    // console.log(jflowInstance._jflow.DOMwrapper.getBoundingClientRect())
+    const { x, y } = jflowInstance._jflow.DOMwrapper.getBoundingClientRect();
+    return [gp[0] + x, gp[1] + y];
+}
+
 export default { 
-    inject: ['renderJFlow', 'poppups', 'modal'],
+    inject: ['renderJFlow', 'poppups', 'modal', 'closePopper'],
     props: {
         node: Object,
         layoutNode: Object,
@@ -59,6 +72,7 @@ export default {
                 height: 32,
             },
             iconGroup: {
+                borderRadius: 4,
                 padding: 8,
                 backgroundColor: subcolor,
             },
@@ -79,11 +93,11 @@ export default {
             return this.poppups.selectionMeta;
         },
         selectionActive() {
-            return this.selectionMeta.active && this.selectionMeta.target === this.linkConfigs;
+            return this.selectionMeta.active && this.selectionMeta.target === this.node;
         },
         modalMeta() {
             return this.modal.modalMeta;
-        }
+        },
     },
     methods: {
         onContextClick(event) {
@@ -108,6 +122,23 @@ export default {
             const jflow = event.detail.jflow;
             const renderNodes = this.layoutNode.getNodes(jflow);
             jflow.setMovingTargets(renderNodes);
+        },
+        onMouseEnter(event) {
+            const { currentTarget } = event;
+            console.log(event)
+            const [x, y] = translateToClientCoord(currentTarget);
+            Object.assign(this.selectionMeta, {
+                type: 'hovercontent',
+                clientX: x,
+                clientY: y,
+                active: true,
+                target: this.node,
+            });
+        },
+        onMouseLeave(event) {
+            if(this.selectionActive) {
+                this.closePopper()
+            }
         }
     }
 }
