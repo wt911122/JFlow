@@ -1,5 +1,5 @@
 import { DIRECTION } from '../src/custom/utils';
-import { layoutConstance } from './utils';
+import { layoutConstance, getLayoutConstance } from './utils';
 function getType(concept) {
     switch (concept) {
         case "Assignment":
@@ -280,7 +280,7 @@ class SwitchStatement extends BaseNode {
                 fromDir: (lastInCase || isDefault) ? DIRECTION.BOTTOM : DIRECTION.RIGHT,
                 toDir: DIRECTION.RIGHT,
                 roundCorner,
-                minSpanX: layoutConstance.minSpanX,
+                minSpanX: getLayoutConstance('minSpanX'),
                 endRow: (idx + 1 < this.cases.length - 1 ? this.cases[idx + 1].row : this.Endpoint.row),
                 part: 'consequent'
             });
@@ -462,9 +462,9 @@ class ForEachStatement extends BaseNode {
             to: this,
             fromDir: last ? DIRECTION.BOTTOM : DIRECTION.STARTLOOP,
             toDir: DIRECTION.ENDLOOP,
-            minSpanX: layoutConstance.minSpanX,
-            minSpanY: layoutConstance.minSpanY,
-            minGapY: layoutConstance.minGapY,
+            minSpanX: getLayoutConstance('minSpanX'),
+            minSpanY: getLayoutConstance('minSpanY'),
+            minGapY: getLayoutConstance('minGapY'),
             part: 'foreachbody',
         })
         return this;
@@ -544,9 +544,12 @@ class WhileStatement extends BaseNode {
             to: this,
             fromDir: last ? DIRECTION.BOTTOM : DIRECTION.STARTLOOP,
             toDir: DIRECTION.ENDLOOP,
-            minSpanX: layoutConstance.minSpanX,
-            minSpanY: layoutConstance.minSpanY,
-            minGapY: layoutConstance.minGapY,
+            // minSpanX: layoutConstance.minSpanX,
+            // minSpanY: layoutConstance.minSpanY,
+            // minGapY: layoutConstance.minGapY,
+            minSpanX: getLayoutConstance('minSpanX'),
+            minSpanY: getLayoutConstance('minSpanY'),
+            minGapY: getLayoutConstance('minGapY'),
             part: 'whilebody',
         })
         return this;
@@ -615,7 +618,7 @@ class IFstatement extends BaseNode {
             fromDir: last ? DIRECTION.BOTTOM : DIRECTION.RIGHT,
             toDir: DIRECTION.RIGHT,
             part: 'alternate',
-            minSpanX: layoutConstance.minSpanX,
+            minSpanX: getLayoutConstance('minSpanX'),
         })
 
         // Consequent

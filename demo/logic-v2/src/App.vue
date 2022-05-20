@@ -1,4 +1,5 @@
 <template>
+<div>
 <div :class="$style.body">
     <div :class="$style.sidebar">
         <div v-for="p in conceptList" :key="p.concept">
@@ -53,6 +54,37 @@
         <modal-comp 
             :meta="modal.modalMeta">
         </modal-comp>
+
+        
+</div>
+<div>
+            <div>参数设置</div>
+            <div>
+                <ul>
+                    <li>
+                        行间距: <input type="number" :value="layoutConstance.rowGap" @change="onChange($event, 'rowGap')"></input>
+                    </li>
+                    <li>
+                        列间距: <input type="number" :value="layoutConstance.columnGap" @change="onChange($event, 'columnGap')"></input>
+                    </li>
+                    <li>
+                        逻辑块高度: <input type="number" :value="layoutConstance.rowHeight" @change="onChange($event, 'rowHeight')"></input>
+                    </li>
+                    <li>
+                        逻辑块宽度: <input type="number" :value="layoutConstance.columnWidth" @change="onChange($event, 'columnWidth')"></input>
+                    </li>
+                    <li>
+                        折线最小延伸距离X: <input type="number" :value="layoutConstance.minSpanX" @change="onChange($event, 'minSpanX')"></input>
+                    </li>
+                    <li>
+                        折线最小延伸距离Y: <input type="number" :value="layoutConstance.minSpanY" @change="onChange($event, 'minSpanY')"></input>
+                    </li>
+                    <li>
+                        循环回来的线最小延伸距离Y: <input type="number" :value="layoutConstance.minGapY" @change="onChange($event, 'minGapY')"></input>
+                    </li>
+                </ul>
+            </div>
+        </div>
 </div>
 </template>
 
@@ -67,6 +99,7 @@ import LogicLink from './link-component/logic-link.vue';
 import SwitchLink from './link-component/switch-link.vue';
 import poppupComp from './poppups/poppup';
 import modalComp from './model/modal.vue';
+import { initLayoutConstance, setLayoutConstance, layoutConstance } from '../layout/utils';
 
 import {
     ConceptColorMap,
@@ -90,6 +123,7 @@ function getList() {
 }
 
 let uuid = 0;
+initLayoutConstance();
 export default {    
     components: {
         startNode,
@@ -149,6 +183,8 @@ export default {
             },
 
             conceptList: getList(),
+
+            layoutConstance
         }
     },
     methods: {
@@ -265,6 +301,12 @@ export default {
                 payload: null,
             });
         },
+
+        onChange(e, key){
+            const value = +e.target.value;
+            setLayoutConstance(key, value);
+            this.reOrderAndReflow();
+        }
     }
 }
 </script>

@@ -1,12 +1,12 @@
 
 import { makeAST } from './base-node';
-import { layoutConstance } from './utils';
+import { layoutConstance, getLayoutConstance } from './utils';
 class LogicLayout {
     constructor(source) {
-        this.rowGap = layoutConstance.rowGap;
-        this.columnGap = layoutConstance.columnGap;
-        this.columnWidth = layoutConstance.columnWidth;
-        this.rowHeight = layoutConstance.rowHeight;
+        // this.rowGap = layoutConstance.rowGap;
+        // this.columnGap = layoutConstance.columnGap;
+        // this.columnWidth = layoutConstance.columnWidth;
+        // rowHeight = layoutConstance.rowHeight;
         this.flowStack = [];
         this.flowLinkStack = [];
         this.source = null;
@@ -60,7 +60,10 @@ class LogicLayout {
         // });
 
         // this.layoutMapping = layoutMapping;
-
+        const rowGap = getLayoutConstance('rowGap');
+        const rowHeight = getLayoutConstance('rowHeight');
+        const columnWidth = getLayoutConstance('columnWidth');
+        const columnGap = getLayoutConstance('columnGap');
 
         this.root.makeLink((configs) => {
             // console.log(configs)
@@ -71,22 +74,22 @@ class LogicLayout {
                 if (configs.roundCorner.length === 2) {
                     const [x, y] = configs.roundCorner;
                     configs.bendPoint = [
-                        (x-column) * (this.columnWidth + this.columnGap) + this.columnWidth /2 + 15,
-                        (y-row) * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
+                        (x-column) * (columnWidth + columnGap) + columnWidth /2 + 15,
+                        (y-row) * (rowHeight + rowGap) - rowHeight / 2 - 10
                     ]
                 }
                 if (configs.roundCorner.length === 4) {
                     const [x1, y1, x2, y2] = configs.roundCorner;
                     configs.bendPoint = [
-                        (x1-column) * (this.columnWidth + this.columnGap),
-                        (y1-row) * (this.rowHeight + this.rowGap),
-                        (x2-column) * (this.columnWidth + this.columnGap) + this.columnWidth /2 + 15,
-                        (y2-row) * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
+                        (x1-column) * (columnWidth + columnGap),
+                        (y1-row) * (rowHeight + rowGap),
+                        (x2-column) * (columnWidth + columnGap) + columnWidth /2 + 15,
+                        (y2-row) * (rowHeight + rowGap) - rowHeight / 2 - 10
                     ]
                 }
             }
             if(configs.endRow) {
-                const iterateEndY = configs.endRow * (this.rowHeight + this.rowGap);
+                const iterateEndY = configs.endRow * (rowHeight + rowGap);
                 configs.iterateEndY = iterateEndY;
             }
             this.flowLinkStack.push(configs);
@@ -97,9 +100,12 @@ class LogicLayout {
     }
 
     reflow(jflow) {
-        const rowGap = this.rowGap;
-        const columnGap = this.columnGap;
-
+        // const rowGap = rowGap;
+        // const columnGap = columnGap;
+        const rowGap = getLayoutConstance('rowGap');
+        const rowHeight = getLayoutConstance('rowHeight');
+        const columnWidth = getLayoutConstance('columnWidth');
+        const columnGap = getLayoutConstance('columnGap');
         // const layoutMapping = this.layoutMapping;
 
         // const {
@@ -119,8 +125,8 @@ class LogicLayout {
             const { row, column, source } = layoutNode;
             const instance = jflow.getRenderNodeBySource(source);
             instance.anchor = [
-                column * (this.columnWidth + this.columnGap) + ax,
-                row * (this.rowHeight + this.rowGap) + ay,
+                column * (columnWidth + columnGap) + ax,
+                row * (rowHeight + rowGap) + ay,
             ];
         });
 
@@ -129,7 +135,7 @@ class LogicLayout {
         //         const [x, y] = linkConfig.roundCorner;
         //         linkConfig.bendPoint = [
         //             x * (this.columnWidth + this.columnGap) + 10,
-        //             y * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
+        //             y * (rowHeight + this.rowGap) - rowHeight / 2 - 10
         //         ]
         //     }
         // });
