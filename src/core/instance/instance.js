@@ -100,6 +100,10 @@ class Instance extends EventTarget{
         this[ishitKey] = ishit; // validation could be checked here such as only allowing non numerical values
     }
 
+    get isInViewBox() {
+        return this[isInViewBox];
+    }
+
     set _isInViewBox(val) {
         const oldval = this[isInViewBox];
         if(val !== oldval) {

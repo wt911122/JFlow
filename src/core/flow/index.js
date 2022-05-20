@@ -283,7 +283,7 @@ class JFlow extends EventTarget{
         this._getBoundingGroupRect();
 
         const padding = this.padding;
-        const { width: p_width, height: p_height, x, y } = this.bounding_box;
+        const { width: p_width, height: p_height, x: p_x, y: p_y } = this.bounding_box;
         const contentBox = {
             x: padding,
             y: padding,
@@ -308,12 +308,12 @@ class JFlow extends EventTarget{
         if(scaleRatio < this.minZoom) {
             this.minZoom = scaleRatio;
         }
-        const realboxX = x * scaleRatio;
-        const realboxY = y * scaleRatio;
+        const realboxX = p_x * scaleRatio;
+        const realboxY = p_y * scaleRatio;
         const realboxW = contentBox.width;
         const realboxH = contentBox.height;
         if(this.initialPosition) {
-            const { x, y } = this.initialPosition(realboxX, realboxY, realboxW, realboxH, contentBox.x, contentBox.y, c_width, c_height);
+            const { x, y } = this.initialPosition(realboxX, realboxY, realboxW, realboxH, contentBox.x, contentBox.y, c_width, c_height, p_x, p_y, p_width, p_height);
             position.x = x;
             position.y = y;
         } else {
@@ -962,51 +962,52 @@ class JFlow extends EventTarget{
             this._render();
             return;
         }
-        if(meta.initialX === meta.x
-            && meta.initialY === meta.y) { 
-                if(event.target !== this.canvas){
-                    this._clearTarget();
-                    return;
-                }
-                const t = this._target.instance || this._target.link;
-                if(t && !isDocument) {
-                    /**
-                    * 点击事件（冒泡）
-                    *
-                    * @event Node#click
-                    * @type {object}
-                    * @property {Event} event          - 原始事件 
-                    * @property {Instance} target      - 点击的对象 
-                    * @property {JFlow} jflow          - 当前JFlow对象 
-                    * @property {Boolean} bubbles      - 冒泡
-                    */
-                    t.bubbleEvent(new JFlowEvent('click', {
-                        event,
-                        target: t,
-                        jflow: this,
-                        bubbles: true,
-                    }))
-                    this._clearTarget();
-                    this._render();
-                    return;
-                } else {
-                    /**
-                    * 点击事件
-                    *
-                    * @event JFlow#click
-                    * @type {object}
-                    * @property {Event} event          - 原始事件 
-                    * @property {JFlow} jflow          - 当前JFlow对象 
-                    */
-                    this.dispatchEvent(new JFlowEvent('click', {
-                        event,
-                        jflow: this,
-                    }));
-                    this._clearTarget();
-                    this._render();
-                    return
-                }  
-        } else if(this._target.moving) {
+        // if(meta.initialX === meta.x
+        //     && meta.initialY === meta.y) { 
+        //         if(event.target !== this.canvas){
+        //             this._clearTarget();
+        //             return;
+        //         }
+        //         const t = this._target.instance || this._target.link;
+        //         if(t && !isDocument) {
+        //             /**
+        //             * 点击事件（冒泡）
+        //             *
+        //             * @event Node#click
+        //             * @type {object}
+        //             * @property {Event} event          - 原始事件 
+        //             * @property {Instance} target      - 点击的对象 
+        //             * @property {JFlow} jflow          - 当前JFlow对象 
+        //             * @property {Boolean} bubbles      - 冒泡
+        //             */
+        //             t.bubbleEvent(new JFlowEvent('click', {
+        //                 event,
+        //                 target: t,
+        //                 jflow: this,
+        //                 bubbles: true,
+        //             }))
+        //             this._clearTarget();
+        //             this._render();
+        //             return;
+        //         } else {
+        //             /**
+        //             * 点击事件
+        //             *
+        //             * @event JFlow#click
+        //             * @type {object}
+        //             * @property {Event} event          - 原始事件 
+        //             * @property {JFlow} jflow          - 当前JFlow对象 
+        //             */
+        //             this.dispatchEvent(new JFlowEvent('click', {
+        //                 event,
+        //                 jflow: this,
+        //             }));
+        //             this._clearTarget();
+        //             this._render();
+        //             return
+        //         }  
+        // } else 
+        if(this._target.moving) {
             let checkresult = false;
             if(this._layout.static) {
                 checkresult = this.staticCheck(this._getMovingTarget());
@@ -1083,6 +1084,74 @@ class JFlow extends EventTarget{
             this._render();
         }
         this._clearTarget();
+    }
+     /**
+     * 菜单弹出处理函数
+     * @param {Number} offsetX - 事件对象与canvas的内填充边（padding edge）在 X 轴方向上的偏移量。
+     * @param {Number} offsetY - 事件对象与canvas的内填充边（padding edge）在 Y 轴方向上的偏移量。 
+     * @param {Number} event - 原生事件
+     */
+    clickHanlder(offsetX, offsetY, event) {
+        console.log('click handler', event)
+        
+        const {
+            link,
+            instance,
+            meta
+        } = this._targetLockOn([offsetX, offsetY]);
+        if(Math.abs(meta.initialX - meta.x) < 1
+            && Math.abs(meta.initialY - meta.y) < 1) { 
+                if(event.target !== this.canvas){
+                    this._clearTarget();
+                    Object.assign(this._target.meta, {
+                        initialX: undefined,
+                        initialY: undefined, 
+                    });
+                    return;
+                }
+                const { topLayerPoint } = this._target.cache
+                if(instance || link) {
+                    const target = (instance || link);
+                    /**
+                     * 点击事件（冒泡）
+                     *
+                     * @event Instance#contextclick
+                     * @type {object}
+                     * @property {Event} event           - 原始事件 
+                     * @property {Instance} target       - 右键对象 
+                     * @property {JFlow} jflow           - 当前JFlow对象
+                     * @property {number[]} topLayerPoint  - jflow坐标系上的位置
+                     * @property {Boolean} bubbles       - 冒泡
+                     */
+                    target.bubbleEvent(new JFlowEvent('click', {
+                        event,
+                        jflow: this,
+                        target,
+                        topLayerPoint,
+                        bubbles: true
+                    }));
+                } else {
+                    /**
+                     * 点击事件
+                     *
+                     * @event JFlow#contextclick
+                     * @type {object}
+                     * @property {Event} event           - 原始事件 
+                     * @property {JFlow} jflow           - 当前JFlow对象
+                     * @property {number[]} topLayerPoint  - jflow坐标系上的位置
+                     */
+                    this.dispatchEvent(new JFlowEvent('click', {
+                        event,
+                        jflow: this,
+                        topLayerPoint,
+                    }));
+                }
+                this._clearTarget();
+                Object.assign(this._target.meta, {
+                    initialX: undefined,
+                    initialY: undefined, 
+                });
+            }
     }
     /**
      * 菜单弹出处理函数
@@ -1203,8 +1272,8 @@ class JFlow extends EventTarget{
         Object.assign(this._target.meta, {
             x: undefined,
             y: undefined,
-            initialX: undefined,
-            initialY: undefined, 
+            // initialX: undefined,
+            // initialY: undefined, 
         })
         Object.assign(this._target.status, {
             dragging: false,

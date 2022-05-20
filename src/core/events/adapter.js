@@ -55,6 +55,12 @@ function getDefaultPlugin() {
                 event.stopPropagation();
                 const { offsetX, offsetY } = event;
                 jflow.dblclickHandler(offsetX, offsetY, event);
+            },
+            click: function(event, jflow) {
+                event.preventDefault();
+                event.stopPropagation();
+                const { offsetX, offsetY } = event;
+                jflow.clickHanlder(offsetX, offsetY, event);
             }
         },
         document: {
