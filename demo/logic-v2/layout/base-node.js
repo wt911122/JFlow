@@ -258,11 +258,14 @@ class SwitchStatement extends BaseNode {
             // const columnBegin = b.column + 1;
             // const rowBegin = b.row + b.spanY;
             // const rowEnd = this.Endpoint.row;
+
+            console.log('case ' + idx , remainSpanX)
             let roundCorner
             if(remainSpanX > 1) {
                 roundCorner = [remainSpanX + b.column - 1, b.row + b.spanY]
             }
-            if(b.consequent.length === 0 && remainSpanX > 2) {
+            console.log('case ' + idx , remainSpanX, roundCorner)
+            if(b.consequent.length === 0 && remainSpanX >= 2) {
                 // console.log(remainCases.map(c => c.spanX))
                 // console.log('no case', roundCorner, b.column);
                 roundCorner.unshift(b.row);
@@ -382,7 +385,7 @@ class SwitchCase extends BaseNode {
             callback(row, column, this);
         }
 
-        const { spanX, spanY } = verticalFlow(this, this.consequent, 1, 0, row + 1, column + (isDefault ? 0 : 1), callback);
+        const { spanX: sx, spanY: sy } = verticalFlow(this, this.consequent, 0, 0, row + 1, column + (isDefault ? 0 : 1), callback);
         // this.spanX = spanX + 1;
         // this.spanY = spanY;
         // return {
@@ -397,8 +400,11 @@ class SwitchCase extends BaseNode {
         //     spanX = Math.max(sx, spanX);
         //     spanY += sy;
         // });
+       
+        let spanX = Math.max(sx, 1);
         this.spanX = spanX + (isDefault ? 0 : 1);
-        this.spanY = spanY + 1;
+        console.log(this.spanX)
+        this.spanY = sy + 1;
         return {
             spanX: this.spanX,
             spanY: this.spanY, 

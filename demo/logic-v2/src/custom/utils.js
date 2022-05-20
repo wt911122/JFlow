@@ -39,7 +39,7 @@ export function polylinePoints(
         // if(end_dir === DIRECTION.TOP) {
         // }
         if(end_dir === DIRECTION.RIGHT) {
-            if (bendPoint) {
+            if (bendPoint && bendPoint.length === 2) {
                 // const [x, y] = bendPoint;
                 const x = bendPoint[0] + fromCenter[0];
                 const y = bendPoint[1] + fromCenter[1];

@@ -87,10 +87,14 @@ class LogicLayout {
                         (y2-row) * (rowHeight + rowGap) - rowHeight / 2 - 10
                     ]
                 }
+            } else {
+                configs.bendPoint = []
             }
             if(configs.endRow) {
                 const iterateEndY = configs.endRow * (rowHeight + rowGap);
                 configs.iterateEndY = iterateEndY;
+            } else {
+                configs.iterateEndY = undefined
             }
             this.flowLinkStack.push(configs);
         });

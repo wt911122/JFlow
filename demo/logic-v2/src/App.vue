@@ -238,9 +238,13 @@ export default {
             const astblock = e.detail.instance;
             this.sourceData.playground.push(astblock);
             this.configs.layout.reOrder(this.sourceData);
-            this.$refs.jflow.reflow(() => {
-                jflowInstance.getRenderNodeBySource(astblock).anchor = e.detail.point;
-            });
+            this.$refs.jflow.reflow();
+            this.$nextTick(() => {
+                this.$refs.jflow.reflow(() => {
+                    jflowInstance.getRenderNodeBySource(astblock).anchor = e.detail.point;
+                });
+            })
+            
         },
         // onLink(event) {
         //     const jflowInstance = this.$refs.jflow.getInstance()
