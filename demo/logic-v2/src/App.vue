@@ -1,15 +1,29 @@
 <template>
-<div style="position: relative;">
+<div :class="$style.body">
+    <div :class="$style.sidebar">
+        <div v-for="p in conceptList" :key="p.concept">
+            <div draggable="true" 
+                :class="$style.part" 
+                type="IfStatement"
+                @dragstart="onDragStart(p.concept)">
+                {{p.concept}}
+            </div>
+        </div>
+      </div>
+      <div style="position: relative;">
     <j-jflow ref="jflow" 
         :class="$style.wrapper" 
         :configs="configs"
         :loading.sync="jflowloading"
         :genVueComponentKey="genVueComponentKey"
-        @click="closePopper">
+        @click="closePopper"
+        @drop="onDrop"
+        @pressEnd="onPressEnd">
             <template #LogicBasic="{ source, layoutNode }">
                 <logic-Node 
                     :node="source" 
-                    :layoutNode="layoutNode">
+                    :layoutNode="layoutNode"
+                    @pressStart="onPressStart(source)">
                 </logic-Node>
             </template>
             <template #Start="{ source }">
@@ -26,10 +40,12 @@
                 </switch-link>
             </template>
             <template #plainlink="{ configs }">
-                <logic-link :linkConfigs="configs">
+                <logic-link :linkConfigs="configs"
+                    @drop="onDropToLink($event, configs)">
                 </logic-link>
             </template>
     </j-jflow>
+      </div>
     
     <poppup-comp
             :meta="poppups.selectionMeta">
@@ -52,6 +68,27 @@ import SwitchLink from './link-component/switch-link.vue';
 import poppupComp from './poppups/poppup';
 import modalComp from './model/modal.vue';
 
+import {
+    ConceptColorMap,
+    ConceptSubColorMap,
+    ConceptIconURLMap,
+} from './configs';
+import { genNode } from "./data/data";
+function getList() {
+    return [
+        "Assignment",
+        "ForEach",
+        "Switch",
+        "While",
+        "If"
+    ].map(c => ({
+        concept: c,
+        color: ConceptColorMap[c],
+        subcolor: ConceptSubColorMap[c],
+        icon: ConceptIconURLMap[c],
+    }))
+}
+
 let uuid = 0;
 export default {    
     components: {
@@ -68,6 +105,7 @@ export default {
         return {
             renderJFlow: this.renderJFlow,
             reOrderAndReflow: this.reOrderAndReflow,
+            focusOn: this.focusOn,
             closePopper: this.closePopper,
             poppups: this.poppups,
             modal: this.modal,
@@ -92,7 +130,7 @@ export default {
             configs,
             sourceData,
             jflowloading: false,
-
+            currentTarget: null,
             poppups: {
                 selectionMeta: {
                     type: undefined,
@@ -108,7 +146,9 @@ export default {
                     active: false,
                     target: null,
                 },
-            }
+            },
+
+            conceptList: getList(),
         }
     },
     methods: {
@@ -116,10 +156,55 @@ export default {
             console.log('renderJFlow')
             this.$refs.jflow.renderJFlow();
         },
-        reOrderAndReflow() {
+        reOrderAndReflow(node) {
             // logger('reOrderAndReflow');
             this.configs.layout.reOrder(this.sourceData);
             this.$refs.jflow.reflow();
+            if(node) {
+                this.$nextTick(() => {
+                    if(node.concept === 'Switch') {
+                        this.focusOn(node.cases[0]);
+                    } else {
+                        this.focusOn(node);
+                    }
+                })
+            }
+        },
+
+        onPressStart(source) {
+            this.currentTarget = source;
+        },
+        onPressEnd() {
+            this.currentTarget = null;
+        },
+        onDropToLink(e, linkConfigs) {
+            const jflowInstance = this.$refs.jflow.getInstance();
+            let node = e.detail.instance;
+            if(this.currentTarget) {
+                node = this.currentTarget;
+                const layoutNode = jflowInstance.getLayoutNodeBySource(node);
+                layoutNode.remove();
+            }
+            linkConfigs.from.linkSource(node, linkConfigs);
+            this.reOrderAndReflow(node);
+           
+        },
+        focusOn(source) {
+            const jflowInstance = this.$refs.jflow.getInstance();
+            const i = jflowInstance.getRenderNodeBySource(source);
+             console.log(i.isInViewBox)
+            if (i && !i.isInViewBox) {
+                jflowInstance.focusOn(i);
+            }
+        },
+        onDrop(e) {
+            const jflowInstance = this.$refs.jflow.getInstance();
+            const astblock = e.detail.instance;
+            this.sourceData.playground.push(astblock);
+            this.configs.layout.reOrder(this.sourceData);
+            this.$refs.jflow.reflow(() => {
+                jflowInstance.getRenderNodeBySource(astblock).anchor = e.detail.point;
+            });
         },
         // onLink(event) {
         //     const jflowInstance = this.$refs.jflow.getInstance()
@@ -163,7 +248,12 @@ export default {
         //     this.configs.layout.reOrder(this.sourceData);
         //     this.$refs.jflow.reflow();
         // }
-
+        onDragStart(concept) {
+            const jflowInstance = this.$refs.jflow.getInstance();
+            jflowInstance.sendMessage({ 
+                instance: genNode(concept),
+            })
+        },
 
         closePopper() {
             Object.assign(this.poppups.selectionMeta, {
@@ -192,5 +282,25 @@ export default {
     width: 1200px;
     height: 600px;
     border: 1px solid #ccc;
+}
+.body{
+    display: flex;
+    flex-direction: horizontal;
+}
+.sidebar{
+    width: 180px;
+    border: 2px solid gold;
+}
+.sidebar > div {
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+}
+.sidebar > div > .part {
+    width: 80px;
+    height: 50px;
+    background-color: gold;
+    text-align: center;
+    line-height: 50px;
 }
 </style>

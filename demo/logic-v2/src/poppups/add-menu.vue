@@ -37,7 +37,7 @@ function getList() {
 }
 
 export default {
-    inject: ['reOrderAndReflow', 'closePopper'],
+    inject: ['reOrderAndReflow', 'closePopper', 'focusOn'],
     props: {
         meta: Object,
     },
@@ -51,8 +51,11 @@ export default {
             const node = genNode(c);
             const linkConfigs = this.meta.target;
             linkConfigs.from.linkSource(node, linkConfigs);
-            this.reOrderAndReflow();
+            this.reOrderAndReflow(node);
             this.closePopper();
+            // this.$nextTick(() => {
+            //     this.focusOn(node);
+            // })
         }
     }
 }

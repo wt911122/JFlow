@@ -45,6 +45,8 @@ class LogicLayout {
         this.root.reflowBodyPreCalculate(0, 0, (row, column, node) => {
             //console.log(column, row, node.concept, node.source.content)
         })
+
+        this.root.reflowPlaygroundPreCalculate(() => {});
         // this.root.reflowBodyPreCalculate(0, 0, (row, column, node) => {
         //     if (!layoutMapping.vertical[row]) {
         //         layoutMapping.vertical[row] = {};
@@ -63,21 +65,23 @@ class LogicLayout {
         this.root.makeLink((configs) => {
             // console.log(configs)
             if(configs.roundCorner) {
+                const sourceLayoutNode = configs.from;
+                const { column, row } = sourceLayoutNode
                 // console.log(configs.roundCorner);
                 if (configs.roundCorner.length === 2) {
                     const [x, y] = configs.roundCorner;
                     configs.bendPoint = [
-                        x * (this.columnWidth + this.columnGap) + this.columnWidth /2 + 15,
-                        y * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
+                        (x-column) * (this.columnWidth + this.columnGap) + this.columnWidth /2 + 15,
+                        (y-row) * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
                     ]
                 }
                 if (configs.roundCorner.length === 4) {
                     const [x1, y1, x2, y2] = configs.roundCorner;
                     configs.bendPoint = [
-                        x1 * (this.columnWidth + this.columnGap),
-                        y1 * (this.rowHeight + this.rowGap),
-                        x2 * (this.columnWidth + this.columnGap) + this.columnWidth /2 + 15,
-                        y2 * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
+                        (x1-column) * (this.columnWidth + this.columnGap),
+                        (y1-row) * (this.rowHeight + this.rowGap),
+                        (x2-column) * (this.columnWidth + this.columnGap) + this.columnWidth /2 + 15,
+                        (y2-row) * (this.rowHeight + this.rowGap) - this.rowHeight / 2 - 10
                     ]
                 }
             }
@@ -104,11 +108,19 @@ class LogicLayout {
         // } = layoutMapping;
         
         this.flowStack.forEach(({ layoutNode }) => {
+            const rootLayoutNode = layoutNode.rootLayoutNode;
+            let ax = 0;
+            let ay = 0;
+            if(rootLayoutNode) {
+                const i = jflow.getRenderNodeBySource(rootLayoutNode.source);
+                ax = i.anchor[0];
+                ay = i.anchor[1];
+            }
             const { row, column, source } = layoutNode;
             const instance = jflow.getRenderNodeBySource(source);
             instance.anchor = [
-                column * (this.columnWidth + this.columnGap),
-                row * (this.rowHeight + this.rowGap)
+                column * (this.columnWidth + this.columnGap) + ax,
+                row * (this.rowHeight + this.rowGap) + ay,
             ];
         });
 

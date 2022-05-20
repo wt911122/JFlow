@@ -53,6 +53,7 @@ class LogicLink extends BaseLink {
         this.iterateEndY   = configs.iterateEndY;
         this.minGapY       = configs.minGapY;
         this.showAdd       = false;
+        this.showDragover  = false;
     }
 
     _calculateAnchorPoints() {
@@ -67,7 +68,8 @@ class LogicLink extends BaseLink {
             this.minSpanY || 55, 
             20, 
             this.minGapY || 15,
-            this.bendPoint);
+            this.bendPoint,
+            this.from.getCenter());
         this._cachePoints = points
         this._cacheAngle = [this.fromDir, this.toDir];
         this._cacheInteractableSegment = getInteratableSegment(points);
@@ -158,6 +160,23 @@ class LogicLink extends BaseLink {
             ctx.translate(-x, -y);
             
             ctx.restore();
+        }
+
+        if(this.showDragover) {
+            ctx.save()
+            ctx.lineWidth = 2;
+            ctx.fillStyle = '#fff';
+            ctx.strokeStyle = '#4C88FF';
+            ctx.setLineDash([5, 5])
+            const x = ItSegment[0][0];
+            const y = (ItSegment[1][1] - ItSegment[0][1])/2 + ItSegment[0][1]
+            ctx.translate(x, y);
+            ctx.beginPath();
+            ctx.rect(-33, -5, 66, 10);
+            ctx.fill();
+            ctx.stroke();
+            ctx.translate(-x, -y);
+            ctx.restore()
         }
 
         if(!this.noArrow) {

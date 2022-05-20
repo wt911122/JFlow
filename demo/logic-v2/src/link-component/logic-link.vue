@@ -25,6 +25,7 @@ export default {
         return {
             isDragOver: false,
             showAdd: false,
+            showDragover: false,
         };
     },
     computed: {
@@ -37,6 +38,7 @@ export default {
                 // isSelf: false,
                 // noArrow: this.linkConfigs.to.type === 'endpoint',
                 showAdd: this.showAdd,
+                showDragover: this.isDragOver,
                 radius: 5,
                 approximate: 36,
                 backgroundColor: '#919499',
@@ -80,11 +82,15 @@ export default {
             // }
         },
         onDragOver($event) {
-            $event.detail.jflow.canvas.style.cursor = 'default';
+            // $event.detail.jflow.canvas.style.cursor = 'default';
             // const node = $event.detail.target;
             // if (LINK_ACCEPT_CONCEPT.includes(node?.concept)) {
-                const e = $event.detail.originEvent;
+            
+            const e = $event.detail.originEvent;
+            if (e.dataTransfer) {
                 e.dataTransfer.dropEffect = 'copy';
+            }
+
             // }
         },
         onDragOverEnd() {

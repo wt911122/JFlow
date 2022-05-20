@@ -105,6 +105,8 @@ class BaseNode {
         this.column = undefined;
         this.spanX = undefined;
         this.spanY = undefined;
+
+        this.rootNode = null;
     }
 
     reflowPreCalculate(row, column, callback) {
@@ -138,6 +140,20 @@ class BaseNode {
     delete() {
         this.parent.source[this.parentIterateType].splice(this.idx, 1);
     }
+
+    getNodes(jflow) {
+        const nodes = [];
+        this.traverse((n) => {
+            const renderNode = jflow.getRenderNodeBySource(n.source);
+            if (renderNode)
+                nodes.push(renderNode);
+        });
+        return nodes;
+    }
+
+    remove() {
+        this.parent.source[this.parentIterateType].splice(this.idx, 1);
+    }
 }
 class Logic extends BaseNode {
     constructor(source) {
@@ -165,18 +181,13 @@ class Logic extends BaseNode {
                 toDir: DIRECTION.TOP,
             });
 
-            b = b.makeLink((configs) => {
-                callback(configs);
-            });
+            b = b.makeLink(callback);
             last = b;
         });
 
-        // this.playground.forEach((n) => {
-        //     n.makeLink((configs) => {
-        //         configs.rootNode = n;
-        //         callback(configs);
-        //     });
-        // });
+        this.playground.forEach((n) => {
+            n.makeLink(callback);
+        });
         return this;
     }
 
@@ -214,6 +225,14 @@ class Logic extends BaseNode {
         return {
             spanX, spanY, row, column,
         };
+    }
+
+    reflowPlaygroundPreCalculate(callback) {
+        this.playground.forEach(node => {
+            node.reflowPreCalculate(0, 0, (row, column, layoutnode) => {
+                layoutnode.rootLayoutNode = node;
+            })
+        })
     }
 }
 
@@ -314,7 +333,6 @@ class SwitchStatement extends BaseNode {
             spanX, spanY, row, column,
         };
     }
-
     // reflowPreCalculate(row, column, callback) {
     //     super.reflowPreCalculate(row, column, callback);
     //     // const nextColumn = column + 1;
@@ -396,8 +414,18 @@ class SwitchCase extends BaseNode {
         if(linkMeta.part === 'cases') {
             super.linkSource(source);
         } else {
-            this.source[linkMeta.part].unshift(source);
+            this.source.consequent.unshift(source);
         }   
+    }
+
+    getNodes(jflow) {
+        // const nodes = [];
+        // this.traverse((n) => {
+        //     const renderNode = jflow.getRenderNodeBySource(n.source);
+        //     if (renderNode)
+        //         nodes.push(renderNode);
+        // });
+        return this.parent.getNodes(jflow);
     }
 }
 //     reflowPreCalculate(row, column, callback) {
@@ -422,7 +450,7 @@ class ForEachStatement extends BaseNode {
                     to: toNode(b),
                     fromDir: last ? DIRECTION.BOTTOM : DIRECTION.STARTLOOP,
                     toDir: DIRECTION.TOP,
-                    part: 'body',
+                    part: 'foreachbody',
                 });
 
                 b = b.makeLink(callback);
@@ -437,7 +465,7 @@ class ForEachStatement extends BaseNode {
             minSpanX: layoutConstance.minSpanX,
             minSpanY: layoutConstance.minSpanY,
             minGapY: layoutConstance.minGapY,
-            part: 'body',
+            part: 'foreachbody',
         })
         return this;
     }
@@ -474,7 +502,11 @@ class ForEachStatement extends BaseNode {
         // return verticalFlow(this, this.body, row, column, callback);
     }
     linkSource(source, linkMeta) {
-        this.source[linkMeta.part].unshift(source);
+        if(linkMeta.part !== 'foreachbody') {
+            super.linkSource(source, linkMeta)
+        } else {
+            this.source.body.unshift(source);
+        }
     }
     // reflowPreCalculate(row, column, callback) {
     //     super.reflowPreCalculate(row, column, callback);
@@ -500,7 +532,7 @@ class WhileStatement extends BaseNode {
                     to: toNode(b),
                     fromDir: last ? DIRECTION.BOTTOM : DIRECTION.STARTLOOP,
                     toDir: DIRECTION.TOP,
-                    part: 'body',
+                    part: 'whilebody',
                 });
 
                 b = b.makeLink(callback);
@@ -515,7 +547,7 @@ class WhileStatement extends BaseNode {
             minSpanX: layoutConstance.minSpanX,
             minSpanY: layoutConstance.minSpanY,
             minGapY: layoutConstance.minGapY,
-            part: 'body',
+            part: 'whilebody',
         })
         return this;
     }
@@ -542,7 +574,11 @@ class WhileStatement extends BaseNode {
         };
     }
     linkSource(source, linkMeta) {
-        this.source[linkMeta.part].unshift(source);
+        if(linkMeta.part !== 'whilebody') {
+            super.linkSource(source, linkMeta)
+        } else {
+            this.source.body.unshift(source);
+        }
     }
 }
 

@@ -5,8 +5,10 @@
         v-else
         :source="node" 
         :configs="configs"
+        v-on="$listeners"
         @contextclick="onContextClick"
-        @dblclick="onDblclick">
+        @dblclick="onDblclick"
+        @afterResolveMovingTarget="onAfterResolveMovingTarget">
         <j-group :configs="iconGroup">
             <j-icon :configs="imageConfig" />
         </j-group>
@@ -101,6 +103,11 @@ export default {
                 active: true,
                 target: this.node,
             });
+        },
+        onAfterResolveMovingTarget(event) {
+            const jflow = event.detail.jflow;
+            const renderNodes = this.layoutNode.getNodes(jflow);
+            jflow.setMovingTargets(renderNodes);
         }
     }
 }

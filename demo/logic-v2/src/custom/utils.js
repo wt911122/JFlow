@@ -31,6 +31,7 @@ export function polylinePoints(
     gapX = 5,
     gapY = 15,
     bendPoint,
+    fromCenter,
 ) {
     let points = [];
 
@@ -39,7 +40,9 @@ export function polylinePoints(
         // }
         if(end_dir === DIRECTION.RIGHT) {
             if (bendPoint) {
-                const [x, y] = bendPoint;
+                // const [x, y] = bendPoint;
+                const x = bendPoint[0] + fromCenter[0];
+                const y = bendPoint[1] + fromCenter[1];
                 points.push([p1[0], y]);
                 points.push([x, y]);
                 points.push([x, p2[1]]);
@@ -60,7 +63,11 @@ export function polylinePoints(
         }
         if(end_dir === DIRECTION.RIGHT) {
             if (bendPoint && bendPoint.length === 4) {
-                const [x1, y1, x2, y2] = bendPoint;
+                // const [x1, y1, x2, y2] = bendPoint;
+                const x1 = bendPoint[0] + fromCenter[0];
+                const x2 = bendPoint[2] + fromCenter[0];
+                const y1 = bendPoint[1] + fromCenter[1];
+                const y2 = bendPoint[3] + fromCenter[1];
                 points.push([x1, y1]);
                 points.push([x1, y2]);
                 points.push([x2, y2]);
