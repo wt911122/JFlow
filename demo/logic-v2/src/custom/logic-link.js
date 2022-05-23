@@ -57,6 +57,28 @@ class LogicLink extends BaseLink {
         this.showDragover  = false;
 
         this.arrowSegment = configs.arrowSegment;
+
+        this.animePoint = configs.animePoint || {
+            enable: false,
+        }
+    }
+
+    setConfig(configs) {
+        Object.keys(configs).forEach(k => {
+            if(configs[k] !== undefined && configs[k] !== null) {
+                this[k] = configs[k];
+                if(k === 'animePoint') {
+                    const enable = configs.animePoint.enable;
+                    if(enable) {
+                        this.anime = this._jflow.requestJFlowAnime((elapsed) => {
+                            this.animePoint.offset = (elapsed / 10) % this.animePoint.gap
+                        })
+                    } else {
+                        this.anime?.cancel();
+                    }
+                }
+            }
+        })
     }
 
     _calculateAnchorPoints() {
@@ -99,7 +121,7 @@ class LogicLink extends BaseLink {
         const pEnd = points[points.length - 1];
         const angleEnd = DIRECTION_ANGLE[this._cacheAngle[1]];
         
-        ctx.fillStyle = ctx.strokeStyle = this.backgroundColor;
+        ctx.fillStyle = ctx.strokeStyle = this.animePoint.enable ? this.animePoint.color : this.backgroundColor;
         ctx.beginPath();
         ctx.moveTo(p[0], p[1]);
         points.slice(1, points.length - 1).forEach((p, idx) => {
@@ -155,7 +177,7 @@ class LogicLink extends BaseLink {
                         } else if(dy) {
                             // 向下
                             x = p1[0];
-                            y = p1[1]  + r * dx;
+                            y = p1[1]  + r * dy;
                             angle = dy > 0 ? DIRECTION_ANGLE[DIRECTION.BOTTOM] : DIRECTION_ANGLE[DIRECTION.TOP]
                         }
                         ctx.beginPath();
@@ -175,6 +197,43 @@ class LogicLink extends BaseLink {
             }
             
             ctx.restore();
+        }
+
+        if(this.animePoint.enable) {
+            const animeGap = this.animePoint.gap;
+            const animeOffset = this.animePoint.offset;
+            let reducedArrowSegment = animeOffset;
+            let segid = 0;
+            const segLenth = this._cacheSegment.length;
+            while (segid < segLenth) {
+                const {
+                    p1, p2,
+                    dist,
+                    reducedDist,
+                } = this._cacheSegment[segid];
+                const dx = p2[0] - p1[0];
+                const dy = p2[1] - p1[1];
+                
+                while (reducedArrowSegment < reducedDist) {
+                    if(reducedArrowSegment > 0) {
+                        const r = 1 - (reducedDist - reducedArrowSegment) / dist;
+                        let x, y, angle;
+                        if(dx) {
+                            x = p1[0] + r * dx;
+                            y = p1[1];
+                        } else if(dy) {
+                            // 向下
+                            x = p1[0];
+                            y = p1[1]  + r * dy;
+                        }
+                        ctx.beginPath();
+                        ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
+                    reducedArrowSegment += animeGap;
+                }
+                segid ++;
+            }
         }
 
         if(this.showAdd){    

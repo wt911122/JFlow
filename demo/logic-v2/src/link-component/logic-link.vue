@@ -41,7 +41,12 @@ export default {
                 showDragover: this.isDragOver,
                 radius: 5,
                 approximate: 36,
-                arrowSegment: this.isFocused ? 400 : 0,
+                // arrowSegment: this.isFocused ? 400 : 0,
+                animePoint: {
+                    enable: this.isFocused,
+                    color: '#517CFF',
+                    gap: 240,
+                },
                 backgroundColor: '#919499',
             };
         },
