@@ -322,6 +322,7 @@ class LogicLink extends BaseLink {
                     ctx.fillText(this.content, p[0] + 2, p[1] + 10);
                     break;
                 case DIRECTION.RIGHT:
+                case DIRECTION.STARTLOOP:
                     ctx.textAlign = 'left';
                     ctx.fillText(this.content, p[0] + 10, p[1] - 2);
                     break;

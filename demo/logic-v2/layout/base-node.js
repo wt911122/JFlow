@@ -40,18 +40,27 @@ function verticalFlow(
 
     list.forEach((e, idx) => {
         const { spanX: sx, spanY: sy } = e.reflowPreCalculate(row + reducedStartSpan, column, callback);
-
+        console.log(e);
+        console.log(sx, sy, reducedStartSpan, reducedEndSpan)
+        // if(e.concept === 'If'  || e.concept === 'Switch') {
+        //     reducedStartSpan += sy;
+        //     reducedEndSpan =  Math.max(reducedStartSpan, reducedEndSpan);
+        // } else 
+        
         if ((!lastNode || lastNode.concept !== 'Switch') && sy === 1 && sx === 1) {
             // 单个块，顺序排列
             reducedStartSpan += 1
             reducedEndSpan = Math.max(reducedStartSpan, reducedEndSpan);
         } else {
             // 存在多行或多列，间隔排列
-            
             reducedStartSpan = reducedEndSpan;
             reducedEndSpan += sy;
             e.reflowPreCalculate(row + reducedStartSpan, column, callback);
-            reducedStartSpan += 1;
+            if(e.concept === 'While' || e.concept === 'ForEach') {
+                reducedStartSpan += 1
+            } else {
+                reducedStartSpan += sy;
+            }
             reducedEndSpan = Math.max(reducedStartSpan, reducedEndSpan);
         }
 
@@ -244,7 +253,7 @@ class SwitchStatement extends BaseNode {
     }
 
     makeLink(callback) {
-        let last;
+        /* let last;
         let lastCase;
         this.cases.forEach((b, idx) => {
             const lastInCase = b.makeLink(callback);
@@ -299,7 +308,73 @@ class SwitchStatement extends BaseNode {
             }
 
             lastCase = b
-        })
+        }) */ 
+
+
+
+        let spanX = this.defaultCase.spanX;
+        const lastInCase = this.defaultCase.makeLink(callback);
+        callback({
+            from: lastInCase || this.defaultCase,
+            to: this.Endpoint,
+            fromDir: DIRECTION.BOTTOM,
+            toDir: DIRECTION.TOP,
+            part: 'consequent'
+        });
+
+        let l = this.preCases.length;
+
+        let currentCase;
+        let lastCase;
+        let lastFromDEFAULTCase = this.defaultCase;
+        let noConsquentFlag = lastFromDEFAULTCase.spanX < 2;
+        while (l--) {
+            currentCase = this.preCases[l];
+            const lastInCase = currentCase.makeLink(callback);
+            let roundCorner;
+            if (spanX >= 2) {
+                const spanY = lastInCase ? lastFromDEFAULTCase.row - lastInCase.row : 1;
+                roundCorner = [spanX - (lastInCase ? 2 : 1), spanY];
+                if (currentCase.consequent.length === 0 && !noConsquentFlag) {
+                    roundCorner.unshift(0);
+                    roundCorner.unshift(1)
+                }
+            }
+            if(currentCase.consequent.length) {
+                noConsquentFlag = false;
+            }
+            console.log(spanX, roundCorner)
+            
+            
+            callback({
+                from: lastInCase || currentCase,
+                to: this.Endpoint,
+                fromDir: lastInCase ? DIRECTION.BOTTOM : DIRECTION.RIGHT,
+                toDir: DIRECTION.RIGHT,
+                roundCorner,
+                minSpanX: getLayoutConstance('minSpanX'),
+                endRow: lastCase ? lastCase.row : this.Endpoint.row,
+                part: 'consequent'
+            });
+
+            // if(lastCase) {
+                // case 间的线
+                callback({
+                    type: 'switchcaselink',
+                    from: currentCase,
+                    to: lastFromDEFAULTCase,
+                    fromDir: DIRECTION.BOTTOM,
+                    toDir: DIRECTION.TOP,
+                    lineDash: [5, 5],
+                    part: 'cases'
+                });
+            // }
+
+            spanX = Math.max(spanX, currentCase.spanX);
+            lastCase = currentCase;
+            lastFromDEFAULTCase = currentCase;
+        }
+
         return this.Endpoint;
     }
     traverse(callback) {
@@ -329,7 +404,7 @@ class SwitchStatement extends BaseNode {
         spanX = Math.max(spanX, sxend);
         this.spanX = Math.max(spanX, 2);
         this.spanY = spanY;
-        
+        console.log(this.spanX)
         return {
             spanX: this.spanX, spanY, row, column,
         };
@@ -405,8 +480,8 @@ class SwitchCase extends BaseNode {
        
         // let spanX = Math.max(sx, 1);
         // this.spanX = spanX + (isDefault ? 0 : 1);
-        this.spanX = sx + (isDefault ? 0 : 1);
-        console.log(this.spanX, isDefault)
+        this.spanX = Math.max(sx, 1) + (isDefault ? 0 : 1);
+        console.log('switch case ', this.idx, this.spanX, isDefault)
         this.spanY = sy + 1;
         return {
             spanX: this.spanX,
@@ -631,6 +706,7 @@ class IFstatement extends BaseNode {
             fromDir: last ? DIRECTION.BOTTOM : DIRECTION.RIGHT,
             toDir: DIRECTION.RIGHT,
             part: 'alternate',
+            minSpanColumn: this.spanConsquent,
             minSpanX: getLayoutConstance('minSpanX'),
         })
 
@@ -678,15 +754,21 @@ class IFstatement extends BaseNode {
         if (callback) {
             callback(row, column, this);
         }
-        const { spanX: asx, spanY: asy } = verticalFlow(this, this.alternate, 0, 0, row + 1, column + 1, callback);
+        
         const { spanX: csx, spanY: csy } = verticalFlow(this, this.consequent, 0, 0, row + 1, column, callback);
+        // console.log(Math.max(csx, 1))
+        this.spanConsquent = Math.max(csx, 1);
+        const { spanX: asx, spanY: asy } = verticalFlow(this, this.alternate, 0, 0, row + 1, column + Math.max(csx, 1), callback);
+        this.spanAlternate = Math.max(asx, 1);
         let spanY = Math.max(csy, asy) + 1;
         let spanX = Math.max(csx, 1) + Math.max(asx, 1);
+        console.log(spanY, spanX)
         const { spanY: syend, spanX: sxend } = this.Endpoint.reflowPreCalculate(row + spanY, column, callback);
         spanY += syend;
         spanX = Math.max(spanX, sxend);
         this.spanX = spanX;
         this.spanY = spanY;
+        console.log(this.spanX)
         return {
             spanX: this.spanX, 
             spanY: this.spanY, 

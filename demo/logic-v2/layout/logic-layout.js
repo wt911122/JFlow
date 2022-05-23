@@ -75,17 +75,17 @@ class LogicLayout {
                 if (configs.roundCorner.length === 2) {
                     const [x, y] = configs.roundCorner;
                     configs.bendPoint = [
-                        (x-column) * (columnWidth + columnGap) + columnWidth /2 + 15,
-                        (y-row) * (rowHeight + rowGap) - rowHeight / 2 - 10
+                        (x) * (columnWidth + columnGap) + columnWidth /2 + 15,
+                        (y) * (rowHeight + rowGap) - rowHeight / 2 - 10
                     ]
                 }
                 if (configs.roundCorner.length === 4) {
                     const [x1, y1, x2, y2] = configs.roundCorner;
                     configs.bendPoint = [
-                        (x1-column) * (columnWidth + columnGap),
-                        (y1-row) * (rowHeight + rowGap),
-                        (x2-column) * (columnWidth + columnGap) + columnWidth /2 + 15,
-                        (y2-row) * (rowHeight + rowGap) - rowHeight / 2 - 10
+                        (x1) * (columnWidth + columnGap),
+                        (y1) * (rowHeight + rowGap),
+                        (x2) * (columnWidth + columnGap) + columnWidth /2 + 15,
+                        (y2) * (rowHeight + rowGap) - rowHeight / 2 - 10
                     ]
                 }
             } else {
@@ -96,6 +96,17 @@ class LogicLayout {
                 configs.iterateEndY = iterateEndY;
             } else {
                 configs.iterateEndY = undefined
+            }
+            if(configs.minSpanColumn !== undefined) {
+                console.log('spanConsquent', configs.minSpanColumn)
+                configs.minSpanX += (configs.minSpanColumn - 1) * (columnWidth + columnGap);
+            }
+
+            if(sourceLayoutNode.source.concept === 'If') {
+                configs.content = (configs.part === 'alternate' ? 'No' : 'Yes');
+            }
+            if(sourceLayoutNode.source.concept === 'While') {
+                configs.content = (configs.part === 'whilebody' ? 'Yes' : 'No');
             }
             this.flowLinkStack.push(configs);
         });
