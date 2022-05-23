@@ -69,12 +69,11 @@ class LogicLink extends BaseLink {
                 this[k] = configs[k];
                 if(k === 'animePoint') {
                     const enable = configs.animePoint.enable;
+                    this.anime?.cancel();
                     if(enable) {
                         this.anime = this._jflow.requestJFlowAnime((elapsed) => {
                             this.animePoint.offset = (elapsed / 10) % this.animePoint.gap
                         })
-                    } else {
-                        this.anime?.cancel();
                     }
                 }
             }

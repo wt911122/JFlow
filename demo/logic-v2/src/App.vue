@@ -28,7 +28,7 @@
                 </logic-Node>
             </template>
             <template #Start="{ source }">
-                <start-Node :node="source"></start-Node>
+                <start-Node :node="source" @click="startAllAnimate"></start-Node>
             </template>
             <template #endpoint="{ source }">
                 <end-point-node :node="source"></end-point-node>
@@ -143,6 +143,7 @@ export default {
             closePopper: this.closePopper,
             poppups: this.poppups,
             modal: this.modal,
+            animate: this.animate,
 
             setFocus: this.setFocus,
             isOnFocus: this.isOnFocus,
@@ -190,12 +191,21 @@ export default {
             layoutConstance,
 
             focus: null,
+            animate: {
+                link: false,
+            }
         }
     },
     methods: {
+        startAllAnimate(e) {
+            console.log('startAllAnimate')
+            e.detail.bubbles = false;
+            this.animate.link = true;
+        },
         onClickCanvas() {
             this.closePopper();
             this.setFocus(null);
+            this.animate.link = false;
         },
         renderJFlow() {
             console.log('renderJFlow')
@@ -241,6 +251,7 @@ export default {
         },
         setFocus(node) {
             this.focus = node;
+            this.animate.link = false;
         },
         isOnFocus(target) {
             return this.focus === target;

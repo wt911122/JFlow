@@ -17,7 +17,7 @@
 <script>
 import { translateToClientCoord } from '../custom/utils';
 export default {
-    inject: ['renderJFlow', 'poppups', 'isOnFocus'],
+    inject: ['renderJFlow', 'poppups', 'isOnFocus', 'animate'],
     props: {
         linkConfigs: Object,
     },
@@ -31,6 +31,7 @@ export default {
     computed: {
         configs() {
             // console.log(this.linkConfigs.bendPoint)
+            console.log(this.animate.link)
             return {
                 ...this.linkConfigs,
                 // fromDir: undefined,
@@ -43,7 +44,7 @@ export default {
                 approximate: 36,
                 // arrowSegment: this.isFocused ? 400 : 0,
                 animePoint: {
-                    enable: this.isFocused,
+                    enable: this.isFocused || this.animate.link,
                     color: '#517CFF',
                     gap: 240,
                 },

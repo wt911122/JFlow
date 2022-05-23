@@ -1,7 +1,9 @@
 <template>
     <j-logic-node-group  
         :source="node" 
-        :configs="configs">
+        :configs="configs"
+        v-on="$listeners"
+        @instancemousemove="setPointerCursor">
         <j-group :configs="iconGroup">
             <j-icon :configs="imageConfig" />
         </j-group>
@@ -38,6 +40,12 @@ export default {
             }
         }
     },
+    methods: {
+        setPointerCursor($event) {
+            $event.detail.jflow.canvas.style.cursor = 'pointer';
+            $event.detail.bubbles = false;
+        },
+    }
 }
 </script>
 
