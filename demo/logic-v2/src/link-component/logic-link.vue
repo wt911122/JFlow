@@ -17,7 +17,7 @@
 <script>
 import { translateToClientCoord } from '../custom/utils';
 export default {
-    inject: ['renderJFlow', 'poppups'],
+    inject: ['renderJFlow', 'poppups', 'isOnFocus'],
     props: {
         linkConfigs: Object,
     },
@@ -41,6 +41,7 @@ export default {
                 showDragover: this.isDragOver,
                 radius: 5,
                 approximate: 36,
+                arrowSegment: this.isFocused ? 400 : 0,
                 backgroundColor: '#919499',
             };
         },
@@ -49,6 +50,9 @@ export default {
         },
         selectionActive() {
             return this.selectionMeta.active && this.selectionMeta.target === this.linkConfigs;
+        },
+        isFocused() {
+            return this.isOnFocus(this.linkConfigs.from.source);
         },
     },
     watch: {

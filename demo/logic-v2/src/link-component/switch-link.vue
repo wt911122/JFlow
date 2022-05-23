@@ -3,6 +3,8 @@
         :configs="configs"
         @instancemousemove="setPointerCursor"
         @click="onClick"
+        @mouseenter="onMouseEnter"
+        @mouseleave="onMouseLeave"
         :from="linkConfigs.from.source"
         :to="linkConfigs.to.source">
     </j-switch-case-link>
@@ -15,14 +17,23 @@ export default {
     props: {
         linkConfigs: Object,
     },
+    data() {
+        return {
+            showAdd: false,
+        }
+    },
     computed: {
         configs() {
             // console.log(this.linkConfigs.bendPoint)
             return {
                 ...this.linkConfigs,
-                backgroundColor: '#4C88FF',
+                showAdd: this.showAdd,
+                backgroundColor: this.showAdd ? '#4C88FF' : '#919499',
             };
         },
+    },
+    updated() {
+        this.renderJFlow();
     },
     methods: {
         setPointerCursor($event) {
@@ -33,7 +44,15 @@ export default {
             const node = genNode('SwitchCase');
             this.linkConfigs.from.linkSource(node, this.linkConfigs);
             this.reOrderAndReflow();
-        }
+        },
+        onMouseEnter() {
+            console.log('enter')
+            this.showAdd = true;
+        },
+        onMouseLeave() {
+             console.log('leave')
+            this.showAdd = false;
+        },
     }
 }
 </script>

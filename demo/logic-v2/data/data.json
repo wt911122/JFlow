@@ -57,7 +57,7 @@
                  "consequent": [
                     {
                       "id": 99,
-                      "concept": "Assignment",
+                      "concept": "While",
                       "content": "TotalPay = TotalPay+item.productList.price*2"
                     }
                  ]

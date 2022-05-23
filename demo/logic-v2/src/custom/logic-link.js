@@ -7,6 +7,7 @@ import {
     distToSegmentSquared,
     makeRadiusFromVector,
     isPolyLineIntersectionRectange,
+    segmentDistances,
 } from './utils';
 const APPROXIMATE = 6;
 
@@ -54,11 +55,14 @@ class LogicLink extends BaseLink {
         this.minGapY       = configs.minGapY;
         this.showAdd       = false;
         this.showDragover  = false;
+
+        this.arrowSegment = configs.arrowSegment;
     }
 
     _calculateAnchorPoints() {
         const dmsfrom = this.from.getIntersectionsSeprate();
         const dmsto = this.to.getIntersectionsSeprate();
+        const center = this.from.getCenter();
         const points = polylinePoints(
             dmsfrom[this.fromDir],
             dmsto[this.toDir],
@@ -69,13 +73,16 @@ class LogicLink extends BaseLink {
             20, 
             this.minGapY || 15,
             this.bendPoint,
-            this.from.getCenter());
+            center);
         this._cachePoints = points
         this._cacheAngle = [this.fromDir, this.toDir];
         this._cacheInteractableSegment = getInteratableSegment(points);
         if(this.iterateEndY) {
-            this._cacheInteractableSegment[1][1] = Math.min(this.iterateEndY, this._cacheInteractableSegment[1][1])
+            this._cacheInteractableSegment[1][1] = Math.min(this.iterateEndY + center[1], this._cacheInteractableSegment[1][1])
         }
+
+        this._cacheSegment = segmentDistances(points);
+        
     }
     
     isInViewBox(br) {
@@ -118,6 +125,55 @@ class LogicLink extends BaseLink {
         }
         ctx.stroke();
         if(this.lineDash) {
+            ctx.restore();
+        }
+
+        if(this.arrowSegment) {
+            console.log(this.arrowSegment)
+            ctx.save();
+            let reducedArrowSegment = 0;
+            let segid = 0;
+            const segLenth = this._cacheSegment.length;
+            console.log(this._cacheSegment)
+            while (segid < segLenth) {
+                const {
+                    p1, p2,
+                    dist,
+                    reducedDist,
+                } = this._cacheSegment[segid];
+                const dx = p2[0] - p1[0];
+                const dy = p2[1] - p1[1];
+                
+                while (reducedArrowSegment < reducedDist) {
+                    if(reducedArrowSegment > 0) {
+                        const r = 1 - (reducedDist - reducedArrowSegment) / dist;
+                        let x, y, angle;
+                        if(dx) {
+                            x = p1[0] + r * dx;
+                            y = p1[1];
+                            angle = dx > 0 ? DIRECTION_ANGLE[DIRECTION.RIGHT] : DIRECTION_ANGLE[DIRECTION.LEFT];
+                        } else if(dy) {
+                            // 向下
+                            x = p1[0];
+                            y = p1[1]  + r * dx;
+                            angle = dy > 0 ? DIRECTION_ANGLE[DIRECTION.BOTTOM] : DIRECTION_ANGLE[DIRECTION.TOP]
+                        }
+                        ctx.beginPath();
+                        ctx.translate(x, y);
+                        ctx.rotate(angle );
+                        ctx.moveTo(-5, 0);
+                        ctx.lineTo(0, -4);
+                        ctx.lineTo(0, 4);
+                        ctx.lineTo(-5, 0);
+                        ctx.fill();
+                        ctx.rotate(-angle);
+                        ctx.translate(-x, -y);
+                    }
+                    reducedArrowSegment += this.arrowSegment;
+                }
+                segid ++;
+            }
+            
             ctx.restore();
         }
 

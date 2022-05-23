@@ -566,8 +566,8 @@ export default {
   margin-top: 60px;
 }
 .wrapper{
-    width: 800px;
-    height: 600px;
+    width: 960px;
+    height: 770px;
     border: 1px solid #ccc;
 }
 .body{

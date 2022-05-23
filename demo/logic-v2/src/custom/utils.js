@@ -107,6 +107,26 @@ function scaleVec(vec, scale) {
     return [vec[0] * scale, vec[1] * scale];
 }
 
+export function segmentDistances(points) {
+    const segs = [];
+    let l = points.length;
+    let i = 1;
+    let reducedDist = 0;
+    while (i < l) {
+        const p1 = points[i-1]
+        const p2 = points[i]
+        const dist = Math.sqrt(dist2(p1, p2));
+        reducedDist += dist;
+        segs.push({
+            p1, p2,
+            dist,
+            reducedDist,
+        });
+        i++;
+    }
+    return segs
+}
+
 export function makeRadiusFromVector(pbefore, p, pnext, radius) {
     const vec1 = minusVec(p, pbefore);
     const vec2 = minusVec(p, pnext);

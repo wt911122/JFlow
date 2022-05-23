@@ -6,7 +6,9 @@
         :source="node" 
         :configs="configs"
         v-on="$listeners"
+        @click="onClickWrapper"
         @contextclick="onContextClick"
+        @instancemousemove="setPointerCursor"
         @dblclick="onDblclick"
         @afterResolveMovingTarget="onAfterResolveMovingTarget"
         @mouseenter="onMouseEnter"
@@ -47,30 +49,23 @@ function translateToClientCoord(jflowInstance) {
     const { x, y } = jflowInstance._jflow.DOMwrapper.getBoundingClientRect();
     return [gp[0] + x, gp[1] + y];
 }
-
+const rootLayout = new LinearLayout({
+    direction: 'horizontal',
+    gap: 10,
+});
 export default { 
-    inject: ['renderJFlow', 'poppups', 'modal', 'closePopper'],
+    inject: ['renderJFlow', 'poppups', 'modal', 'closePopper', 'setFocus', 'isOnFocus'],
     props: {
         node: Object,
         layoutNode: Object,
     },
     data() {
         const node = this.node;
-        const color = ConceptColorMap[node.concept];
+        
         const subcolor = ConceptSubColorMap[node.concept]
         const icon = ConceptIconMap[node.concept];
         return {
-            configs: {
-                layout: new LinearLayout({
-                    direction: 'horizontal',
-                    gap: 10,
-                }),
-                borderWidth: 1,
-                borderColor: color,
-                backgroundColor: '#fff',
-                borderRadius: 4,
-                height: 32,
-            },
+           
             iconGroup: {
                 borderRadius: 4,
                 padding: 8,
@@ -98,8 +93,41 @@ export default {
         modalMeta() {
             return this.modal.modalMeta;
         },
+        isFocused() {
+            return this.isOnFocus(this.node);
+        },
+        configs() {
+            const color = ConceptColorMap[this.node.concept];
+            const focused = this.isFocused
+            let shadow = {
+                shadowColor: 'transparent',
+            };
+            if (focused) {
+                shadow = {
+                    shadowColor: 'rgba(81, 124, 255)',
+                    shadowBlur: 15,
+                };
+            }
+             
+            return {
+                layout: rootLayout,
+                borderWidth: 1,
+                borderColor: focused ? '#517CFF': color,
+                backgroundColor: '#fff',
+                borderRadius: 4,
+                height: 32,
+                ...shadow,
+            }
+        }
+    },
+    updated() {
+        this.renderJFlow();
     },
     methods: {
+        setPointerCursor($event) {
+            $event.detail.jflow.canvas.style.cursor = 'pointer';
+            $event.detail.bubbles = false;
+        },
         onContextClick(event) {
             event.detail.bubbles = false;
             const { clientX, clientY } = event.detail.event;
@@ -139,6 +167,10 @@ export default {
             if(this.selectionActive) {
                 this.closePopper()
             }
+        },
+        onClickWrapper(event){
+            event.detail.bubbles = false;
+            this.setFocus(this.node);
         }
     }
 }

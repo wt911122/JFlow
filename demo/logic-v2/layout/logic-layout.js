@@ -1,6 +1,6 @@
 
 import { makeAST } from './base-node';
-import { layoutConstance, getLayoutConstance } from './utils';
+import { layoutConstance, getLayoutConstance, getSourceAnchor } from './utils';
 class LogicLayout {
     constructor(source) {
         // this.rowGap = layoutConstance.rowGap;
@@ -67,9 +67,10 @@ class LogicLayout {
 
         this.root.makeLink((configs) => {
             // console.log(configs)
+            const sourceLayoutNode = configs.from;
+            const { column, row } = sourceLayoutNode
             if(configs.roundCorner) {
-                const sourceLayoutNode = configs.from;
-                const { column, row } = sourceLayoutNode
+                
                 // console.log(configs.roundCorner);
                 if (configs.roundCorner.length === 2) {
                     const [x, y] = configs.roundCorner;
@@ -91,7 +92,7 @@ class LogicLayout {
                 configs.bendPoint = []
             }
             if(configs.endRow) {
-                const iterateEndY = configs.endRow * (rowHeight + rowGap);
+                const iterateEndY = (configs.endRow - row) * (rowHeight + rowGap);
                 configs.iterateEndY = iterateEndY;
             } else {
                 configs.iterateEndY = undefined
@@ -122,9 +123,10 @@ class LogicLayout {
             let ax = 0;
             let ay = 0;
             if(rootLayoutNode) {
-                const i = jflow.getRenderNodeBySource(rootLayoutNode.source);
-                ax = i.anchor[0];
-                ay = i.anchor[1];
+                const [x, y] = getSourceAnchor(jflow, rootLayoutNode.source)
+                // const i = jflow.getRenderNodeBySource(rootLayoutNode.source);
+                ax = x;
+                ay = y;
             }
             const { row, column, source } = layoutNode;
             const instance = jflow.getRenderNodeBySource(source);

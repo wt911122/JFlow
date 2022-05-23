@@ -17,7 +17,7 @@
         :configs="configs"
         :loading.sync="jflowloading"
         :genVueComponentKey="genVueComponentKey"
-        @click="closePopper"
+        @click="onClickCanvas"
         @drop="onDrop"
         @pressEnd="onPressEnd">
             <template #LogicBasic="{ source, layoutNode }">
@@ -99,7 +99,7 @@ import LogicLink from './link-component/logic-link.vue';
 import SwitchLink from './link-component/switch-link.vue';
 import poppupComp from './poppups/poppup';
 import modalComp from './model/modal.vue';
-import { initLayoutConstance, setLayoutConstance, layoutConstance } from '../layout/utils';
+import { initLayoutConstance, setLayoutConstance, layoutConstance, setSourceInitialAnchor } from '../layout/utils';
 
 import {
     ConceptColorMap,
@@ -143,6 +143,9 @@ export default {
             closePopper: this.closePopper,
             poppups: this.poppups,
             modal: this.modal,
+
+            setFocus: this.setFocus,
+            isOnFocus: this.isOnFocus,
         }
     },
     data() {
@@ -184,10 +187,16 @@ export default {
 
             conceptList: getList(),
 
-            layoutConstance
+            layoutConstance,
+
+            focus: null,
         }
     },
     methods: {
+        onClickCanvas() {
+            this.closePopper();
+            this.setFocus(null);
+        },
         renderJFlow() {
             console.log('renderJFlow')
             this.$refs.jflow.renderJFlow();
@@ -219,11 +228,22 @@ export default {
             if(this.currentTarget) {
                 node = this.currentTarget;
                 const layoutNode = jflowInstance.getLayoutNodeBySource(node);
-                layoutNode.remove();
+                if(layoutNode.source.concept === 'SwitchCase') {
+                    node = layoutNode.parent.source;
+                    layoutNode.parent.delete();
+                } else {
+                    layoutNode.delete();
+                }
             }
             linkConfigs.from.linkSource(node, linkConfigs);
             this.reOrderAndReflow(node);
            
+        },
+        setFocus(node) {
+            this.focus = node;
+        },
+        isOnFocus(target) {
+            return this.focus === target;
         },
         focusOn(source) {
             const jflowInstance = this.$refs.jflow.getInstance();
@@ -236,15 +256,12 @@ export default {
         onDrop(e) {
             const jflowInstance = this.$refs.jflow.getInstance();
             const astblock = e.detail.instance;
+            const point = e.detail.point;
             this.sourceData.playground.push(astblock);
             this.configs.layout.reOrder(this.sourceData);
-            this.$refs.jflow.reflow();
-            this.$nextTick(() => {
-                this.$refs.jflow.reflow(() => {
-                    jflowInstance.getRenderNodeBySource(astblock).anchor = e.detail.point;
-                });
-            })
-            
+            this.$refs.jflow.reflow(() => {
+                setSourceInitialAnchor(jflowInstance, astblock, point)
+            });            
         },
         // onLink(event) {
         //     const jflowInstance = this.$refs.jflow.getInstance()
@@ -317,7 +334,7 @@ export default {
 
 <style module>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: PingFang SC, Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

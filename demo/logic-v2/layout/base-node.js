@@ -251,21 +251,23 @@ class SwitchStatement extends BaseNode {
             const isDefault = b.isDefault;
             const remainCases = this.cases.slice(idx + 1);
             let remainSpanX = 0;
+            let hasConsequent = false
             remainCases.forEach(c => {
                 remainSpanX = Math.max(remainSpanX, c.spanX);
+                if(!c.isDefault) {
+                    hasConsequent = (hasConsequent || c.consequent.length > 0)
+                }
             })
-            // const columnEnd = remainSpanX + b.column - 1;
-            // const columnBegin = b.column + 1;
-            // const rowBegin = b.row + b.spanY;
-            // const rowEnd = this.Endpoint.row;
 
-            console.log('case ' + idx , remainSpanX)
+            console.log('case ' + idx , remainSpanX, lastInCase)
             let roundCorner
-            if(remainSpanX > 1) {
+            if(remainSpanX >= 2) {
                 roundCorner = [remainSpanX + b.column - 1, b.row + b.spanY]
+            } else if((lastInCase || hasConsequent) && !isDefault) {
+                roundCorner = [b.column + 1, b.row + b.spanY]
             }
             console.log('case ' + idx , remainSpanX, roundCorner)
-            if(b.consequent.length === 0 && remainSpanX >= 2) {
+            if(b.consequent.length === 0 && (remainSpanX >= 2 || hasConsequent)) {
                 // console.log(remainCases.map(c => c.spanX))
                 // console.log('no case', roundCorner, b.column);
                 roundCorner.unshift(b.row);
@@ -325,11 +327,11 @@ class SwitchStatement extends BaseNode {
         const { spanY: syend, spanX: sxend } = this.Endpoint.reflowPreCalculate(row + spanY, column, callback);
         spanY += syend;
         spanX = Math.max(spanX, sxend);
-        this.spanX = spanX;
+        this.spanX = Math.max(spanX, 2);
         this.spanY = spanY;
         
         return {
-            spanX, spanY, row, column,
+            spanX: this.spanX, spanY, row, column,
         };
     }
     // reflowPreCalculate(row, column, callback) {
@@ -401,9 +403,10 @@ class SwitchCase extends BaseNode {
         //     spanY += sy;
         // });
        
-        let spanX = Math.max(sx, 1);
-        this.spanX = spanX + (isDefault ? 0 : 1);
-        console.log(this.spanX)
+        // let spanX = Math.max(sx, 1);
+        // this.spanX = spanX + (isDefault ? 0 : 1);
+        this.spanX = sx + (isDefault ? 0 : 1);
+        console.log(this.spanX, isDefault)
         this.spanY = sy + 1;
         return {
             spanX: this.spanX,

@@ -27,3 +27,31 @@ export function setLayoutConstance(key, value) {
 export function getLayoutConstance(key) {
     return +layoutConstance[key];
 }
+
+export function setSourceInitialAnchor(jflowInstance, source, point) {
+    const isSwitch = source.concept === 'Switch';
+    if(isSwitch) {
+        source.cases.forEach(c => {
+            const i = jflowInstance.getRenderNodeBySource(c);
+            i.anchor[0] += point[0];
+            i.anchor[1] += point[1];
+        })
+        // const renderNodes = this.layoutNode.getNodes(jflow);
+        
+    } else {
+        const i = jflowInstance.getRenderNodeBySource(source);
+        i.anchor = point;
+    }
+}
+
+export function getSourceAnchor(jflowInstance, source) {
+    const isSwitch = source.concept === 'Switch';
+    if(isSwitch) {
+        const case0 = source.cases[0];
+        const i = jflowInstance.getRenderNodeBySource(case0);
+        return i.anchor;
+    } else {
+        const i = jflowInstance.getRenderNodeBySource(source);
+        return i.anchor;
+    }
+}
