@@ -41,7 +41,7 @@ export default {
                 showAdd: this.showAdd,
                 showDragover: this.isDragOver,
                 radius: 5,
-                approximate: 36,
+                approximate: 2000,
                 // arrowSegment: this.isFocused ? 400 : 0,
                 animePoint: {
                     enable: this.isFocused || this.animate.link,

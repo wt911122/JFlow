@@ -6,8 +6,14 @@
             <div draggable="true" 
                 :class="$style.part" 
                 type="IfStatement"
-                @dragstart="onDragStart(p.concept)">
+                @dragstart="onDragStart($event, p.concept)">
                 {{p.concept}}
+            </div>
+            <div :ref="`templete-${p.concept}`" :class="[$style.literalRef]">
+                <div :class="$style.part" >
+                    {{ p.concept }}
+                </div>
+                <!-- <div :class="$style.literal" :style="sizeStyle" :name="node.icon"></div> -->
             </div>
         </div>
       </div>
@@ -316,11 +322,20 @@ export default {
         //     this.configs.layout.reOrder(this.sourceData);
         //     this.$refs.jflow.reflow();
         // }
-        onDragStart(concept) {
+        onDragStart(e, concept) {
+            const { dataTransfer } = e;
+            const node = this.$refs[`templete-${concept}`][0];
+            
+            const { width, height } = node.getBoundingClientRect();
+            console.log(width, height)
+            
+            dataTransfer.setDragImage(node, -width - 10, -height - 10);
+            this.dragging = true;
+            e.dataTransfer.effectAllowed = 'copyMove';
             const jflowInstance = this.$refs.jflow.getInstance();
             jflowInstance.sendMessage({ 
                 instance: genNode(concept),
-            })
+            });
         },
 
         closePopper() {
@@ -370,11 +385,18 @@ export default {
     display: flex;
     justify-content: center;
 }
-.sidebar > div > .part {
+.part {
     width: 80px;
     height: 50px;
     background-color: gold;
     text-align: center;
     line-height: 50px;
 }
+.literalRef {
+    position: absolute;
+    z-index: -999;
+    top: -999px;
+    left: -999px;
+}
+
 </style>

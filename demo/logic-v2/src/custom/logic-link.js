@@ -9,7 +9,7 @@ import {
     isPolyLineIntersectionRectange,
     segmentDistances,
 } from './utils';
-const APPROXIMATE = 6;
+const APPROXIMATE = 20;
 
 function getInteratableSegment(points) {
     let i = 1;
