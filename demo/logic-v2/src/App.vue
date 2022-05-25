@@ -52,6 +52,10 @@
                 </logic-link>
             </template>
     </j-jflow>
+    <div :class="$style.minimap">
+            <div :class="$style.content" ref="minimap" >
+            </div>
+        </div>
       </div>
     
     <poppup-comp
@@ -60,7 +64,7 @@
         <modal-comp 
             :meta="modal.modalMeta">
         </modal-comp>
-
+        
         
 </div>
 <div>
@@ -202,7 +206,18 @@ export default {
             }
         }
     },
+    watch: {
+        jflowloading(val) {
+            if(!val) {
+                this.captureMap();
+            }
+        }
+    },
     methods: {
+        captureMap() {
+            const jflowInstance = this.$refs.jflow.getInstance();
+            jflowInstance.captureMap(this.$refs.minimap, 10);
+        },
         startAllAnimate(e) {
             console.log('startAllAnimate')
             e.detail.bubbles = false;
@@ -220,7 +235,7 @@ export default {
         reOrderAndReflow(node) {
             // logger('reOrderAndReflow');
             this.configs.layout.reOrder(this.sourceData);
-            this.$refs.jflow.reflow();
+            this.$refs.jflow.reflow(undefined, this.captureMap);
             if(node) {
                 this.$nextTick(() => {
                     if(node.concept === 'Switch') {
@@ -230,6 +245,7 @@ export default {
                     }
                 })
             }
+            
         },
 
         onPressStart(source) {
@@ -268,6 +284,7 @@ export default {
              console.log(i.isInViewBox)
             if (i && !i.isInViewBox) {
                 jflowInstance.focusOn(i);
+                this.captureMap();
             }
         },
         onDrop(e) {
@@ -278,7 +295,7 @@ export default {
             this.configs.layout.reOrder(this.sourceData);
             this.$refs.jflow.reflow(() => {
                 setSourceInitialAnchor(jflowInstance, astblock, point)
-            });            
+            }, this.captureMap);            
         },
         // onLink(event) {
         //     const jflowInstance = this.$refs.jflow.getInstance()
@@ -397,6 +414,18 @@ export default {
     z-index: -999;
     top: -999px;
     left: -999px;
+}
+
+.minimap{
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: #fff;
+}
+.minimap > .content {
+
+    width: 260px;
+    height: 180px;
 }
 
 </style>
