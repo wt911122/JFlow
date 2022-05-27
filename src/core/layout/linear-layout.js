@@ -78,6 +78,7 @@ class LinearLayout {
                 lastInstanceHeight = height / 2;
                 instance.anchor = [0, reduceHeight];
             });
+            maxWidth = Math.max(groupWidth, maxWidth);
             childAll.forEach((instance, idx) =>  {
                 if(instance.display === 'block') {
                     // instance.definedWidth = maxWidth;
@@ -88,7 +89,7 @@ class LinearLayout {
                 }
             });
 
-            maxWidth = Math.max(groupWidth, maxWidth);
+            
             
             allHeight = allHeight/2;
             if(this.alignment === 'start') {
