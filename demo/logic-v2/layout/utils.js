@@ -31,13 +31,8 @@ export function getLayoutConstance(key) {
 export function setSourceInitialAnchor(jflowInstance, source, point) {
     const isSwitch = source.concept === 'Switch';
     if(isSwitch) {
-        source.cases.forEach(c => {
-            const i = jflowInstance.getRenderNodeBySource(c);
-            i.anchor[0] += point[0];
-            i.anchor[1] += point[1];
-        })
-        // const renderNodes = this.layoutNode.getNodes(jflow);
-        
+        const i = jflowInstance.getRenderNodeBySource(source.cases[0])
+        i.anchor = point;
     } else {
         const i = jflowInstance.getRenderNodeBySource(source);
         i.anchor = point;

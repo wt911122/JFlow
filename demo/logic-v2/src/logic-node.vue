@@ -68,7 +68,7 @@ export default {
            
             iconGroup: {
                 borderRadius: 4,
-                padding: 8,
+                padding: 4,
                 backgroundColor: subcolor,
             },
             textGroup: {
@@ -78,8 +78,8 @@ export default {
             },
             imageConfig: {
                 image: icon,
-                width: 16,
-                height: 16,
+                width: 24,
+                height: 24,
             }
         }
     },
@@ -108,14 +108,15 @@ export default {
                     shadowBlur: 15,
                 };
             }
-             
+            console.log('opacity', this.layoutNode.rootLayoutNode ? 0.5 : 1)
             return {
                 layout: rootLayout,
-                borderWidth: 1,
+                borderWidth: 2,
                 borderColor: focused ? '#517CFF': color,
                 backgroundColor: '#fff',
                 borderRadius: 4,
                 height: 32,
+                opacity: this.layoutNode.rootLayoutNode ? 0.5 : 1,
                 ...shadow,
             }
         }

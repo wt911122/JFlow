@@ -40,8 +40,8 @@ function verticalFlow(
 
     list.forEach((e, idx) => {
         const { spanX: sx, spanY: sy } = e.reflowPreCalculate(row + reducedStartSpan, column, callback);
-        console.log(e);
-        console.log(sx, sy, reducedStartSpan, reducedEndSpan)
+        // // console.log(e);
+        // // console.log(sx, sy, reducedStartSpan, reducedEndSpan)
         // if(e.concept === 'If'  || e.concept === 'Switch') {
         //     reducedStartSpan += sy;
         //     reducedEndSpan =  Math.max(reducedStartSpan, reducedEndSpan);
@@ -86,7 +86,7 @@ function verticalFlow(node, list, spanX = 1, spanY = 1, row = 0, column = 0, cal
             lastMaxRow = Math.max(lastMaxRow, idxRow);
             b.reflowPreCalculate(idxRow, column, callback);
             spanYPlain += 1;
-            console.log(spanYPlain);
+            // console.log(spanYPlain);
         } else {
             lastMaxRow = lastMaxRow + sy
             spanY += sy;
@@ -268,20 +268,20 @@ class SwitchStatement extends BaseNode {
                 }
             })
 
-            console.log('case ' + idx , remainSpanX, lastInCase)
+            // console.log('case ' + idx , remainSpanX, lastInCase)
             let roundCorner
             if(remainSpanX >= 2) {
                 roundCorner = [remainSpanX + b.column - 1, b.row + b.spanY]
             } else if((lastInCase || hasConsequent) && !isDefault) {
                 roundCorner = [b.column + 1, b.row + b.spanY]
             }
-            console.log('case ' + idx , remainSpanX, roundCorner)
+            // console.log('case ' + idx , remainSpanX, roundCorner)
             if(b.consequent.length === 0 && (remainSpanX >= 2 || hasConsequent)) {
-                // console.log(remainCases.map(c => c.spanX))
-                // console.log('no case', roundCorner, b.column);
+                // // console.log(remainCases.map(c => c.spanX))
+                // // console.log('no case', roundCorner, b.column);
                 roundCorner.unshift(b.row);
                 roundCorner.unshift(b.column + 1)
-                // console.log(roundCorner)
+                // // console.log(roundCorner)
             }
             // 回来的线
             callback({
@@ -323,7 +323,10 @@ class SwitchStatement extends BaseNode {
         });
 
         let l = this.preCases.length;
-
+        let maxSpanX = 0;
+        this.cases.forEach(c => {
+            maxSpanX = Math.max(maxSpanX, c.spanX);
+        })
         let currentCase;
         let lastCase;
         let lastFromDEFAULTCase = this.defaultCase;
@@ -332,9 +335,9 @@ class SwitchStatement extends BaseNode {
             currentCase = this.preCases[l];
             const lastInCase = currentCase.makeLink(callback);
             let roundCorner;
-            if (spanX >= 2) {
+            if (maxSpanX >= 2) {
                 const spanY = lastInCase ? lastFromDEFAULTCase.row - lastInCase.row : 1;
-                roundCorner = [spanX - (lastInCase ? 2 : 1), spanY];
+                roundCorner = [maxSpanX - (lastInCase ? 2 : 1), spanY];
                 if (currentCase.consequent.length === 0 && !noConsquentFlag) {
                     roundCorner.unshift(0);
                     roundCorner.unshift(1)
@@ -343,7 +346,7 @@ class SwitchStatement extends BaseNode {
             if(currentCase.consequent.length) {
                 noConsquentFlag = false;
             }
-            console.log(spanX, roundCorner)
+            // console.log(spanX, roundCorner)
             
             
             callback({
@@ -351,10 +354,13 @@ class SwitchStatement extends BaseNode {
                 to: this.Endpoint,
                 fromDir: lastInCase ? DIRECTION.BOTTOM : DIRECTION.RIGHT,
                 toDir: DIRECTION.RIGHT,
+                noArrow: true,
+                tailPoint: true,
+                tailRadius: 6,
                 roundCorner,
                 minSpanX: getLayoutConstance('minSpanX'),
                 endRow: lastCase ? lastCase.row : this.Endpoint.row,
-                part: 'consequent'
+                part: 'consequent',
             });
 
             // if(lastCase) {
@@ -404,7 +410,7 @@ class SwitchStatement extends BaseNode {
         spanX = Math.max(spanX, sxend);
         this.spanX = Math.max(spanX, 2);
         this.spanY = spanY;
-        console.log(this.spanX)
+        // console.log(this.spanX)
         return {
             spanX: this.spanX, spanY, row, column,
         };
@@ -481,7 +487,7 @@ class SwitchCase extends BaseNode {
         // let spanX = Math.max(sx, 1);
         // this.spanX = spanX + (isDefault ? 0 : 1);
         this.spanX = Math.max(sx, 1) + (isDefault ? 0 : 1);
-        console.log('switch case ', this.idx, this.spanX, isDefault)
+        // console.log('switch case ', this.idx, this.spanX, isDefault)
         this.spanY = sy + 1;
         return {
             spanX: this.spanX,
@@ -708,6 +714,9 @@ class IFstatement extends BaseNode {
             part: 'alternate',
             minSpanColumn: this.spanConsquent,
             minSpanX: getLayoutConstance('minSpanX'),
+            noArrow: true,
+            tailPoint: true,
+            tailRadius: 6,
         })
 
         // Consequent
@@ -756,19 +765,19 @@ class IFstatement extends BaseNode {
         }
         
         const { spanX: csx, spanY: csy } = verticalFlow(this, this.consequent, 0, 0, row + 1, column, callback);
-        // console.log(Math.max(csx, 1))
+        // // console.log(Math.max(csx, 1))
         this.spanConsquent = Math.max(csx, 1);
         const { spanX: asx, spanY: asy } = verticalFlow(this, this.alternate, 0, 0, row + 1, column + Math.max(csx, 1), callback);
         this.spanAlternate = Math.max(asx, 1);
         let spanY = Math.max(csy, asy) + 1;
         let spanX = Math.max(csx, 1) + Math.max(asx, 1);
-        console.log(spanY, spanX)
+        // console.log(spanY, spanX)
         const { spanY: syend, spanX: sxend } = this.Endpoint.reflowPreCalculate(row + spanY, column, callback);
         spanY += syend;
         spanX = Math.max(spanX, sxend);
         this.spanX = spanX;
         this.spanY = spanY;
-        console.log(this.spanX)
+        // console.log(this.spanX)
         return {
             spanX: this.spanX, 
             spanY: this.spanY, 
@@ -806,7 +815,7 @@ function mapFunc(type) {
                     id: `${p.id}-endpoint`,
                 };
             }
-            console.log(n.__endpoint__ )
+            // console.log(n.__endpoint__ )
             const e = makeAST(n.__endpoint__);
             e.parent = this;
             e.idx = idx;

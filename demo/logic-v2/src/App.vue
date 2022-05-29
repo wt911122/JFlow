@@ -30,7 +30,8 @@
                 <logic-Node 
                     :node="source" 
                     :layoutNode="layoutNode"
-                    @pressStart="onPressStart(source)">
+                    @pressStart="onPressStart(source)"
+                    @outOfFlow="onOutOfFlow($event, source)">
                 </logic-Node>
             </template>
             <template #Start="{ source }">
@@ -154,6 +155,7 @@ export default {
             poppups: this.poppups,
             modal: this.modal,
             animate: this.animate,
+            status: this.status,
 
             setFocus: this.setFocus,
             isOnFocus: this.isOnFocus,
@@ -167,6 +169,7 @@ export default {
             initialZoom: 1,
             minZoom: .2,
             NodeRenderTop: true,
+            worldMargin: 400,
             setInitialPosition(realboxX, realboxY, realboxW, realboxH, cx, cy, cwidth, cheight) {
                 return {
                     x: realboxX + cwidth / 2,
@@ -203,6 +206,11 @@ export default {
             focus: null,
             animate: {
                 link: false,
+            },
+            status: {
+                dragging: {
+                    active: false,
+                }
             }
         }
     },
@@ -211,6 +219,9 @@ export default {
             if(!val) {
                 this.captureMap();
             }
+        },
+        'status.dragging.active'(val) {
+            console.log('NodeDragging', val)
         }
     },
     methods: {
@@ -250,10 +261,15 @@ export default {
 
         onPressStart(source) {
             this.currentTarget = source;
+            this.status.dragging.active = true;
         },
         onPressEnd() {
             this.currentTarget = null;
+            this.status.dragging.active = false;
         },
+        // onCanvasMousemove() {
+
+        // },
         onDropToLink(e, linkConfigs) {
             const jflowInstance = this.$refs.jflow.getInstance();
             let node = e.detail.instance;
@@ -269,6 +285,7 @@ export default {
             }
             linkConfigs.from.linkSource(node, linkConfigs);
             this.reOrderAndReflow(node);
+            this.status.dragging.active = false;
            
         },
         setFocus(node) {
@@ -295,7 +312,8 @@ export default {
             this.configs.layout.reOrder(this.sourceData);
             this.$refs.jflow.reflow(() => {
                 setSourceInitialAnchor(jflowInstance, astblock, point)
-            }, this.captureMap);            
+            }, this.captureMap);    
+            this.status.dragging.active = false;        
         },
         // onLink(event) {
         //     const jflowInstance = this.$refs.jflow.getInstance()
@@ -353,6 +371,7 @@ export default {
             jflowInstance.sendMessage({ 
                 instance: genNode(concept),
             });
+            this.status.dragging.active = true;
         },
 
         closePopper() {
@@ -370,6 +389,24 @@ export default {
             const value = +e.target.value;
             setLayoutConstance(key, value);
             this.reOrderAndReflow();
+        },
+
+        onOutOfFlow(e, source) {
+            const point = e.detail.point;
+            const jflowInstance = this.$refs.jflow.getInstance();
+            const layoutNode = jflowInstance.getLayoutNodeBySource(source);
+            let node = source;
+            if(layoutNode.source.concept === 'SwitchCase') {
+                node = layoutNode.parent.source;
+                layoutNode.parent.delete();
+            } else {
+                layoutNode.delete();
+            }
+            this.sourceData.playground.push(node);
+            this.configs.layout.reOrder(this.sourceData);
+            this.$refs.jflow.reflow(() => {
+                setSourceInitialAnchor(jflowInstance, node, point)
+            }, this.captureMap);  
         }
     }
 }

@@ -4,9 +4,9 @@
         :from="linkConfigs.from.source"
         :to="linkConfigs.to.source"
         @instancemousemove="setPointerCursor"
+        @click="onClick"
         @mouseenter="onMouseEnter"
         @mouseleave="onMouseLeave"
-        @click="onClick"
         @dragenter="onDragEnter"
         @dragover="onDragOver"
         @dragleave="onDragOverEnd"
@@ -17,9 +17,16 @@
 <script>
 import { translateToClientCoord } from '../custom/utils';
 export default {
-    inject: ['renderJFlow', 'poppups', 'isOnFocus', 'animate'],
+    inject: [
+        'renderJFlow', 
+        'poppups', 
+        'isOnFocus', 
+        'animate', 
+        'status'
+    ],
     props: {
         linkConfigs: Object,
+        // nodeDragging: Boolean,
     },
     data() {
         return {
@@ -29,9 +36,13 @@ export default {
         };
     },
     computed: {
+        // nodeDragging() {
+        //     console.log('linknodedragging', this.nodeDragging.active)
+        //     return this.status.dragging.active;
+        // },
         configs() {
             // console.log(this.linkConfigs.bendPoint)
-            console.log(this.animate.link)
+            console.log(this.showAdd)
             return {
                 ...this.linkConfigs,
                 // fromDir: undefined,
@@ -42,6 +53,7 @@ export default {
                 showDragover: this.isDragOver,
                 radius: 5,
                 approximate: 2000,
+                opacity: this.linkConfigs.from.rootLayoutNode ? 0.5 : 1,
                 // arrowSegment: this.isFocused ? 400 : 0,
                 animePoint: {
                     enable: this.isFocused || this.animate.link,
@@ -62,10 +74,8 @@ export default {
         },
     },
     watch: {
-        selectionActive(val) {
-            if(!val) {
-                this.showAdd = false;
-            }
+        'status.dragging.active'(val) {
+            this.isDragOver = val;
         }
     },
     updated() {

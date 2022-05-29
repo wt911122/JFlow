@@ -1,6 +1,7 @@
-
+import { JFlowEvent } from '@joskii/jflow'
 import { makeAST } from './base-node';
 import { layoutConstance, getLayoutConstance, getSourceAnchor } from './utils';
+import { dist2 } from '../src/custom/utils'
 class LogicLayout {
     constructor(source) {
         // this.rowGap = layoutConstance.rowGap;
@@ -15,7 +16,52 @@ class LogicLayout {
     }
 
     staticCheck(instance, jflow) {
-        jflow.reflow();
+        console.log(this.flowStack[0].source)
+        const nowAnchor = instance.anchor.slice();
+        let layoutAnchor = null;
+        let i = 0;
+        for (let i = 0; i < this.flowStack.length; i++) {
+            console.log(this.flowStack[i].source)
+            const { source, layoutNode } = this.flowStack[i];
+            const j = jflow.getRenderNodeBySource(source); // ast.getJflowInstance();
+            if(j === instance) {
+                const rowGap = getLayoutConstance('rowGap');
+                const rowHeight = getLayoutConstance('rowHeight');
+                const columnWidth = getLayoutConstance('columnWidth');
+                const columnGap = getLayoutConstance('columnGap');
+                const rootLayoutNode = layoutNode.rootLayoutNode;
+                let ax = 0;
+                let ay = 0;
+                if(rootLayoutNode) {
+                    const [x, y] = getSourceAnchor(jflow, rootLayoutNode.source)
+                    ax = x;
+                    ay = y;
+                }
+                const { row, column, source } = layoutNode;
+                layoutAnchor = [
+                    column * (columnWidth + columnGap) + ax,
+                    row * (rowHeight + rowGap) + ay,
+                ];
+                break;
+            }
+        }
+        if(!layoutAnchor) {
+            jflow.reflow();
+            return false;
+        } 
+       
+        const d = dist2(nowAnchor, layoutAnchor);
+        if (d > 1000) {
+            instance.dispatchEvent(new JFlowEvent('outOfFlow', {
+                anchor: nowAnchor,
+                instance,
+                jflow,
+                point: nowAnchor,
+            }));
+            return true;
+        } else {
+            jflow.reflow();
+        }
         return false;
     }
 

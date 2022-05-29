@@ -55,6 +55,8 @@ class LogicLink extends BaseLink {
         this.minGapY       = configs.minGapY;
         this.showAdd       = false;
         this.showDragover  = false;
+        this.tailPoint     = configs.tailPoint;
+        this.tailRadius    = configs.tailRadius;
 
         this.arrowSegment = configs.arrowSegment;
 
@@ -113,6 +115,10 @@ class LogicLink extends BaseLink {
 
     render(ctx) {
         // this._calculateAnchorPoints();
+        ctx.save();
+        if(this.opacity !== 1) {
+            ctx.globalAlpha = this.opacity;
+        }
         const radius = this.radius;
         const points = this._cachePoints;
         const ItSegment = this._cacheInteractableSegment;
@@ -139,6 +145,13 @@ class LogicLink extends BaseLink {
             }
         });
         ctx.lineTo(pEnd[0], pEnd[1]);
+        if(this.tailPoint) {
+            const pbefore = points[points.length - 2];
+            const p = this.to.anchor;
+            const { p1, p2 } = makeRadiusFromVector(pbefore, p, [p[0], p[1] + 50], this.tailRadius);
+            ctx.lineTo(p1[0], p1[1]);
+            ctx.quadraticCurveTo(p[0], p[1], p2[0], p2[1]);
+        }
 
         if(this.lineDash) {
             ctx.save();
@@ -216,17 +229,35 @@ class LogicLink extends BaseLink {
                 while (reducedArrowSegment < reducedDist) {
                     if(reducedArrowSegment > 0) {
                         const r = 1 - (reducedDist - reducedArrowSegment) / dist;
-                        let x, y, angle;
+                        ctx.beginPath();
+                        let x, y;
                         if(dx) {
                             x = p1[0] + r * dx;
                             y = p1[1];
+                            if(dx < 0) {
+                                ctx.moveTo(x - 4, y);
+                                ctx.lineTo(x + 2, y - 4);
+                                ctx.lineTo(x + 2, y + 4);
+                            } else {
+                                ctx.moveTo(x + 4, y);
+                                ctx.lineTo(x - 2, y - 4);
+                                ctx.lineTo(x - 2, y + 4);
+                            }
                         } else if(dy) {
-                            // 向下
                             x = p1[0];
                             y = p1[1]  + r * dy;
+                            if(dy < 0) {
+                                ctx.moveTo(x, y - 4);
+                                ctx.lineTo(x - 4, y + 2);
+                                ctx.lineTo(x + 4, y + 2);
+                            } else {
+                                ctx.moveTo(x, y + 4);
+                                ctx.lineTo(x - 4, y - 2);
+                                ctx.lineTo(x + 4, y - 2);
+                            }
                         }
-                        ctx.beginPath();
-                        ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                        // ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                        ctx.closePath();
                         ctx.fill();
                     }
                     reducedArrowSegment += animeGap;
@@ -330,7 +361,7 @@ class LogicLink extends BaseLink {
                     break;
             }
         }
-
+        ctx.restore();
     }
 
     isHit(point) {

@@ -20,4 +20,13 @@ export default class extends Group {
             [DIRECTION.ENDLOOP]: [x2 + w, y2+hh],
         };
     }
+    
+    render(ctx){
+        ctx.save();
+        if(this.opacity !== 1) {
+            ctx.globalAlpha = this.opacity;
+        }
+        super.render(ctx);
+        ctx.restore();
+    }
 }
