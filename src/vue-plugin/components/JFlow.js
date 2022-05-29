@@ -168,7 +168,7 @@ export default {
          * 重排
          * @param {j-jflow~preCallback} preCallback - JFlow 绘制之前，vnode渲染之后
          */
-        reflow(preCallback) {
+        reflow(preCallback, afterCallback) {
             this.genNodeLinkMeta();
             this.syncNodeLink();
             this.$nextTick(() => {
@@ -177,6 +177,9 @@ export default {
                 }
                 this._jflowInstance.recalculate();
                 this._jflowInstance._render();
+                if(afterCallback) {
+                    afterCallback();
+                }
             })
         },
         /**

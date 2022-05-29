@@ -69,6 +69,9 @@ class Icon extends Rectangle {
         Rectangle.prototype.render.call(this, ctx);
         const x = this.anchor[0] - this.width / 2;
         const y = this.anchor[1] - this.height / 2;
+        if(this.opacity < 1) {
+            ctx.globalAlpha = this.opacity;
+        }
         if(this.image.complete) {
             ctx.drawImage(this.image, x, y, this.imageBounding.width, this.imageBounding.height);
         }

@@ -7,6 +7,8 @@ import StackMixin from '../instance/stackMixin';
 import InstanceStack from '../instance/stack';
 import LayoutMixin from '../instance/layoutMixin';
 import MessageMixin from '../instance/messageMixin';
+import AnimeMixin from '../anime/animeMixin';
+import MiniMapMixin from '../miniMap/minimap-mixin';
 import { setUniqueId, getUniqueId } from '../utils/functions';
 import JFlowEvent from '../events';
 
@@ -141,6 +143,7 @@ class JFlow extends EventTarget{
          **/
         this.eventAdapter = new EventAdapter(configs.eventAdapter);
         this.initNodeWeakMap();
+        this.initAnime();
         this.initStack(configs);
         this.initLayout(configs);
         /** @member {Context2d}     - Context2d 对象 */
@@ -164,6 +167,8 @@ class JFlow extends EventTarget{
         this.minZoom = configs.minZoom || .5;
         
         this.NodeRenderTop = !!configs.NodeRenderTop
+
+        this.worldMargin = configs.worldMargin;
 		// this.initScale = 1;
 		// this.initPosition = null
 		this.offeset = null;
@@ -701,18 +706,28 @@ class JFlow extends EventTarget{
         if(this._zooming) return;
         this._zooming = true;
         const { width: p_width, height: p_height, x, y } = this.bounding_box;
+        const { actual_width: cw, actual_height: ch } = this.canvasMeta;
+        let minZoom = this.minZoom;
+        if(this.worldMargin) {
+            const m = this.worldMargin;
+            const maxWidth = p_width + m * 2;
+            const maxHeight = p_height + m * 2;
+            minZoom = Math.max(minZoom, Math.max(cw / maxWidth, ch / maxHeight));
+        }
+        console.log(minZoom)
         let newScale = this.scale;
         const amount = deltaY > 0 ? 1.1 : 1 / 1.1;
         newScale *= amount;
+        newScale = Math.min(this.maxZoom, Math.max(minZoom, newScale))
+        console.log(newScale);
+        // if (this.maxZoom && newScale > this.maxZoom){
+        //     // could just return but then won't stop exactly at maxZoom
+        //     newScale = this.maxZoom;
+        // }
 
-        if (this.maxZoom && newScale > this.maxZoom){
-            // could just return but then won't stop exactly at maxZoom
-            newScale = this.maxZoom;
-        }
-
-        if(this.minZoom && newScale < this.minZoom) {
-            newScale = this.minZoom;
-        }
+        // if(this.minZoom && newScale < this.minZoom) {
+        //     newScale = this.minZoom;
+        // }
 
         var deltaScale    = newScale - this.scale;
         var currentWidth  = p_width * this.scale;
@@ -726,10 +741,12 @@ class JFlow extends EventTarget{
         var pY = -tY / currentHeight;
 
         this.scale = newScale;
-        this.position.x += pX * deltaWidth;
-        this.position.y += pY * deltaHeight;
-        this.position.offsetX = this.position.x - x * newScale;
-        this.position.offsetY = this.position.y - y * newScale;
+        this._recalculatePosition(pX * deltaWidth, pY * deltaHeight);
+        
+        // this.position.x += pX * deltaWidth;
+        // this.position.y += pY * deltaHeight;
+        // this.position.offsetX = this.position.x - x * newScale;
+        // this.position.offsetY = this.position.y - y * newScale;
         this.dispatchEvent(new JFlowEvent('zoompan'));
         requestAnimationFrame(() => {
             this._render();
@@ -1092,8 +1109,6 @@ class JFlow extends EventTarget{
      * @param {Number} event - 原生事件
      */
     clickHanlder(offsetX, offsetY, event) {
-        console.log('click handler', event)
-        
         const {
             link,
             instance,
@@ -1287,14 +1302,45 @@ class JFlow extends EventTarget{
     }
 
     _recalculatePosition(deltaX, deltaY, scale) {
-        const { x, y } = this.bounding_box;
+        const { x, y, width, height } = this.bounding_box;
+        const { actual_width: cw, actual_height: ch } = this.canvasMeta;
         if(scale === undefined) {
             scale = this.scale;
         }
-        this.position.x += deltaX;
-		this.position.y += deltaY;
-        this.position.offsetX = this.position.x - x * scale;
-        this.position.offsetY = this.position.y - y * scale;
+        
+
+        if(this.worldMargin) {
+            // console.log(scale)
+            const m = this.worldMargin;
+            const bx1 = (x + width + m)*scale - cw;
+            const bx2 = (x - m)*scale;
+            // console.log(bx1, bx2)
+            const sx = x * scale;
+            const px = this.position.x + deltaX;
+            const cx = px - sx;
+            this.position.offsetX = Math.min(Math.max(-bx1, cx), -bx2);
+            // console.log(this.position.offsetX)
+            // this.position.offsetX = Math.max(Math.min(-bx2, cx), -bx1);
+            this.position.x = this.position.offsetX + sx;
+            // console.log(this.position.x, deltaX)
+            // console.log(this.position.offsetX)
+
+            const by1 = (y + height + m)*scale - ch;
+            const by2 = (y - m)*scale;
+            // console.log(by1, by2)
+            const sy = y * scale;
+            const py = this.position.y + deltaY;
+            const cy = py - sy;
+            this.position.offsetY = Math.min(Math.max(-by1, cy), -by2);
+            // this.position.offsetY = Math.max(Math.min(-by2, cy), -by1);
+            this.position.y = this.position.offsetY + sy;
+        } else {
+            this.position.x += deltaX;
+            this.position.y += deltaY; 
+            this.position.offsetX = this.position.x - x * scale;
+            this.position.offsetY = this.position.y - y * scale;
+        }
+        
     }
 
     calculateToRealWorld(p) {
@@ -1376,6 +1422,8 @@ Object.assign(JFlow.prototype, MessageMixin);
 Object.assign(JFlow.prototype, StackMixin);
 Object.assign(JFlow.prototype, LayoutMixin);
 Object.assign(JFlow.prototype, NodeWeakMapMixin);
+Object.assign(JFlow.prototype, AnimeMixin);
+Object.assign(JFlow.prototype, MiniMapMixin);
 
 export default JFlow;
 export { JFLOW_MODE } from '../utils/constance';

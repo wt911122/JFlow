@@ -69,16 +69,18 @@ class LinearLayout {
             });
 
             stack.forEach((instance, idx) =>  {
+                
                 const { width, height } = instance.getBoundingDimension();
                 // console.log(height, instance.type);
                 const gap = (idx > 0 ? this.gap : 0);
-                maxWidth = Math.max(width, maxWidth);
+                if(instance.display !== 'outstretch') {
+                    maxWidth = Math.max(width, maxWidth);
+                }
                 allHeight += (height + gap);
                 reduceHeight += (height/2 + gap + lastInstanceHeight)
                 lastInstanceHeight = height / 2;
                 instance.anchor = [0, reduceHeight];
             });
-            maxWidth = Math.max(groupWidth, maxWidth);
             childAll.forEach((instance, idx) =>  {
                 if(instance.display === 'block') {
                     // instance.definedWidth = maxWidth;
@@ -86,10 +88,15 @@ class LinearLayout {
                     instance.width = maxWidth;
                     instance.reflow();
                     // instance._getBoundingGroupRect();
+                } else if(instance.display === 'outstretch') {
+                    const w = group._belongs.width - group._belongs.padding.left - group._belongs.padding.right;
+                    instance.resetChildrenPosition();
+                    instance.width = Math.max(w, maxWidth);
+                    instance.reflow();
                 }
             });
 
-            
+            maxWidth = Math.max(groupWidth, maxWidth);
             
             allHeight = allHeight/2;
             if(this.alignment === 'start') {

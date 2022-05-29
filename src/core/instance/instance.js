@@ -47,6 +47,8 @@ class Instance extends EventTarget{
         this.shadowOffsetX =    configs.shadowOffsetX || 0;
         /** @member {string}     - 阴影偏移 Y */
         this.shadowOffsetY =    configs.shadowOffsetY || 0;
+        /** @member {number}     - 透明度 */
+        this.opacity  =         configs.opacity || 1
 
     }
     /**

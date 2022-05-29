@@ -81,6 +81,7 @@ class Text extends Rectangle {
         this.placeholder =          configs.placeholder || '';
         this.emptyWhenInput =       configs.emptyWhenInput || false;
         this.editting =  false;
+        this.disabled =        configs.disabled;
         requestCacheCanvas((ctx) => {
             this.renderShadowText(ctx);
         });
@@ -93,6 +94,9 @@ class Text extends Rectangle {
     _makeEditable() {
         if(this.editable) {
             this.addEventListener('click', (event) => {
+                if(this.disabled) {
+                    return;
+                }
                 let x;
                 const hw = this.width / 2;
                 if(this.textAlign === TEXT_ALIGN.LEFT){
@@ -196,6 +200,7 @@ class Text extends Rectangle {
         ctx.textAlign = this.textAlign;
         ctx.textBaseline = this.textBaseline;
         ctx.fillStyle = this.textColor;
+        const t_h = parseInt(this.fontSize);
         const {
             actualBoundingBoxLeft,
             actualBoundingBoxRight,
@@ -216,7 +221,7 @@ class Text extends Rectangle {
             this.width = Math.max(this.minWidth, this._textWidth);
         }
         
-        const height = Math.abs(fontBoundingBoxAscent) + Math.abs(fontBoundingBoxDescent);
+        const height = (Math.abs(fontBoundingBoxAscent) + Math.abs(fontBoundingBoxDescent)) || t_h;
         if(this.lineHeight) {
             this.height = this.lineHeight;
         } else {

@@ -257,6 +257,10 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             this._shape.setConfig(configs);
             this._setPadding(configs);
             this._setMargin(configs);  
+            if('opacity' in configs) {
+                this.opacity = configs.opacity
+            }
+            
             if(configs.layout && this._layout !== configs.layout) {
                 this._layout = configs.layout;
             }
