@@ -714,12 +714,11 @@ class JFlow extends EventTarget{
             const maxHeight = p_height + m * 2;
             minZoom = Math.max(minZoom, Math.max(cw / maxWidth, ch / maxHeight));
         }
-        console.log(minZoom)
         let newScale = this.scale;
         const amount = deltaY > 0 ? 1.1 : 1 / 1.1;
         newScale *= amount;
         newScale = Math.min(this.maxZoom, Math.max(minZoom, newScale))
-        console.log(newScale);
+        // console.log(newScale);
         // if (this.maxZoom && newScale > this.maxZoom){
         //     // could just return but then won't stop exactly at maxZoom
         //     newScale = this.maxZoom;
@@ -948,7 +947,7 @@ class JFlow extends EventTarget{
         if(this.mode === JFLOW_MODE.LINKING) {
             const t = this._target.instance;
             const payload = this.consumeMessage();
-            console.log(payload)
+            // console.log(payload)
             if(t) {
                 t.bubbleEvent(new JFlowEvent('link', {
                     event,
@@ -1070,7 +1069,7 @@ class JFlow extends EventTarget{
                      * @property {Instance} target       - 拖动到的对象
                      * @property {boolean} bubbles       - 冒泡
                      */
-                     console.log('pressEnd', this._target.instance)
+                    //  console.log('pressEnd', this._target.instance)
                     this._target.instance.bubbleEvent(new JFlowEvent('pressEnd', {
                         event,
                         instance: this._getMovingTarget(),
