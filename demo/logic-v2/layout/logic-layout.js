@@ -122,7 +122,7 @@ class LogicLayout {
                     const [x, y] = configs.roundCorner;
                     configs.bendPoint = [
                         (x) * (columnWidth + columnGap) + columnWidth /2 + 15,
-                        (y) * (rowHeight + rowGap) - rowHeight / 2 - 10
+                        (y) * (rowHeight + rowGap) - rowHeight / 2 + 10,
                     ]
                 }
                 if (configs.roundCorner.length === 4) {
@@ -131,7 +131,7 @@ class LogicLayout {
                         (x1) * (columnWidth + columnGap),
                         (y1) * (rowHeight + rowGap),
                         (x2) * (columnWidth + columnGap) + columnWidth /2 + 15,
-                        (y2) * (rowHeight + rowGap) - rowHeight / 2 - 10
+                        (y2) * (rowHeight + rowGap) - rowHeight / 2 + 10,
                     ]
                 }
             } else {

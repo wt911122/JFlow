@@ -463,7 +463,7 @@ export default {
 
 .minimap{
     position: absolute;
-    bottom: 20px;
+    top: 20px;
     right: 20px;
     background: #fff;
 }

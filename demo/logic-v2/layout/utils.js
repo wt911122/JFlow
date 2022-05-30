@@ -5,7 +5,7 @@ export const layoutConstance = {
     rowHeight : 32,
     minSpanX: 163,
     minSpanY: 50,
-    minGapY: 30
+    minGapY: 50
 }
 
 export function initLayoutConstance() {
