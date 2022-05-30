@@ -6,7 +6,8 @@
             <div draggable="true" 
                 :class="$style.part" 
                 type="IfStatement"
-                @dragstart="onDragStart($event, p.concept)">
+                @dragstart="onDragStart($event, p.concept)"
+                @dragend="onDragEnd">
                 {{p.concept}}
             </div>
             <div :ref="`templete-${p.concept}`" :class="[$style.literalRef]">
@@ -261,10 +262,17 @@ export default {
 
         onPressStart(source) {
             this.currentTarget = source;
-            this.status.dragging.active = true;
+            const jflowInstance = this.$refs.jflow.getInstance();
+            const layoutNode = jflowInstance.getLayoutNodeBySource(source);
+            if(layoutNode.rootLayoutNode) {
+                this.status.dragging.active = true;
+            }
         },
         onPressEnd() {
             this.currentTarget = null;
+            this.status.dragging.active = false;
+        },
+        onDragEnd() {
             this.status.dragging.active = false;
         },
         // onCanvasMousemove() {
