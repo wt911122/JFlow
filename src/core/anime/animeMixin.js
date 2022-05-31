@@ -2,10 +2,17 @@
 export default {
     initAnime() {
         this.anime_queue = [];
+        this.animeclock = undefined;
+        this.frameRendered = false;
+    },
+    setAnimeClock(time) {
+        if(time !== this.animeclock) {
+            this.frameRendered = false;
+            this.animeclock = time;
+        }
     },
 
     requestJFlowAnime(frameCallBack) {
-        console.log('requestJFlowAnime');
         const meta = this.enqueueAnime(frameCallBack);
         this.runAnime();
         return meta;
@@ -16,8 +23,11 @@ export default {
             start: undefined,
             callback,
             cancel: () => {
-                console.log('_cancelAnime');
-                this._cancelAnime(animeMeta)
+                this._cancelAnime(animeMeta);
+                requestAnimationFrame((timestamp) => {
+                    this.setAnimeClock(timestamp);
+                    this._render();
+                })
             }
         }
         this.anime_queue.push(animeMeta);
@@ -35,16 +45,21 @@ export default {
     },
     _runAnime(timestamp) {
         if (this.anime_queue.length) {
-            console.log('_runAnime', this.anime_queue.length)
-            this.anime_queue.forEach(meta => {
-                if(!meta.start) {
-                    meta.start = timestamp;
-                }
-                const elapsed = timestamp - meta.start;
-                meta.callback(elapsed);
-            });
+            this.setAnimeClock(timestamp);
+            // this.setAnimeClock(timestamp);
             this._render();
             requestAnimationFrame(this._runAnime.bind(this))
         }
+    },
+
+    runAnimeFrame() {
+        this.anime_queue.forEach(meta => {
+            const timestamp = Date.now();
+            if(!meta.start) {
+                meta.start = timestamp;
+            }
+            const elapsed = timestamp - meta.start;
+            meta.callback(elapsed);
+        });
     }
 }

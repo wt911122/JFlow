@@ -684,7 +684,6 @@ class JFlow extends EventTarget{
                 point,
             }))
         }
-        
         requestAnimationFrame(() => {
             this._target.instance = null;
             this._target.link = null;
@@ -747,7 +746,9 @@ class JFlow extends EventTarget{
         // this.position.offsetX = this.position.x - x * newScale;
         // this.position.offsetY = this.position.y - y * newScale;
         this.dispatchEvent(new JFlowEvent('zoompan'));
-        requestAnimationFrame(() => {
+        // this.setAnimeClock()
+        requestAnimationFrame((timestamp) => {
+            this.setAnimeClock(timestamp);
             this._render();
             this._zooming = false;
         })
@@ -768,7 +769,8 @@ class JFlow extends EventTarget{
          * @event JFlow#zoompan
         */
         this.dispatchEvent(new JFlowEvent('zoompan'));
-        requestAnimationFrame(() => {
+        requestAnimationFrame((timestamp) => {
+            this.setAnimeClock(timestamp);
             this._render();
             this._panning = false;
         })
@@ -886,7 +888,8 @@ class JFlow extends EventTarget{
 
                 this._tempNode.anchor = this._currentp;
                 
-                requestAnimationFrame(() => {
+                requestAnimationFrame((timestamp) => {
+                    this.setAnimeClock(timestamp);
                     this._render();
                     this._target.isLinkDirty = false; 
                     this._target.isInstanceDirty = false;
@@ -930,7 +933,8 @@ class JFlow extends EventTarget{
         const { instance, link } = this._targetLockOn([offsetX, offsetY]);
         this._processDragOver(instance || link, event);
             
-        requestAnimationFrame(() => {
+        requestAnimationFrame((timestamp) => {
+            this.setAnimeClock(timestamp);
             this._render();
             this._target.isLinkDirty = false; 
             this._target.isInstanceDirty = false;
@@ -1379,8 +1383,11 @@ class JFlow extends EventTarget{
      /**
      * 绘制画布
      */
-    _render() {
+      _render() {
+         
         if(!this._readyToRender) return;
+        if(this.frameRendered) return;
+        this.runAnimeFrame();
         this._resetTransform();
         const ctx = this.ctx;
         const br = this._getViewBox();
@@ -1414,7 +1421,7 @@ class JFlow extends EventTarget{
             this._tempLink.render(ctx)
             ctx.restore();
         }
-        
+        this.frameRendered = true;
     }
 }
 Object.assign(JFlow.prototype, MessageMixin);
