@@ -176,10 +176,12 @@ export default {
                     preCallback();
                 }
                 this._jflowInstance.recalculate();
-                this._jflowInstance._render();
-                if(afterCallback) {
-                    afterCallback();
-                }
+                this._jflowInstance.scheduleRender(() => {
+                    if(afterCallback) {
+                        afterCallback();
+                    }
+                });
+                
             })
         },
         /**

@@ -2,19 +2,30 @@
 export default {
     initAnime() {
         this.anime_queue = [];
-        this.animeclock = undefined;
-        this.frameRendered = false;
+        this.__animeClock__ = undefined;
+        // this.animeclock = undefined;
+        // this.frameRendered = false;
     },
-    setAnimeClock(time) {
-        if(time !== this.animeclock) {
-            this.frameRendered = false;
-            this.animeclock = time;
-        }
-    },
+    // setAnimeClock(time) {
+    //     if(time !== this.animeclock) {
+    //         this.frameRendered = false;
+    //         this.animeclock = time;
+    //     }
+    // },
+
+    // hasAnimeAndFrameRendered() {
+    //     return this.anime_queue.length && this.frameRendered;
+    // },
+
+    // setFrameRendered() {
+    //     if(this.anime_queue.length) {
+    //         this.frameRendered = true;
+    //     }
+    // },
 
     requestJFlowAnime(frameCallBack) {
         const meta = this.enqueueAnime(frameCallBack);
-        this.runAnime();
+        this._runAnime();
         return meta;
     },
 
@@ -24,10 +35,7 @@ export default {
             callback,
             cancel: () => {
                 this._cancelAnime(animeMeta);
-                requestAnimationFrame((timestamp) => {
-                    this.setAnimeClock(timestamp);
-                    this._render();
-                })
+                this._render();
             }
         }
         this.anime_queue.push(animeMeta);
@@ -41,14 +49,18 @@ export default {
     },
 
     runAnime() {
-        requestAnimationFrame(this._runAnime.bind(this));
+        this._runAnime();
+        // requestAnimationFrame(this._runAnime.bind(this));
     },
-    _runAnime(timestamp) {
+    _runAnime() {
         if (this.anime_queue.length) {
-            this.setAnimeClock(timestamp);
-            // this.setAnimeClock(timestamp);
-            this._render();
-            requestAnimationFrame(this._runAnime.bind(this))
+            this.scheduleRender((t) => {
+                if(this.__animeClock__  !== t) {
+                    this._runAnime()
+                }
+                this.__animeClock__  = t;
+            });
+            // requestAnimationFrame(this._runAnime.bind(this))
         }
     },
 

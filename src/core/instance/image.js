@@ -30,9 +30,10 @@ class Icon extends Rectangle {
         /** @member {CanvasImageSource}      - 图片 */
         this.image = configs.image;
         this.image.onload = () => {
-            requestAnimationFrame(() => {
-                this._jflow._render();
-            })
+            this._jflow._render();
+            // requestAnimationFrame(() => {
+                
+            // })
         }
         /** @member {Icon~ImageBounding}      - 图片维度 */
         this.imageBounding = {
@@ -50,9 +51,10 @@ class Icon extends Rectangle {
         });
         if(configs.image && !configs.image.complete) {
             this.image.onload = () => {
-                requestAnimationFrame(() => {
-                    this._jflow._render();
-                })
+                this._jflow._render();
+                // requestAnimationFrame(() => {
+                //     this._jflow._render();
+                // })
             }
         }
         this.imageBounding = {

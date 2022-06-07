@@ -9,6 +9,7 @@ import LayoutMixin from '../instance/layoutMixin';
 import MessageMixin from '../instance/messageMixin';
 import AnimeMixin from '../anime/animeMixin';
 import MiniMapMixin from '../miniMap/minimap-mixin';
+import ScheduleMixin from './schedule';
 import { setUniqueId, getUniqueId } from '../utils/functions';
 import JFlowEvent from '../events';
 
@@ -747,11 +748,14 @@ class JFlow extends EventTarget{
         // this.position.offsetY = this.position.y - y * newScale;
         this.dispatchEvent(new JFlowEvent('zoompan'));
         // this.setAnimeClock()
-        requestAnimationFrame((timestamp) => {
-            this.setAnimeClock(timestamp);
-            this._render();
+        this.scheduleRender(() => {
             this._zooming = false;
         })
+        // requestAnimationFrame((timestamp) => {
+        //     this.setAnimeClock(timestamp);
+        //     this._render();
+        //     this._zooming = false;
+        // })
     }
     /**
      * 平移画布操作处理函数
@@ -769,11 +773,14 @@ class JFlow extends EventTarget{
          * @event JFlow#zoompan
         */
         this.dispatchEvent(new JFlowEvent('zoompan'));
-        requestAnimationFrame((timestamp) => {
-            this.setAnimeClock(timestamp);
-            this._render();
+        this.scheduleRender(() => {
             this._panning = false;
         })
+        // requestAnimationFrame((timestamp) => {
+        //     this.setAnimeClock(timestamp);
+        //     this._render();
+        //     this._panning = false;
+        // })
     }
     /**
      * 开始按压处理函数
@@ -888,13 +895,18 @@ class JFlow extends EventTarget{
 
                 this._tempNode.anchor = this._currentp;
                 
-                requestAnimationFrame((timestamp) => {
-                    this.setAnimeClock(timestamp);
-                    this._render();
+                this.scheduleRender(() => {
                     this._target.isLinkDirty = false; 
                     this._target.isInstanceDirty = false;
                     this._target.status.processing = false;
                 })
+                // requestAnimationFrame((timestamp) => {
+                //     this.setAnimeClock(timestamp);
+                //     this._render();
+                //     this._target.isLinkDirty = false; 
+                //     this._target.isInstanceDirty = false;
+                //     this._target.status.processing = false;
+                // })
                 return;
             }
         }
@@ -932,14 +944,18 @@ class JFlow extends EventTarget{
         }
         const { instance, link } = this._targetLockOn([offsetX, offsetY]);
         this._processDragOver(instance || link, event);
-            
-        requestAnimationFrame((timestamp) => {
-            this.setAnimeClock(timestamp);
-            this._render();
+        
+        this.scheduleRender(() => {
             this._target.isLinkDirty = false; 
             this._target.isInstanceDirty = false;
             this._target.status.processing = false;
         })
+        // requestAnimationFrame((timestamp) => {
+        //     this._render();
+        //     this._target.isLinkDirty = false; 
+        //     this._target.isInstanceDirty = false;
+        //     this._target.status.processing = false;
+        // })
     }
     /**
      * 按压结束处理函数
@@ -1375,18 +1391,29 @@ class JFlow extends EventTarget{
     }
 
     _getViewBox() {
-        return [
+        const cacheViewBox = [
             ...this._calculatePointBack([0,0]),
             ...this._calculatePointBack([this.canvasMeta.actual_width,this.canvasMeta.actual_height]),
         ];
+        this._cacheViewBox = cacheViewBox;
+        return cacheViewBox;
     }
+
+    getCacheViewBox() {
+        return this._cacheViewBox;
+    }
+
+    
+    _render() {
+        this.scheduleRender();
+    }
+
      /**
      * 绘制画布
      */
-      _render() {
-         
+    __render() {
         if(!this._readyToRender) return;
-        if(this.frameRendered) return;
+        // if(this.hasAnimeAndFrameRendered()) return;
         this.runAnimeFrame();
         this._resetTransform();
         const ctx = this.ctx;
@@ -1421,7 +1448,7 @@ class JFlow extends EventTarget{
             this._tempLink.render(ctx)
             ctx.restore();
         }
-        this.frameRendered = true;
+        // this.setFrameRendered();
     }
 }
 Object.assign(JFlow.prototype, MessageMixin);
@@ -1430,6 +1457,7 @@ Object.assign(JFlow.prototype, LayoutMixin);
 Object.assign(JFlow.prototype, NodeWeakMapMixin);
 Object.assign(JFlow.prototype, AnimeMixin);
 Object.assign(JFlow.prototype, MiniMapMixin);
+Object.assign(JFlow.prototype, ScheduleMixin);
 
 export default JFlow;
 export { JFLOW_MODE } from '../utils/constance';

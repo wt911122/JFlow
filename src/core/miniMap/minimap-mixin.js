@@ -78,12 +78,14 @@ export default {
         // ctx.arc( 30, 30, 100, 0, 2*Math.PI);
         // ctx.fill()
         // debugger
+        const br = [0,0,0,0]
         if(this.NodeRenderTop) {
-            this._linkStack.render(cachectx);
+            this._linkStack.render(cachectx, (link) => { link.isInViewBox(br); return true; });
+            // this._linkStack.render(cachectx);
             this._stack.render(cachectx);
         } else {
             this._stack.render(cachectx);
-            this._linkStack.render(cachectx);
+            this._linkStack.render(cachectx, (link) => { link.isInViewBox(br); return true; });
         }
         const _cacheMapImageData = cachectx.getImageData(0, 0,raw_width, raw_height);
         this._renderMap = () => {
