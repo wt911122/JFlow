@@ -247,17 +247,16 @@ export default {
         reOrderAndReflow(node) {
             // logger('reOrderAndReflow');
             this.configs.layout.reOrder(this.sourceData);
-            this.$refs.jflow.reflow(undefined, this.captureMap);
-            if(node) {
-                this.$nextTick(() => {
+            this.$refs.jflow.reflow(undefined, () => {
+                this.captureMap();
+                if(node) {
                     if(node.concept === 'Switch') {
                         this.focusOn(node.cases[0]);
                     } else {
                         this.focusOn(node);
                     }
-                })
-            }
-            
+                }
+            });
         },
 
         onPressStart(source) {
@@ -306,7 +305,7 @@ export default {
         focusOn(source) {
             const jflowInstance = this.$refs.jflow.getInstance();
             const i = jflowInstance.getRenderNodeBySource(source);
-             console.log(i.isInViewBox)
+             console.log('isInViewBox', i.isInViewBox)
             if (i && !i.isInViewBox) {
                 jflowInstance.focusOn(i);
                 this.captureMap();
