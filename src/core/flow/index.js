@@ -285,7 +285,7 @@ class JFlow extends EventTarget{
             actual_height: c_height
         }
         this.dpr = dpr;
-        this._createEventHandler();
+        
         this._getBoundingGroupRect();
 
         const padding = this.padding;
@@ -331,7 +331,10 @@ class JFlow extends EventTarget{
         position.offsetY = position.y - realboxY;
         this.position = position;
         this._readyToRender = true;
-        this._render();
+        this.scheduleRender(() => {
+            this._createEventHandler();
+        });
+        
     }
 
     /**

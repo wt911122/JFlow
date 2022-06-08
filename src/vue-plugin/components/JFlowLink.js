@@ -40,16 +40,7 @@ export default function (nameNode, isLink) {
             const jflow = this.getJFlow();
             const fromInstance = jflow.getRenderNodeBySource(this.from);
             const toInstance = jflow.getRenderNodeBySource(this.to);
-            // const key = this.$vnode.key;
-            if(fromInstance && toInstance) {
-                this._jflowInstance = new builder({
-                    ...this.configs,
-                    from: fromInstance,
-                    to: toInstance,
-                });
-                this.bindListeners();
-                this.addToLinkStack(this._jflowInstance);   
-            }
+            this.createInstance(fromInstance, toInstance);
         },
         mounted() {
             this.unwatch = this.$watch(() => [this.from, this.to, this.configs], () => {
@@ -57,15 +48,31 @@ export default function (nameNode, isLink) {
             })
         },
         methods: {
+            createInstance(fromInstance, toInstance) {
+                if(fromInstance && toInstance) {
+                    this._jflowInstance = new builder({
+                        ...this.configs,
+                        from: fromInstance,
+                        to: toInstance,
+                    });
+                    this.bindListeners();
+                    this.addToLinkStack(this._jflowInstance);   
+                }
+            },
             refreshConfig() {
                 const jflow = this.getJFlow();
                 const fromInstance = jflow.getRenderNodeBySource(this.from);
                 const toInstance = jflow.getRenderNodeBySource(this.to);
-                this._jflowInstance.setConfig({
-                    ...this.configs,
-                    from: fromInstance,
-                    to: toInstance,
-                });
+                if(!this._jflowInstance) {
+                    this.createInstance(fromInstance, toInstance);
+                } else {
+                    this._jflowInstance.setConfig({
+                        ...this.configs,
+                        from: fromInstance,
+                        to: toInstance,
+                    });
+                }
+                
             },
             // setConfig(val) {
             //     const conf = {};
