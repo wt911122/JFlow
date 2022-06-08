@@ -188,6 +188,9 @@ class PolyLink extends BaseLink {
     }
 
     isHit(point) {
+        if(!this._cachePoints) {
+            return false;
+        }
         const points = this._cachePoints;
         let lastP = points[0];
         const remainPoints = points.slice(1)
