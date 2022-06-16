@@ -1,7 +1,10 @@
 import { createCanvas } from '../utils/canvas';
 export default {
     // 传入一个别的 context2d 来绘制
-    captureMap(wrapper, padding = 0) {
+    captureMap(wrapper, {
+        padding = 0,
+        placement = 'normal',
+    }) {
 
         this._getBoundingGroupRect();
         const { 
@@ -60,14 +63,21 @@ export default {
         const r1 = (width - pad2) / p_width;
         const r2 = (height - pad2) / p_height;
         const r = Math.min(r1, r2);
+        
         let m_x = 0;
         let m_y = 0;
-        if(r1 < r2) {
-            m_y = (height - p_height * r + pad) / 2;
-            m_x = pad;
+
+        if(placement === 'center') {
+            m_y = (height - p_height * r) / 2 - p_y * r;
+            m_x = (width - p_width * r) / 2 - p_x * r;
         } else {
-            m_x = (width - p_width * r + pad) / 2;
-            m_y = pad;
+            if(r1 < r2) {
+                m_y = (height - p_height * r) / 2 - p_y * r;
+                m_x = pad;
+            } else {
+                m_x = (width - p_width * r) / 2 - p_x * r;
+                m_y = pad;
+            }
         }
         const cachectx = this.cacheMinimapCtx;
         cachectx.setTransform();
