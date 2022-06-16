@@ -170,7 +170,7 @@ export default {
             initialZoom: 1,
             minZoom: .2,
             NodeRenderTop: true,
-            worldMargin: 400,
+            // worldMargin: 400,
             setInitialPosition(realboxX, realboxY, realboxW, realboxH, cx, cy, cwidth, cheight) {
                 return {
                     x: realboxX + cwidth / 2,
@@ -228,7 +228,10 @@ export default {
     methods: {
         captureMap() {
             const jflowInstance = this.$refs.jflow.getInstance();
-            jflowInstance.captureMap(this.$refs.minimap, 10);
+            jflowInstance.captureMap(this.$refs.minimap, {
+                padding: 10,
+                placement: 'center'
+            });
         },
         startAllAnimate(e) {
             console.log('startAllAnimate')
@@ -464,7 +467,8 @@ export default {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: #fff;
+    background: #ccc;
+    opacity: 0.5;
 }
 .minimap > .content {
 
