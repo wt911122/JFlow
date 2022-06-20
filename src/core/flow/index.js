@@ -207,6 +207,7 @@ class JFlow extends EventTarget{
                 dragovering: false,
                 dragging: false,
                 processing: false,
+                movingState: false,
             }
         }
 
@@ -931,7 +932,7 @@ class JFlow extends EventTarget{
         if(processing) return;
         
         const movingtarget = this._target.moving;// this._tempNode ? [this._tempNode] : this._target.moving;
-
+        this._target.status.movingState = true
         this._target.status.processing = true;
         const deltaX = offsetX - x;
         const deltaY = offsetY - y;
@@ -1315,6 +1316,7 @@ class JFlow extends EventTarget{
         Object.assign(this._target.status, {
             dragging: false,
             processing: false,
+            movingState: false,
         });
         Object.assign(this._target, {
             instance: null,
@@ -1400,6 +1402,14 @@ class JFlow extends EventTarget{
         ];
         this._cacheViewBox = cacheViewBox;
         return cacheViewBox;
+    }
+
+    setNodeToTopLayer(node) {
+        const index = this._stack.findIndex(n => n === node);
+        if(index !== -1) {
+            const [renderNode] = this._stack.splice(index, 1);
+            this._stack.push(renderNode);
+        }
     }
 
     getCacheViewBox() {

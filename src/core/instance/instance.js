@@ -61,7 +61,7 @@ class Instance extends EventTarget{
      * @member {boolean} - 当前单元移动状态
      */
     get _isMoving() {
-        return this === this._jflow._getMovingTarget();
+        return this === this._jflow._getMovingTarget() && this._jflow._target.status.movingState; // 移动了之后才能被当做移动状态
     }
     /**
      * @member {boolean}  - 当前单元碰撞检测状态

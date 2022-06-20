@@ -112,8 +112,10 @@ class Text extends Rectangle {
                 let inputElement = createInputElement();
                 const wrapper = this._jflow.DOMwrapper;
                 let oldVal = this.content;
+                inputElement.style.margin = 0;
+                inputElement.style.padding = 0;
                 inputElement.style.transform =`translate(${offsetX}px, ${offsetY}px)`;
-                inputElement.style.width = this.calculateToRealWorldWithScalar(this.width + 5) + 'px';
+                inputElement.style.width = this.calculateToRealWorldWithScalar(this.width) + 'px';
                 inputElement.style.height = this.calculateToRealWorldWithScalar(this.height) + 'px';
                 inputElement.style.fontFamily = this.fontFamily;
                 wrapper.style.fontSize = `${fontSize * this._jflow.scale}px`;
@@ -250,6 +252,13 @@ class Text extends Rectangle {
         if(this._isMoving){
             ctx.globalAlpha = 0.6
         }
+        ctx.save();
+        ctx.fillStyle = 'rgba(0,0,0,0.3)'
+        ctx.beginPath();
+        const hw = this.width / 2;
+        const hy = this.height / 2;
+        ctx.fillRect(this.anchor[0] - hw, this.anchor[1] - hy, this.width, this.height);
+        ctx.restore();
         if(this.editting) {
             return;
         }
@@ -274,6 +283,8 @@ class Text extends Rectangle {
         }
         ctx.fill();
         ctx.restore();
+
+       
     }
 }
 
