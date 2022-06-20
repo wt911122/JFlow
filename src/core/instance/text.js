@@ -252,13 +252,13 @@ class Text extends Rectangle {
         if(this._isMoving){
             ctx.globalAlpha = 0.6
         }
-        ctx.save();
-        ctx.fillStyle = 'rgba(0,0,0,0.3)'
-        ctx.beginPath();
-        const hw = this.width / 2;
-        const hy = this.height / 2;
-        ctx.fillRect(this.anchor[0] - hw, this.anchor[1] - hy, this.width, this.height);
-        ctx.restore();
+        // ctx.save();
+        // ctx.fillStyle = 'rgba(0,0,0,0.3)'
+        // ctx.beginPath();
+        // const hw = this.width / 2;
+        // const hy = this.height / 2;
+        // ctx.fillRect(this.anchor[0] - hw, this.anchor[1] - hy, this.width, this.height);
+        // ctx.restore();
         if(this.editting) {
             return;
         }
