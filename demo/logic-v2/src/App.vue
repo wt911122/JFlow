@@ -271,15 +271,15 @@ export default {
             }
         },
         onPressEnd() {
+            const jflowInstance = this.$refs.jflow.getInstance();
+            const i = jflowInstance.getRenderNodeBySource(this.currentTarget);
+            jflowInstance.setNodeToTopLayer(i);
             this.currentTarget = null;
             this.status.dragging.active = false;
         },
         onDragEnd() {
             this.status.dragging.active = false;
         },
-        // onCanvasMousemove() {
-
-        // },
         onDropToLink(e, linkConfigs) {
             const jflowInstance = this.$refs.jflow.getInstance();
             let node = e.detail.instance;
