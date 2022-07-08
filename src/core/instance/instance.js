@@ -260,7 +260,7 @@ class Instance extends EventTarget{
     }
 
     destroy() {
-        this._belongs = undefined;
+        // this._belongs = undefined;
         // this.removeEventListener();
     }
 }
