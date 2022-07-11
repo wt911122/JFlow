@@ -61,6 +61,7 @@ class Text extends Rectangle {
         this.fontSize =         configs.fontSize || '28px';
         /** @member {String}      - 字体颜色 */
         this.textColor =        configs.textColor || 'white';
+        this.placeholderColor = configs.placeholderColor ||  configs.textColor || 'white';
         /** @member {String}      - 文字对齐方式 */
         this.textAlign =        configs.textAlign || TEXT_ALIGN.CENTER;
         /** @member {String}      - 文字基线方式 */
@@ -88,6 +89,14 @@ class Text extends Rectangle {
         this._makeEditable();
     }
 
+    get currentContent() {
+        return this.content || this.placeholder;
+    }
+
+    get isEmpty() {
+        return !this.content;
+    }
+
     /**
      * 编辑态
      */
@@ -112,6 +121,7 @@ class Text extends Rectangle {
                 let inputElement = createInputElement();
                 const wrapper = this._jflow.DOMwrapper;
                 let oldVal = this.content;
+                let textColor = this.textColor;
                 inputElement.style.margin = 0;
                 inputElement.style.padding = 0;
                 inputElement.style.transform =`translate(${offsetX}px, ${offsetY}px)`;
@@ -128,7 +138,8 @@ class Text extends Rectangle {
 
                 inputElement.addEventListener("focus",  (e) => {
                     // e.preventDefault();
-                    this.content = '';
+                    // this.content = '';
+                    this.textColor = 'transparent'
                     this.editting = true;
                     this._jflow._render();
                     inputElement.style.outline = "none";
@@ -152,7 +163,8 @@ class Text extends Rectangle {
                         oldVal,
                         val,
                     }))
-                    this.content = oldVal;
+                    this.textColor = textColor;
+                    // this.content = oldVal;
                     this._jflow._render();
                     this._jflow.removeEventListener('zoompan', blurHandler)
                     inputElement.removeEventListener('blur', blurHandler)
@@ -203,20 +215,21 @@ class Text extends Rectangle {
         ctx.textBaseline = this.textBaseline;
         ctx.fillStyle = this.textColor;
         const t_h = parseInt(this.fontSize);
+        const content = this.currentContent;
         const {
             actualBoundingBoxLeft,
             actualBoundingBoxRight,
             fontBoundingBoxAscent,
             fontBoundingBoxDescent
-        } = ctx.measureText(this.content);
+        } = ctx.measureText(content);
         this._textWidth = this.indent + Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight);
         if(this.maxWidth && this.ellipsis) {
             if(this._textWidth > this.maxWidth) {
                 const ratio =this.maxWidth / this._textWidth;
-                const l = Math.floor(this.content.length * ratio - 3);
-                this.ellipsisContent = this.content.substring(0, l) + '...'; 
+                const l = Math.floor(content.length * ratio - 3);
+                this.ellipsisContent = content.substring(0, l) + '...'; 
             }  else {
-                this.ellipsisContent = this.content;
+                this.ellipsisContent = content;
             }
             this.width = this.maxWidth;
         } else{ 
@@ -267,8 +280,8 @@ class Text extends Rectangle {
         ctx.font = `${this.fontSize} ${this.fontFamily}`;
         ctx.textAlign = this.textAlign;
         ctx.textBaseline = this.textBaseline;
-        ctx.fillStyle = this.textColor;
-        let content = this.content;
+        ctx.fillStyle = this.isEmpty ? this.placeholderColor : this.textColor;
+        let content = this.currentContent;
         if(this.ellipsisContent) {
             content = this.ellipsisContent;
         }
@@ -281,7 +294,7 @@ class Text extends Rectangle {
         } else {
             ctx.fillText(content, this.anchor[0] + this.indent / 2, this.anchor[1]);
         }
-        ctx.fill();
+        // ctx.fill();
         ctx.restore();
 
        
