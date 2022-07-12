@@ -2,6 +2,7 @@ function getMapObject() {
     return {
         layoutNode: undefined,
         jflowNode: undefined,
+        jflowlinks: [],
     }
 }
 class NodeWeakMap {
@@ -50,6 +51,10 @@ export const NodeWeakMapMixin = {
         }
         return undefined;
     },
+    getSourceRenderMeta(source) {
+        const map = this.source_Layout_Render_NodeMap;
+        return map.get(source)
+    },
     _getMap(source) {
         const map = this.source_Layout_Render_NodeMap;
         let obj;
@@ -68,6 +73,17 @@ export const NodeWeakMapMixin = {
         let obj = this._getMap(source);
         obj.jflowNode = instance;
     },
+    addLinkNodeBySource(source, linkNode) {
+        let obj = this._getMap(source);
+        obj.jflowlinks.push(linkNode);
+    },
+    removeLinkNodeBySource(source, linkNode) {
+        let obj = this._getMap(source);
+        const idx = obj.jflowlinks.findIndex(l => l === linkNode);
+        if(idx !== -1) {
+            obj.jflowlinks.splice(idx, 1);
+        }
+    }
 }
 
 export default NodeWeakMap;

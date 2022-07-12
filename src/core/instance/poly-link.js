@@ -103,6 +103,9 @@ class PolyLink extends BaseLink {
     }
     
     isInViewBox(br) {
+        if(this._static) {
+            return true;
+        }
         this._calculateAnchorPoints();
         return isPolyLineIntersectionRectange(this._cachePoints, br);
     }
@@ -188,6 +191,9 @@ class PolyLink extends BaseLink {
     }
 
     isHit(point) {
+        if(this._static) {
+            return false;
+        }
         if(!this._cachePoints) {
             return false;
         }
@@ -206,6 +212,26 @@ class PolyLink extends BaseLink {
         } while(lastP)
 
         return false
+    }
+
+    cloneStatic() {
+        const t = new PolyLink({});
+        Object.assign(t, {
+            radius: this.radius,
+            _cachePoints: this._cachePoints,
+            _cacheAngle: this._cacheAngle,
+            backgroundColor: this.backgroundColor,
+            doubleLink: this.doubleLink,
+            radius: this.radius,
+            lineDash: this.lineDash,
+            noArrow: this.noArrow,
+            content: this.content,
+            fontSize: this.fontSize,
+            fontFamily: this.fontFamily,
+            fromDir: this.fromDir,
+            _static: true,
+        });
+        return t;
     }
 }
 

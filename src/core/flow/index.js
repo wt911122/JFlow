@@ -536,6 +536,7 @@ class JFlow extends EventTarget{
         if(this._dragOverTarget !== instance) {
             const target = this.readMessage()?.instance;
             this._dragCurrentData = target;
+            const { point } = this._target.cache;
             if(this._dragOverTarget) {
                 const oldIns = this._dragOverTarget;
                 /**
@@ -549,7 +550,8 @@ class JFlow extends EventTarget{
                 oldIns.dispatchEvent(new JFlowEvent('dragleave', {
                     event,
                     instance: oldIns,
-                    target
+                    target,
+                    point
                 }));
             }
             if(instance) {
@@ -565,6 +567,7 @@ class JFlow extends EventTarget{
                     event,
                     instance,
                     target,
+                    point
                 }));
             }
             this._dragOverTarget = instance;
@@ -1047,6 +1050,7 @@ class JFlow extends EventTarget{
         //             return
         //         }  
         // } else 
+        
         if(this._target.moving) {
             let checkresult = false;
             if(this._layout.static) {
