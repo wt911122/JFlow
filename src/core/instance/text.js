@@ -168,6 +168,7 @@ class Text extends Rectangle {
                     this._jflow._render();
                     this._jflow.removeEventListener('zoompan', blurHandler)
                     inputElement.removeEventListener('blur', blurHandler)
+                    inputElement.removeEventListener('keypress', keyUpHandler)
                     wrapper.removeChild(inputElement);
                     inputElement = null;
                     blurHandler = null;
@@ -178,8 +179,17 @@ class Text extends Rectangle {
                 const keyUpHandler = (e) => {
                     if (e.key === 'Enter' || e.keyCode === 13) {
                         e.preventDefault();
-                        inputElement.removeEventListener('keypress', keyUpHandler)
-                        blurHandler();
+                        let defaultAct = true;
+                        this.dispatchEvent(new JFlowEvent('enterkeypressed', {
+                            target: this,
+                            handler: (val) => {
+                                defaultAct = val;
+                            },
+                        }))
+                        if(defaultAct){
+                            inputElement.removeEventListener('keypress', keyUpHandler)
+                            blurHandler();
+                        }
                     }
                 };
                 inputElement.addEventListener('keypress', keyUpHandler)

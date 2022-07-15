@@ -74,13 +74,6 @@ class PolyLink extends BaseLink {
 
             this._cachePoints = points
             this._cacheAngle = [this.fromDir, this.toDir]
-            // const points = polylinePoints(
-            //     dmsfrom[this.fromDir],
-            //     dmsto[this.toDir],
-            //     this.fromDir,
-            //     this.toDir, this.minSpanX , this.minSpanY);
-            // this._cachePoints = points
-            // this._cacheAngle = [this.fromDir, this.toDir]
         } else if(this.fromDir !== undefined && this.toDir !== undefined) {
             const points = polylinePoints(
                 dmsfrom[this.fromDir],

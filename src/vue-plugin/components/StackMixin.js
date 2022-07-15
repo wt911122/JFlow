@@ -19,19 +19,19 @@ export default {
                 instance._jflow.setRenderNodeBySource(source, instance)
             }
         },
-        addToLinkStack(link, source) {
+        addToLinkStack(link, sourceFrom, sourceTo) {
             this._jflowInstance.addToLinkStack(link);
-            if(source) {
-                link._jflow.addLinkNodeBySource(source, link);
+            if(sourceFrom && sourceTo) {
+                link._jflow.addLinkNodeBySource(sourceFrom, sourceTo, link);
             }
         },
         removeFromStack(instance) {
             this._jflowInstance.removeFromStack(instance);
         },
-        removeFromLinkStack(link, source) {
+        removeFromLinkStack(link, sourceFrom, sourceTo) {
             this._jflowInstance.removeFromLinkStack(link);
-            if(source) {
-                link._jflow.addLinkNodeBySource(source, link);
+            if(sourceFrom && sourceTo) {
+                link._jflow.removeLinkNodeBySource(sourceFrom, sourceTo, link);
             }
         },
         onStackChangeHandler() {

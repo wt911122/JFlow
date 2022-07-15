@@ -56,7 +56,7 @@ export default function (nameNode, isLink) {
                         to: toInstance,
                     });
                     this.bindListeners();
-                    this.addToLinkStack(this._jflowInstance, this.from);   
+                    this.addToLinkStack(this._jflowInstance, this.from, this.to);   
                 }
             },
             refreshConfig() {
@@ -100,7 +100,7 @@ export default function (nameNode, isLink) {
         destroyed() {
             this.unwatch();
             if(this._jflowInstance) {
-                this.removeFromLinkStack(this._jflowInstance, this.from);
+                this.removeFromLinkStack(this._jflowInstance, this.from, this.to);
             }
         }
     }

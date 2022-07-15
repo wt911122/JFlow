@@ -537,6 +537,7 @@ class JFlow extends EventTarget{
             const target = this.readMessage()?.instance;
             this._dragCurrentData = target;
             const { point } = this._target.cache;
+            // console.log('_processDragOver', this._dragOverTarget)
             if(this._dragOverTarget) {
                 const oldIns = this._dragOverTarget;
                 /**
@@ -551,6 +552,7 @@ class JFlow extends EventTarget{
                     event,
                     instance: oldIns,
                     target,
+                    jflow: this,
                     point
                 }));
             }
@@ -567,6 +569,7 @@ class JFlow extends EventTarget{
                     event,
                     instance,
                     target,
+                    jflow: this,
                     point
                 }));
             }
@@ -583,6 +586,7 @@ class JFlow extends EventTarget{
             this._dragOverTarget.dispatchEvent(new JFlowEvent('dragover', {
                 event,
                 instance,
+                jflow: this,
                 target: this._dragCurrentData,
             }));
         }
@@ -950,6 +954,7 @@ class JFlow extends EventTarget{
             this.dispatchEvent(new JFlowEvent('zoompan'));
         }
         const { instance, link } = this._targetLockOn([offsetX, offsetY]);
+        
         this._processDragOver(instance || link, event);
         
         this.scheduleRender(() => {
@@ -1056,8 +1061,8 @@ class JFlow extends EventTarget{
             if(this._layout.static) {
                 checkresult = this.staticCheck(this._getMovingTarget());
             }
-
             if(!checkresult && this._target.link) {
+                
                 const {
                     point, belongs
                 } = this._target.cache;
