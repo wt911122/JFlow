@@ -78,3 +78,14 @@ export function requestCacheCanvas(render) {
     caheCanvasctx.restore();
     caheCanvasctx.clearRect(0,0,5,5);
 }
+
+export function listenOnDevicePixelRatio(callback) {
+    function onChange() {
+      console.log("devicePixelRatio changed: " + window.devicePixelRatio);
+      callback(window.devicePixelRatio);
+      listenOnDevicePixelRatio(callback);
+    }
+    matchMedia(
+      `(resolution: ${window.devicePixelRatio}dppx)`
+    ).addEventListener("change", onChange, { once: true });
+}

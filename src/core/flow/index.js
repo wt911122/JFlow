@@ -1,4 +1,4 @@
-import { createCanvas, resizeCanvas } from '../utils/canvas';
+import { createCanvas, resizeCanvas, listenOnDevicePixelRatio } from '../utils/canvas';
 import { bounding_box, doOverlap } from '../utils/functions';
 import { JFLOW_MODE } from '../utils/constance';
 import GhostNode from '../instance/ghostNode';
@@ -336,6 +336,10 @@ class JFlow extends EventTarget{
             this._createEventHandler();
         });
         
+        listenOnDevicePixelRatio((dpr) => {
+            this.dpr = dpr;
+            this.scheduleRender();
+        })
     }
 
     /**
