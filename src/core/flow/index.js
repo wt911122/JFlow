@@ -224,6 +224,8 @@ class JFlow extends EventTarget{
         this._tempLink = null;
 
         this.mode = JFLOW_MODE.DEFAULT;
+
+        this._allowMovingTarget = true;
     }
     /**
      * 设置当前拖动的 JFlow 对象
@@ -259,6 +261,18 @@ class JFlow extends EventTarget{
             this._tempNode = null;
             return anchor;
         }
+    }
+    /**
+     * 关闭默认对象拖动效果
+     */
+    preventDefaultDragging() {
+        this._allowMovingTarget = false;
+    }
+    /**
+     * 开启默认对象拖动效果
+     */
+    allowDefaultDragging() {
+        this._allowMovingTarget = true;
     }
     /**
      * 在 Document 元素上初始化实例
@@ -358,6 +372,10 @@ class JFlow extends EventTarget{
             instance: source
         });
         this.mode = JFLOW_MODE.LINKING;
+    }
+
+    isInLinkingMode() {
+        return this.mode === JFLOW_MODE.LINKING;
     }
 
     /**
@@ -864,7 +882,7 @@ class JFlow extends EventTarget{
             dragging, processing
         } = this._target.status;
         const { x, y } = this._target.meta;
-        this.canvas.style.cursor = 'default';
+        // this.canvas.style.cursor = 'default';
         if(!dragging && !processing) {
             const {
                 link,
@@ -892,6 +910,12 @@ class JFlow extends EventTarget{
                     instance: t,
                     jflow: this,
                     bubbles: true
+                }));
+            } else {
+                this.dispatchEvent(new JFlowEvent('instancemousemove', {
+                    event,
+                    instance: null,
+                    jflow: this,
                 }));
             }
 
@@ -939,7 +963,7 @@ class JFlow extends EventTarget{
         }))
         
         if(!dragging) return;
-        this.canvas.style.cursor = 'grabbing';
+        // this.canvas.style.cursor = 'grabbing';
         if(processing) return;
         
         const movingtarget = this._target.moving;// this._tempNode ? [this._tempNode] : this._target.moving;
@@ -947,12 +971,13 @@ class JFlow extends EventTarget{
         this._target.status.processing = true;
         const deltaX = offsetX - x;
         const deltaY = offsetY - y;
-
         if(movingtarget) {
-            movingtarget.forEach(t => {
-                t.anchor[0] += deltaX / this.scale;
-                t.anchor[1] += deltaY / this.scale;
-            })
+            if(this._allowMovingTarget) {
+                movingtarget.forEach(t => {
+                    t.anchor[0] += deltaX / this.scale;
+                    t.anchor[1] += deltaY / this.scale;
+                })
+            }
         } else {
             this._recalculatePosition(deltaX, deltaY);    
             this.dispatchEvent(new JFlowEvent('zoompan'));

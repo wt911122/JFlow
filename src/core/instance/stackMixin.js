@@ -69,7 +69,9 @@ const StackMixin = {
     removeFromStack(target) {
         // this.removeLinkOnInstance(target);
         const index = this._stack.findIndex(i => i === target);
-        this._stack.splice(index, 1);
+        if(index !== -1) {
+            this._stack.splice(index, 1);
+        }
         // this.recalculate()
     },
     /**
@@ -78,7 +80,9 @@ const StackMixin = {
      */
     removeFromLinkStack(target) {
         const index = this._linkStack.findIndex(i => i === target);
-        this._linkStack.splice(index, 1);
+        if(index !== -1) {
+            this._linkStack.splice(index, 1);
+        }
     },
    
     emptyLink() {
