@@ -474,12 +474,15 @@ class JFlow extends EventTarget{
         if(this.allowDrop) {
             const dragoverHandler = this._onDragover.bind(this);
             const dropHandler = this._onDrop.bind(this);
+            const dragleaveHanlder = this._onDragLeave.bind(this);
             canvas.addEventListener('dragover', dragoverHandler);
             canvas.addEventListener('drop', dropHandler);
+            canvas.addEventListener('dragleave', dragleaveHanlder);
             destroyListener = () => {
                 destroyPlainEventListener();
                 canvas.removeEventListener('dragover', dragoverHandler);
                 canvas.removeEventListener('drop', dropHandler);
+                canvas.removeEventListener('dragleave', dragleaveHanlder);
             }
         } 
         this.destroy = destroyListener;
@@ -677,12 +680,16 @@ class JFlow extends EventTarget{
             this._lastDragState.processing = false;
         } 
     }
+    _onDragLeave() {
+        if(this.__processOverAnime) {
+            this.__processOverAnime.cancel();
+        }
+    }
 
     _onDrop(event) {
         if(this.__processOverAnime) {
             this.__processOverAnime.cancel();
         }
-        const { offsetX, offsetY, clientX, clientY } = event
         const payload = this.consumeMessage();
         const instance = payload.instance;
         if(this._dragOverTarget) {
