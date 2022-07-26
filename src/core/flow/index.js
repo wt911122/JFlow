@@ -170,6 +170,14 @@ class JFlow extends EventTarget{
         this.NodeRenderTop = !!configs.NodeRenderTop
 
         this.worldMargin = configs.worldMargin;
+
+        this.draggingbehavior = Object.assign({
+            panInBorder: {
+                enable: true,
+                padding: 20,
+                deltamovement: 8,
+            },
+        }, configs.draggingbehavior || {})
 		// this.initScale = 1;
 		// this.initPosition = null
 		this.offeset = null;
@@ -612,6 +620,37 @@ class JFlow extends EventTarget{
                 target: this._dragCurrentData,
             }));
         }
+        if(this.draggingbehavior?.panInBorder?.enable) {
+            const [x, y, w, h] = this._cacheViewBox;
+            const [px, py] = this._currentp;
+            const {
+                padding,
+                deltamovement
+            } = this.draggingbehavior.panInBorder;
+            let deltaX = 0;
+            let deltaY = 0;
+            if(px < x + padding) {
+                deltaX = deltamovement;
+            } 
+            if(px > w - padding) {
+                deltaX = -deltamovement;
+            } 
+            if(py < y + padding) {
+                deltaY = deltamovement;
+            } 
+            if(py > h - padding) {
+                deltaY = -deltamovement;
+            } 
+            if(this.__processOverAnime) {
+                this.__processOverAnime.cancel();
+            }
+            if(deltaX || deltaY) {
+                this.__processOverAnime = this.requestJFlowAnime(() => {
+                    this.panHandler(deltaX, deltaY);
+                }) 
+            }
+        }
+        
     }
 
     _onDragover(event) {
@@ -640,6 +679,9 @@ class JFlow extends EventTarget{
     }
 
     _onDrop(event) {
+        if(this.__processOverAnime) {
+            this.__processOverAnime.cancel();
+        }
         const { offsetX, offsetY, clientX, clientY } = event
         const payload = this.consumeMessage();
         const instance = payload.instance;
@@ -1023,6 +1065,9 @@ class JFlow extends EventTarget{
      * @param {Number} event - 原生事件
      */
     pressUpHanlder(isDocument, event) {
+        if(this.__processOverAnime) {
+            this.__processOverAnime.cancel();
+        }
         const meta = this._target.meta;
         if(this.mode === JFLOW_MODE.LINKING) {
             const t = this._target.instance;
