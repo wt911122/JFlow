@@ -799,6 +799,25 @@ class JFlow extends EventTarget{
     panHandler(deltaX, deltaY, event) {
         if(this._panning) return;
         this._panning = true;
+        const {
+            dragging,
+        } = this._target.status;
+        if(dragging) {
+            // const { x, y } = this._target.meta;
+            const movingtarget = this._target.moving;// this._tempNode ? [this._tempNode] : this._target.moving;
+            // this._target.status.movingState = true
+            // this._target.status.processing = true;
+            if(movingtarget) {
+                if(this._allowMovingTarget) {
+                    movingtarget.forEach(t => {
+                        t.anchor[0] += -deltaX / this.scale;
+                        t.anchor[1] += -deltaY / this.scale;
+                    })
+                }
+            }
+            // this._targetLockOn([offsetX, offsetY]);
+        }
+
         this._recalculatePosition(deltaX, deltaY);
         /**
          * 缩放平移事件
