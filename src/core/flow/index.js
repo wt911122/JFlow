@@ -1,5 +1,5 @@
 import { createCanvas, resizeCanvas, listenOnDevicePixelRatio } from '../utils/canvas';
-import { bounding_box, doOverlap } from '../utils/functions';
+import { bounding_box, doOverlap, debounce } from '../utils/functions';
 import { JFLOW_MODE } from '../utils/constance';
 import GhostNode from '../instance/ghostNode';
 import { NodeWeakMapMixin } from '../instance/nodeWeakMap';
@@ -9,8 +9,9 @@ import LayoutMixin from '../instance/layoutMixin';
 import MessageMixin from '../instance/messageMixin';
 import AnimeMixin from '../anime/animeMixin';
 import MiniMapMixin from '../miniMap/minimap-mixin';
+import ScrollBarMixin from '../scrollbar/scrollbarMixin';
 import ScheduleMixin from './schedule';
-import { setUniqueId, getUniqueId } from '../utils/functions';
+// import { setUniqueId, getUniqueId } from '../utils/functions';
 import JFlowEvent from '../events';
 
 import EventAdapter from '../events/adapter';
@@ -177,7 +178,10 @@ class JFlow extends EventTarget{
                 padding: 20,
                 deltamovement: 8,
             },
-        }, configs.draggingbehavior || {})
+        }, configs.draggingbehavior || {});
+        this.scrollBarBehavior = Object.assign({
+            enable: true,
+        }, configs.scrollBarBehavior || {})
 		// this.initScale = 1;
 		// this.initPosition = null
 		this.offeset = null;
@@ -354,6 +358,9 @@ class JFlow extends EventTarget{
         position.offsetY = position.y - realboxY;
         this.position = position;
         this._readyToRender = true;
+        if(this.scrollBarBehavior.enable) {
+            this.initScrollBar(this.scrollBarBehavior);
+        }
         this.scheduleRender(() => {
             this._createEventHandler();
         });
@@ -624,33 +631,40 @@ class JFlow extends EventTarget{
             }));
         }
         if(this.draggingbehavior?.panInBorder?.enable) {
-            const [x, y, w, h] = this._cacheViewBox;
-            const [px, py] = this._currentp;
-            const {
-                padding,
-                deltamovement
-            } = this.draggingbehavior.panInBorder;
-            let deltaX = 0;
-            let deltaY = 0;
-            if(px < x + padding) {
-                deltaX = deltamovement;
-            } 
-            if(px > w - padding) {
-                deltaX = -deltamovement;
-            } 
-            if(py < y + padding) {
-                deltaY = deltamovement;
-            } 
-            if(py > h - padding) {
-                deltaY = -deltamovement;
-            } 
-            if(this.__processOverAnime) {
-                this.__processOverAnime.cancel();
+            if(!this.draggingbehavior.panInBorder.timer) {
+                this.draggingbehavior.panInBorder.timer = Date.now();
             }
-            if(deltaX || deltaY) {
-                this.__processOverAnime = this.requestJFlowAnime(() => {
-                    this.panHandler(deltaX, deltaY);
-                }) 
+            if(Date.now() - this.draggingbehavior.panInBorder.timer > 500) {
+                const [x, y, w, h] = this._cacheViewBox;
+                const [px, py] = this._currentp;
+                const {
+                    padding,
+                    deltamovement
+                } = this.draggingbehavior.panInBorder;
+                let deltaX = 0;
+                let deltaY = 0;
+                if(px < x + padding) {
+                    deltaX = deltamovement;
+                } 
+                if(px > w - padding) {
+                    deltaX = -deltamovement;
+                } 
+                if(py < y + padding) {
+                    deltaY = deltamovement;
+                } 
+                if(py > h - padding) {
+                    deltaY = -deltamovement;
+                } 
+                if(this.__processOverAnime) {
+                    this.__processOverAnime.cancel();
+                }
+                if(deltaX || deltaY) {
+                    this.__processOverAnime = this.requestJFlowAnime(() => {
+                        this.panHandler(deltaX, deltaY);
+                    }) 
+                } else {
+                    this.draggingbehavior.panInBorder.timer = null;
+                }
             }
         }
         
@@ -680,16 +694,22 @@ class JFlow extends EventTarget{
             this._lastDragState.processing = false;
         } 
     }
-    _onDragLeave() {
+
+    _cancelPanInBorder() {
         if(this.__processOverAnime) {
             this.__processOverAnime.cancel();
+        }
+        if(this.draggingbehavior?.panInBorder) {
+            this.draggingbehavior.panInBorder.timer = null;
         }
     }
 
+    _onDragLeave() {
+        this._cancelPanInBorder();
+    }
+
     _onDrop(event) {
-        if(this.__processOverAnime) {
-            this.__processOverAnime.cancel();
-        }
+        this._cancelPanInBorder();
         const payload = this.consumeMessage();
         const instance = payload.instance;
         if(this._dragOverTarget) {
@@ -890,6 +910,9 @@ class JFlow extends EventTarget{
      * @param {Number} event - 原生事件
      */
     pressStartHandler(offsetX, offsetY, event) {
+        if(this.onScrollbarPressStart(offsetX, offsetY)) {
+            return;
+        }
         Object.assign(this._target.meta, {
             initialX: offsetX,
             initialY: offsetY,
@@ -946,11 +969,23 @@ class JFlow extends EventTarget{
      * @param {Number} event - 原生事件
      */
     pressMoveHandler(offsetX, offsetY, event) {
+        if(this.onDraggingScrollbar(offsetX, offsetY)) {
+            return;
+        }
         const {
             dragging, processing
         } = this._target.status;
         const { x, y } = this._target.meta;
         // this.canvas.style.cursor = 'default';
+        if(!dragging) {
+            if(this.checkScrollBarHover(offsetX, offsetY)) {
+                return;
+            } else {
+                this.resetScrollBarHover();
+            }
+            
+        }
+
         if(!dragging && !processing) {
             const {
                 link,
@@ -1017,6 +1052,8 @@ class JFlow extends EventTarget{
                 return;
             }
         }
+
+        
         /**
          * canvas mousemove 原生事件
          *
@@ -1029,6 +1066,8 @@ class JFlow extends EventTarget{
             event,
             jflow: this,
         }))
+
+        
         
         if(!dragging) return;
         // this.canvas.style.cursor = 'grabbing';
@@ -1075,6 +1114,7 @@ class JFlow extends EventTarget{
         if(this.__processOverAnime) {
             this.__processOverAnime.cancel();
         }
+        this.resetScollBarStatus();
         const meta = this._target.meta;
         if(this.mode === JFLOW_MODE.LINKING) {
             const t = this._target.instance;
@@ -1570,6 +1610,7 @@ class JFlow extends EventTarget{
             this._tempLink.render(ctx)
             ctx.restore();
         }
+        this.renderScrollBar(ctx);
         // this.setFrameRendered();
     }
 }
@@ -1580,6 +1621,7 @@ Object.assign(JFlow.prototype, NodeWeakMapMixin);
 Object.assign(JFlow.prototype, AnimeMixin);
 Object.assign(JFlow.prototype, MiniMapMixin);
 Object.assign(JFlow.prototype, ScheduleMixin);
+Object.assign(JFlow.prototype, ScrollBarMixin);
 
 export default JFlow;
 export { JFLOW_MODE } from '../utils/constance';

@@ -295,6 +295,8 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             ctx.save();
             if(this._isMoving){
                 ctx.globalAlpha = 0.6
+            } else if(this.opacity !== 1) {
+                ctx.globalAlpha = this.opacity;
             }
 
             const [cx, cy] = this._getCenter(); 
