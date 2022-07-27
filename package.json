@@ -1,6 +1,6 @@
 {
   "name": "@joskii/jflow",
-  "version": "0.0.84-beta",
+  "version": "0.0.85-beta",
   "description": "",
   "main": "dist/jflow.bundle.js",
   "files": [
