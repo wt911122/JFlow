@@ -44,13 +44,29 @@ class Rhombus extends Node {
         }
 
         ctx.fillStyle = this.backgroundColor;
+        ctx.fill();
         if(this.shadowColor) {
             ctx.shadowColor = this.shadowColor;
             ctx.shadowBlur = this.shadowBlur;
             ctx.shadowOffsetX = this.shadowOffsetX;
             ctx.shadowOffsetY = this.shadowOffsetY;
+            let switchPath = new Path2D();
+            switchPath.moveTo(0, -h);
+            switchPath.lineTo(w, 0);
+            switchPath.lineTo(0, h);
+            switchPath.lineTo(-w, 0);
+            switchPath.closePath();
+            switchPath.rect(-w - 10,  -h - 10, this.width + 20, this.height+ 20);
+            // switchPath.moveTo(x, y-h);
+            // switchPath.lineTo(x + w, y);
+            // switchPath.lineTo(x, y + h);
+            // switchPath.lineTo(x-w, y);
+            // switchPath.closePath();
+            // switchPath.rect(x - w - 10, y - h - 10, this.width+ 20, this.height+ 20);
+            ctx.clip(switchPath, "evenodd");
+            ctx.fill();
         }
-        ctx.fill();
+       
         ctx.translate(-center[0], -center[1])
         ctx.restore();
     }
