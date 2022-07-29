@@ -14,11 +14,37 @@ class ScrollBar {
         const [x, y] = this.anchor;
         ctx.save();
         ctx.beginPath();
-        ctx.rect(
-            x + this.barMarginX,
-            y + this.barMarginY,
-            this.width - this.barMarginX*2,
-            this.height - this.barMarginY*2);
+        if(this.dir === 'x') {
+            const radius = this.height / 2;
+            const cy = y + radius;
+            const by = y + this.height;
+            const rc = x + this.width - this.barMarginX*2 - radius;
+            const lc = x + this.barMarginX + radius
+            ctx.moveTo(lc, by);
+            ctx.arc(lc, cy, radius, Math.PI/2, Math.PI/2*3);
+            ctx.lineTo(rc, y);
+            ctx.arc(rc, cy, radius,  -Math.PI/2, Math.PI/2);
+            ctx.closePath();
+  
+        } else {
+            const radius = this.width / 2;
+            const tc = y + this.barMarginY + radius;
+            const bc = y + this.height - this.barMarginY*2 - radius
+            const cx = x + radius;
+            const rx = x + this.width;
+            ctx.moveTo(x, tc);
+            ctx.arc(cx, tc, radius, -Math.PI, 0);
+            ctx.lineTo(rx, bc);
+            ctx.arc(cx, bc, radius, 0, Math.PI);
+            ctx.closePath();
+            
+        }
+                //   ctx.rect(
+                // x + this.barMarginX,
+                // y + this.barMarginY,
+                // this.width - this.barMarginX*2,
+                // this.height - this.barMarginY*2);
+
         ctx.fillStyle = this.isFocus ? this.focusColor : this.plainColor;
         ctx.fill();
         ctx.restore();
@@ -184,7 +210,7 @@ export default {
                     this._scrollbarX.isFocus = true;
                     this.scheduleRender();
                 }
-                
+                this.canvas.style.cursor = 'default';
                 return true;
             }
             const yhit = this._scrollbarY.isHit([offsetX, offsetY]);
@@ -194,6 +220,7 @@ export default {
                     this._scrollbarY.isFocus = true;
                     this.scheduleRender();
                 }
+                this.canvas.style.cursor = 'default';
                 return true;
             }
         }
@@ -208,6 +235,23 @@ export default {
             }
         }
     },
+    _getScrollViewBoundingbox() {
+        const padding = 120;
+        const { 
+            width: p_width, 
+            height: p_height, 
+            x: p_x, 
+            y: p_y 
+        } = this.bounding_box;
+        const p = padding;
+        const p2 = padding * 2;
+        return {
+            width: p_width + p2,
+            height: p_height + p2,
+            x: p_x - p,
+            y: p_y - p
+        }
+    },
     scrollBarOnPanAndZoom() {
         if(!this._scrollbarEnable || this._scrollBarStatus.dragging) {
             return;
@@ -217,9 +261,9 @@ export default {
             height: p_height, 
             x: p_x, 
             y: p_y 
-        } = this.bounding_box;
+        } = this._getScrollViewBoundingbox();
         
-        const [x, y, r, b] = this._getViewBox();
+        let [x, y, r, b] = this._getViewBox();
         const realR = Math.max(r, p_x + p_width);
         const realL = Math.min(x, p_x);
         const realT = Math.min(y, p_y);

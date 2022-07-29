@@ -40,16 +40,16 @@ class Rhombus extends Node {
         if(this.borderWidth) {
             ctx.lineWidth = this.borderWidth;
             ctx.strokeStyle = this.borderColor;
-            ctx.stroke();
         }
 
         ctx.fillStyle = this.backgroundColor;
         ctx.fill();
         if(this.shadowColor) {
             ctx.shadowColor = this.shadowColor;
-            ctx.shadowBlur = this.shadowBlur;
-            ctx.shadowOffsetX = this.shadowOffsetX;
-            ctx.shadowOffsetY = this.shadowOffsetY;
+            const scale = this._jflow.scale;
+            ctx.shadowBlur = this.shadowBlur * scale;
+            ctx.shadowOffsetX = this.shadowOffsetX * scale;
+            ctx.shadowOffsetY = this.shadowOffsetY * scale;
             let switchPath = new Path2D();
             switchPath.moveTo(0, -h);
             switchPath.lineTo(w, 0);
@@ -64,7 +64,9 @@ class Rhombus extends Node {
             // switchPath.closePath();
             // switchPath.rect(x - w - 10, y - h - 10, this.width+ 20, this.height+ 20);
             ctx.clip(switchPath, "evenodd");
-            ctx.fill();
+            ctx.stroke();
+        } else if (this.borderWidth) {
+            ctx.stroke();
         }
        
         ctx.translate(-center[0], -center[1])

@@ -110,7 +110,7 @@ class Rectangle extends Node {
             if(this.borderWidth) {
                 ctx.lineWidth = this.borderWidth;
                 ctx.strokeStyle = this.borderColor;
-                ctx.stroke();
+                // ctx.stroke();
             }
         } else {
             ctx.beginPath();
@@ -120,9 +120,10 @@ class Rectangle extends Node {
         ctx.fill();
         if(this.shadowColor) {
             ctx.shadowColor = this.shadowColor;
-            ctx.shadowBlur = this.shadowBlur;
-            ctx.shadowOffsetX = this.shadowOffsetX;
-            ctx.shadowOffsetY = this.shadowOffsetY;
+            const scale = this._jflow.scale;
+            ctx.shadowBlur = this.shadowBlur * scale;
+            ctx.shadowOffsetX = this.shadowOffsetX * scale;
+            ctx.shadowOffsetY = this.shadowOffsetY * scale;
             let switchPath = new Path2D();
             if(this.borderRadius) {
                 switchPath.moveTo(x + radius, y);
@@ -140,7 +141,9 @@ class Rectangle extends Node {
             }
             switchPath.rect(x - 10, y - 10, this.width+ 20, this.height+ 20);
             ctx.clip(switchPath, "evenodd");
-            ctx.fill();
+            ctx.stroke();
+        }  else if(this.borderRadius && this.borderWidth) {
+            ctx.stroke();
         }
         
         if(this.borderRadius) {
@@ -164,33 +167,6 @@ class Rectangle extends Node {
                 ctx.fill();
                 ctx.restore();
             }
-
-            // if(this.border.right.enable) {
-            //     ctx.beginPath();
-            //     ctx.moveTo(x + width, y + radius);
-            //     ctx.lineTo(x + width, y + height - radius);
-            //     ctx.strokeStyle = this.border.right.color;
-            //     ctx.lineWidth = this.border.right.width;
-            //     ctx.stroke();
-            // }
-
-            // if(this.border.bottom.enable) {
-            //     ctx.beginPath();
-            //     ctx.moveTo(x + width - radius, y + height);
-            //     ctx.lineTo(x + radius, y + height);
-            //     ctx.strokeStyle = this.border.bottom.color;
-            //     ctx.lineWidth = this.border.bottom.width;
-            //     ctx.stroke();
-            // }
-
-            // if(this.border.left.enable) {
-            //     ctx.beginPath();
-            //     ctx.moveTo(x, y + height - radius);
-            //     ctx.lineTo(x, y + radius);
-            //     ctx.strokeStyle = this.border.left.color;
-            //     ctx.lineWidth = this.border.left.width;
-            //     ctx.stroke();
-            // }
         } else {
             if(this.border.top.width) {
                 ctx.beginPath();
