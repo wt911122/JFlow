@@ -140,32 +140,51 @@ class Rectangle extends Node {
                 switchPath.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
             }
             switchPath.rect(x - 10, y - 10, this.width+ 20, this.height+ 20);
+            ctx.save();
             ctx.clip(switchPath, "evenodd");
             ctx.stroke();
+            ctx.restore();
         }  else if(this.borderRadius && this.borderWidth) {
             ctx.stroke();
         }
         
         if(this.borderRadius) {
             if(this.border.top.enable) {
-                const ty = y - this.borderWidth / 2;
+                const ty = y - this.border.top.width / 2;
+                // console.log(this.border.top.width)
+                ctx.beginPath();
+                let topPath = new Path2D();
+                topPath.moveTo(x, ty + radius);
+                topPath.quadraticCurveTo(x, ty, x + radius, ty);
+                topPath.lineTo(x + width - radius, ty);
+                topPath.quadraticCurveTo(x + width, ty, x + width, ty + radius);
+                topPath.closePath();
+                ctx.clip(topPath);             
                 ctx.save();
-                ctx.beginPath();
-                ctx.moveTo(x, ty + radius);
-                ctx.quadraticCurveTo(x, ty, x + radius, ty);
-                ctx.lineTo(x + width - radius, ty);
-                ctx.quadraticCurveTo(x + width, ty, x + width, ty + radius);
-                ctx.closePath();
-
-                // ctx.fill();
-                ctx.clip();
-
-                ctx.beginPath();
-                ctx.rect(x, ty, this.width, this.border.top.width);
-                ctx.fillStyle = this.border.top.color;
                 ctx.shadowColor = 'transparent';
+                ctx.fillStyle = this.border.top.color;
+                ctx.rect(x, ty, this.width, this.border.top.width);
                 ctx.fill();
                 ctx.restore();
+
+                // ctx.stroke();
+                // ctx.save();
+                // ctx.beginPath();
+                // ctx.moveTo(x, ty + radius);
+                // ctx.quadraticCurveTo(x, ty, x + radius, ty);
+                // ctx.lineTo(x + width - radius, ty);
+                // ctx.quadraticCurveTo(x + width, ty, x + width, ty + radius);
+                // ctx.closePath();
+
+                // // ctx.fill();
+                // ctx.clip();
+
+                // ctx.beginPath();
+                // ctx.rect(x, ty, this.width, this.border.top.width);
+                // ctx.fillStyle = this.border.top.color;
+                // ctx.shadowColor = 'transparent';
+                // ctx.fill();
+                // ctx.restore();
             }
         } else {
             if(this.border.top.width) {
