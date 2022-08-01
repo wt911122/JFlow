@@ -106,19 +106,17 @@ class Rectangle extends Node {
             ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
             ctx.lineTo(x, y + radius);
             ctx.quadraticCurveTo(x, y, x + radius, y);
-            ctx.closePath();
-            if(this.borderWidth) {
-                ctx.lineWidth = this.borderWidth;
-                ctx.strokeStyle = this.borderColor;
-                // ctx.stroke();
-            }
+            ctx.closePath(); 
         } else {
             ctx.beginPath();
             ctx.rect(this.anchor[0] - this.width / 2, this.anchor[1] - this.height / 2, this.width, this.height);
         }
-        ctx.fillStyle = this.backgroundColor;
-        ctx.fill();
-        if(this.shadowColor) {
+        if(this.borderWidth) {
+            ctx.lineWidth = this.borderWidth;
+            ctx.strokeStyle = this.borderColor;
+        }
+        
+        if(this.shadowColor && this.shadowColor !== 'transparent') {
             ctx.shadowColor = this.shadowColor;
             const scale = this._jflow.scale;
             ctx.shadowBlur = this.shadowBlur * scale;
@@ -144,7 +142,11 @@ class Rectangle extends Node {
             ctx.clip(switchPath, "evenodd");
             ctx.stroke();
             ctx.restore();
-        }  else if(this.borderRadius && this.borderWidth) {
+        }  
+        ctx.fillStyle = this.backgroundColor;
+        ctx.fill();
+        if(this.borderRadius && this.borderWidth) {
+            ctx.shadowColor = 'transparent'
             ctx.stroke();
         }
         
