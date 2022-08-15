@@ -790,11 +790,14 @@ class JFlow extends EventTarget{
             }))
         }
         requestAnimationFrame(() => {
-            this._target.instance = null;
-            this._target.link = null;
-            Object.assign(this._target.status, {
-               dragovering: false,
-            })
+            this.cancelDrop();
+        })
+    }
+    cancelDrop() {
+        this._target.instance = null;
+        this._target.link = null;
+        Object.assign(this._target.status, {
+            dragovering: false,
         })
     }
     
@@ -1116,6 +1119,7 @@ class JFlow extends EventTarget{
         if(this.__processOverAnime) {
             this.__processOverAnime.cancel();
         }
+        this._cancelPanInBorder();
         this.resetScollBarStatus();
         const meta = this._target.meta;
         if(this.mode === JFLOW_MODE.LINKING) {
