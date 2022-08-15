@@ -59,6 +59,8 @@ class Text extends Rectangle {
         this.fontFamily =       configs.fontFamily || '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Helvetica,Tahoma,Arial,Noto Sans,PingFang SC,Microsoft YaHei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji'
         /** @member {String}      - 字号 */
         this.fontSize =         configs.fontSize || '28px';
+        /** @member {String}      - 字体 */
+        this.fontWeight =       configs.fontWeight || '';
         /** @member {String}      - 字体颜色 */
         this.textColor =        configs.textColor || 'white';
         this.placeholderColor = configs.placeholderColor ||  configs.textColor || 'white';
@@ -287,7 +289,7 @@ class Text extends Rectangle {
         }
         ctx.beginPath();
        
-        ctx.font = `${this.fontSize} ${this.fontFamily}`;
+        ctx.font = `${this.fontWeight} ${this.fontSize} ${this.fontFamily}`;
         ctx.textAlign = this.textAlign;
         ctx.textBaseline = this.textBaseline;
         ctx.fillStyle = this.isEmpty ? this.placeholderColor : this.textColor;

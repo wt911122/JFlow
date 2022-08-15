@@ -305,6 +305,8 @@ class JFlow extends EventTarget{
         this.ctx = ctx;
         this.DOMwrapper = dom;
         this.canvas = canvas;
+        this.canvas.setAttribute('data-jflow', true);
+        this.canvas.$jflow = this;
         this.canvasMeta = {
             width: raw_width,
             height: raw_height,
