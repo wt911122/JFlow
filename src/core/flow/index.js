@@ -742,7 +742,7 @@ class JFlow extends EventTarget{
              * @property {Group|JFlow} belongs   - 连线所在的绘图栈的对象
              * @property {number[]} point        - 已经计算到绘图栈对应坐标系下的坐标
              */
-            instance.anchor = point;
+            // instance.anchor = point;
             link.dispatchEvent(new JFlowEvent('drop', {
                 event,
                 instance,
@@ -763,12 +763,13 @@ class JFlow extends EventTarget{
              * @property {Node} target           - 目标节点
              * @property {number[]} point        - 已经计算到绘图栈对应坐标系下的坐标
              */
-            target.dispatchEvent(new JFlowEvent('drop', {
+            target.bubbleEvent(new JFlowEvent('drop', {
                 event,
                 instance,
                 jflow: this,
                 target,
-                point
+                point,
+                bubbles: true,
             }));
         } else {
             /**
