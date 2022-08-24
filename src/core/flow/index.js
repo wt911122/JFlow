@@ -559,6 +559,15 @@ class JFlow extends EventTarget{
             }
             this.setMovingTargets(movingtarget && [ movingtarget ])
             if(movingtarget) {
+                /**
+                 * 
+                 * 开始拖拽时，拖拽对象设置之前
+                 * @event Node#afterResolveMovingTarget
+                 * @type {object}
+                 * @property {Event} event           - 原始事件 
+                 * @property {JFlow} jflow           - 当前JFlow对象 
+                 * @property {Node} target           - 目标节点
+                 */
                 target.bubbleEvent(new JFlowEvent('afterResolveMovingTarget', {
                     event,
                     target: movingtarget,
@@ -1128,6 +1137,16 @@ class JFlow extends EventTarget{
             const payload = this.consumeMessage();
             // console.log(payload)
             if(t) {
+                /**
+                 * canvas mousemove 原生事件
+                 *
+                 * @event Node#link
+                 * @type {object}
+                 * @property {Event} event           - 原始事件
+                 * @property {Node} target           - 原始事件
+                 * @property {object} payload        - 传入的消息
+                 * @property {JFlow} jflow           - 当前JFlow对象       - 当前JFlow对象 
+                 */
                 t.bubbleEvent(new JFlowEvent('link', {
                     event,
                     target: t,
@@ -1405,6 +1424,17 @@ class JFlow extends EventTarget{
         const { topLayerPoint } = this._target.cache
         if(instance || link) {
             const target = (instance || link);
+            /**
+             * 右键事件
+             *
+             * @event Instance#dblclick
+             * @type {object}
+             * @property {Event} event           - 原始事件 
+             * @property {Instance} target       - 右键对象 
+             * @property {JFlow} jflow           - 当前JFlow对象
+             * @property {number[]} topLayerPoint  - jflow坐标系上的位置
+             * @property {Boolean} bubbles       - 冒泡
+             */
             target.bubbleEvent(new JFlowEvent('dblclick', {
                 event,
                 jflow: this,
