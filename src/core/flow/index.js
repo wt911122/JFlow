@@ -485,6 +485,9 @@ class JFlow extends EventTarget{
             const dragoverHandler = this._onDragover.bind(this);
             const dropHandler = this._onDrop.bind(this);
             const dragleaveHanlder = this._onDragLeave.bind(this);
+            canvas.addEventListener('dragstart', (e) => {
+                e.preventDefault()
+            })
             canvas.addEventListener('dragover', dragoverHandler);
             canvas.addEventListener('drop', dropHandler);
             canvas.addEventListener('dragleave', dragleaveHanlder);
