@@ -177,6 +177,7 @@ class JFlow extends EventTarget{
                 enable: true,
                 padding: 20,
                 deltamovement: 8,
+                allowMovingTargetInPan: true,
             },
         }, configs.draggingbehavior || {});
         this.scrollBarBehavior = Object.assign({
@@ -892,7 +893,7 @@ class JFlow extends EventTarget{
             // this._target.status.movingState = true
             // this._target.status.processing = true;
             if(movingtarget) {
-                if(this._allowMovingTarget) {
+                if(this.draggingbehavior.panInBorder.allowMovingTargetInPan) {
                     movingtarget.forEach(t => {
                         t.anchor[0] += -deltaX / this.scale;
                         t.anchor[1] += -deltaY / this.scale;
