@@ -929,7 +929,7 @@ class JFlow extends EventTarget{
      * @param {Number} event - 原生事件
      */
     pressStartHandler(offsetX, offsetY, event) {
-        if(this.onScrollbarPressStart(offsetX, offsetY)) {
+        if(this.checkScrollDragging()) {
             return;
         }
         Object.assign(this._target.meta, {
@@ -988,7 +988,7 @@ class JFlow extends EventTarget{
      * @param {Number} event - 原生事件
      */
     pressMoveHandler(offsetX, offsetY, event) {
-        if(this.onDraggingScrollbar(offsetX, offsetY)) {
+        if(this.checkScrollDragging()) {
             return;
         }
         const {
@@ -1134,7 +1134,7 @@ class JFlow extends EventTarget{
             this.__processOverAnime.cancel();
         }
         this._cancelPanInBorder();
-        this.resetScollBarStatus();
+        // this.resetScollBarStatus();
         const meta = this._target.meta;
         if(this.mode === JFLOW_MODE.LINKING) {
             const t = this._target.instance;
@@ -1180,51 +1180,6 @@ class JFlow extends EventTarget{
             this._render();
             return;
         }
-        // if(meta.initialX === meta.x
-        //     && meta.initialY === meta.y) { 
-        //         if(event.target !== this.canvas){
-        //             this._clearTarget();
-        //             return;
-        //         }
-        //         const t = this._target.instance || this._target.link;
-        //         if(t && !isDocument) {
-        //             /**
-        //             * 点击事件（冒泡）
-        //             *
-        //             * @event Node#click
-        //             * @type {object}
-        //             * @property {Event} event          - 原始事件 
-        //             * @property {Instance} target      - 点击的对象 
-        //             * @property {JFlow} jflow          - 当前JFlow对象 
-        //             * @property {Boolean} bubbles      - 冒泡
-        //             */
-        //             t.bubbleEvent(new JFlowEvent('click', {
-        //                 event,
-        //                 target: t,
-        //                 jflow: this,
-        //                 bubbles: true,
-        //             }))
-        //             this._clearTarget();
-        //             this._render();
-        //             return;
-        //         } else {
-        //             /**
-        //             * 点击事件
-        //             *
-        //             * @event JFlow#click
-        //             * @type {object}
-        //             * @property {Event} event          - 原始事件 
-        //             * @property {JFlow} jflow          - 当前JFlow对象 
-        //             */
-        //             this.dispatchEvent(new JFlowEvent('click', {
-        //                 event,
-        //                 jflow: this,
-        //             }));
-        //             this._clearTarget();
-        //             this._render();
-        //             return
-        //         }  
-        // } else 
         
         if(this._target.moving) {
             let checkresult = false;

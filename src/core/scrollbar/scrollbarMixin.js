@@ -92,61 +92,65 @@ export default {
             barInitX: 0,
             barInitY: 0,
         }
-        // this._scrollbarX.addEventListener('pressStart', (e) => {
-        //     const { offsetX, offsetY } = e.detail;
-        //     // console.log(e, offsetX, offsetY)
-        //     Object.assign(this._scrollBarStatus, {
-        //         dragging: true,
-        //         target: this._scrollbarX,
-        //         barStartX: this._scrollbarX.anchor[0],
-        //         barInitX: offsetX,
-        //         // barInitY: offsetY,
-        //     });
-        // })
-        // this._scrollbarY.addEventListener('pressStart', (e) => {
-        //     const { offsetX, offsetY } = e.detail;
-        //     Object.assign(this._scrollBarStatus, {
-        //         dragging: true,
-        //         target: this._scrollbarY,
-        //         barStartY: this._scrollbarY.anchor[1],
-        //         // barInitX: offsetX,
-        //         barInitY: offsetY,
-        //     });
-        // });
-
+        
         this.addEventListener('zoompan', () => {
             this.scrollBarOnPanAndZoom();
         })
+        
         this.scrollBarOnPanAndZoom();
+
+        this.canvas.addEventListener('pointerdown', e => {
+            const { offsetX, offsetY, clientX, clientY } = e;
+            this.onScrollbarPressStart(offsetX, offsetY, clientX, clientY)
+        })
     },
-    onScrollbarPressStart(offsetX, offsetY) {
-        if(this._scrollbarEnable) {
-            const xhit = this._scrollbarX.isHit([offsetX, offsetY]);
-            if(xhit) {
-                Object.assign(this._scrollBarStatus, {
-                    dragging: true,
-                    target: this._scrollbarX,
-                    barStartX: this._scrollbarX.anchor[0],
-                    barInitX: offsetX,
-                    // barInitY: offsetY,
-                });
-                return true;
-            }
-            const yhit = this._scrollbarY.isHit([offsetX, offsetY]);
-            if(yhit) {
-                Object.assign(this._scrollBarStatus, {
-                    dragging: true,
-                    target: this._scrollbarY,
-                    barStartY: this._scrollbarY.anchor[1],
-                    // barInitX: offsetX,
-                    barInitY: offsetY,
-                });
-                return true;
-            }
+    checkScrollDragging() {
+        return this._scrollBarStatus && this._scrollBarStatus.dragging;
+    },
+    onScrollbarPressStart(offsetX, offsetY, clientX, clientY) {
+        const xhit = this._scrollbarX.isHit([offsetX, offsetY]);
+        if(xhit) {
+            Object.assign(this._scrollBarStatus, {
+                dragging: true,
+                target: this._scrollbarX,
+                barStartX: this._scrollbarX.anchor[0],
+                barInitX: clientX,
+            });
         }
-        return false;
+        const yhit = this._scrollbarY.isHit([offsetX, offsetY]);
+        if(yhit) {
+            Object.assign(this._scrollBarStatus, {
+                dragging: true,
+                target: this._scrollbarY,
+                barStartY: this._scrollbarY.anchor[1],
+                barInitY: clientY,
+            });
+        }
+        const f = (e => {
+            const { offsetX, offsetY, clientX, clientY } = e;
+            this.onDraggingScrollbar(offsetX, offsetY, clientX, clientY)
+        }).bind(this);
+        
+        document.addEventListener('pointermove', f);
+        const t = (e => {
+            Object.assign(this._scrollBarStatus, {
+                dragging: false,
+                target: null,
+                x: undefined,
+                y: undefined,
+            });
+            document.removeEventListener('pointermove', f);
+            document.removeEventListener('pointerup', t);
+            this.canvas.removeEventListener('pointerup', t);
+        }).bind(this);
+        this.canvas.addEventListener('pointerup', t, {
+            once: true
+        })
+        document.addEventListener('pointerup', t, {
+            once: true
+        })
     },
-    onDraggingScrollbar(offsetX, offsetY) {
+    onDraggingScrollbar(offsetX, offsetY, clientX, clientY) {
         if(this._scrollbarEnable && this._scrollBarStatus.dragging) {
             const {
                 target,
@@ -170,7 +174,7 @@ export default {
             } = this.bounding_box;
             // console.log(target.dir, realT, realB)
             if(target.dir === 'x') {
-                const deltaX = offsetX - barInitX;
+                const deltaX = clientX - barInitX;
                 const xnew = barStartX + deltaX;
                 const q = target.anchor[0] = Math.max(Math.min(xnew, actual_width - scollbarWidth), 0);
                 const ratioInX = q / actual_width;
@@ -184,7 +188,7 @@ export default {
             }
 
             if(target.dir === 'y') {      
-                const deltaY = offsetY - barInitY;
+                const deltaY = clientY - barInitY;
                 const ynew = barStartY + deltaY;
                 const q = target.anchor[1] = Math.max(Math.min(ynew, actual_height - scollbarHeight), 0);;
                 const ratioInY = q / actual_height;
