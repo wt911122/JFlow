@@ -15,13 +15,24 @@ class GhostNode extends Node {
         return this.anchor;
     }
 
+    getBoundingRect() {
+        const [x2, y2] = this.anchor;
+        return [x2, y2, x2, y2]
+    }
+
+    getBoundingDimension() {
+        return {
+            width: 0, height: 0
+        }
+    }
+
     getIntersectionsInFourDimension() {
         const [x2, y2] = this.anchor;
         return {
-            [DIRECTION.RIGHT]:  [x2, y2],
-            [DIRECTION.LEFT]:   [x2, y2],
-            [DIRECTION.BOTTOM]: [x2, y2],
-            [DIRECTION.TOP]:    [x2, y2],
+            [DIRECTION.RIGHT]:  [x2+1, y2],
+            [DIRECTION.LEFT]:   [x2-1, y2],
+            [DIRECTION.BOTTOM]: [x2, y2+1],
+            [DIRECTION.TOP]:    [x2, y2-1],
         }
     }
 }

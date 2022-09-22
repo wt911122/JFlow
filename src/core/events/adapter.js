@@ -39,7 +39,7 @@ function getDefaultPlugin() {
             },
             pointerup: function (event, jflow) {
                 event.preventDefault();
-                event.stopPropagation();
+                // event.stopPropagation();
                 const { button } = event
                 if(button !== 0) return;
                 jflow.pressUpHanlder(false, event)

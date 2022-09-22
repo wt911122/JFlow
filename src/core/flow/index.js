@@ -4,7 +4,7 @@ import { JFLOW_MODE } from '../utils/constance';
 import GhostNode from '../instance/ghostNode';
 import { NodeWeakMapMixin } from '../instance/nodeWeakMap';
 import StackMixin from '../instance/stackMixin';
-import InstanceStack from '../instance/stack';
+// import InstanceStack from '../instance/stack';
 import LayoutMixin from '../instance/layoutMixin';
 import MessageMixin from '../instance/messageMixin';
 import AnimeMixin from '../anime/animeMixin';
@@ -379,13 +379,21 @@ class JFlow extends EventTarget{
      * @param {Object} source - 当前连线的出发原始数据
      * @param {linkGen} linkGen - 生成连线单元的方法
      */
-    setLinkingMode(source, linkGen) {
+    setLinkingMode(source, linkGen, isTail) {
         const renderNode = this.getRenderNodeBySource(source)
         this._tempNode = new GhostNode();
-        this._tempLink = linkGen({
-            from: renderNode,
-            to: this._tempNode,
-        })
+        if(isTail) {
+            this._tempLink = linkGen({
+                from: this._tempNode,
+                to: renderNode,
+            })
+        } else {
+            this._tempLink = linkGen({
+                from: renderNode,
+                to: this._tempNode,
+            })
+        }
+        
         this.sendMessage({
             instance: source
         });
@@ -414,6 +422,22 @@ class JFlow extends EventTarget{
                 to: this._tempNode
             })
         }
+    }
+
+    clearTemp() {
+        if(this._tempNode) {
+            this._tempNode.destroy();
+            this._tempNode = null;
+        }
+        if(this._tempLink) {
+            this._tempLink.destroy();
+            this._tempLink = null;
+        }
+        this._render();
+    }
+
+    preventClearTemp() {
+        this._preventClearTemp = true;
     }
 
     /**
@@ -980,6 +1004,11 @@ class JFlow extends EventTarget{
                 bubbles: true,
             }))
         }
+
+        this.dispatchEvent(new JFlowEvent('jflowPressStart', {
+            event,
+            jflow: this,
+        }));
     }
     /**
      * 按压中处理函数
@@ -1040,6 +1069,7 @@ class JFlow extends EventTarget{
                     jflow: this,
                 }));
             }
+            
 
             if(this.mode === JFLOW_MODE.LINKING) {
                 // if(instance) {
@@ -1053,6 +1083,7 @@ class JFlow extends EventTarget{
                 //         }
                 //     }))
                 // }
+                
 
                 this._tempNode.anchor = this._currentp;
                 
@@ -1157,6 +1188,7 @@ class JFlow extends EventTarget{
                     jflow: this,
                     payload,
                     bubbles: true,
+                    link: this._tempLink
                 }))        
             } else {
                 const { offsetX, offsetY } = event
@@ -1165,17 +1197,21 @@ class JFlow extends EventTarget{
                     jflow: this,
                     payload,
                     anchor: this._calculatePointBack([offsetX, offsetY]),
+                    link: this._tempLink
                 }));
             }
             this._clearTarget();
-            if(this._tempNode) {
-                this._tempNode.destroy();
-                this._tempNode = null;
+            if(!this._preventClearTemp) {
+                if(this._tempNode) {
+                    this._tempNode.destroy();
+                    this._tempNode = null;
+                }
+                if(this._tempLink) {
+                    this._tempLink.destroy();
+                    this._tempLink = null;
+                }
             }
-            if(this._tempLink) {
-                this._tempLink.destroy();
-                this._tempLink = null;
-            }
+            this._preventClearTemp = false
             this.mode = JFLOW_MODE.DEFAULT;
             this._render();
             return;
@@ -1540,6 +1576,14 @@ class JFlow extends EventTarget{
         ctx.transform(scale, 0, 0, scale, position.offsetX, position.offsetY);
     }
 
+    resetTransform(ctx) {
+        const position = this.position;
+        const scale = this.scale;
+        ctx.setTransform();
+        ctx.scale(this.dpr, this.dpr);
+        ctx.transform(scale, 0, 0, scale, position.offsetX, position.offsetY);
+    }
+
     _getViewBox() {
         const cacheViewBox = [
             ...this._calculatePointBack([0,0]),
@@ -1606,6 +1650,10 @@ class JFlow extends EventTarget{
             this._tempLink.render(ctx)
             ctx.restore();
         }
+
+        this.dispatchEvent(new JFlowEvent('afterJflowRender', {
+            ctx
+        }));
         this.renderScrollBar(ctx);
         // this.setFrameRendered();
     }
