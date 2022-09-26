@@ -669,6 +669,11 @@ class JFlow extends EventTarget{
                 target: this._dragCurrentData,
             }));
         }
+
+        this._processPanInBorder();
+    }
+
+    _processPanInBorder() {
         if(this.draggingbehavior?.panInBorder?.enable) {
             if(!this.draggingbehavior.panInBorder.timer) {
                 this.draggingbehavior.panInBorder.timer = Date.now();
@@ -706,7 +711,6 @@ class JFlow extends EventTarget{
                 }
             }
         }
-        
     }
 
     _onDragover(event) {
@@ -1092,6 +1096,7 @@ class JFlow extends EventTarget{
                     this._target.isInstanceDirty = false;
                     this._target.status.processing = false;
                 })
+                this._processPanInBorder();
                 // requestAnimationFrame((timestamp) => {
                 //     this.setAnimeClock(timestamp);
                 //     this._render();
