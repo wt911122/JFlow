@@ -187,13 +187,13 @@ export default {
         }
         if(options.customGroups) {
             Object.keys(options.customGroups).forEach(name => {
-                console.log(`${prefixToUse}${name}` )
+                // console.log(`${prefixToUse}${name}` )
                 Vue.component(`${prefixToUse}${name}`, JFlowGroup(options.customGroups[name]));
             })
         }
         if(options.customLink) {
             Object.keys(options.customLink).forEach(name => {
-                console.log(`${prefixToUse}${name}` )
+                // console.log(`${prefixToUse}${name}` )
                 Vue.component(`${prefixToUse}${name}`, JFlowLink(options.customLink[name]));
             })
         }
