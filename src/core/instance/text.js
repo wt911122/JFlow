@@ -85,8 +85,10 @@ class Text extends Rectangle {
         this.emptyWhenInput =       configs.emptyWhenInput || false;
         this.editting =  false;
         this.disabled =        configs.disabled;
+        this.textBuffer = document.createElement('canvas');
         requestCacheCanvas((ctx) => {
             this.renderShadowText(ctx);
+            this.cacheText();
         });
         this._makeEditable();
     }
@@ -97,6 +99,58 @@ class Text extends Rectangle {
 
     get isEmpty() {
         return !this.content;
+    }
+
+    cacheText() {
+        const scale = 4;
+        const textBuffer = this.textBuffer;
+        const { fontSize:fs, fontFamily, fontWeight } = this;
+        let content = this.currentContent;
+        if(this.ellipsisContent) {
+            content = this.ellipsisContent;
+        }
+        if(!content) {
+            this.cacheTextBounding = null;
+            return;
+        }
+        const fontSize = parseInt(fs);
+        const w = this._textWidth * scale;
+        const h = fontSize * scale;
+        textBuffer.width = w;
+        textBuffer.height = h
+        const ctx = textBuffer.getContext('2d');
+        ctx.clearRect(-1000, -1000, 10000, 10000);
+        ctx.fillStyle = this.textColor;
+        ctx.font = `${fontWeight} ${h}px ${fontFamily}`;
+        ctx.textBaseline = 'middle';
+        ctx.fillText(content, 0, h/2);
+        this.cacheTextBounding = [0, 0, w, h];
+    }
+    _renderCache(ctx) {
+        if(!this.cacheTextBounding) {
+            return;
+        }
+        const [a, b, c, d] = this.cacheTextBounding;
+        const w = this._textWidth;
+        const h = parseInt(this.fontSize);
+        if(this.textAlign === TEXT_ALIGN.LEFT){
+            const hw = this.width / 2;
+            ctx.drawImage(this.textBuffer, 
+                a, b, c, d,
+                this.anchor[0] - hw + this.indent / 2, this.anchor[1] - h/2, w, h);
+        } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
+            const hw = this.width / 2;
+            const tx = this._textWidth;
+            ctx.drawImage(this.textBuffer, 
+                a, b, c, d,
+                this.anchor[0] + hw - tx, this.anchor[1] - h/2, w, h);
+        } else {
+            const tx = this._textWidth / 2;
+            ctx.drawImage(this.textBuffer, 
+                a, b, c, d,
+                this.anchor[0] - tx + this.indent / 2, this.anchor[1] - h/2, w, h);
+        }
+        
     }
 
     /**
@@ -269,26 +323,23 @@ class Text extends Rectangle {
         });
         requestCacheCanvas((ctx) => {
             this.renderShadowText(ctx);
+            this.cacheText();
         });
     }
 
     render(ctx) {
-        ctx.save();
         if(this._isMoving){
             ctx.globalAlpha = 0.6
         }
-        // ctx.save();
-        // ctx.fillStyle = 'rgba(0,0,0,0.3)'
-        // ctx.beginPath();
-        // const hw = this.width / 2;
-        // const hy = this.height / 2;
-        // ctx.fillRect(this.anchor[0] - hw, this.anchor[1] - hy, this.width, this.height);
-        // ctx.restore();
         if(this.editting) {
             return;
         }
+        if(this._jflow.scale * parseInt(this.fontSize) < 8) {
+            this._renderCache(ctx);
+            return;
+        }
         ctx.beginPath();
-       
+        
         ctx.font = `${this.fontWeight} ${this.fontSize} ${this.fontFamily}`;
         ctx.textAlign = this.textAlign;
         ctx.textBaseline = this.textBaseline;
@@ -297,19 +348,17 @@ class Text extends Rectangle {
         if(this.ellipsisContent) {
             content = this.ellipsisContent;
         }
-        if(this.textAlign === TEXT_ALIGN.LEFT){
-            const hw = this.width / 2;
-            ctx.fillText(content, this.anchor[0] - hw + this.indent / 2, this.anchor[1]);
-        } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
-            const hw = this.width / 2;
-            ctx.fillText(content, this.anchor[0] + hw, this.anchor[1]);
-        } else {
-            ctx.fillText(content, this.anchor[0] + this.indent / 2, this.anchor[1]);
+        if(content) {
+            if(this.textAlign === TEXT_ALIGN.LEFT){
+                const hw = this.width / 2;
+                ctx.fillText(content, this.anchor[0] - hw + this.indent / 2, this.anchor[1]);
+            } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
+                const hw = this.width / 2;
+                ctx.fillText(content, this.anchor[0] + hw, this.anchor[1]);
+            } else {
+                ctx.fillText(content, this.anchor[0] + this.indent / 2, this.anchor[1]);
+            }
         }
-        // ctx.fill();
-        ctx.restore();
-
-       
     }
 }
 
