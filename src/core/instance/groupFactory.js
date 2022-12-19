@@ -237,6 +237,8 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
                 /** @member {Boolean}      - 组内元素是否锁定， 默认true */
                 this.lock =             configs.lock ?? true ;
                 this.display =          configs.display || 'default';
+                /** @member {Boolean}      - 组本身是否进入形状判定范围 */
+                this.transparent =      configs.transparent ?? false;
                 this._getBoundingGroupRect();
                 this.reflow();
                 this._getBoundingGroupRect();  
@@ -298,7 +300,6 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             } else if(this.opacity !== 1) {
                 ctx.globalAlpha = this.opacity;
             }
-
             const [cx, cy] = this._getCenter(); 
             this._shape.render(ctx);
             ctx.translate(cx, cy);
@@ -319,8 +320,24 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             this._currentp = p; // 暂存，为了后续计算别的位置
             const target = this._stack.checkHit(p, condition);
             if(target) return target;
-            return this._shape.isHit(point);
-        },        
+            if(!this.transparent) {
+                return this._shape.isHit(point);
+            }
+            return false;
+        },    
+        /* renderCache(ctx) {
+            const rect = this.getBoundingRect();
+            const [a, b] = this._belongs.calculateToRealWorld([rect[0], rect[1]]);
+            const [c, d] = this._belongs.calculateToRealWorld([rect[2], rect[3]]);
+            ctx.putImageData(this._cached, a, b, 0, 0, c-a, d-b)
+        },
+        cache(ctx) {
+            const rect = this.getBoundingRect();
+            const [a, b] = this._belongs.calculateToRealWorld([rect[0], rect[1]]);
+            const [c, d] = this._belongs.calculateToRealWorld([rect[2], rect[3]]);
+            console.log(a, b, c-a ,d-b);
+            this._cached = ctx.getImageData(a, b, c-a, d-b)
+        }  */  
     });
     return t
 }
