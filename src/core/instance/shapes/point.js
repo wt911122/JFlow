@@ -17,6 +17,21 @@ class Point extends Node {
         this.type =             'Point';
         /** @member {Number}      - 半径 */
         this.radius =           configs.radius || 10;
+        this._doCache();
+    }
+
+    setConfig(configs) {
+        Object.keys(configs).forEach(k => {
+            if(configs[k] !== undefined && configs[k] !== null) {
+                this[k] = configs[k];
+                this._rawConfigs[k] = configs[k];
+            }
+        });
+        this._doCache();
+    }
+    _doCache() {
+        this.width = this.radius * 2;
+        this.height = this.radius * 2;
     }
 
     render(ctx) {
@@ -116,8 +131,8 @@ class Point extends Node {
 
     getBoundingDimension() {
         return {
-            width: this.radius * 2,
-            height: this.radius * 2,
+            width: this.width,
+            height: this.height
         }
     }
 
