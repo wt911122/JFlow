@@ -239,7 +239,17 @@ class JFlow extends EventTarget{
         this.mode = JFLOW_MODE.DEFAULT;
 
         this._allowMovingTarget = true;
+
+        // this._allowZoom = true;
     }
+
+    // allowZoom() {
+    //     this._allowZoom = true;
+    // }
+
+    // abandonZoom() {
+    //     this._allowZoom = false;
+    // }
     /**
      * 设置当前拖动的 JFlow 对象
      * @param {Object[]} targets - 具有 anchor 属性的对象
@@ -562,6 +572,17 @@ class JFlow extends EventTarget{
                 return link.from === movingtarget || link.to === movingtarget;
             });
         }
+        if(!targetLink) {
+            targetLink = linkStack.checkHit(point, (link) => {
+                if(!this._target.status.dragging) {
+                    return false;
+                }
+                if(!link.ON_TOP) {
+                    return false;
+                }
+                return true;
+            });
+        }
 
         Object.assign(this._target, {
             instance: target,
@@ -632,7 +653,7 @@ class JFlow extends EventTarget{
                     instance: oldIns,
                     target,
                     jflow: this,
-                    point
+                    point,
                 }));
             }
             if(instance) {
@@ -852,6 +873,7 @@ class JFlow extends EventTarget{
      * @param {Number} event - 原生事件
      */
     zoomHandler(offsetX, offsetY, deltaX, deltaY, event) {
+        // if(!this._allowZoom) return;
         if(this._zooming) return;
         this._zooming = true;
         const { width: p_width, height: p_height, x, y } = this.bounding_box;
@@ -895,7 +917,9 @@ class JFlow extends EventTarget{
         // this.position.y += pY * deltaHeight;
         // this.position.offsetX = this.position.x - x * newScale;
         // this.position.offsetY = this.position.y - y * newScale;
-        this.dispatchEvent(new JFlowEvent('zoompan'));
+        this.dispatchEvent(new JFlowEvent('zoompan', {
+            offsetX, offsetY
+        }));
         // this.setAnimeClock()
         this.scheduleRender(() => {
             this._zooming = false;
@@ -1043,7 +1067,7 @@ class JFlow extends EventTarget{
                 link,
                 instance
             } = this._targetLockOn([offsetX, offsetY]);
-            const t = instance || link;
+            const t = this._resolveLockOnTarget(link, instance);
             if(t) {
                 
                 /**
@@ -1145,7 +1169,7 @@ class JFlow extends EventTarget{
             this.dispatchEvent(new JFlowEvent('zoompan'));
         }
         const { instance, link } = this._targetLockOn([offsetX, offsetY]);
-        
+
         this._processDragOver(instance || link, event);
         
         this.scheduleRender(() => {
@@ -1323,8 +1347,9 @@ class JFlow extends EventTarget{
                     return;
                 }
                 const { topLayerPoint } = this._target.cache
-                if(instance || link) {
-                    const target = (instance || link);
+                const t = this._resolveLockOnTarget(link, instance);
+                if(t) {
+                    const target = t;
                     /**
                      * 点击事件（冒泡）
                      *
@@ -1378,8 +1403,9 @@ class JFlow extends EventTarget{
             instance
         } = this._targetLockOn([offsetX, offsetY]);
         const { topLayerPoint } = this._target.cache
-        if(instance || link) {
-            const target = (instance || link);
+        const t = this._resolveLockOnTarget(link, instance);
+        if(t) {
+            const target = t;
             /**
              * 右键事件（冒泡）
              *
@@ -1422,8 +1448,9 @@ class JFlow extends EventTarget{
             instance
         } = this._targetLockOn([offsetX, offsetY]);
         const { topLayerPoint } = this._target.cache
-        if(instance || link) {
-            const target = (instance || link);
+        const t = this._resolveLockOnTarget(link, instance);
+        if(t) {
+            const target = t;
             /**
              * 右键事件
              *
@@ -1491,6 +1518,9 @@ class JFlow extends EventTarget{
         const { offsetX, offsetY } = event;
         this.contextMenuHanlder(offsetX, offsetY);
     }*/
+    _resolveLockOnTarget(link, instance) {
+        return link?.ON_TOP ? link : (instance || link);
+    }
 
     _clearTarget(){
         Object.assign(this._target.meta, {
@@ -1624,17 +1654,21 @@ class JFlow extends EventTarget{
         this.runAnimeFrame();
         this._resetTransform();
         const ctx = this.ctx;
+        this.dispatchEvent(new JFlowEvent('beforeJflowRender', {
+            ctx
+        }));
         const br = this._getViewBox();
         this._viewBox = br;
         // console.log(this._viewBox)
         if(this.NodeRenderTop) {
-            this._linkStack.render(ctx, (link) => link.isInViewBox(br));
+            this._linkStack.render(ctx, (link) => !link.ON_TOP && link.isInViewBox(br));
             this._stack.render(ctx, (instance) => {
                 const result = doOverlap(br, instance.getBoundingRect());
                 // console.log(instance._layoutNode.type, result)
                 instance._isInViewBox = result;
                 return result;
             });
+            this._linkStack.render(ctx, (link) => link.ON_TOP && link.isInViewBox(br));
         } else {
             this._stack.render(ctx, (instance) => {
                 const result = doOverlap(br, instance.getBoundingRect());
