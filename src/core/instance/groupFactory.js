@@ -274,8 +274,8 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
 
              // padding box 
             const padding = this.padding;
-            const minWidth = this.minWidth - padding.left - padding.right;
-            const definedWidth = this.definedWidth - padding.left - padding.right;
+            const minWidth = this.minWidth// - padding.left - padding.right;
+            const definedWidth = this.definedWidth// - padding.left - padding.right;
             const w = bbox.width + padding.left + padding.right;
             const h = bbox.height + padding.top + padding.bottom;
             const paddingWidth = minWidth ? Math.max(minWidth, w) : definedWidth || w;
