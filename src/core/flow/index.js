@@ -988,7 +988,10 @@ class JFlow extends EventTarget{
             initialX: offsetX,
             initialY: offsetY,
         })
-        this._targetLockOn([offsetX, offsetY], 'pressStart');
+        const {
+            link,
+            instance
+        } = this._targetLockOn([offsetX, offsetY], 'pressStart');
         // 后续只支持 click 动作
         if(this.mode === JFLOW_MODE.LINKING) return;
         Object.assign(this._target.status, {
@@ -1012,8 +1015,8 @@ class JFlow extends EventTarget{
                 jflow: this,
             }))
         }
-
-        if(this._target.instance) {
+        const t = this._resolveLockOnTarget(link, instance)
+        if(t) {
             /**
              * 开始拖动对象事件（就是目标对象的拖动事件，事件支持冒泡）
              *
@@ -1024,7 +1027,7 @@ class JFlow extends EventTarget{
              * @property {JFlow} jflow           - 当前JFlow对象 
              * @property {Boolean} bubbles       - 冒泡
              */
-            const t = this._target.instance;
+            // const t = this._target.instance;
             t.bubbleEvent(new JFlowEvent('instancePressStart', {
                 event,
                 target: t,
