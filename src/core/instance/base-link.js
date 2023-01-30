@@ -42,6 +42,14 @@ class BaseLink extends Instance{
         return true;
     }
 
+    bringToTop() {
+        const linkStack = this._jflow._linkStack;
+        const index = linkStack.findIndex(l => l === this);
+        linkStack.splice(index, 1);
+        linkStack.push(this);
+        this._jflow._render();
+    }
+
     
 }
 

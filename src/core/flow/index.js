@@ -468,6 +468,10 @@ class JFlow extends EventTarget{
         }
     }
 
+    setFocusInstance(node) {
+        this._focus.instance = node;
+    }
+
     /**
      * 移动画布到以目标绘图节点为中心的位置上
      * @param {Node} node - 绘图节点
@@ -624,6 +628,15 @@ class JFlow extends EventTarget{
                     bubbles: true,
                 }))
             }
+        }
+        
+        if(['pressStart', 'click', 'dblclick', 'contextclick'].includes(event)) {
+            if(this._focus.instance && this._focus.instance !== target) {
+                this._focus.instance.dispatchEvent(new JFlowEvent('blur', {
+                    relatedTarget: target,
+                }));
+                this._focus.instance = null;
+            }   
         }
         return this._target;
     }
@@ -918,7 +931,7 @@ class JFlow extends EventTarget{
         // this.position.offsetX = this.position.x - x * newScale;
         // this.position.offsetY = this.position.y - y * newScale;
         this.dispatchEvent(new JFlowEvent('zoompan', {
-            offsetX, offsetY
+             deltaX: 0, deltaY: 0
         }));
         // this.setAnimeClock()
         this.scheduleRender(() => {
@@ -964,7 +977,10 @@ class JFlow extends EventTarget{
          *
          * @event JFlow#zoompan
         */
-        this.dispatchEvent(new JFlowEvent('zoompan'));
+        this.dispatchEvent(new JFlowEvent('zoompan', {
+            deltaX,
+            deltaY
+        }));
         this.scheduleRender(() => {
             this._panning = false;
         })
@@ -1169,7 +1185,9 @@ class JFlow extends EventTarget{
             }
         } else {
             this._recalculatePosition(deltaX, deltaY);    
-            this.dispatchEvent(new JFlowEvent('zoompan'));
+            this.dispatchEvent(new JFlowEvent('zoompan', {
+                deltaX, deltaY
+            }));
         }
         const { instance, link } = this._targetLockOn([offsetX, offsetY]);
 
@@ -1338,7 +1356,7 @@ class JFlow extends EventTarget{
             link,
             instance,
             meta
-        } = this._targetLockOn([offsetX, offsetY]);
+        } = this._targetLockOn([offsetX, offsetY], 'click');
         if(Math.abs(meta.initialX - meta.x) < 1
             && Math.abs(meta.initialY - meta.y) < 1) { 
                 if(event.target !== this.canvas){
@@ -1404,7 +1422,7 @@ class JFlow extends EventTarget{
         const {
             link,
             instance
-        } = this._targetLockOn([offsetX, offsetY]);
+        } = this._targetLockOn([offsetX, offsetY], 'contextclick');
         const { topLayerPoint } = this._target.cache
         const t = this._resolveLockOnTarget(link, instance);
         if(t) {
@@ -1449,7 +1467,7 @@ class JFlow extends EventTarget{
         const {
             link,
             instance
-        } = this._targetLockOn([offsetX, offsetY]);
+        } = this._targetLockOn([offsetX, offsetY], 'dblclick');
         const { topLayerPoint } = this._target.cache
         const t = this._resolveLockOnTarget(link, instance);
         if(t) {
@@ -1740,3 +1758,4 @@ export { default as LinearLayout} from '../layout/linear-layout';
 export { default as Lowcodelayout } from '../layout/low-code-layout';
 export { default as ERLayout } from '../layout/er-layout/er-layout';
 // export { default as Orange } from '../instance/nodeWrapper/orange/orange'
+// export { default as TextEditor } from '../instance/text-editor';
