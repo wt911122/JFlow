@@ -578,13 +578,7 @@ class JFlow extends EventTarget{
         }
         if(!targetLink) {
             targetLink = linkStack.checkHit(point, (link) => {
-                if(!this._target.status.dragging) {
-                    return false;
-                }
-                if(!link.ON_TOP) {
-                    return false;
-                }
-                return true;
+                return !link.ON_TOP;
             });
         }
 
