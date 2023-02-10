@@ -5,6 +5,7 @@ JFlow 的目标是设计一套基于 canvas 的轻量级流程图引擎，支持
 [DEMO](https://wt911122.github.io/JFlow/vue-demo.html)
 
 [LOGIC-DEMO](https://wt911122.github.io/JFlow/logic-v2-demo.html)
+[字符输入-DEMO](https://wt911122.github.io/JFlow/textgroup-demo.html)
 ## Features
 目前的实现包含了：
 + 基础 API及接口
