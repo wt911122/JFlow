@@ -93,6 +93,7 @@ export default {
             const {
                 idx, offset, textElements, instance
             } = event.detail;
+            debugger
             console.log(event.detail);
             if(offset > 0) {
                 const currElement = textElements[idx];
@@ -106,7 +107,7 @@ export default {
                     new TextElement(instance.type, instance),
                     t);
             } else {
-                textElements.splice(idx, 0, new TextElement(instance));  
+                textElements.splice(idx, 0, new TextElement(instance.type, instance));  
             }
             this.refresh(textElements);
             
