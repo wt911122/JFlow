@@ -5,7 +5,7 @@ const { VueLoaderPlugin } = require('vue-loader')
     mode: 'production',
     entry: path.resolve(__dirname, './src/main.js'),
     output: {
-        filename: 'bundle.js',
+        filename: 'textgroup-demo-bundle.js',
         path: path.resolve(__dirname, 'dist'),
 
     },
