@@ -581,7 +581,7 @@ class JFlow extends EventTarget{
                 return !link.ON_TOP;
             });
         }
-
+        
         Object.assign(this._target, {
             instance: target,
             link: targetLink, 
@@ -1693,6 +1693,7 @@ class JFlow extends EventTarget{
             });
             this._linkStack.render(ctx, (link) => link.isInViewBox(br));
         }
+
         if(this._tempNode) {
             ctx.save();
             this._tempNode.render(ctx)
@@ -1753,3 +1754,5 @@ export { default as Lowcodelayout } from '../layout/low-code-layout';
 export { default as ERLayout } from '../layout/er-layout/er-layout';
 // export { default as Orange } from '../instance/nodeWrapper/orange/orange'
 // export { default as TextEditor } from '../instance/text-editor';
+export { default as TextGroup} from '../instance/text-group';
+export { TextElement } from '../instance/text-group';

@@ -3,6 +3,7 @@ import JFlowComponent from './components/JFlow';
 import JFlowInstance from './components/JFlowInstance';
 import JFlowLink from './components/JFlowLink';
 import JFlowGroup from './components/JFlowGroup';
+import JFlowTextGroup from './components/JFlowTextGroup';
  
 const JFLOW_NODES = [
     /**
@@ -63,6 +64,8 @@ const JFLOW_NODES = [
     'Icon',
 
     'ShadowDom',
+
+    'TextEditor',
 ];
 /**
  * @typedef {BezierLink~Configs} j-bezier-link~Configs
@@ -151,6 +154,10 @@ const components = [
         name,
         component: JFlowLink(name)
     })),
+    {
+        name: 'TextGroup',
+        component: JFlowTextGroup
+    }
 ];
 const componentPrefix = 'j';
 customElements.define('jflow-group', class extends HTMLElement {
