@@ -424,11 +424,19 @@ class TextGroup extends Node {
             } else {
                 idx = this._textElements.findIndex(el => el === element);
             }
+            const lastLength = this._textElements.length
             this.dispatchEvent(new JFlowEvent('insert', {
                 ...event.detail,
                 textElements: this._textElements.slice(),
                 idx, offset,
             }));
+            if(this._status.editing) {
+                if(this._textElements.length > lastLength) {
+                    this._cursor.column[0] += (this._textElements.length - lastLength);
+                    this._cursor.column[1] = 0;
+                }
+                inputElement.focus(); 
+            }
             this._refreshCursor();
         });
     }
@@ -573,6 +581,8 @@ class TextGroup extends Node {
             const { rangefrom, rangeTo } = this._textRange;
             const elemFrom = this._lines[rangefrom[0]].elements[rangefrom[1]];
             const elemTo = this._lines[rangeTo[0]].elements[rangeTo[1]];
+            let [elem_idx, offset] = rangefrom.slice(1);
+            let row = rangefrom[0];
             if(elemFrom === elemTo) {
                 const c = elemFrom.source;
                 elemFrom.source = c.substring(0, rangefrom[2]) + c.substring(rangeTo[2]);
@@ -580,28 +590,67 @@ class TextGroup extends Node {
             } else {
                 let preContent = '';
                 let afterContent = '';
+                let preElement;
+                // let afterElement;
+                
                 const fromIdx = this._textElements.findIndex(el => el === elemFrom);
                 const toIdx = this._textElements.findIndex(el => el === elemTo);
+                let endTextNeedWrap = false;
                 if(elemFrom.type === 'text') {
                     preContent = elemFrom.source.substring(0, rangefrom[2]);
+                } else {
+                    preElement = this._textElements[fromIdx-1]
                 }
                 if(elemTo.type === 'text') {
                     afterContent = elemTo.source.substring(rangeTo[2]);
+                    endTextNeedWrap = elemTo.needWrap;
                 }
-                if(preContent || afterContent) {
-                    this._textElements.splice(fromIdx, toIdx-fromIdx+1, new TextElement('text', preContent + afterContent));
-                } else {
+                if(preElement) {
                     this._textElements.splice(fromIdx, toIdx-fromIdx+1);
+                    if(preElement.type === 'text') {
+                        if(preElement.needWrap) {
+                            row -= 1;
+                        } else {
+                            elem_idx -= 1;
+                        }
+                        offset = preElement.source.length;
+                        preElement.source += afterContent;
+                        preElement.dirty = true;
+                        preElement.needWrap = endTextNeedWrap;
+                    } else {
+                        const t = new TextElement('text', preContent + afterContent);
+                        t.needWrap = endTextNeedWrap;
+                        this._textElements.splice(fromIdx, 0, t)
+                    }
+                } else {
+                    this._textElements.splice(fromIdx, toIdx-fromIdx);
+                    elemTo.source = preContent + afterContent;
+                    elemTo.dirty = true;
                 }
+                // if(preContent || preElement) {
+                    
+                //     // if(afterElement) {
+                //     //     if(afterElement.type === 'text') {
+                //     //         offset = 
+                //     //         preElement.source += afterContent;
+                //     //     } else {
+                //     //         const t = new TextElement('text', preContent + afterContent);
+                //     //         this._textElements.splice(fromIdx, 0, t)
+                //     //     }
+                //     // }
+                // } else {
+                //     this._textElements.splice(fromIdx, toIdx-fromIdx+1);
+                // }
                 if(this._textElements.length === 0) {
+                    // elem_idx = 0;
                     this._textElements.push(new TextElement('text', ''));
                 }
                 this.reflow();
             }
             this._textRange.enable = false;
             this._cursor = {
-                row: rangefrom[0],
-                column: rangefrom.slice(1),
+                row,
+                column: [elem_idx, offset],
             }
         }
     }
@@ -635,15 +684,27 @@ class TextGroup extends Node {
                 this._inputControl(op, data);
                 break;
             case "ArrowLeft":
+                if(this._textRange.enable) {
+                    this._textRange.enable = false;
+                }
                 this._onArrowLeft();
                 break;
             case "ArrowRight":
+                if(this._textRange.enable) {
+                    this._textRange.enable = false;
+                }
                 this._onArrowRight();
                 break;
             case "ArrowDown":
+                if(this._textRange.enable) {
+                    this._textRange.enable = false;
+                }
                 this._onArrowDown();
                 break;
             case "ArrowUp":
+                if(this._textRange.enable) {
+                    this._textRange.enable = false;
+                }
                 this._onArrowUp();
                 break;
             default:
