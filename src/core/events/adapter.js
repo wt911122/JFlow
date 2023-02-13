@@ -16,6 +16,11 @@
  */
 
 function getDefaultPlugin() {
+    let _mouseStatus = {
+        x: undefined,
+        y: undefined,
+        enableClick: false,
+    }
     return {
         canvas: {
             wheel: function (event, jflow) {
@@ -31,6 +36,8 @@ function getDefaultPlugin() {
             pointerdown: function (event, jflow) {
                 const { offsetX, offsetY, deltaY, button } = event
                 if(button !== 0) return;
+                _mouseStatus.x = offsetX;
+                _mouseStatus.y = offsetY;
                 jflow.pressStartHandler(offsetX, offsetY, event);
             },
             pointermove: function (event, jflow) {
@@ -40,8 +47,13 @@ function getDefaultPlugin() {
             pointerup: function (event, jflow) {
                 event.preventDefault();
                 // event.stopPropagation();
-                const { button } = event
+                const { offsetX, offsetY, button } = event
                 if(button !== 0) return;
+                if(_mouseStatus.x === offsetX && _mouseStatus.y === offsetY) {
+                    _mouseStatus.x = undefined;
+                    _mouseStatus.y = undefined;
+                    _mouseStatus.enableClick = true;
+                }
                 jflow.pressUpHanlder(false, event)
             },
             contextmenu: function (event, jflow) {
@@ -60,7 +72,11 @@ function getDefaultPlugin() {
                 event.preventDefault();
                 event.stopPropagation();
                 const { offsetX, offsetY } = event;
-                jflow.clickHanlder(offsetX, offsetY, event);
+                if(_mouseStatus.enableClick) {
+                    _mouseStatus.enableClick = false;
+                    jflow.clickHanlder(offsetX, offsetY, event);
+                }
+                
             }
         },
         document: {

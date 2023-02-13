@@ -15,6 +15,7 @@ export class TextElement {
         this.anchorX = 0;
         this.anchorY = 0;
         this.dirty = true;
+        this.isTail = false;
     }
 
     shift(offset, step, isTail) {
@@ -41,7 +42,7 @@ export class TextElement {
 
     tailOffset() {
         if(this.type === 'text') {
-            if(this.needWrap){
+            if(this.needWrap || this.isTail){
                 return this.source.length;
             } else {
                 return Math.max(0, this.source.length - 1);
@@ -86,10 +87,18 @@ class TextGroup extends Node {
             cursoranime: null,
             lastElapsed: 0,
             refreshElapsed: false,
+
+            cursorDragging: false,
         }
         this._cursor = {
             row: 0,
             column: [0,0],
+        }
+
+        this._textRange = {
+            enable: false,
+            rangefrom: null, // [row, elem_idx, offset]
+            rangeTo: null,   // [row, elem_idx, offset]
         }
         this._makeFunctional();
     }
@@ -131,6 +140,7 @@ class TextGroup extends Node {
         const width = this.width;
         const height = this.height;
         const jflow = this._jflow;
+        const lines = this._lines;
         ctx.translate(cx, cy);
         ctx.beginPath();
         ctx.rect(-width/2, -height/2, width, height);
@@ -141,7 +151,7 @@ class TextGroup extends Node {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = this.textColor;
-        this._lines.forEach(line => {
+        lines.forEach(line => {
             const { elements } = line;
             elements.forEach(el => {
                 if(el.type === 'text') {
@@ -162,7 +172,7 @@ class TextGroup extends Node {
 
         if(this._status.cursorshow && (this._status.editing || this._status.dragover)) {
             const { row, column } = this._cursor;
-            const { elements, anchorY } = this._lines[row];
+            const { elements, anchorY } = lines[row];
             const [elemidx, offset] = column;
             const meta = elements[elemidx];
             let cw;
@@ -180,12 +190,83 @@ class TextGroup extends Node {
             ctx.stroke();
         }
 
+        if(this._textRange.enable) {
+            this._renderRange(ctx);
+        }
+
         
           
         ctx.translate(-cx, -cy);
         
 
         ctx.restore();
+    }
+
+    _renderRange(ctx) {
+        const lines = this._lines;
+        const blockheight = this.height;
+        const blockwidth = this.width;
+        const {
+            rangefrom, rangeTo
+        } = this._textRange;
+        const [r_f, idx_f, offset_f] = rangefrom;
+        const [r_t, idx_t, offset_t] = rangeTo;
+        if(r_f === r_t) {
+            if(idx_f === idx_t && offset_f == offset_t) {
+                return;
+            }
+            const line = lines[r_f];
+            let space = (r_f === lines.length-1 ? 0 : this.lineSpace);
+            const lty = line.reduceHeight - space - line.height - blockheight/2;
+            const height = line.height;
+            const x1 = this._measureElementOffsetX(line.elements[idx_f], offset_f, ctx);
+            const x2 = this._measureElementOffsetX(line.elements[idx_t], offset_t, ctx);
+            ctx.beginPath();
+            ctx.rect(x1, lty , x2 - x1, height);
+            ctx.fillStyle = '#4E75EC1A'
+            ctx.fill();
+        } else {
+            let _r = r_f;
+            let beginning = true;
+            while(_r <= r_t) {
+                const line = lines[_r];
+                let space = (_r === lines.length-1 ? 0 : this.lineSpace);
+                const lty = line.reduceHeight - space - line.height - blockheight/2;
+                const height = line.height;
+
+                if(beginning) {
+                    const elem = line.elements[idx_f];
+                    const x = this._measureElementOffsetX(elem, offset_f, ctx);
+
+                    ctx.beginPath();
+                    ctx.rect(x, lty, line.width - (x - elem.anchorX + elem.width/2), height);
+                    ctx.fillStyle = '#4E75EC1A'
+                    ctx.fill();
+                } else if(_r === r_t){
+                    const elem = line.elements[idx_t];
+                    const x = this._measureElementOffsetX(elem, offset_t, ctx);
+                    ctx.beginPath();
+                    ctx.rect(-blockwidth/2, lty , elem.reduceWidth + (x - elem.anchorX + elem.width/2), height);
+                    ctx.fillStyle = '#4E75EC1A'
+                    ctx.fill();
+                } else {
+                    ctx.beginPath();
+                    ctx.rect(-blockwidth/2, lty, line.width, height);
+                    ctx.fillStyle = '#4E75EC1A'
+                    ctx.fill();
+                }
+                
+                beginning = false;
+                _r++;
+            }
+        }
+    }
+
+    _measureElementOffsetX(element, offset, ctx) {
+        if(element.type !== 'text' || offset === 0){
+            return element.anchorX - element.width/2;
+        }
+        return element.anchorX - element.width/2 + ctx.measureText(element.source.substring(0, offset)).width;
     }
 
     _makeFunctional() {
@@ -207,9 +288,10 @@ class TextGroup extends Node {
             const point = this._currentp;
             const jflow = this._jflow;
             if(this._status.editing) {
-                // this._positionToCursorOffset(point);
+                const cursor = this._positionToCursorOffset(point);
+                this._selectRowRange(cursor.row);
             } else {   
-                this._positionToCursorOffset(point);
+                this._cursor = this._positionToCursorOffset(point);
                 inputElement = createInputElement(this._controlCallback.bind(this));
                 const wrapper = jflow.DOMwrapper;
                 wrapper.append(inputElement);  
@@ -227,7 +309,8 @@ class TextGroup extends Node {
                         this._status.cursorshow = !this._status.cursorshow;
                         this._status.lastElapsed = elapsed;
                     } 
-                }) 
+                });
+                this._selectFullRange();
             }
         });
 
@@ -235,9 +318,10 @@ class TextGroup extends Node {
             if(this._status.editing) {
                 event.detail.bubbles = false;
                 const point = this._currentp;
-                this._positionToCursorOffset(point);
+                this._cursor = this._positionToCursorOffset(point);
                 inputElement.focus();   
                 this._refreshCursor();   
+               
             }
         })
         this.addEventListener('blur', (event) => {
@@ -246,8 +330,10 @@ class TextGroup extends Node {
                 target: this,
                 textElements: this._textElements.slice(),
             }));
+            this._textRange.enable = false;
             this._status.cursoranime.cancel()
             Object.assign(this._status, {
+                editing: false,
                 cursorshow: true,
                 cursoranime: null,
                 lastElapsed: 0,
@@ -255,14 +341,63 @@ class TextGroup extends Node {
             this._status.cursorshow = true;
             this._status.cursoranime = null;
         })
+        this.addEventListener('instancePressStart', (event) => {
+            if(this._status.editing) {
+                event.detail.bubbles = false;
+                event.detail.preventDefault();
+                // event.detail.jflow.setMovingTargets(null);
+                const point = this._currentp;
+                const c = this._positionToCursorOffset(point);
+                // this._cursor = c;
+                const range = [c.row, ...c.column]
+                this._textRange.initialRange = range;
+                const jflow = event.detail.jflow;
+                const t = (e => {
+                    
+                    const { offsetX, offsetY } = e;
+                    const p = jflow._calculatePointBack([offsetX, offsetY]);
+                    jflow._stack.checkHit(p)
+                    const point = this._currentp;
+                    const c = this._positionToCursorOffset(point);
+                    // this._cursor = c;
+                    const rangeAnother = [c.row, ...c.column];
+                    const initialRange = this._textRange.initialRange;
+                    this._status.editing = false;
+                    this._textRange.enable = true;
+                    if(this._compareRange(initialRange, rangeAnother)) {
+                        this._textRange.rangefrom = initialRange;
+                        this._textRange.rangeTo = rangeAnother;
+                    } else {
+                        this._textRange.rangefrom = rangeAnother;
+                        this._textRange.rangeTo = initialRange;
+                    }
+                }).bind(this);
+
+                document.addEventListener('pointermove', t)
+                document.addEventListener('pointerup', (e) => {
+                    document.removeEventListener('pointermove', t);
+                    const [a, b, c] = this._textRange.rangeTo;
+                    this._cursor = {
+                        row: a,
+                        column: [b, c],
+                    }
+                    this._status.editing = true;
+                    inputElement.focus();   
+                    this._textRange.initialRange = null;
+                }, {
+                    once: true,
+                })
+            }
+        });
+
         this.addEventListener('dragenter', () => {
             const point = this._currentp;
-            this._positionToCursorOffset(point);
+            this._cursor = this._positionToCursorOffset(point);
             this._status.dragover = true;
-        })
+        });
         this.addEventListener('dragover', () => {
             const point = this._currentp;
-            this._positionToCursorOffset(point);
+            this._cursor = this._positionToCursorOffset(point);
         });
         this.addEventListener('dragleave', () => {
             this._status.dragover = false;
@@ -294,16 +429,19 @@ class TextGroup extends Node {
                 textElements: this._textElements.slice(),
                 idx, offset,
             }));
-        })
+            this._refreshCursor();
+        });
     }
-
     _positionToCursorOffset(point) {
+        let row;
+        let column;
+
         const [x, y] = point;
-        const [x0, y0] = this.anchor;
+        // const [x0, y0] = this.anchor;
         const w = this.width/2;
         const h = this.height/2;
-        const offsetX = x - x0 + w;
-        const offsetY = y - y0 + h;
+        const offsetX = x + w;
+        const offsetY = y + h;
         let lineNumber = 0;
         const lines = this._lines;
         while(lineNumber < lines.length) {
@@ -312,8 +450,8 @@ class TextGroup extends Node {
             }
             lineNumber ++;
         }
-
-        this._cursor.row = lineNumber;
+        row = lineNumber;
+        
         const currLine = lines[lineNumber];
         const elements = currLine.elements;
         if(offsetX >= currLine.width) {
@@ -322,7 +460,7 @@ class TextGroup extends Node {
             if(elem.type === 'text') {
                 q = elem.source.length;
             } 
-            this._cursor.column = [elements.length - 1, q]
+            column = [elements.length - 1, q]
         } else {
             let elem_idx = 0;
             let last_c = 0;
@@ -340,12 +478,21 @@ class TextGroup extends Node {
             if(textmeta.type === 'text') {
                 const offx = offsetX - last_c;
                 const idx = this._calculateOffsetByWidth(offx, textmeta)
-                this._cursor.column = [elem_idx, idx];
+                column = [elem_idx, idx];
             } else {
-                this._cursor.column = [elem_idx, 0];
+                column = [elem_idx, 0];
             }
         }
+
+        return {
+            row, 
+            column,
+        }
     }
+    
+    // _getCurrentPoint() {
+    //     this._currentp 
+    // }
 
     _calculateOffsetByWidth(offx, textmeta) {
         const content = textmeta.source;
@@ -375,15 +522,109 @@ class TextGroup extends Node {
         return idx;
     }
 
+    _selectRowRange(row) {
+        const lines = this._lines;
+        const line = lines[row];
+        const elems = line.elements
+        const toElemidx = elems.length-1;
+        const elem = elems[elems.length-1];
+        this._textRange = {
+            enable: true,
+            rangefrom: [row, 0, 0],
+            rangeTo: [row, toElemidx, elem.tailOffset()],
+        }
+        this._cursor = {
+            row,
+            column: [toElemidx, elem.tailOffset()]
+        }
+    }
+
+    _selectFullRange() {
+        const lines = this._lines;
+        const toRow = lines.length - 1;
+        const elems = lines[toRow].elements
+        const toElemidx = elems.length-1;
+        const elem = elems[elems.length-1];
+        this._textRange = {
+            enable: true,
+            rangefrom: [0, 0, 0],
+            rangeTo: [toRow, toElemidx, elem.tailOffset()],
+        }
+        this._cursor = {
+            row: toRow,
+            column: [toElemidx, elem.tailOffset()]
+        }
+    }
+
+    _compareRange(r1, r2) {
+        if(r1[0] > r2[0]) {
+            return false;
+        }
+        if(r1[0] === r2[0] && r1[1] > r2[1]) {
+            return false;
+        }
+        if(r1[0] === r2[0] && r1[1] === r2[1] && r1[2] > r2[2]) {
+            return false;
+        }
+        return true;
+    }
+    _clearTextRange() {
+        if(this._textRange.enable) {
+            const { rangefrom, rangeTo } = this._textRange;
+            const elemFrom = this._lines[rangefrom[0]].elements[rangefrom[1]];
+            const elemTo = this._lines[rangeTo[0]].elements[rangeTo[1]];
+            if(elemFrom === elemTo) {
+                const c = elemFrom.source;
+                elemFrom.source = c.substring(0, rangefrom[2]) + c.substring(rangeTo[2]);
+                elemFrom.dirty = true;
+            } else {
+                let preContent = '';
+                let afterContent = '';
+                const fromIdx = this._textElements.findIndex(el => el === elemFrom);
+                const toIdx = this._textElements.findIndex(el => el === elemTo);
+                if(elemFrom.type === 'text') {
+                    preContent = elemFrom.source.substring(0, rangefrom[2]);
+                }
+                if(elemTo.type === 'text') {
+                    afterContent = elemTo.source.substring(rangeTo[2]);
+                }
+                if(preContent || afterContent) {
+                    this._textElements.splice(fromIdx, toIdx-fromIdx+1, new TextElement('text', preContent + afterContent));
+                } else {
+                    this._textElements.splice(fromIdx, toIdx-fromIdx+1);
+                }
+                if(this._textElements.length === 0) {
+                    this._textElements.push(new TextElement('text', ''));
+                }
+                this.reflow();
+            }
+            this._textRange.enable = false;
+            this._cursor = {
+                row: rangefrom[0],
+                column: rangefrom.slice(1),
+            }
+        }
+    }
+
     _refreshCursor() {
-        Object.assign(this._status, {
-            cursorshow: true,
-            refreshElapsed: true,
-        });
+        if(this._status.editing) {
+            Object.assign(this._status, {
+                cursorshow: true,
+                refreshElapsed: true,
+            });
+        }
+        if(this._textRange.enable) {
+            this._textRange.enable = false;
+        }
     }
 
     _controlCallback(op, data) {
-        this._refreshCursor();
+        if(this._status.editing) {
+            Object.assign(this._status, {
+                cursorshow: true,
+                refreshElapsed: true,
+            });
+        }
         switch(op){
             case "Input":
             case "compositionstart":
@@ -411,6 +652,14 @@ class TextGroup extends Node {
     }
     // 内部输入
     _inputControl(op, data) {
+        if(this._textRange.enable) {
+            this._clearTextRange();
+            if(op === 'Backspace') {
+                this.recalculateUp();
+                this._jflow._render();
+                return;
+            }
+        }
         const {
             row, column,
         } = this._cursor;
@@ -769,6 +1018,7 @@ Object.assign(TextGroup.prototype, {
             }
             lastElem = element;
         });
+        this._textElements[this._textElements.length-1].isTail = true;
         allHeight += line.height
         line.reduceHeight = allHeight;
         allWidth = Math.max(line.width, allWidth);

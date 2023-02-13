@@ -625,6 +625,10 @@ class JFlow extends EventTarget{
         }
         
         if(['pressStart', 'click', 'dblclick', 'contextclick'].includes(event)) {
+            // debugger
+            // if(event === 'click') {
+            //     debugger;
+            // }
             if(this._focus.instance && this._focus.instance !== target) {
                 this._focus.instance.dispatchEvent(new JFlowEvent('blur', {
                     relatedTarget: target,
@@ -1043,6 +1047,15 @@ class JFlow extends EventTarget{
                 target: t,
                 jflow: this,
                 bubbles: true,
+                preventDefault: () => {
+                    this._preventPressSequeence = true;
+                    this._clearTarget();
+                    document.addEventListener('pointerup', e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this._preventPressSequeence = false;
+                    }, { once: true });
+                }
             }))
         }
 
@@ -1058,6 +1071,9 @@ class JFlow extends EventTarget{
      * @param {Number} event - 原生事件
      */
     pressMoveHandler(offsetX, offsetY, event) {
+        if(this._preventPressSequeence) {
+            return;
+        }
         if(this.checkScrollDragging()) {
             return;
         }
@@ -1205,6 +1221,10 @@ class JFlow extends EventTarget{
      * @param {Number} event - 原生事件
      */
     pressUpHanlder(isDocument, event) {
+        if(this._preventPressSequeence) {
+            return;
+        }
+        
         if(this.__processOverAnime) {
             this.__processOverAnime.cancel();
         }
