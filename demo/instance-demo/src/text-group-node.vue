@@ -93,8 +93,6 @@ export default {
             const {
                 idx, offset, textElements, instance
             } = event.detail;
-            debugger
-            console.log(event.detail);
             if(offset > 0) {
                 const currElement = textElements[idx];
                 const content = currElement.source;

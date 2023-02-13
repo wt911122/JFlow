@@ -3,6 +3,7 @@
     <j-group 
         :source="node"
         @click="onClick" 
+        @instancePressStart="onPressStart"
         :configs="configs">
         <j-text :configs="{
             textColor: '#EB6864',
@@ -35,6 +36,10 @@ export default {
     methods: {
         onClick() {
             this.toggle = !this.toggle;
+        },
+        onPressStart(e) {
+            event.detail.bubbles = false;
+            event.detail.preventDefault();
         }
     },
     mounted() {
