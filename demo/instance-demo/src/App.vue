@@ -52,6 +52,11 @@ const layout = new DemoLayout({
     ]
 });
 export default {
+    provide(){
+        return {
+            renderJFlow: this.renderJFlow
+        }  
+    },
     components: {
         textGroupNode,
     },
@@ -77,7 +82,10 @@ export default {
                     name: `SimpleNode-${uniqueId ++}`,
                 },
             })
-        }
+        },
+        renderJFlow() {
+            this.$refs.jflow.renderJFlow();
+        },
     }
 };
 </script>

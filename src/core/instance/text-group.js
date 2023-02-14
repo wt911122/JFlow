@@ -284,37 +284,41 @@ class TextGroup extends Node {
             }
             event.detail.bubbles = false;
             const point = this._currentp;
-            const jflow = this._jflow;
+            // const jflow = this._jflow;
             if(this._status.editing) {
                 const cursor = this._positionToCursorOffset(point);
                 this._selectRowRange(cursor.row);
-            } else {   
-                this._cursor = this._positionToCursorOffset(point);
-                inputElement = createInputElement(this._controlCallback.bind(this));
-                const wrapper = jflow.DOMwrapper;
-                wrapper.append(inputElement);  
-                inputElement.focus();      
-                jflow.setFocusInstance(this);
-                this._status.editing = true;   
+            } 
+            // else {   
+            //     this._cursor = this._positionToCursorOffset(point);
+            //     inputElement = createInputElement(this._controlCallback.bind(this));
+            //     const wrapper = jflow.DOMwrapper;
+            //     wrapper.append(inputElement);  
+            //     inputElement.focus();      
+            //     jflow.setFocusInstance(this);
+            //     this._status.editing = true;   
                 
-                this._status.cursoranime = jflow.requestJFlowAnime((elapsed) => {
-                    const lastElapsed = this._status.lastElapsed;
-                    if(this._status.refreshElapsed) {
-                        this._status.lastElapsed = elapsed;
-                        this._status.refreshElapsed = false;
-                    }
-                    if(elapsed - lastElapsed > 500) {
-                        this._status.cursorshow = !this._status.cursorshow;
-                        this._status.lastElapsed = elapsed;
-                    } 
-                });
-                this._selectFullRange();
-            }
+            //     this._status.cursoranime = jflow.requestJFlowAnime((elapsed) => {
+            //         const lastElapsed = this._status.lastElapsed;
+            //         if(this._status.refreshElapsed) {
+            //             this._status.lastElapsed = elapsed;
+            //             this._status.refreshElapsed = false;
+            //         }
+            //         if(elapsed - lastElapsed > 500) {
+            //             this._status.cursorshow = !this._status.cursorshow;
+            //             this._status.lastElapsed = elapsed;
+            //         } 
+            //     });
+            //     this._selectFullRange();
+            // }
         });
 
         this.addEventListener('click', (event) => {
+            if(event.currentTarget !== this) {
+                return
+            }
+            event.detail.bubbles = false;
             if(this._status.editing) {
-                event.detail.bubbles = false;
                 const point = this._currentp;
                 const cursor = this._positionToCursorOffset(point);
                 if(this._status.shiftOn) {
@@ -339,9 +343,33 @@ class TextGroup extends Node {
                     inputElement.focus();   
                     this._refreshCursor();  
                 }
+            } else {
+                const point = this._currentp;
+                const jflow = this._jflow; 
+                this._cursor = this._positionToCursorOffset(point);
+                inputElement = createInputElement(this._controlCallback.bind(this));
+                const wrapper = jflow.DOMwrapper;
+                wrapper.append(inputElement);  
+                inputElement.focus();      
+                jflow.setFocusInstance(this);
+                this._status.editing = true;   
+                    
+                this._status.cursoranime = jflow.requestJFlowAnime((elapsed) => {
+                    const lastElapsed = this._status.lastElapsed;
+                    if(this._status.refreshElapsed) {
+                        this._status.lastElapsed = elapsed;
+                        this._status.refreshElapsed = false;
+                    }
+                    if(elapsed - lastElapsed > 500) {
+                        this._status.cursorshow = !this._status.cursorshow;
+                        this._status.lastElapsed = elapsed;
+                    } 
+                });
+                
             }
         })
         this.addEventListener('blur', (event) => {
+            console.log('blur')
             blurHandler(event);
             this.dispatchEvent(new JFlowEvent('change', {
                 target: this,
@@ -369,8 +397,9 @@ class TextGroup extends Node {
                 const range = [c.row, ...c.column]
                 this._textRange.initialRange = range;
                 const jflow = event.detail.jflow;
+                let moved = false;
                 const t = (e => {
-                    
+                    moved = true;
                     const { offsetX, offsetY } = e;
                     const p = jflow._calculatePointBack([offsetX, offsetY]);
                     jflow._stack.checkHit(p)
@@ -392,7 +421,12 @@ class TextGroup extends Node {
 
                 document.addEventListener('pointermove', t)
                 document.addEventListener('pointerup', (e) => {
+                    console.log('pointerup', moved)
                     document.removeEventListener('pointermove', t);
+                    if(!moved) {
+                        this._textRange.initialRange = null;
+                        return;
+                    }
                     const [a, b, c] = this._textRange.rangeTo;
                     this._cursor = {
                         row: a,

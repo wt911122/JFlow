@@ -15,6 +15,7 @@
 <script>
 
 export default {
+    inject: ['renderJFlow'],
     props: {
         node: Object,
     },
@@ -34,7 +35,8 @@ export default {
         }
     },
     methods: {
-        onClick() {
+        onClick(e) {
+            e.detail.bubbles = false;
             this.toggle = !this.toggle;
         },
         onPressStart(e) {
@@ -44,6 +46,9 @@ export default {
     },
     mounted() {
         console.log('simpleNode mount')
+    },
+    updated() {
+        this.renderJFlow();
     }
 }
 </script>
