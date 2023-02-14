@@ -89,6 +89,7 @@ class TextGroup extends Node {
             refreshElapsed: false,
 
             cursorDragging: false,
+            shiftOn: false,
         }
         this._cursor = {
             row: 0,
@@ -315,10 +316,29 @@ class TextGroup extends Node {
             if(this._status.editing) {
                 event.detail.bubbles = false;
                 const point = this._currentp;
-                this._cursor = this._positionToCursorOffset(point);
-                inputElement.focus();   
-                this._refreshCursor();   
-               
+                const cursor = this._positionToCursorOffset(point);
+                if(this._status.shiftOn) {
+                    const rangeAnother = [cursor.row, ...cursor.column];
+                    const initialRange = this._textRange.initialRange;
+                    if(this._compareRange(initialRange, rangeAnother)) {
+                        this._textRange.rangefrom = initialRange;
+                        this._textRange.rangeTo = rangeAnother;
+                    } else {
+                        this._textRange.rangefrom = rangeAnother;
+                        this._textRange.rangeTo = initialRange;
+                    }
+                    this._textRange.enable = true;
+                    const [a, b, c] = this._textRange.rangeTo;
+                    this._cursor = {
+                        row: a,
+                        column: [b, c],
+                    }
+                    inputElement.focus(); 
+                } else {
+                    this._cursor = cursor
+                    inputElement.focus();   
+                    this._refreshCursor();  
+                }
             }
         })
         this.addEventListener('blur', (event) => {
@@ -339,7 +359,7 @@ class TextGroup extends Node {
             this._status.cursoranime = null;
         })
         this.addEventListener('instancePressStart', (event) => {
-            if(this._status.editing) {
+            if(this._status.editing && !this._status.shiftOn) {
                 event.detail.bubbles = false;
                 event.detail.preventDefault();
                 // event.detail.jflow.setMovingTargets(null);
@@ -704,6 +724,9 @@ class TextGroup extends Node {
                 }
                 this._onArrowUp();
                 break;
+            case "Shift":
+                this._onShiftToggle(data)
+                break;
             default:
                 break;
         }
@@ -897,6 +920,15 @@ class TextGroup extends Node {
         const { row } = this._cursor;
         if(row - 1 > -1){
             this._ArrowVerticalHanlder(row - 1);
+        }
+    }
+
+    _onShiftToggle(val) {
+        this._status.shiftOn = val;
+        if(val) {
+            this._textRange.initialRange = [this._cursor.row, ...this._cursor.column];
+        } else {
+            this._textRange.initialRange = null;
         }
     }
 
@@ -1180,6 +1212,14 @@ function createInputElement(controlCallback) {
         stopInput = false
     });
 
+    input.addEventListener('keyup', (event) => {
+        switch(event.key) {
+            case "Shift":
+                controlCallback("Shift", false);
+                break;
+        }
+    })
+
     input.addEventListener('keydown', (event) => {
         switch(event.code) {
             case "Enter":
@@ -1203,6 +1243,11 @@ function createInputElement(controlCallback) {
                 break;
             case "ArrowUp":
                 controlCallback("ArrowUp");
+                break;
+        }
+        switch(event.key) {
+            case "Shift":
+                controlCallback("Shift", true);
                 break;
         }
     })
