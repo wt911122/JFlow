@@ -44,7 +44,7 @@ const layout = new DemoLayout({
                 '\ndafsdf\ndfasdf',
                 {
                     type: 'SimpleNode',
-                    name: 'simpleNode1',
+                    name: 'simpleNode4',
                 },
                 'asdfas\ndfggf\nddd'
             ]

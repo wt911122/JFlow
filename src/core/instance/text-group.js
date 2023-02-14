@@ -192,13 +192,8 @@ class TextGroup extends Node {
 
         if(this._textRange.enable) {
             this._renderRange(ctx);
-        }
-
-        
-          
+        } 
         ctx.translate(-cx, -cy);
-        
-
         ctx.restore();
     }
 
@@ -237,9 +232,11 @@ class TextGroup extends Node {
                 if(beginning) {
                     const elem = line.elements[idx_f];
                     const x = this._measureElementOffsetX(elem, offset_f, ctx);
+                    const lastElem = line.elements[line.elements.length - 1];
+                    const t = lastElem.anchorX + lastElem.width/2;
 
                     ctx.beginPath();
-                    ctx.rect(x, lty, line.width - (x - elem.anchorX + elem.width/2), height);
+                    ctx.rect(x, lty, t - x, height);
                     ctx.fillStyle = '#4E75EC1A'
                     ctx.fill();
                 } else if(_r === r_t){
