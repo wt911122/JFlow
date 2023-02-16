@@ -105,7 +105,7 @@ export default {
             return createElement('jflow-group', this.$slots.default);
         } else {
             const vnodes = this.nodes.map((textElement) => {
-                const { type, source } = textElement;
+                let { type, source } = textElement;
                 if(!this.$scopedSlots[type]) {
                     if(this.$scopedSlots['jflowcommon']){
                         type = 'jflowcommon';

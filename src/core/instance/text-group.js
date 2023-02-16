@@ -3,7 +3,7 @@ import StackMixin from './stackMixin';
 import LayoutMixin from './layoutMixin';
 import JFlowEvent from '../events/index';
 import { requestCacheCanvas } from '../utils/canvas';
-
+import ShadowCache from './shapes/shadow-cache';
 export class TextElement {
     constructor(type, source) {
         this.type = type;
@@ -71,11 +71,16 @@ class TextGroup extends Node {
         this.fontWeight = configs.fontWeight || '';
         this.elementSpace = configs.elementSpace || 5;
         this.lineSpace = configs.lineSpace || 5;
+        this.placeholder = configs.placeholder || '请输入';
+        this.placeholderColor = configs.placeholderColor || '#eee';
+        this.cursorColor = configs.cursorColor || '#60CFC4';
+        this.textRangeColor = configs.textRangeColor || '#4E75EC1A';
         this.resolver = () => {
             const elements = configs.resolver();
-            if(elements[elements.length-1].type !== 'text') {
+            if(elements.length === 0 || elements[elements.length-1].type !== 'text') {
                 elements.push(new TextElement('text', ''))
             }
+            console.log(elements)
             return elements;
         }
         this._textElements = this.resolver();
@@ -100,8 +105,11 @@ class TextGroup extends Node {
             enable: false,
             rangefrom: null, // [row, elem_idx, offset]
             rangeTo: null,   // [row, elem_idx, offset]
+            initialRange: null // [row, elem_idx, offset]
         }
         this._makeFunctional();
+
+        this._buffer = document.createElement('canvas');
     }
 
     get currentLineHeight() {
@@ -143,9 +151,24 @@ class TextGroup extends Node {
         const jflow = this._jflow;
         const lines = this._lines;
         ctx.translate(cx, cy);
-        ctx.beginPath();
-        ctx.rect(-width/2, -height/2, width, height);
-        ctx.stroke();
+        // ctx.beginPath();
+        // ctx.rect(-width/2, -height/2, width, height);
+        // ctx.stroke();
+
+        if(this._textElements.length === 1 && this._textElements[0].source === '') {
+            ctx.beginPath();
+            ctx.font = `${this.fontWeight} ${this.fontSize} ${this.fontFamily}`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = this.placeholderColor;
+            ctx.fillText(this.placeholder, 0, 0);
+
+            this._randerCursor(ctx);
+
+            ctx.translate(-cx, -cy);
+            ctx.restore();
+            return;
+        }
 
         ctx.beginPath();
         ctx.font = `${this.fontWeight} ${this.fontSize} ${this.fontFamily}`;
@@ -171,25 +194,7 @@ class TextGroup extends Node {
             }
         })
 
-        if(this._status.cursorshow && (this._status.editing || this._status.dragover)) {
-            const { row, column } = this._cursor;
-            const { elements, anchorY } = lines[row];
-            const [elemidx, offset] = column;
-            const meta = elements[elemidx];
-            let cw;
-            if(meta.type === 'text') {
-                const c = meta.source.substring(0, offset);
-                cw = meta.anchorX - meta.width/2 + ctx.measureText(c).width
-            } else {
-                cw = meta.anchorX - meta.width/2
-            }
-            ctx.beginPath();
-            ctx.moveTo(cw, anchorY - 8);
-            ctx.lineTo(cw, anchorY + 8);
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = '#60CFC4';
-            ctx.stroke();
-        }
+        this._randerCursor(ctx);
 
         if(this._textRange.enable) {
             this._renderRange(ctx);
@@ -197,9 +202,41 @@ class TextGroup extends Node {
         ctx.translate(-cx, -cy);
         ctx.restore();
     }
+    
+    _randerCursor(ctx) {
+        if(this._status.cursorshow && (this._status.editing || this._status.dragover)) {
+            const { row, column } = this._cursor;
+            const { elements, anchorY } = this._lines[row];
+            const [elemidx, offset] = column;
+            const meta = elements[elemidx];
+            const idx = this._textElements.findIndex(el => el === meta);
+            const preElem = this._textElements[idx-1];
+            let cw;
+            let c_len = this.currentLineHeight/2;
+            if(meta.type === 'text') {
+                const c = meta.source.substring(0, offset);
+                cw = meta.anchorX - meta.width/2 + ctx.measureText(c).width
+            } else {
+                cw = meta.anchorX - meta.width/2
+                c_len = Math.max(c_len, meta.height/2);
+            }
+            if(offset === 0 && preElem && preElem.type !== 'text') {
+                c_len = Math.max(c_len, preElem.height/2);
+            }
+            
+            
+            ctx.beginPath();
+            ctx.moveTo(cw, anchorY - c_len);
+            ctx.lineTo(cw, anchorY + c_len);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = this.cursorColor;
+            ctx.stroke();
+        }
+    }
 
     _renderRange(ctx) {
         const lines = this._lines;
+        const textRangeColor = this.textRangeColor;
         const blockheight = this.height;
         const blockwidth = this.width;
         const {
@@ -219,7 +256,7 @@ class TextGroup extends Node {
             const x2 = this._measureElementOffsetX(line.elements[idx_t], offset_t, ctx);
             ctx.beginPath();
             ctx.rect(x1, lty , x2 - x1, height);
-            ctx.fillStyle = '#4E75EC1A'
+            ctx.fillStyle = textRangeColor
             ctx.fill();
         } else {
             let _r = r_f;
@@ -238,19 +275,19 @@ class TextGroup extends Node {
 
                     ctx.beginPath();
                     ctx.rect(x, lty, t - x, height);
-                    ctx.fillStyle = '#4E75EC1A'
+                    ctx.fillStyle = textRangeColor
                     ctx.fill();
                 } else if(_r === r_t){
                     const elem = line.elements[idx_t];
                     const x = this._measureElementOffsetX(elem, offset_t, ctx);
                     ctx.beginPath();
                     ctx.rect(-blockwidth/2, lty , elem.reduceWidth + (x - elem.anchorX + elem.width/2), height);
-                    ctx.fillStyle = '#4E75EC1A'
+                    ctx.fillStyle = textRangeColor
                     ctx.fill();
                 } else {
                     ctx.beginPath();
                     ctx.rect(-blockwidth/2, lty, line.width, height);
-                    ctx.fillStyle = '#4E75EC1A'
+                    ctx.fillStyle = textRangeColor
                     ctx.fill();
                 }
                 
@@ -369,7 +406,6 @@ class TextGroup extends Node {
             }
         })
         this.addEventListener('blur', (event) => {
-            console.log('blur')
             blurHandler(event);
             this.dispatchEvent(new JFlowEvent('change', {
                 target: this,
@@ -421,8 +457,8 @@ class TextGroup extends Node {
 
                 document.addEventListener('pointermove', t)
                 document.addEventListener('pointerup', (e) => {
-                    console.log('pointerup', moved)
                     document.removeEventListener('pointermove', t);
+                    
                     if(!moved) {
                         this._textRange.initialRange = null;
                         return;
@@ -453,7 +489,10 @@ class TextGroup extends Node {
         this.addEventListener('dragleave', () => {
             this._status.dragover = false;
         });
-        this.addEventListener('drop', (event) => {
+        const onDrop = ((event) => {
+            if(!this._status.dragover) {
+                return;
+            }
             event.detail.bubbles = false;
             this._status.dragover = false;
             const {
@@ -478,6 +517,7 @@ class TextGroup extends Node {
             const lastLength = this._textElements.length
             this.dispatchEvent(new JFlowEvent('insert', {
                 ...event.detail,
+                type: event.type,
                 textElements: this._textElements.slice(),
                 idx, offset,
             }));
@@ -489,7 +529,9 @@ class TextGroup extends Node {
                 inputElement.focus(); 
             }
             this._refreshCursor();
-        });
+        }).bind(this)
+        this.addEventListener('pressEnd', onDrop)
+        this.addEventListener('drop', onDrop);
     }
     _positionToCursorOffset(point) {
         let row;
@@ -523,16 +565,29 @@ class TextGroup extends Node {
         } else {
             let elem_idx = 0;
             let last_c = 0;
-            let _c = elements[elem_idx].width; 
+            let _c = 0; 
+            let lastel = null;
             while(elem_idx < elements.length -1) {
+                last_c = _c;
+                const el = elements[elem_idx];
+                if(el.type !== 'text') {
+                    const doubleMargin = (lastel && lastel.type === 'text');
+                    const margin = doubleMargin ? this.elementSpace*2 : this.elementSpace;
+                    _c += (el.width + margin);
+                } else {
+                    _c += el.width;
+                }
                 if(_c > offsetX) {
                     break;
                 }
-                last_c = _c;
+                lastel = el
+                
                 elem_idx++;
-                _c += elements[elem_idx].width;
+                
             }
-
+            if(_c <= offsetX) {
+                last_c = _c;
+            }
             const textmeta = elements[elem_idx];
             if(textmeta.type === 'text') {
                 const offx = offsetX - last_c;
@@ -642,7 +697,7 @@ class TextGroup extends Node {
                 let preContent = '';
                 let afterContent = '';
                 let preElement;
-                // let afterElement;
+                let afterElement;
                 
                 const fromIdx = this._textElements.findIndex(el => el === elemFrom);
                 const toIdx = this._textElements.findIndex(el => el === elemTo);
@@ -655,6 +710,8 @@ class TextGroup extends Node {
                 if(elemTo.type === 'text') {
                     afterContent = elemTo.source.substring(rangeTo[2]);
                     endTextNeedWrap = elemTo.needWrap;
+                } else {
+                    afterElement = this._textElements[toIdx-1]
                 }
                 if(preElement) {
                     this._textElements.splice(fromIdx, toIdx-fromIdx+1);
@@ -675,8 +732,14 @@ class TextGroup extends Node {
                     }
                 } else {
                     this._textElements.splice(fromIdx, toIdx-fromIdx);
-                    elemTo.source = preContent + afterContent;
-                    elemTo.dirty = true;
+                    if(afterElement) {
+                        const t = new TextElement('text', preContent);
+                        this._textElements.splice(fromIdx, 0, t);
+                    } else {
+                        elemTo.source = preContent + afterContent;
+                        elemTo.dirty = true;
+                    }
+                    
                 }
                 // if(preContent || preElement) {
                     
@@ -696,7 +759,6 @@ class TextGroup extends Node {
                     // elem_idx = 0;
                     this._textElements.push(new TextElement('text', ''));
                 }
-                this.reflow();
             }
             this._textRange.enable = false;
             this._cursor = {
@@ -761,17 +823,19 @@ class TextGroup extends Node {
             case "Shift":
                 this._onShiftToggle(data)
                 break;
+            case "CtrlA":
+                this._selectFullRange();
             default:
                 break;
         }
     }
+
     // 内部输入
     _inputControl(op, data) {
         if(this._textRange.enable) {
             this._clearTextRange();
             if(op === 'Backspace') {
-                this.recalculateUp();
-                this._jflow._render();
+                this.refresh();
                 return;
             }
         }
@@ -839,7 +903,7 @@ class TextGroup extends Node {
                 element.needWrap = true;
                 const t = new TextElement('text', afterContent);
                 const idx = this._textElements.findIndex(el => el === element);
-                t.needWrap = (idx !== this._textElements.length - 1)
+                t.needWrap = this._textElements[idx + 1]?.needWrap || this._textElements[idx + 1]?.isTail;
                 this._textElements.splice(idx+1, 0, t);
                 this._cursor.row += 1;
                 this._cursor.column = [0, 0];
@@ -878,8 +942,7 @@ class TextGroup extends Node {
                 break;
         }
         
-        this.recalculateUp();
-        this._jflow._render();
+        this.refresh();
     }
 
     _onArrowLeft() {
@@ -1031,6 +1094,27 @@ class TextGroup extends Node {
         ]
     }
 
+    calculateToCoordination(point) {
+        const [gx, gy] = point;
+        const [cx, cy] = this.anchor;
+        // const p = [cx + anchor[0] - spanH, cy + anchor[1] - spanV];
+        const p = [gx + cx, gy + cy]
+        if(this._belongs && this._belongs.calculateToCoordination) {
+            return this._belongs.calculateToCoordination(p);
+        } else {
+            return p;
+        }
+    }
+
+    calculateToRealWorld(point) {
+        const [gx, gy] = point;
+        const [cx, cy] = this.anchor;
+        const p = [gx + cx, gy + cy]
+        if(this._belongs && this._belongs.calculateToRealWorld) {
+            return this._belongs.calculateToRealWorld(p);
+        }
+    }
+
     _calculatePointBack(point) {
         const [gx, gy] = point;
         const [cx, cy] = this.anchor;
@@ -1087,6 +1171,20 @@ class TextGroup extends Node {
         }
         return 0;
     }
+
+    clone() {
+        const t = new ShadowCache({
+            width: this.width,
+            height: this.height,
+            cache: (ctx) => {
+                const [cx, cy] = this.anchor;
+                ctx.translate(-cx + this.width/2, -cy + this.height/2);
+                this.render(ctx);
+            }
+        })
+
+        return t;
+    }
 }
 
 Object.assign(TextGroup.prototype, StackMixin);
@@ -1097,6 +1195,29 @@ Object.assign(TextGroup.prototype, {
     resetChildrenPosition() {},
     reflow() {
         let lineHeight = this.currentLineHeight;
+        if(this._textElements.length === 1 && this._textElements[0].source === '') {
+            let width = 0;
+            const t = this._textElements[0];
+            requestCacheCanvas((ctx) => {
+                ctx.font = `${this.fontSize} ${this.fontFamily}`;
+                width = ctx.measureText(this.placeholder).width;
+            });
+            this._lines = [{
+                width: 0,
+                anchorY: 0,
+                height: lineHeight,
+                reduceHeight: lineHeight,
+                elements: [this._textElements[0]],
+            }];
+            t.anchorX = -width/2;
+            t.anchorY = 0;
+            t.width = 0;
+            t.height = lineHeight;
+            t.isTail = true;
+            this.width = width;
+            this.height = lineHeight;
+            return;
+        }
         const jflow = this._jflow;
         requestCacheCanvas((ctx) => {
             ctx.font = `${this.fontSize} ${this.fontFamily}`;
@@ -1121,6 +1242,7 @@ Object.assign(TextGroup.prototype, {
             line.elements.push(element);
             element.reduceWidth = line.width;
             if(element.type === 'text') {
+                element.height = lineHeight;
                 line.width += element.width;
                 if(element.needWrap){
                     allHeight += (line.height + lineSpace);
@@ -1135,9 +1257,11 @@ Object.assign(TextGroup.prototype, {
                     lines.push(line);
                 }
             } else {
+                
                 const node = jflow.getRenderNodeBySource(element.source);
+                element.height = node.height;
                 line.height = Math.max(line.height, node.height);
-                let margin = lastElem?.type !== 'text' ? this.elementSpace : this.elementSpace*2;
+                const margin = (lastElem && lastElem.type === 'text') ? this.elementSpace*2 : this.elementSpace;
                 line.width += node.width+margin;
             }
             lastElem = element;
@@ -1161,23 +1285,23 @@ Object.assign(TextGroup.prototype, {
             elements.forEach(el => {
                 if(el.type !== 'text') {
                     const renderNode = jflow.getRenderNodeBySource(el.source);
-                    let margin = lastel?.type !== 'text' ? this.elementSpace : this.elementSpace*2;
-                    el.width = renderNode.width + margin;
+                    const doubleMargin = (lastel && lastel.type === 'text');
+                    const margin = doubleMargin ? this.elementSpace*2 : this.elementSpace;
+                    el.width = renderNode.width;
                     el.anchorY = anchorY;
-                    el.anchorX = reduceX + el.width/2 + margin/2;
+                    el.anchorX = reduceX + el.width/2 + (doubleMargin ? margin/2 : 0);
                     renderNode.anchor = [el.anchorX, el.anchorY];
-                    reduceX += el.width + margin/2;
+                    reduceX += (el.width + margin);
                 } else {
                     el.anchorY = anchorY;
                     el.anchorX = reduceX + el.width/2;
                     reduceX += el.width;
                 }
-                
+                lastel = el;
             })
             lastReduceY = reduceHeight;
         });
         this._lines = lines;
-        
         this.width = allWidth;
         this.height = allHeight;
     }
@@ -1210,6 +1334,9 @@ function createInputElement(controlCallback) {
     //     configs.callback(content)
     // }
     let stopInput = false;
+    let status = {
+        ctrlOn: false,
+    }
 
     input.addEventListener('beforeinput', e => {
         e.preventDefault();
@@ -1251,6 +1378,11 @@ function createInputElement(controlCallback) {
             case "Shift":
                 controlCallback("Shift", false);
                 break;
+            case "Meta":
+            case "Control":
+                status.ctrlOn = false;
+                break;
+            
         }
     })
 
@@ -1282,6 +1414,30 @@ function createInputElement(controlCallback) {
         switch(event.key) {
             case "Shift":
                 controlCallback("Shift", true);
+                break;
+            case "Meta":
+            case "Control":
+                status.ctrlOn = true;
+                break;
+            case 'a':
+                if(status.ctrlOn) {
+                    controlCallback('CtrlA');
+                }
+                break;
+            case 'c':
+                if(status.ctrlOn) {
+                    controlCallback('CtrlC');
+                }
+                break; 
+            case 'v':
+                if(status.ctrlOn) {
+                    controlCallback('CtrlV');
+                }
+                break;   
+            case 'x':
+                if(status.ctrlOn) {
+                    controlCallback('CtrlX');
+                }
                 break;
         }
     })
