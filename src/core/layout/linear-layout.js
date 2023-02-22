@@ -187,30 +187,38 @@ class LinearLayout {
             }
             const WIDTH = group.width /2;
             const HEIGHT = group.height /2;
+            const shifty = (group.padding.top - group.padding.bottom)/2;
+            const shiftx = (group.padding.left - group.padding.right)/2;
             absoluteStack.forEach(instance => {
-                instance.anchor = this._resolveAbsoluteAnchor(instance.absolutePosition, instance, WIDTH, HEIGHT);
+                instance.anchor = this._resolveAbsoluteAnchor(instance.absolutePosition, instance, WIDTH, HEIGHT, shiftx, shifty);
             })
         }
     }
 
-    _resolveAbsoluteAnchor(config, instance, w, h){
-        const { top, right, bottom, left } = config;
+    _resolveAbsoluteAnchor(config, instance, w, h, shiftx, shifty){
+        const { top, right, bottom, left, centerX, centerY } = config;
         const { width, height } = instance.getBoundingDimension();
         const hw = width / 2;
         const hh = height / 2;
         let y = 0;
         let x = 0;
         if(typeof top === 'number') {
-            y = top + hh - h;
+            y = top + hh - h - shifty;
         }
         if(typeof right === 'number') {
-            x = w - right - hw;
+            x = w - right - hw - shiftx;
         }
         if(typeof bottom === 'number') {
-            y = h - bottom - hh;
+            y = h - bottom - hh - shifty;
         }
         if(typeof left === 'number') {
-            x = left + hw - w;
+            x = left + hw - w - shiftx;
+        }
+        if(typeof centerX === 'number') {
+            x = centerX;
+        }
+        if(typeof centerY === 'number') {
+            y = centerY;
         }
         return [x, y]
     }
