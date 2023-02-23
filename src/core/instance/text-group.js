@@ -81,7 +81,6 @@ class TextGroup extends Node {
             if(elements.length === 0 || elements[elements.length-1].type !== 'text') {
                 elements.push(new TextElement('text', ''))
             }
-            console.log(elements)
             return elements;
         }
         this._textElements = this.resolver();
