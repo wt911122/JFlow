@@ -382,6 +382,17 @@ class TextGroup extends Node {
                     this._refreshCursor();  
                 }
             } else {
+                let flag = true;
+                this.dispatchEvent(new JFlowEvent('edit', {
+                    target: this,
+                    preventDefault() {
+                        flag = false;
+                    }
+                }))  
+                if(!flag) {
+                    return;
+                }
+                   
                 const point = this._currentp;
                 const jflow = this._jflow; 
                 this._cursor = this._positionToCursorOffset(point);
@@ -391,10 +402,7 @@ class TextGroup extends Node {
                 inputElement.focus();      
                 jflow.setFocusInstance(this);
                 this._status.editing = true; 
-                this.dispatchEvent(new JFlowEvent('edit', {
-                    target: this,
-                }))  
-                    
+                 
                 this._status.cursoranime = jflow.requestJFlowAnime((elapsed) => {
                     const lastElapsed = this._status.lastElapsed;
                     if(this._status.refreshElapsed) {
