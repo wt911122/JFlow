@@ -389,7 +389,10 @@ class TextGroup extends Node {
                 wrapper.append(inputElement);  
                 inputElement.focus();      
                 jflow.setFocusInstance(this);
-                this._status.editing = true;   
+                this._status.editing = true; 
+                this.dispatchEvent(new JFlowEvent('edit', {
+                    target: this,
+                }))  
                     
                 this._status.cursoranime = jflow.requestJFlowAnime((elapsed) => {
                     const lastElapsed = this._status.lastElapsed;
@@ -578,6 +581,7 @@ class TextGroup extends Node {
                     _c += el.width;
                 }
                 if(_c > offsetX) {
+                    lastel = el
                     break;
                 }
                 lastel = el
@@ -594,7 +598,13 @@ class TextGroup extends Node {
                 const idx = this._calculateOffsetByWidth(offx, textmeta)
                 column = [elem_idx, idx];
             } else {
-                column = [elem_idx, 0];
+                const offx = offsetX - last_c;
+                if(offx > lastel.width/2){
+                    column = [elem_idx+1, 0]
+                } else {
+                    column = [elem_idx, 0];
+                }
+               
             }
         }
 
