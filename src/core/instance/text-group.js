@@ -75,6 +75,7 @@ class TextGroup extends Node {
         this.placeholderColor = configs.placeholderColor || '#eee';
         this.cursorColor = configs.cursorColor || '#60CFC4';
         this.textRangeColor = configs.textRangeColor || '#4E75EC1A';
+        this.minWidth = configs.minWidth || 0;
         this.resolver = () => {
             const elements = configs.resolver();
             if(elements.length === 0 || elements[elements.length-1].type !== 'text') {
@@ -1279,7 +1280,7 @@ Object.assign(TextGroup.prototype, {
         this._textElements[this._textElements.length-1].isTail = true;
         allHeight += line.height
         line.reduceHeight = allHeight;
-        allWidth = Math.max(line.width, allWidth);
+        allWidth = Math.max(this.minWidth, Math.max(line.width, allWidth));
         
         const hh = allHeight/2;
         const hw = allWidth/2;
