@@ -283,12 +283,13 @@ class Text extends Rectangle {
         const t_h = parseInt(this.fontSize);
         const content = this.currentContent;
         const {
-            actualBoundingBoxLeft,
-            actualBoundingBoxRight,
+            // actualBoundingBoxLeft,
+            // actualBoundingBoxRight,
             fontBoundingBoxAscent,
-            fontBoundingBoxDescent
+            fontBoundingBoxDescent,
+            width,
         } = ctx.measureText(content);
-        this._textWidth = this.indent + Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight);
+        this._textWidth = this.indent + width;
         if(this.maxWidth && this.ellipsis) {
             if(this._textWidth > this.maxWidth) {
                 const ratio =this.maxWidth / this._textWidth;
