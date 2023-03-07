@@ -469,7 +469,6 @@ class TextGroup extends Node {
                 document.addEventListener('pointermove', t)
                 document.addEventListener('pointerup', (e) => {
                     document.removeEventListener('pointermove', t);
-                    
                     if(!moved) {
                         this._textRange.initialRange = null;
                         return;
@@ -629,6 +628,9 @@ class TextGroup extends Node {
     _calculateOffsetByWidth(offx, textmeta) {
         const content = textmeta.source;
         const maxL = content.length - 1;
+        if(textmeta.width === 0) {
+            return 0;
+        }
         let idx = Math.floor(offx / textmeta.width);
         requestCacheCanvas((ctx) => {
             ctx.font = `${this.fontSize} ${this.fontFamily}`;
@@ -1279,7 +1281,7 @@ Object.assign(TextGroup.prototype, {
                 const node = jflow.getRenderNodeBySource(element.source);
                 element.height = node.height;
                 line.height = Math.max(line.height, node.height);
-                const margin = (lastElem && lastElem.type === 'text') ? this.elementSpace*2 : this.elementSpace;
+                const margin = (!lastElem || lastElem.type === 'text') ? this.elementSpace*2 : this.elementSpace;
                 line.width += node.width+margin;
             }
             lastElem = element;
@@ -1301,19 +1303,19 @@ Object.assign(TextGroup.prototype, {
             let reduceX = -hw;
             let lastel = null;
             elements.forEach(el => {
-                if(el.type !== 'text') {
+                if(el.type === 'text') {
+                    el.anchorY = anchorY;
+                    el.anchorX = reduceX + el.width/2;
+                    reduceX += el.width;
+                } else {
                     const renderNode = jflow.getRenderNodeBySource(el.source);
-                    const doubleMargin = (lastel && lastel.type === 'text');
+                    const doubleMargin = (!lastel || lastel.type === 'text');
                     const margin = doubleMargin ? this.elementSpace*2 : this.elementSpace;
                     el.width = renderNode.width;
                     el.anchorY = anchorY;
                     el.anchorX = reduceX + el.width/2 + (doubleMargin ? margin/2 : 0);
                     renderNode.anchor = [el.anchorX, el.anchorY];
                     reduceX += (el.width + margin);
-                } else {
-                    el.anchorY = anchorY;
-                    el.anchorX = reduceX + el.width/2;
-                    reduceX += el.width;
                 }
                 lastel = el;
             })

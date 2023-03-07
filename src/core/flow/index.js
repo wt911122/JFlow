@@ -897,7 +897,7 @@ class JFlow extends EventTarget{
             minZoom = Math.max(minZoom, Math.max(cw / maxWidth, ch / maxHeight));
         }
         let newScale = this.scale;
-        const amount = deltaY > 0 ? 1.1 : 1 / 1.1;
+        const amount = deltaY > 0 ? 1.05 : 1 / 1.05;
         newScale *= amount;
         newScale = Math.min(this.maxZoom, Math.max(minZoom, newScale))
         // console.log(newScale);
@@ -1235,6 +1235,10 @@ class JFlow extends EventTarget{
             const t = this._target.instance;
             const payload = this.consumeMessage();
             // console.log(payload)
+            let _preventDefault = false;
+            const preventDefault = () => {
+                _preventDefault = true;
+            } 
             if(t) {
                 /**
                  * canvas mousemove 原生事件
@@ -1252,7 +1256,8 @@ class JFlow extends EventTarget{
                     jflow: this,
                     payload,
                     bubbles: true,
-                    link: this._tempLink
+                    link: this._tempLink,
+                    preventDefault,
                 }))        
             } else {
                 const { offsetX, offsetY } = event
@@ -1261,8 +1266,12 @@ class JFlow extends EventTarget{
                     jflow: this,
                     payload,
                     anchor: this._calculatePointBack([offsetX, offsetY]),
-                    link: this._tempLink
+                    link: this._tempLink,
+                    preventDefault
                 }));
+            }
+            if(_preventDefault) {
+                return;
             }
             this._clearTarget();
             if(!this._preventClearTemp) {
@@ -1696,10 +1705,17 @@ class JFlow extends EventTarget{
         this._viewBox = br;
         // console.log(this._viewBox)
         if(this.NodeRenderTop) {
+            // this._linkStack.render(ctx, (link) => !link.ON_TOP && link.isInViewBox(br));
+            // const limitation = 100;
+            // this._stack.render(ctx, (instance) => {
+            //     const bounding_rect = instance.getBoundingRect();
+            //     const result = doOverlap(br, bounding_rect);
+            //     instance._isInViewBox = result;
+            //     return result && (bounding_rect[2] - bounding_rect[0]) * (bounding_rect[3] - bounding_rect[1]) > limitation;
+            // }); 
             this._linkStack.render(ctx, (link) => !link.ON_TOP && link.isInViewBox(br));
             this._stack.render(ctx, (instance) => {
                 const result = doOverlap(br, instance.getBoundingRect());
-                // console.log(instance._layoutNode.type, result)
                 instance._isInViewBox = result;
                 return result;
             });

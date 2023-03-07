@@ -208,3 +208,4 @@ export default {
 }
 
 // export { * as JFlowInstance } from './components/JFlowInstance'; 
+export { default as JFlowLinkGroup } from './components/JFlowLinkGroup';

@@ -302,6 +302,10 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             }
             const [cx, cy] = this._getCenter(); 
             this._shape.render(ctx);
+            if((this.width * this.height) * this._jflow.scale < 144) {
+                ctx.restore();
+                return;
+            }
             ctx.translate(cx, cy);
             this._stack.render(ctx);
             this._linkStack.render(ctx);    

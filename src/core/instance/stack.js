@@ -66,18 +66,21 @@ class InstanceStack extends Array {
                     continue
                 }
                 const ishit = instance.isHit(point, condition);
-                instance._isHit = !!ishit;
+                
                 if(ishit) {
                     if(this._currentHit !== instance) {
                         if(this._currentHit) {
                             this._currentHit._isHit = false;
                         }
+                        instance._isHit = true;
                         this._currentHit = instance;
                     }
                     if(typeof ishit !== 'boolean') {
                         return ishit;
                     }
                     return instance;
+                } else {
+                    instance._isHit = false;
                 }
                 
             }

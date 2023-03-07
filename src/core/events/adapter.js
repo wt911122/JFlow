@@ -17,9 +17,11 @@
 
 function getDefaultPlugin() {
     let _mouseStatus = {
-        x: undefined,
-        y: undefined,
-        enableClick: false,
+        // x: undefined,
+        // y: undefined,
+        // enableClick: false,
+        pointerDown: false,
+        dirty: false,
     }
     return {
         canvas: {
@@ -36,25 +38,27 @@ function getDefaultPlugin() {
             pointerdown: function (event, jflow) {
                 const { offsetX, offsetY, deltaY, button } = event
                 if(button !== 0) return;
-                _mouseStatus.x = offsetX;
-                _mouseStatus.y = offsetY;
+                _mouseStatus.pointerDown = true;
+                
                 jflow.pressStartHandler(offsetX, offsetY, event);
             },
             pointermove: function (event, jflow) {
                 const { offsetX, offsetY } = event
+                if(_mouseStatus.pointerDown) {
+                    _mouseStatus.dirty = true;
+                }
                 jflow.pressMoveHandler(offsetX, offsetY, event);
             },
             pointerup: function (event, jflow) {
                 event.preventDefault();
-                // event.stopPropagation();
+                // event.stopPropagation(); ALWAYS ENABLE PROPAGATION 
                 const { offsetX, offsetY, button } = event
                 if(button !== 0) return;
-                if(_mouseStatus.x === offsetX && _mouseStatus.y === offsetY) {
-                    _mouseStatus.x = undefined;
-                    _mouseStatus.y = undefined;
-                    _mouseStatus.enableClick = true;
+                if(_mouseStatus.pointerDown && _mouseStatus.dirty) {
+                    _mouseStatus.pointerDown = false;
+                    _mouseStatus.dirty = false;
+                    jflow.pressUpHanlder(false, event);
                 }
-                jflow.pressUpHanlder(false, event)
             },
             contextmenu: function (event, jflow) {
                 event.preventDefault();
@@ -72,8 +76,9 @@ function getDefaultPlugin() {
                 event.preventDefault();
                 event.stopPropagation();
                 const { offsetX, offsetY } = event;
-                if(_mouseStatus.enableClick) {
-                    _mouseStatus.enableClick = false;
+                if(!_mouseStatus.dirty) {
+                    _mouseStatus.pointerDown = false;
+                    _mouseStatus.dirty = false;
                     jflow.clickHanlder(offsetX, offsetY, event);
                 }
                 
@@ -132,14 +137,23 @@ class EventAdapter {
             });
         }
         for(let eventName in docObj){
-            const handler = docObj[eventName];
+            let handler;
+            let options = {}
+            if(typeof docObj[eventName] === 'function') {
+                handler = docObj[eventName]
+            } else {
+                handler = docObj[eventName].handler;
+                Object.assign(options, docObj[eventName].options);
+            }
+                
             function handlerWrapperd (e) {
                 handler(e, jflow);
             }
-            document.addEventListener(eventName, handlerWrapperd)
+            document.addEventListener(eventName, handlerWrapperd, options)
             this.documentHandlers.push({
                 eventName,
-                handlerWrapperd
+                handlerWrapperd,
+                options
             });
         }
     }
@@ -149,8 +163,9 @@ class EventAdapter {
         this.canvasHandlers.forEach(({ eventName, handlerWrapperd }) => {
             canvas.removeEventListener(eventName, handlerWrapperd);
         });
-        this.documentHandlers.forEach(({ eventName, handlerWrapperd }) => {
-            document.removeEventListener(eventName, handlerWrapperd);
+        this.documentHandlers.forEach(({ eventName, handlerWrapperd, options }) => {
+            console.log('unload', eventName)
+            document.removeEventListener(eventName, handlerWrapperd, options);
         })
     }
 }

@@ -19,6 +19,8 @@ export default {
         return {
             renderJFlow: this.renderJFlow,
             getJFlow: this.getInstance,
+            addToLinkStack: this.addToLinkStack,
+            removeFromLinkStack: this.removeFromLinkStack,
         }
     },
     props: {
@@ -203,6 +205,18 @@ export default {
                 this._jflowInstance._render();
                 this.__renderInSchedule__ = false;
             });
+        },
+        addToLinkStack(link, sourceFrom, sourceTo) {
+            this._jflowInstance.addToLinkStack(link);
+            if(sourceFrom && sourceTo) {
+                link._jflow.addLinkNodeBySource(sourceFrom, sourceTo, link);
+            }
+        },
+        removeFromLinkStack(link, sourceFrom, sourceTo) {
+            this._jflowInstance.removeFromLinkStack(link);
+            if(sourceFrom && sourceTo) {
+                link._jflow.removeLinkNodeBySource(sourceFrom, sourceTo, link);
+            }
         },
     }
 }

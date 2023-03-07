@@ -2,9 +2,9 @@ export default {
     provide(){
         return {
             addToStack: this.addToStack,
-            addToLinkStack: this.addToLinkStack,
+            // addToLinkStack: this.addToLinkStack,
             removeFromStack: this.removeFromStack,
-            removeFromLinkStack: this.removeFromLinkStack,
+            // removeFromLinkStack: this.removeFromLinkStack,
         }
     },
     data() {
@@ -19,21 +19,21 @@ export default {
                 instance._jflow.setRenderNodeBySource(source, instance)
             }
         },
-        addToLinkStack(link, sourceFrom, sourceTo) {
-            this._jflowInstance.addToLinkStack(link);
-            if(sourceFrom && sourceTo) {
-                link._jflow.addLinkNodeBySource(sourceFrom, sourceTo, link);
-            }
-        },
+        // addToLinkStack(link, sourceFrom, sourceTo) {
+        //     this._jflowInstance.addToLinkStack(link);
+        //     if(sourceFrom && sourceTo) {
+        //         link._jflow.addLinkNodeBySource(sourceFrom, sourceTo, link);
+        //     }
+        // },
         removeFromStack(instance) {
             this._jflowInstance.removeFromStack(instance);
         },
-        removeFromLinkStack(link, sourceFrom, sourceTo) {
-            this._jflowInstance.removeFromLinkStack(link);
-            if(sourceFrom && sourceTo) {
-                link._jflow.removeLinkNodeBySource(sourceFrom, sourceTo, link);
-            }
-        },
+        // removeFromLinkStack(link, sourceFrom, sourceTo) {
+        //     this._jflowInstance.removeFromLinkStack(link);
+        //     if(sourceFrom && sourceTo) {
+        //         link._jflow.removeLinkNodeBySource(sourceFrom, sourceTo, link);
+        //     }
+        // },
         onStackChangeHandler() {
             this._jflowInstance.recalculate();
             this._jflowInstance.reflow();
