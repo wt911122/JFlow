@@ -54,12 +54,10 @@ export default {
     },
     _runAnime() {
         if (this.anime_queue.length) {
-            this.scheduleRender((t) => {
-                if(this.__animeClock__  !== t) {
-                    this._runAnime()
-                }
-                this.__animeClock__  = t;
-            });
+            requestAnimationFrame(() => {
+                this.scheduleRender();
+                this._runAnime();
+            })  
             // requestAnimationFrame(this._runAnime.bind(this))
         }
     },

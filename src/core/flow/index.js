@@ -4,6 +4,7 @@ import { JFLOW_MODE } from '../utils/constance';
 import GhostNode from '../instance/ghostNode';
 import { NodeWeakMapMixin } from '../instance/nodeWeakMap';
 import StackMixin from '../instance/stackMixin';
+// import { CanvasContext2d } from '../utils/context-2d';
 // import InstanceStack from '../instance/stack';
 import LayoutMixin from '../instance/layoutMixin';
 import MessageMixin from '../instance/messageMixin';
@@ -313,7 +314,7 @@ class JFlow extends EventTarget{
             left, top 
         } = createCanvas(dom);
         this.reflow();
-        this.ctx = ctx;
+        this.ctx = ctx //new CanvasContext2d(ctx, dpr);
         this.DOMwrapper = dom;
         this.canvas = canvas;
         this.canvas.setAttribute('data-jflow', true);
@@ -374,12 +375,14 @@ class JFlow extends EventTarget{
         if(this.scrollBarBehavior.enable) {
             this.initScrollBar(this.scrollBarBehavior);
         }
+        this.initSchedule();
         this.scheduleRender(() => {
             this._createEventHandler();
         });
         
         listenOnDevicePixelRatio((dpr) => {
             this.dpr = dpr;
+            // this.ctx.setDPR(dpr)
             this.scheduleRender();
         })
     }
@@ -1653,6 +1656,10 @@ class JFlow extends EventTarget{
         ctx.clearRect(0, 0, c_width, c_height);
         ctx.scale(this.dpr, this.dpr);
         ctx.transform(scale, 0, 0, scale, position.offsetX, position.offsetY);
+        // ctx._ctx.setTransform();
+        // ctx._ctx.clearRect(0, 0, c_width, c_height);
+        // ctx._ctx.scale(this.dpr, this.dpr);
+        // ctx.transform(scale, position.offsetX, position.offsetY);
     }
 
     resetTransform(ctx) {
@@ -1792,3 +1799,4 @@ export { default as ERLayout } from '../layout/er-layout/er-layout';
 // export { default as TextEditor } from '../instance/text-editor';
 export { default as TextGroup} from '../instance/text-group';
 export { TextElement } from '../instance/text-group';
+export { JFlowPath2D } from '../utils/path-2d';

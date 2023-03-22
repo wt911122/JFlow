@@ -159,119 +159,126 @@ class Text extends Rectangle {
     _makeEditable() {
         if(this.editable) {
             this.addEventListener('click', (event) => {
-                if(this.disabled) {
-                    return;
-                }
-                let x;
-                const hw = this.width / 2;
-                if(this.textAlign === TEXT_ALIGN.LEFT){
-                    x = this.anchor[0] - hw + this.indent / 2;
-                } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
-                    x = this.anchor[0] + hw;
-                } else {
-                    x = this.anchor[0] + this.indent / 2;
-                }
-                const p = [ x, -this.height/2 ];
-                const fontSize = +/(\d+)/.exec(this.fontSize)[1];
-                const [offsetX, offsetY] = this.calculateToRealWorld(p);
-                let inputElement = createInputElement();
-                const wrapper = this._jflow.DOMwrapper;
-                let oldVal = this.content;
-                let textColor = this.textColor;
-                inputElement.style.margin = 0;
-                inputElement.style.padding = 0;
-                inputElement.style.transform =`translate(${offsetX}px, ${offsetY}px)`;
-                inputElement.style.width = this.calculateToRealWorldWithScalar(this.width) + 'px';
-                inputElement.style.height = this.calculateToRealWorldWithScalar(this.height) + 'px';
-                inputElement.style.fontFamily = this.fontFamily;
-                wrapper.style.fontSize = `${fontSize * this._jflow.scale}px`;
-                inputElement.style.fontSize = `${fontSize * this._jflow.scale}px`;
-                inputElement.style.lineHeight = `${this.lineHeight * this._jflow.scale}px`;
-                inputElement.style.textIndent = `${this.indent * this._jflow.scale}px`;
-                inputElement.value = this.emptyWhenInput ? '' : this.content;
-                inputElement.style.color = this.textColor;
-                inputElement.setAttribute('placeholder', this.placeholder);
-
-                inputElement.addEventListener("focus",  (e) => {
-                    // e.preventDefault();
-                    // this.content = '';
-                    this.textColor = 'transparent'
-                    this.editting = true;
-                    this._jflow._render();
-                    inputElement.style.outline = "none";
-                });
-                let blurHandler = () => {
-                    this.editting = false;
-                    this.dispatchEvent(new JFlowEvent('blur', {
-                        target: this,
-                    }))
-                    const val = inputElement.value;
-                    /**
-                        * 文字改变事件
-                        * @event Text#change
-                        * @type {object}
-                        * @property {Text} target           - 当前文字对象
-                        * @property {String} oldVal         - 原始文字
-                        * @property {String} val            - 当前文字
-                        */
-                    this.dispatchEvent(new JFlowEvent('change', {
-                        target: this,
-                        oldVal,
-                        val,
-                    }))
-                    this.textColor = textColor;
-                    // this.content = oldVal;
-                    this._jflow._render();
-                    this._jflow.removeEventListener('zoompan', blurHandler)
-                    inputElement.removeEventListener('blur', blurHandler)
-                    inputElement.removeEventListener('keypress', keyUpHandler)
-                    wrapper.removeChild(inputElement);
-                    inputElement = null;
-                    blurHandler = null;
-                    this.inputElement = null;
-                };
-                this._jflow.addEventListener('zoompan', blurHandler);
-                inputElement.addEventListener('blur', blurHandler);
-                const keyUpHandler = (e) => {
-                    if (e.key === 'Enter' || e.keyCode === 13) {
-                        e.preventDefault();
-                        let defaultAct = true;
-                        this.dispatchEvent(new JFlowEvent('enterkeypressed', {
-                            target: this,
-                            handler: (val) => {
-                                defaultAct = val;
-                            },
-                        }))
-                        if(defaultAct){
-                            inputElement.removeEventListener('keypress', keyUpHandler)
-                            blurHandler();
-                        }
-                    }
-                };
-                inputElement.addEventListener('keypress', keyUpHandler)
-                inputElement.addEventListener('input', (e) => {
-                    let changed = false;
-                    this.dispatchEvent(new JFlowEvent('input', {
-                        target: this,
-                        oldVal,
-                        val: e.target.value,
-                        handler(val) {
-                            oldVal = val;
-                            inputElement.value = val;
-                            changed = true;
-                        }
-                    }))
-                    if(!changed) {
-                        oldVal = e.target.value
-                    }
-                })
-                wrapper.append(inputElement);
-                inputElement.focus({
-                    preventScroll: true
-                });
-                this.inputElement = inputElement;
+                event.detail.bubbles = false;
+                this.click();
             })
         }
+    }
+
+    click() {
+        if(this.disabled || !this.editable) {
+            return;
+        }
+        let x;
+        const hw = this.width / 2;
+        if(this.textAlign === TEXT_ALIGN.LEFT){
+            x = this.anchor[0] - hw + this.indent / 2;
+        } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
+            x = this.anchor[0] + hw;
+        } else {
+            x = this.anchor[0] + this.indent / 2;
+        }
+        const p = [ x, -this.height/2 ];
+        const fontSize = +/(\d+)/.exec(this.fontSize)[1];
+        const [offsetX, offsetY] = this.calculateToRealWorld(p);
+        let inputElement = createInputElement();
+        const wrapper = this._jflow.DOMwrapper;
+        let oldVal = this.content;
+        let textColor = this.textColor;
+        inputElement.style.margin = 0;
+        inputElement.style.padding = 0;
+        inputElement.style.transform =`translate(${offsetX}px, ${offsetY}px)`;
+        inputElement.style.width = this.calculateToRealWorldWithScalar(this.width) + 'px';
+        inputElement.style.height = this.calculateToRealWorldWithScalar(this.height) + 'px';
+        inputElement.style.fontFamily = this.fontFamily;
+        wrapper.style.fontSize = `${fontSize * this._jflow.scale}px`;
+        inputElement.style.fontSize = `${fontSize * this._jflow.scale}px`;
+        inputElement.style.lineHeight = `${this.lineHeight * this._jflow.scale}px`;
+        inputElement.style.textIndent = `${this.indent * this._jflow.scale}px`;
+        inputElement.value = this.emptyWhenInput ? '' : this.content;
+        inputElement.style.color = this.textColor;
+        inputElement.style.outline = "none";
+        inputElement.setAttribute('placeholder', this.placeholder);
+
+        // inputElement.addEventListener("focus",  (e) => {
+        //     // e.preventDefault();
+        //     // this.content = '';
+            
+            
+        // });
+        let blurHandler = () => {
+            this.editting = false;
+            this.dispatchEvent(new JFlowEvent('blur', {
+                target: this,
+            }))
+            const val = inputElement.value;
+            /**
+                * 文字改变事件
+                * @event Text#change
+                * @type {object}
+                * @property {Text} target           - 当前文字对象
+                * @property {String} oldVal         - 原始文字
+                * @property {String} val            - 当前文字
+                */
+            this.dispatchEvent(new JFlowEvent('change', {
+                target: this,
+                oldVal,
+                val,
+            }))
+            this.textColor = textColor;
+            // this.content = oldVal;
+            this._jflow._render();
+            this._jflow.removeEventListener('zoompan', blurHandler)
+            inputElement.removeEventListener('blur', blurHandler)
+            inputElement.removeEventListener('keypress', keyUpHandler)
+            wrapper.removeChild(inputElement);
+            inputElement = null;
+            blurHandler = null;
+            this.inputElement = null;
+        };
+        this._jflow.addEventListener('zoompan', blurHandler);
+        inputElement.addEventListener('blur', blurHandler);
+        const keyUpHandler = (e) => {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                e.preventDefault();
+                let defaultAct = true;
+                this.dispatchEvent(new JFlowEvent('enterkeypressed', {
+                    target: this,
+                    handler: (val) => {
+                        defaultAct = val;
+                    },
+                }))
+                if(defaultAct){
+                    inputElement.removeEventListener('keypress', keyUpHandler)
+                    blurHandler();
+                }
+            }
+        };
+        inputElement.addEventListener('keypress', keyUpHandler)
+        inputElement.addEventListener('input', (e) => {
+            let changed = false;
+            this.dispatchEvent(new JFlowEvent('input', {
+                target: this,
+                oldVal,
+                val: e.target.value,
+                handler(val) {
+                    oldVal = val;
+                    inputElement.value = val;
+                    changed = true;
+                }
+            }))
+            if(!changed) {
+                oldVal = e.target.value
+            }
+        })
+        this.textColor = 'transparent'
+        this.editting = true;
+        this._jflow._render();
+        wrapper.append(inputElement);
+        inputElement.focus({
+            preventScroll: true
+        });
+        this.inputElement = inputElement;
     }
 
     renderShadowText(ctx) {
