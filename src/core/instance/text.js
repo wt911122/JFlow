@@ -3,7 +3,8 @@ import { DIRECTION } from '../utils/constance';
 import { requestCacheCanvas } from '../utils/canvas';
 import JFlowEvent from '../events';
 function createInputElement() {
-    const input = document.createElement('input');
+    const input = document.createElement('span');
+    input.setAttribute('contenteditable', true);
     input.setAttribute('style',`
         position: absolute;
         left: 0;
@@ -169,18 +170,27 @@ class Text extends Rectangle {
         if(this.disabled || !this.editable) {
             return;
         }
-        let x;
-        const hw = this.width / 2;
-        if(this.textAlign === TEXT_ALIGN.LEFT){
-            x = this.anchor[0] - hw + this.indent / 2;
-        } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
-            x = this.anchor[0] + hw;
-        } else {
-            x = this.anchor[0] + this.indent / 2;
-        }
-        const p = [ x, -this.height/2 ];
+       
+        const _height = this.height * 1.15;
+        const size = this.calculateToRealWorldWithScalar(_height);
         const fontSize = +/(\d+)/.exec(this.fontSize)[1];
-        const [offsetX, offsetY] = this.calculateToRealWorld(p);
+
+        const calcuPos = () => {
+            let x;
+            const hw = this.width / 2;
+            if(this.textAlign === TEXT_ALIGN.LEFT){
+                x = this.anchor[0] - hw + this.indent / 2;
+            } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
+                x = this.anchor[0] + hw;
+            } else {
+                x = this.anchor[0] + this.indent / 2;
+            }
+
+            const p = [ x, -_height/2 ];
+
+            return this.calculateToRealWorld(p)
+        }
+        const [offsetX, offsetY] = calcuPos();
         let inputElement = createInputElement();
         const wrapper = this._jflow.DOMwrapper;
         let oldVal = this.content;
@@ -188,14 +198,15 @@ class Text extends Rectangle {
         inputElement.style.margin = 0;
         inputElement.style.padding = 0;
         inputElement.style.transform =`translate(${offsetX}px, ${offsetY}px)`;
-        inputElement.style.width = this.calculateToRealWorldWithScalar(this.width) + 'px';
-        inputElement.style.height = this.calculateToRealWorldWithScalar(this.height) + 'px';
+        
+        // inputElement.style.width = this.calculateToRealWorldWithScalar(this.width) + 'px';
+        inputElement.style.height =  size+ 'px';
         inputElement.style.fontFamily = this.fontFamily;
         wrapper.style.fontSize = `${fontSize * this._jflow.scale}px`;
         inputElement.style.fontSize = `${fontSize * this._jflow.scale}px`;
         inputElement.style.lineHeight = `${this.lineHeight * this._jflow.scale}px`;
         inputElement.style.textIndent = `${this.indent * this._jflow.scale}px`;
-        inputElement.value = this.emptyWhenInput ? '' : this.content;
+        inputElement.innerText = this.emptyWhenInput ? '' : this.content;
         inputElement.style.color = this.textColor;
         inputElement.style.outline = "none";
         inputElement.setAttribute('placeholder', this.placeholder);
@@ -211,7 +222,7 @@ class Text extends Rectangle {
             this.dispatchEvent(new JFlowEvent('blur', {
                 target: this,
             }))
-            const val = inputElement.value;
+            const val = inputElement.innerText;
             /**
                 * 文字改变事件
                 * @event Text#change
@@ -260,15 +271,27 @@ class Text extends Rectangle {
             this.dispatchEvent(new JFlowEvent('input', {
                 target: this,
                 oldVal,
-                val: e.target.value,
+                val: inputElement.innerText,
                 handler(val) {
                     oldVal = val;
-                    inputElement.value = val;
+                    inputElement.innerText = val;
                     changed = true;
                 }
             }))
+            requestCacheCanvas((ctx) => {
+                this.content = inputElement.innerText;
+                this.renderShadowText(ctx);
+            });
+            if(this._belongs.recalculateUp) {
+                this._belongs.recalculateUp()
+            }
+            const [offsetX, offsetY] = calcuPos();
+            inputElement.style.transform =`translate(${offsetX}px, ${offsetY}px)`;
+            
+            this._jflow.scheduleRender();
+            // inputElement.style.width = e.target.value.length + "em";
             if(!changed) {
-                oldVal = e.target.value
+                oldVal = inputElement.innerText;
             }
         })
         this.textColor = 'transparent'
