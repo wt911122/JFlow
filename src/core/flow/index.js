@@ -383,6 +383,7 @@ class JFlow extends EventTarget{
         listenOnDevicePixelRatio((dpr) => {
             this.dpr = dpr;
             // this.ctx.setDPR(dpr)
+            this.resizeCanvas();
             this.scheduleRender();
         })
     }
