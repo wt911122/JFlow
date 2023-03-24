@@ -192,7 +192,8 @@ class Text extends Rectangle {
         }
         const [offsetX, offsetY] = calcuPos();
         let inputElement = createInputElement();
-        const wrapper = this._jflow.DOMwrapper;
+        const jflow = this._jflow;
+        const wrapper = jflow.DOMwrapper;
         let oldVal = this.content;
         let textColor = this.textColor;
         inputElement.style.margin = 0;
@@ -202,13 +203,17 @@ class Text extends Rectangle {
         // inputElement.style.width = this.calculateToRealWorldWithScalar(this.width) + 'px';
         inputElement.style.height =  size+ 'px';
         inputElement.style.fontFamily = this.fontFamily;
-        wrapper.style.fontSize = `${fontSize * this._jflow.scale}px`;
-        inputElement.style.fontSize = `${fontSize * this._jflow.scale}px`;
-        inputElement.style.lineHeight = `${this.lineHeight * this._jflow.scale}px`;
-        inputElement.style.textIndent = `${this.indent * this._jflow.scale}px`;
+        wrapper.style.fontSize = `${fontSize * jflow.scale}px`;
+        inputElement.style.letterSpacing = jflow.scale;
+        inputElement.style.fontSize = `${fontSize * jflow.scale}px`;
+        inputElement.style.lineHeight = `${this.lineHeight * jflow.scale}px`;
+        inputElement.style.textIndent = `${this.indent * jflow.scale}px`;
         inputElement.innerText = this.emptyWhenInput ? '' : this.content;
         inputElement.style.color = this.textColor;
+        inputElement.style.whiteSpace = 'nowrap';
         inputElement.style.outline = "none";
+        inputElement.style.paddingRight = '1em';
+        inputElement.style.letterSpacing = `${(1.414 + 0.181) / (1 + Math.pow(jflow.scale / 1.81, -3.56) ) - 0.181}px`;
         inputElement.setAttribute('placeholder', this.placeholder);
 
         // inputElement.addEventListener("focus",  (e) => {
@@ -238,8 +243,8 @@ class Text extends Rectangle {
             }))
             this.textColor = textColor;
             // this.content = oldVal;
-            this._jflow._render();
-            this._jflow.removeEventListener('zoompan', blurHandler)
+            jflow._render();
+            jflow.removeEventListener('zoompan', blurHandler)
             inputElement.removeEventListener('blur', blurHandler)
             inputElement.removeEventListener('keypress', keyUpHandler)
             wrapper.removeChild(inputElement);
@@ -247,8 +252,8 @@ class Text extends Rectangle {
             blurHandler = null;
             this.inputElement = null;
         };
-        this._jflow.addEventListener('zoompan', blurHandler);
-        inputElement.addEventListener('blur', blurHandler);
+        jflow.addEventListener('zoompan', blurHandler);
+        // inputElement.addEventListener('blur', blurHandler);
         const keyUpHandler = (e) => {
             if (e.key === 'Enter' || e.keyCode === 13) {
                 e.preventDefault();
@@ -296,11 +301,19 @@ class Text extends Rectangle {
         })
         this.textColor = 'transparent'
         this.editting = true;
-        this._jflow._render();
+        jflow._render();
         wrapper.append(inputElement);
         inputElement.focus({
             preventScroll: true
         });
+        const range = document.createRange()
+        const sel = window.getSelection()
+        
+        range.setStart(inputElement.firstChild, inputElement.innerText.length)
+        range.collapse(true)
+        
+        sel.removeAllRanges()
+        sel.addRange(range)
         this.inputElement = inputElement;
     }
 
