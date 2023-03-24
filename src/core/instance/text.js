@@ -5,6 +5,7 @@ import JFlowEvent from '../events';
 function createInputElement() {
     const input = document.createElement('span');
     input.setAttribute('contenteditable', true);
+    input.setAttribute('class', 'jfloweditablespan')
     input.setAttribute('style',`
         position: absolute;
         left: 0;
@@ -16,6 +17,26 @@ function createInputElement() {
         -moz-box-shadow: none;
         box-shadow: none;`);
     return input;
+}
+
+export function createInputTextStyle() {
+    const css = `.jfloweditablespan[contenteditable=true]:empty:before{
+        content: attr(placeholder);
+        opacity: 0.5;
+        pointer-events: none;
+        display: block; 
+      }`;
+    const head = document.head || document.getElementsByTagName('head')[0];
+    const style = document.createElement('style');
+
+    head.appendChild(style);
+    style.type = 'text/css';
+    if (style.styleSheet){
+        // This is required for IE8 and below.
+        style.styleSheet.cssText = css;
+    } else {
+        style.appendChild(document.createTextNode(css));
+    }
 }
 /**
  * 文字对齐方式
@@ -196,6 +217,7 @@ class Text extends Rectangle {
         const wrapper = jflow.DOMwrapper;
         let oldVal = this.content;
         let textColor = this.textColor;
+        inputElement.setAttribute('placeholder', this.placeholder);
         inputElement.style.margin = 0;
         inputElement.style.padding = 0;
         inputElement.style.transform =`translate(${offsetX}px, ${offsetY}px)`;
@@ -253,7 +275,7 @@ class Text extends Rectangle {
             this.inputElement = null;
         };
         jflow.addEventListener('zoompan', blurHandler);
-        // inputElement.addEventListener('blur', blurHandler);
+        inputElement.addEventListener('blur', blurHandler);
         const keyUpHandler = (e) => {
             if (e.key === 'Enter' || e.keyCode === 13) {
                 e.preventDefault();
@@ -273,16 +295,17 @@ class Text extends Rectangle {
         inputElement.addEventListener('keypress', keyUpHandler)
         inputElement.addEventListener('input', (e) => {
             let changed = false;
+            const val = inputElement.innerText;
             this.dispatchEvent(new JFlowEvent('input', {
                 target: this,
                 oldVal,
-                val: inputElement.innerText,
-                handler(val) {
-                    oldVal = val;
-                    inputElement.innerText = val;
-                    changed = true;
-                }
-            }))
+                val,
+                // handler(val) {
+                //     oldVal = val;
+                //     inputElement.innerText = val;
+                //     changed = true;
+                // }
+            }));
             requestCacheCanvas((ctx) => {
                 this.content = inputElement.innerText;
                 this.renderShadowText(ctx);
@@ -306,14 +329,17 @@ class Text extends Rectangle {
         inputElement.focus({
             preventScroll: true
         });
-        const range = document.createRange()
-        const sel = window.getSelection()
+        if(inputElement.firstChild) {
+            const range = document.createRange()
+            const sel = window.getSelection()
+            
+            range.setStart(inputElement.firstChild, inputElement.innerText.length)
+            range.collapse(true)
+            
+            sel.removeAllRanges()
+            sel.addRange(range)
+        }
         
-        range.setStart(inputElement.firstChild, inputElement.innerText.length)
-        range.collapse(true)
-        
-        sel.removeAllRanges()
-        sel.addRange(range)
         this.inputElement = inputElement;
     }
 

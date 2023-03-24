@@ -25,6 +25,8 @@ import CapsuleVertical from '../instance/shapes/capsule-vertical';
 import Rhombus from '../instance/shapes/rhombus';
 import Diamond from '../instance/shapes/diamond';
 import DiamondVertical from '../instance/shapes/diamond-vertical';
+import { createInputTextStyle } from '../instance/text';
+createInputTextStyle();
 /**
  * @funtion setInitialPosition
  * @param {Number} RealboxX - 内容映射到canvas上的 X
