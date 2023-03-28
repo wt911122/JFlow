@@ -752,7 +752,6 @@ class JFlow extends EventTarget{
     }
 
     _onDragover(event) {
-        // console.log(event);
         event.preventDefault();
         event.stopPropagation();
         if(this._lastDragState.processing) return;
@@ -792,7 +791,7 @@ class JFlow extends EventTarget{
     _onDrop(event) {
         this._cancelPanInBorder();
         const payload = this.consumeMessage();
-        const instance = payload.instance;
+        const instance = payload?.instance;
         if(this._dragOverTarget) {
             const oldIns = this._dragOverTarget;
             oldIns.dispatchEvent(new JFlowEvent('dragoverend', {
