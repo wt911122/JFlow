@@ -967,6 +967,9 @@ class TextGroup extends Node {
                 element.dirty = true;
                 break;
             case "Enter":
+                if(this.cacheIdx) {
+                    return;
+                }
                 element.source = preContent;
                 element.dirty = true;
                 element.needWrap = true;
