@@ -187,6 +187,23 @@ class Text extends Rectangle {
         }
     }
 
+    calculateInputElementPos() {
+        let x;
+        const hw = this.width / 2;
+        const _height = this.height * 1.15;
+        if(this.textAlign === TEXT_ALIGN.LEFT){
+            x = this.anchor[0] - hw + this.indent / 2;
+        } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
+            x = this.anchor[0] + hw;
+        } else {
+            x = this.anchor[0] + this.indent / 2;
+        }
+
+        const p = [ x, this.anchor[1]-_height/2 ];
+
+        return this.calculateToRealWorld(p)
+    }
+
     click() {
         if(this.disabled || !this.editable) {
             return;
@@ -196,22 +213,7 @@ class Text extends Rectangle {
         const size = this.calculateToRealWorldWithScalar(_height);
         const fontSize = +/(\d+)/.exec(this.fontSize)[1];
 
-        const calcuPos = () => {
-            let x;
-            const hw = this.width / 2;
-            if(this.textAlign === TEXT_ALIGN.LEFT){
-                x = this.anchor[0] - hw + this.indent / 2;
-            } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
-                x = this.anchor[0] + hw;
-            } else {
-                x = this.anchor[0] + this.indent / 2;
-            }
-
-            const p = [ x, -_height/2 ];
-
-            return this.calculateToRealWorld(p)
-        }
-        const [offsetX, offsetY] = calcuPos();
+        const [offsetX, offsetY] = this.calculateInputElementPos();
         let inputElement = createInputElement();
         const jflow = this._jflow;
         const wrapper = jflow.DOMwrapper;
@@ -341,6 +343,7 @@ class Text extends Rectangle {
         }
         
         this.inputElement = inputElement;
+        inputElement._jflowInstance = this;
     }
 
     renderShadowText(ctx) {
