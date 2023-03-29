@@ -266,6 +266,9 @@ class Text extends Rectangle {
                 val,
             }))
             this.textColor = textColor;
+            if(this._belongs.recalculateUp) {
+                this._belongs.recalculateUp()
+            }
             // this.content = oldVal;
             jflow._render();
             jflow.removeEventListener('zoompan', blurHandler)
@@ -315,7 +318,7 @@ class Text extends Rectangle {
             if(this._belongs.recalculateUp) {
                 this._belongs.recalculateUp()
             }
-            const [offsetX, offsetY] = calcuPos();
+            const [offsetX, offsetY] = this.calculateInputElementPos();
             inputElement.style.transform =`translate(${offsetX}px, ${offsetY}px)`;
             
             this._jflow.scheduleRender();
