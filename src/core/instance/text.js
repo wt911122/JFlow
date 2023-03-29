@@ -226,7 +226,7 @@ class Text extends Rectangle {
         inputElement.style.height =  size+ 'px';
         inputElement.style.fontFamily = this.fontFamily;
         wrapper.style.fontSize = `${fontSize * jflow.scale}px`;
-        inputElement.style.letterSpacing = jflow.scale;
+        // inputElement.style.letterSpacing = jflow.scale;
         inputElement.style.fontSize = `${fontSize * jflow.scale}px`;
         inputElement.style.lineHeight = `${this.lineHeight * jflow.scale}px`;
         inputElement.style.textIndent = `${this.indent * jflow.scale}px`;
@@ -294,7 +294,7 @@ class Text extends Rectangle {
         };
         inputElement.addEventListener('keypress', keyUpHandler)
         inputElement.addEventListener('input', (e) => {
-            let changed = false;
+            // let changed = false;
             const val = inputElement.innerText;
             this.dispatchEvent(new JFlowEvent('input', {
                 target: this,
@@ -318,9 +318,9 @@ class Text extends Rectangle {
             
             this._jflow.scheduleRender();
             // inputElement.style.width = e.target.value.length + "em";
-            if(!changed) {
-                oldVal = inputElement.innerText;
-            }
+            // if(!changed) {
+            //     oldVal = inputElement.innerText;
+            // }
         })
         this.textColor = 'transparent'
         this.editting = true;
