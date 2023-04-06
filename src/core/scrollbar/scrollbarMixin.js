@@ -1,4 +1,4 @@
-class ScrollBar {
+export class ScrollBar {
     constructor(dir, configs = {}) {
         this.anchor = [0,0];
         this.width = configs.barWidth || 4;

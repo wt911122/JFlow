@@ -39,6 +39,16 @@ class InstanceStack extends Array {
         }
     }
 
+    resetHitStatus() {
+        this._currentHit = null;
+        this.forEach(i => {
+            if(i._stack) {
+                i._stack.resetHitStatus();
+            }
+            i._isHit = false;
+        })
+    }
+
     /**
      * 碰撞对象过滤条件
      * @name InstanceStack~InstanceFilter

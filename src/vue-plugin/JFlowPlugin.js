@@ -4,7 +4,7 @@ import JFlowInstance from './components/JFlowInstance';
 import JFlowLink from './components/JFlowLink';
 import JFlowGroup from './components/JFlowGroup';
 import JFlowTextGroup from './components/JFlowTextGroup';
- 
+
 const JFLOW_NODES = [
     /**
      * JFlow {@link Point} 的 vue 封装 
@@ -126,6 +126,8 @@ const JFLOW_GROUPS = [
     'RhombusGroup',
 
     'PointGroup',
+
+    'ScrollGroup',
 ]
 
 const components = [

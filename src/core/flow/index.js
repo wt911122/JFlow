@@ -117,6 +117,8 @@ export const PointGroup = GroupFactory(Point, {
         return [w, w];
     }
 });
+
+export { default as ScrollGroup } from '../instance/groups/scroll-group'; 
 /**
  * @typedef JFlow~JFlowConfigs
  * @type {object}
@@ -959,10 +961,7 @@ class JFlow extends EventTarget{
             dragging,
         } = this._target.status;
         if(dragging) {
-            // const { x, y } = this._target.meta;
-            const movingtarget = this._target.moving;// this._tempNode ? [this._tempNode] : this._target.moving;
-            // this._target.status.movingState = true
-            // this._target.status.processing = true;
+            const movingtarget = this._target.moving;
             if(movingtarget) {
                 if(this.draggingbehavior.panInBorder.allowMovingTargetInPan) {
                     movingtarget.forEach(t => {
@@ -971,7 +970,6 @@ class JFlow extends EventTarget{
                     })
                 }
             }
-            // this._targetLockOn([offsetX, offsetY]);
         }
 
         this._recalculatePosition(deltaX, deltaY);
@@ -1063,11 +1061,12 @@ class JFlow extends EventTarget{
                 }
             }))
         }
-
-        this.dispatchEvent(new JFlowEvent('jflowPressStart', {
-            event,
-            jflow: this,
-        }));
+        if(!this._preventPressSequeence) {
+            this.dispatchEvent(new JFlowEvent('jflowPressStart', {
+                event,
+                jflow: this,
+            }));
+        }
     }
     /**
      * 按压中处理函数
