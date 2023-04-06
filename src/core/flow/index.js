@@ -647,6 +647,15 @@ class JFlow extends EventTarget{
         return this._target;
     }
 
+    blur() {
+        if(this._focus.instance) {
+            this._focus.instance.dispatchEvent(new JFlowEvent('blur', {
+                relatedTarget: null,
+            }));
+            this._focus.instance = null;
+        }  
+    }
+
     _getMovingTarget() {
         return this._target.moving && this._target.moving[0];
     }
@@ -1785,7 +1794,7 @@ export { default as Diamond } from '../instance/shapes/diamond';
 // export { default as DiamondVerticalGroup } from '../instance/shapes/diamond-vertical-group';
 export { default as Rhombus } from '../instance/shapes/rhombus';
 // export { default as RhombusGroup } from '../instance/shapes/rhombus-group';
-export { default as Text } from '../instance/text';
+export { default as Text } from '../instance/elements/text';
 export { default as Icon } from '../instance/image';
 export { default as ShadowDom } from '../instance/shadowDom';
 export { default as GroupFactory } from '../instance/groupFactory';
