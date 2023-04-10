@@ -431,8 +431,7 @@ class Text extends Rectangle {
         if(this._isMoving){
             ctx.globalAlpha = 0.6
         }
-
-        if(!this._status.editing && this._jflow.scale * parseInt(this.fontSize) < 8) {
+        if(!ctx.disableCache && !this._status.editing && this._jflow.scale * parseInt(this.fontSize) < 8) {
             const [cx, cy] = this.anchor;
             // this._shadowCache.render(ctx);
             ctx.save();

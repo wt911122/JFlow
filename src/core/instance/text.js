@@ -410,7 +410,7 @@ class Text extends Rectangle {
         if(this.editting) {
             return;
         }
-        if(this._jflow.scale * parseInt(this.fontSize) < 8) {
+        if(!ctx.disableCache && this._jflow.scale * parseInt(this.fontSize) < 8) {
             this._renderCache(ctx);
             return;
         }
