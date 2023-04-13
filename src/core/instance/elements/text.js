@@ -197,7 +197,9 @@ class Text extends Rectangle {
                 this._cursorOffset = 0;
             }
             
-            const inputElement = createInputElement(this._controlCallback.bind(this));
+            const inputElement = createInputElement(
+                this._controlCallback.bind(this),
+                this._defaultCallback.bind(this));
             const wrapper = jflow.DOMwrapper;
             wrapper.append(inputElement);  
             inputElement.focus();      
@@ -633,9 +635,8 @@ class Text extends Rectangle {
             case "PASTE":
                 this._paste(e);
                 break;
-            default:
-                break;
         }
+
     }
 
     _onArrowLeft() {
@@ -703,6 +704,17 @@ class Text extends Rectangle {
     }
     _paste(event) {
         let pasteContent = (event.clipboardData || window.clipboardData).getData("text");
+        let flag = false;
+        this.dispatchEvent(new JFlowEvent('paste', {
+            target: this,
+            content: pasteContent,
+            preventDefault() {
+                flag = true;
+            }
+        }));
+        if(flag) {
+            return;
+        }
         this._clearTextRange();
         const offset = this._cursorOffset;
         const content = this.content;
@@ -712,12 +724,33 @@ class Text extends Rectangle {
         this._cursorOffset = (preContent + pasteContent).length;
         this.refresh();
     }
+    _defaultCallback(op, e) {
+        switch(op){
+            case 'KeyDown': 
+                this.dispatchEvent(new JFlowEvent('keydown', {
+                    target: this,
+                    key: e.key,
+                    code: e.code,
+                    rawEvent: e,
+                }));
+                break;
+            case 'KeyUp': 
+                this.dispatchEvent(new JFlowEvent('keyup', {
+                    target: this,
+                    key: e.key,
+                    code: e.code,
+                    rawEvent: e,
+                }));
+                break;
+        }
+        
+    }
 }       
 
 export default Text;
 
 
-function createInputElement(controlCallback) {
+function createInputElement(controlCallback, defaultCallback) {
     const input = document.createElement('input');
     input.setAttribute('style',`
         width: 100%;
@@ -791,7 +824,7 @@ function createInputElement(controlCallback) {
                 break;
             
         }
-    })
+    });
 
     input.addEventListener('keydown', (event) => {
         switch(event.code) {
@@ -833,6 +866,14 @@ function createInputElement(controlCallback) {
                 break;
         }
     })
+
+    input.addEventListener('keyup', (event) => {
+        defaultCallback('KeyUp', event);
+    });
+
+    input.addEventListener('keydown', (event) => {
+        defaultCallback('KeyDown', event);
+    });
 
     input.addEventListener('copy', event => {
         event.preventDefault();
