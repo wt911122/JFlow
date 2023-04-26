@@ -202,7 +202,7 @@ class Text extends Rectangle {
                 this._defaultCallback.bind(this));
             const wrapper = jflow.DOMwrapper;
             wrapper.append(inputElement);  
-            inputElement.focus();      
+            inputElement.focus({ preventScroll: true });      
             jflow.setFocusInstance(this);
 
             Object.assign(this._status, {
@@ -224,6 +224,7 @@ class Text extends Rectangle {
             if(this.emptyWhenInput) {
                 this.content = '';
             }
+            this.syncShadowInputPosition();
         }
     }
 
@@ -261,12 +262,13 @@ class Text extends Rectangle {
                         enable: true,
                     });
                     this._cursorOffset = this._textRange.rangeTo;
-                    this._status.inputElement.focus();
+                    this._status.inputElement.focus({ preventScroll: true });
                     // this._refreshCursor();  
                 } else {
                     this._cursorOffset = offset
-                    this._status.inputElement.focus();
+                    this._status.inputElement.focus({ preventScroll: true });
                     this._refreshCursor();  
+                    this.syncShadowInputPosition();
                 }
             } 
             this.click();
@@ -330,7 +332,7 @@ class Text extends Rectangle {
                     const rangeTo = this._textRange.rangeTo;
                     this._cursorOffset = rangeTo;
                     this._status.editing = true;
-                    this._status.inputElement.focus();   
+                    this._status.inputElement.focus({ preventScroll: true });   
                     this._textRange.initialRange = null;
                 }, {
                     once: true,
@@ -521,6 +523,7 @@ class Text extends Rectangle {
                     val: this.content,
                 }));
                 this.refresh();
+                this.syncShadowInputPosition();
                 return;
             }
         }
@@ -533,7 +536,7 @@ class Text extends Rectangle {
         } else {
             afterContent = content.substring(offset);
         }
-
+        let stopInputEvent = false;
         switch(op){
             case "Input":
                 preContent += data;
@@ -563,16 +566,20 @@ class Text extends Rectangle {
                     return;
                 }
                 let defaultAct = true;
+                
                 this.dispatchEvent(new JFlowEvent('enterkeypressed', {
                     target: this,
                     handler: (val) => {
                         defaultAct = val;
                     },
+                    stopInput() {
+                        stopInputEvent = true;
+                    }
                 }))
                 if(defaultAct) {
                     this._jflow.blur();
                 }
-                
+         
                 break;
             case "Backspace":
                 preContent = preContent.substring(0, preContent.length - 1);
@@ -582,19 +589,43 @@ class Text extends Rectangle {
             
         }
 
-        this.dispatchEvent(new JFlowEvent('input', {
-            target: this,
-            oldVal: this._status.oldVal,
-            val: this.content,
-        }));
-
+        if(!stopInputEvent) {
+            this.dispatchEvent(new JFlowEvent('input', {
+                target: this,
+                oldVal: this._status.oldVal,
+                val: this.content,
+            }));
+    
+        }
+       
         this.refresh();
+        this.syncShadowInputPosition();
     }
 
     refresh() {
         this.preCalculateText();
         this._belongs.recalculateUp();
         this._jflow.scheduleRender();
+    }
+
+    syncShadowInputPosition() {
+        if(this._status.editing) {
+            const hw = this.width/2;
+            const hh = this.height/2;
+            let lx = this.anchor[0] - hw;
+            const offset = this._cursorOffset;
+
+            requestCacheCanvas((ctx) => {
+                ctx.beginPath();
+                ctx.font = `${this.fontSize} ${this.fontFamily}`;
+                const c = this.content.substring(0, offset);
+                lx += ctx.measureText(c).width;
+            });
+            const point = this.calculateToRealWorld([lx, hh]);
+            const canvasMeta = this._jflow.canvasMeta;
+            const px = Math.min(canvasMeta.actual_width - 120, point[0]);
+            this._status.inputElement.style.transform = `translate(${px}px, ${point[1]}px)`
+        }
     }
 
     _controlCallback(op, data, e) {
@@ -647,11 +678,13 @@ class Text extends Rectangle {
     _onArrowLeft() {
         this._cursorOffset = Math.max(0, this._cursorOffset - 1);
         this._jflow.scheduleRender();
+        this.syncShadowInputPosition();
     }
 
     _onArrowRight() {
         this._cursorOffset = Math.min(this.content.length, this._cursorOffset + 1);
         this._jflow.scheduleRender();
+        this.syncShadowInputPosition();
     }    
 
     _onShiftToggle(val) {
@@ -758,7 +791,7 @@ export default Text;
 function createInputElement(controlCallback, defaultCallback) {
     const input = document.createElement('input');
     input.setAttribute('style',`
-        width: 100%;
+        width: 100px;
         position: absolute;
         left: 0;
         top: 0;

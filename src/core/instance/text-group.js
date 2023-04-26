@@ -128,6 +128,7 @@ class TextGroup extends Node {
 
     refresh() {
         this.recalculateUp();
+        this.syncShadowInputPosition();
         this._jflow._render();
     }
 
@@ -374,10 +375,10 @@ class TextGroup extends Node {
                         row: a,
                         column: [b, c],
                     }
-                    inputElement.focus(); 
+                    inputElement.focus({ preventScroll: true }); 
                 } else {
                     this._cursor = cursor
-                    inputElement.focus();   
+                    inputElement.focus({ preventScroll: true });   
                     this._refreshCursor();  
                 }
             } else {
@@ -398,7 +399,8 @@ class TextGroup extends Node {
                 inputElement = createInputElement(this._controlCallback.bind(this));
                 const wrapper = jflow.DOMwrapper;
                 wrapper.append(inputElement);  
-                inputElement.focus();      
+                inputElement.focus({ preventScroll: true });    
+                this.inputElement = inputElement;  
                 jflow.setFocusInstance(this);
                 this._status.editing = true; 
                  
@@ -413,6 +415,7 @@ class TextGroup extends Node {
                         this._status.lastElapsed = elapsed;
                     } 
                 });
+                this.syncShadowInputPosition();
                 
             }
         })
@@ -479,7 +482,7 @@ class TextGroup extends Node {
                         column: [b, c],
                     }
                     this._status.editing = true;
-                    inputElement.focus();   
+                    inputElement.focus({ preventScroll: true });   
                     this._textRange.initialRange = null;
                 }, {
                     once: true,
@@ -536,7 +539,7 @@ class TextGroup extends Node {
                     this._cursor.column[0] += (this._textElements.length - lastLength);
                     this._cursor.column[1] = 0;
                 }
-                inputElement.focus(); 
+                inputElement.focus({ preventScroll: true }); 
             }
             this._refreshCursor();
         }).bind(this)
@@ -843,6 +846,7 @@ class TextGroup extends Node {
                 cursorshow: true,
                 refreshElapsed: true,
             });
+            this.syncShadowInputPosition();
         }
         if(this._textRange.enable) {
             this._textRange.enable = false;
@@ -870,30 +874,35 @@ class TextGroup extends Node {
                     this._textRange.enable = false;
                 }
                 this._onArrowLeft();
+                this.syncShadowInputPosition();
                 break;
             case "ArrowRight":
                 if(this._textRange.enable) {
                     this._textRange.enable = false;
                 }
                 this._onArrowRight();
+                this.syncShadowInputPosition();
                 break;
             case "ArrowDown":
                 if(this._textRange.enable) {
                     this._textRange.enable = false;
                 }
                 this._onArrowDown();
+                this.syncShadowInputPosition();
                 break;
             case "ArrowUp":
                 if(this._textRange.enable) {
                     this._textRange.enable = false;
                 }
                 this._onArrowUp();
+                this.syncShadowInputPosition();
                 break;
             case "Shift":
                 this._onShiftToggle(data)
                 break;
             case "CtrlA":
                 this._selectFullRange();
+                this.syncShadowInputPosition();
             default:
                 break;
         }
@@ -1089,6 +1098,38 @@ class TextGroup extends Node {
         const { row } = this._cursor;
         if(row - 1 > -1){
             this._ArrowVerticalHanlder(row - 1);
+        }
+    }
+
+    syncShadowInputPosition() {
+        if(this._status.editing) {
+            const { row, column } = this._cursor;
+            const { elements, anchorY } = this._lines[row];
+            const [elemidx, offset] = column;
+            const meta = elements[elemidx];
+            const idx = this._textElements.findIndex(el => el === meta);
+            const preElem = this._textElements[idx-1];
+            let cw;
+            let c_len = this.currentLineHeight/2;
+            if(meta.type === 'text') {
+                const c = meta.source.substring(0, offset);
+                requestCacheCanvas((ctx) => {
+                    ctx.beginPath();
+                    ctx.font = `${this.fontSize} ${this.fontFamily}`;
+                    cw = meta.anchorX - meta.width/2 + ctx.measureText(c).width
+                })
+            } else {
+                cw = meta.anchorX - meta.width/2
+                c_len = Math.max(c_len, meta.height/2);
+            }
+            if(offset === 0 && preElem && preElem.type !== 'text') {
+                c_len = Math.max(c_len, preElem.height/2);
+            }
+
+            const point = this.calculateToRealWorld([cw, anchorY + c_len]);
+            const canvasMeta = this._jflow.canvasMeta;
+            const px = Math.min(canvasMeta.actual_width - 120, point[0]);
+            this.inputElement.style.transform = `translate(${px}px, ${point[1]}px)`
         }
     }
 
@@ -1385,7 +1426,7 @@ export default TextGroup;
 function createInputElement(controlCallback) {
     const input = document.createElement('input');
     input.setAttribute('style',`
-        width: 100%;
+        width: 100px;
         position: absolute;
         left: 0;
         top: 0;
