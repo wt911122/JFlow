@@ -515,6 +515,11 @@ class Text extends Rectangle {
         if(this._textRange.enable) {
             this._clearTextRange();
             if(op === 'Backspace') {
+                this.dispatchEvent(new JFlowEvent('input', {
+                    target: this,
+                    oldVal: this._status.oldVal,
+                    val: this.content,
+                }));
                 this.refresh();
                 return;
             }
