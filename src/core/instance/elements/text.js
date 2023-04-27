@@ -583,7 +583,7 @@ class Text extends Rectangle {
                 break;
             case "Backspace":
                 preContent = preContent.substring(0, preContent.length - 1);
-                this._cursorOffset -= 1;
+                this._cursorOffset = Math.max(0, this._cursorOffset-1);
                 this.content = preContent + afterContent;
                 break;
             
