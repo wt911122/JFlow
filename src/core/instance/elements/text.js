@@ -786,6 +786,12 @@ class Text extends Rectangle {
         }
         
     }
+
+    destroy() {
+        if(this._jflow._focus.instance === this) {
+            this._jflow.blur();
+        }
+    }
 }       
 
 export default Text;

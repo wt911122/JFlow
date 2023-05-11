@@ -1326,6 +1326,12 @@ class TextGroup extends Node {
 
         return t;
     }
+
+    destroy() {
+        if(this._jflow._focus.instance === this) {
+            this._jflow.blur();
+        }
+    }
 }
 
 Object.assign(TextGroup.prototype, StackMixin);
