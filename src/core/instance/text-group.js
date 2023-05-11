@@ -951,9 +951,37 @@ class TextGroup extends Node {
         
         switch(op){
             case "Input":
-                preContent += data;
-                column[1] += data.length;
-                element.source = preContent + afterContent;
+                if(/\r?\n/.test(data)) {
+                    const source = data.split(/\r?\n/);
+                    let idx = this._textElements.findIndex(el => el === element);
+                    let a = source.shift();
+                    element.source = preContent + a;
+                    element.needWrap = true;
+                    let row = this._cursor.row + 1;
+                    idx++;
+                    while(source.length > 1) {
+                        const t = new TextElement('text', source.shift());
+                        t.needWrap = true;
+                        row++;
+                        this._textElements.splice(idx, 0, t);
+                        idx++;
+                    }
+                    a = source.shift();
+                    const curElem = this._textElements[idx];
+                    if(curElem && curElem.type === 'text') {
+                        curElem.source = a + curElem.source;
+                    } else {
+                        const t = new TextElement('text', a);
+                        this._textElements.splice(idx, 0, t);
+                    }
+                    this._cursor.row = row;
+                    this._cursor.column = [0, a.length];
+
+                } else {
+                    preContent += data;
+                    column[1] += data.length;
+                    element.source = preContent + afterContent;
+                }
                 element.dirty = true;
                 break;
             case "compositionstart":

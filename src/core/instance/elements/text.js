@@ -748,6 +748,9 @@ class Text extends Rectangle {
             content: pasteContent,
             preventDefault() {
                 flag = true;
+            },
+            resolvePasteContent(callback) {
+                pasteContent = callback(pasteContent);
             }
         }));
         if(flag) {
