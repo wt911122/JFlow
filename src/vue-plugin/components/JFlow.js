@@ -52,7 +52,7 @@ export default {
                     if(this.$scopedSlots['jflowcommon']){
                         type = 'jflowcommon';
                     } else {
-                        return
+                        return null;
                     }
                 }
                 if(layoutNode.__vnode__) {
@@ -65,7 +65,7 @@ export default {
                 
                 layoutNode.__vnode__ = vnode;
                 return vnode;
-            });
+            }).filter(n => !!n);
             const vlinks = this.renderLinks.map(meta => {
                 let type = meta.type || 'plainlink'
                 if(!this.$scopedSlots[type]) {
@@ -95,7 +95,7 @@ export default {
         this.loadingNodes();
     },
     beforeDestroy() {
-        this._jflowInstance.destroy();
+        this._jflowInstance?.destroy();
     },
     methods: {
         loadingNodes() {

@@ -564,9 +564,9 @@ class TextGroup extends Node {
             }
             lineNumber ++;
         }
-        row = lineNumber;
+        row = Math.min(lineNumber, lines.length - 1);
         
-        const currLine = lines[lineNumber];
+        const currLine = lines[row];
         const elements = currLine.elements;
         if(offsetX >= currLine.width) {
             const elem = elements[elements.length - 1];
@@ -867,6 +867,7 @@ class TextGroup extends Node {
             case "compositionend":
             case "Enter":
             case "Backspace":
+            case "Delete":
                 this._inputControl(op, data);
                 break;
             case "ArrowLeft":
@@ -922,6 +923,7 @@ class TextGroup extends Node {
         } = this._cursor;
 
         const meta = this._lines[row];
+        const rowlength = meta.elements.length;
         let [elem_idx, offset] = column;
         let element = meta.elements[elem_idx];
         let preElem = meta.elements[elem_idx-1];
@@ -1044,6 +1046,50 @@ class TextGroup extends Node {
                     case 'self':
                         preContent = preContent.substring(0, preContent.length - 1);
                         column[1] -= 1;
+                        element.source = preContent + afterContent;
+                        element.dirty = true;
+                        break;
+                }
+                break;
+            case 'Delete':
+                const shiftresult = element.shift(offset, 1);
+                switch(shiftresult) {
+                    case 'next':
+                        let idx = this._textElements.findIndex(el => el === element);
+                        if(elem_idx < rowlength-1) {
+                            // 行内
+                            this._textElements.splice(idx+1, 1);
+                            // element.source = preContent;
+                            
+                            const nextElem = this._textElements[idx+1];
+                            const offset = element.source.length;
+                            if(nextElem.type === 'text'){
+                                element.source += nextElem.source;
+                                element.dirty = true;
+                                element.needWrap = nextElem.needWrap;
+                                this._textElements.splice(idx+1, 1);
+                            }
+                            // const offset = this._blandAdjacentElement(element, this._textElements[idx+1], idx+1);
+                            this._cursor.column = [elem_idx, offset];
+                            
+                        } else if(idx < this._textElements.length-1){
+                            // 换行了
+                            // const afterRow = row + 1;
+                            const offset = element.source.length;
+                            const nextElem = this._textElements[idx+1];
+                            if(nextElem.type === 'text'){
+                                element.source += nextElem.source;
+                                element.dirty = true;
+                                element.needWrap = nextElem.needWrap;
+                                this._textElements.splice(idx+1, 1);
+                            }
+                            // const offset = this._blandAdjacentElement(this._textElements[idx-1], element, idx);
+                            this._cursor.column = [elem_idx, offset];
+                        }
+                        break;
+                    case 'self':
+                        afterContent = afterContent.substring(1);
+                        // column[1] -= 1;
                         element.source = preContent + afterContent;
                         element.dirty = true;
                         break;
@@ -1544,6 +1590,9 @@ function createInputElement(controlCallback) {
                 // content = content.substring(0, content.length - 1);
                 // renderContent();
                 controlCallback('Backspace');
+                break;
+            case "Delete":
+                controlCallback('Delete');
                 break;
             case "ArrowLeft":
                 controlCallback("ArrowLeft");

@@ -245,6 +245,8 @@ class JFlow extends EventTarget{
 
         this._allowMovingTarget = true;
 
+        this.canvasMeta = {}
+
         // this._allowZoom = true;
     }
 
@@ -389,6 +391,8 @@ class JFlow extends EventTarget{
             // this.ctx.setDPR(dpr)
             this.resizeCanvas();
             this.scheduleRender();
+        }, (handler) => {
+            this.destroyDprListener = handler;
         })
     }
 
@@ -462,17 +466,19 @@ class JFlow extends EventTarget{
      * 外层容器大小变化后，调用此方法可以改变当前canvas的状态
      */
     resizeCanvas() {
-        const {
-            width: c_width, 
-            height: c_height, 
-            raw_width,
-            raw_height,
-        } = resizeCanvas(this.canvas, this.DOMwrapper);
-        this.canvasMeta = {
-            width: raw_width,
-            height: raw_height,
-            actual_width: c_width,
-            actual_height: c_height
+        if(this.canvas && this.DOMwrapper) {
+            const {
+                width: c_width, 
+                height: c_height, 
+                raw_width,
+                raw_height,
+            } = resizeCanvas(this.canvas, this.DOMwrapper);
+            this.canvasMeta = {
+                width: raw_width,
+                height: raw_height,
+                actual_width: c_width,
+                actual_height: c_height
+            }
         }
     }
 
@@ -524,6 +530,7 @@ class JFlow extends EventTarget{
         this.eventAdapter.apply(this);
         const destroyPlainEventListener = () => {
             this.eventAdapter.unload(this);
+            this.destroyDprListener();
         }
         destroyListener = destroyPlainEventListener;
 
