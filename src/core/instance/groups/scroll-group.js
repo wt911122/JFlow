@@ -442,8 +442,11 @@ Object.assign(ScrollGroup.prototype, LayoutMixin);
 Object.assign(ScrollGroup.prototype, {
     recalculateUp() {
         let dirty = true;
+        
         if(this.getBoundingDimension) {
-            const { width: wold, height: hold } = this.getBoundingDimension();
+            // const { width: wold, height: hold } = this.getBoundingDimension();
+            const wold = this._innerWidth;
+            const hold = this._innerHeight;
             if(this.resetChildrenPosition) {
                 this.resetChildrenPosition();
             }
@@ -454,7 +457,9 @@ Object.assign(ScrollGroup.prototype, {
             if(this._getBoundingGroupRect){
                 this._getBoundingGroupRect();
             }
-            const { width: wnow, height: hnow } = this.getBoundingDimension();
+            const wnow = this._innerWidth;
+            const hnow = this._innerHeight;
+            // const { width: wnow, height: hnow } = this.getBoundingDimension();
             dirty = (wold !== wnow || hold !== hnow)
         } else {
             this.reflow();
