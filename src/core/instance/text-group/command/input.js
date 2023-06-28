@@ -1,15 +1,14 @@
 import Command from './base';
 import { TextElement } from '../storage';
 import { EDITOR_EVENTS, KEYBOARD_INPUT } from '../base/constants';
-function _blandAdjacentElement(elem1, elem2, defaultOffset) {
+function _blandAdjacentElement(elem1, elem2, defaultOffset, records) {
     if(!elem1) {
         return [defaultOffset, false];
     }
     if(elem1.type === 'text' && elem2.type === 'text') {
         const offset = elem1.source.length;
-        elem1.source += elem2.source;
-        elem1.dirty = true;
-        elem1.needWrap = elem2.needWrap;
+        elem1.setSource(elem1.source + elem2.source, records);
+        elem1.setNeedWrap(elem2.needWrap, records)
         return [offset, true];
     }
     return [defaultOffset, false];
@@ -23,15 +22,22 @@ export class Input extends Command {
     exec(kind, data) {
         const editor = this._editor;
         const range = editor._range;
+        const caret = editor._caret;
+        const flattenTxtElem = editor._flattenTxtElem;
+        const undoredo = editor._undoredo;
+        const records = flattenTxtElem.startRecord();
+        flattenTxtElem.recordBeforeCaret(caret);
         if(range.isEnable()) {
-            range.delete(editor);
+            range.delete(editor, records);
             if(kind === KEYBOARD_INPUT.BACKSPACE || kind === KEYBOARD_INPUT.DELETE) {
+                flattenTxtElem.collectRecords();
+                flattenTxtElem.recordAfterCaret(caret);
                 this._editor.refresh();
+                undoredo.write(records, flattenTxtElem.getCaretRecord());
                 return;
             }
         }
-        const caret = editor._caret;
-        const flattenTxtElem = editor._flattenTxtElem;
+        
         const row = caret.getRow();
         let [elem_idx, offset] = caret.getColumn();
         const area = editor._area;
@@ -64,16 +70,16 @@ export class Input extends Command {
         switch(kind){
             case KEYBOARD_INPUT.INPUT:
                 if(/\r?\n/.test(data)) {
-                    const source = data.split(/\r?\n/);
+                    let source = data.split(/\r?\n/);
+                    source = source.replace(/\t/, '');
                     let idx = flattenTxtElem.findIndex(element);
                     let a = source.shift();
-                    element.source = preContent + a;
-                    element.needWrap = true;
+                    element.setSource(preContent + a, records);
                     let _row = row + 1;
                     idx++;
                     while(source.length > 1) {
                         const t = new TextElement('text', source.shift());
-                        t.needWrap = true;
+                        t.setNeedWrap(true, records);
                         _row++;
                         flattenTxtElem.inersetAt(idx, t);
                         idx++;
@@ -81,7 +87,7 @@ export class Input extends Command {
                     a = source.shift();
                     const curElem = flattenTxtElem.get(idx);
                     if(curElem && curElem.type === 'text') {
-                        curElem.source = a + curElem.source;
+                        curElem.setSource(a + curElem.source, records);
                     } else {
                         const t = new TextElement('text', a);
                         flattenTxtElem.inersetAt(idx, t);
@@ -91,9 +97,8 @@ export class Input extends Command {
                 } else {
                     preContent += data;
                     caret.setColumn(1, caret.getColumn(1) + data.length);
-                    element.source = preContent + afterContent;
+                    element.setSource(preContent + afterContent, records);
                 }
-                element.dirty = true;
                 break;
             case KEYBOARD_INPUT.COMPOSITION_START:
                 this.cacheIdx = [preContent.length, preContent.length];
@@ -101,8 +106,7 @@ export class Input extends Command {
             case KEYBOARD_INPUT.COMPOSITION_UPDATE:
                 preContent = preContent.substring(0, this.cacheIdx[0]);
                 preContent += data;
-                element.source = preContent + afterContent;
-                element.dirty = true;
+                element.setSource(preContent + afterContent, records);
                 const _t = this.cacheIdx[0] + data.length;
                 caret.setColumn(1, _t);
                 this.cacheIdx[1] = _t;
@@ -112,13 +116,11 @@ export class Input extends Command {
                 caret.setColumn(1, this.cacheIdx[0] + data.length);
                 this.cacheIdx = null;
                 preContent += data;
-                element.source = preContent + afterContent;
-                element.dirty = true;
+                element.setSource(preContent + afterContent, records);
                 break;
             case KEYBOARD_INPUT.ENTER:
-                element.source = preContent;
-                element.dirty = true;
-                element.needWrap = true;
+                element.setSource(preContent, records);
+                element.setNeedWrap(true, records);
                 const t = new TextElement('text', afterContent);
                 flattenTxtElem.insertAfter(element, t);
                 caret.setRow(row+1);
@@ -134,9 +136,9 @@ export class Input extends Command {
                             // 行内
                             flattenTxtElem.splice(idx-1, 1);
                             idx -= 1;
-                            element.source = afterContent;
-                            element.dirty = true;
-                            const [offset, deleteop] = _blandAdjacentElement(flattenTxtElem.get(idx-1), element, 0);
+                            // element.setSource(afterContent, records);
+                            // element.dirty = true;
+                            const [offset, deleteop] = _blandAdjacentElement(flattenTxtElem.get(idx-1), element, 0, records);
                             if(deleteop) {
                                 flattenTxtElem.remove(idx);
                             }
@@ -146,7 +148,7 @@ export class Input extends Command {
                             // 换行了
                             const preRow = row - 1;
                             const preElemidx = area.get(preRow).length() - 1;
-                            const [offset, deleteop] = _blandAdjacentElement(flattenTxtElem.get(idx-1), element, 0);
+                            const [offset, deleteop] = _blandAdjacentElement(flattenTxtElem.get(idx-1), element, 0, records);
                             if(deleteop) {
                                 flattenTxtElem.remove(idx);
                             }
@@ -157,8 +159,7 @@ export class Input extends Command {
                     case 'self':
                         preContent = preContent.substring(0, preContent.length - 1);
                         caret.setColumn(1, caret.getColumn(1)-1)
-                        element.source = preContent + afterContent;
-                        element.dirty = true;
+                        element.setSource(preContent + afterContent, records);
                         break;
                 }
                 break;
@@ -171,7 +172,7 @@ export class Input extends Command {
                             // 行内
                             flattenTxtElem.splice(idx+1, 1);
                             const nextElem = flattenTxtElem.get(idx+1);
-                            const [offset, deleteop] = _blandAdjacentElement(element, nextElem, element.source.length);
+                            const [offset, deleteop] = _blandAdjacentElement(element, nextElem, element.source.length, records);
                             if(deleteop) {
                                 flattenTxtElem.remove(idx+1);
                             }
@@ -180,7 +181,7 @@ export class Input extends Command {
                         } else if(idx < flattenTxtElem.length()-1){
                             // 换行了
                             const nextElem = flattenTxtElem.get(idx+1);
-                            const [offset, deleteop] = _blandAdjacentElement(element, nextElem, element.source.length);
+                            const [offset, deleteop] = _blandAdjacentElement(element, nextElem, element.source.length, records);
                             if(deleteop) {
                                 flattenTxtElem.remove(idx+1);
                             }
@@ -189,12 +190,15 @@ export class Input extends Command {
                         break;
                     case 'self':
                         afterContent = afterContent.substring(1);
-                        element.source = preContent + afterContent;
-                        element.dirty = true;
+                        element.setSource(preContent + afterContent, records);
                         break;
                 }
                 break;
         }
+
+        flattenTxtElem.collectRecords();
+        flattenTxtElem.recordAfterCaret(caret);
+        undoredo.write(records, flattenTxtElem.getCaretRecord());
         this._editor.refresh();
     }
 

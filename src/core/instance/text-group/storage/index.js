@@ -141,6 +141,9 @@ export class FlattenTextElements {
         return _e;
     }
     _textElements = [];
+    _records = [];
+    _caretRecord = null;
+
     insertBefore(anchor, elem) {
         const idx = this.findIndex(anchor);
         this.inersetAt(idx, elem);
@@ -149,7 +152,7 @@ export class FlattenTextElements {
         const idx = this.findIndex(anchor);
         const next = this.get(idx+1);
         if(next) {
-            elem.needWrap = anchor.needWrap || anchor.isTail;
+            elem.setNeedWrap(anchor.needWrap || anchor.isTail);
         }
         this.inersetAt(idx+1, elem);
     }
@@ -163,16 +166,21 @@ export class FlattenTextElements {
         this._textElements = elements;
     }
     inersetAt(idx, elem) {
-        this._textElements.splice(idx, 0, elem);
+        this.splice(idx, 0, elem)
     }
     push(elem) {
-        this._textElements.push(elem);
+        this.splice(this.length(), 0, elem);
     }
     remove(idx) {
-        this._textElements.splice(idx, 1);
+        this.splice(idx, 1);
     }
     splice() {
-        this._textElements.splice(...arguments);
+        const removed = this._textElements.splice(...arguments);
+        this._records.push({
+            op: 'splice',
+            args: arguments,
+            removed,
+        })
     }
     copy() {
         return this._textElements.slice();
@@ -192,6 +200,35 @@ export class FlattenTextElements {
     length() {
         return this._textElements.length;
     }
+
+    startRecord() {
+        this._caretRecord = {
+            before: null,
+            after: null,
+        }
+        this._records = [];
+        return this._records;
+    }
+
+    getRecord() {
+        return this._records;
+    }
+
+    recordBeforeCaret(caret) {
+        this._caretRecord.before = caret.toRange();
+    }
+
+    recordAfterCaret(caret) {
+        this._caretRecord.after = caret.toRange();
+    }
+
+    getCaretRecord() {
+        return this._caretRecord;
+    }
+
+    collectRecords() {
+        return this._records;
+    }
 }
 
 export class TextElement {
@@ -207,6 +244,29 @@ export class TextElement {
     constructor(type, source) {
         this.type = type;
         this.source = source;
+    }
+
+    setSource(source, records) {
+        const lastSource = this.source;
+        this.source = source;
+        this.dirty = true;
+        if(records) {
+            records.push({
+                op: 'setSource',
+                args: [this, source, lastSource],
+            })
+        }
+    }
+
+    setNeedWrap(needWrap, records) {
+        const lastWrap = this.needWrap;
+        this.needWrap = needWrap;
+        if(lastWrap!== needWrap && records) {
+            records.push({
+                op: 'setNeedWrap',
+                args: [this, needWrap, lastWrap],
+            })
+        }
     }
 
     shift(offset, step) {

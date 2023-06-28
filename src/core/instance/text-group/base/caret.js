@@ -68,6 +68,11 @@ class Caret {
     toRange() {
         return [this._row, ...this._column];
     }
+
+    fromRange(range) {
+        this._row = range[0];
+        this._column = range.slice(1);
+    }
 }
 
 export default Caret;

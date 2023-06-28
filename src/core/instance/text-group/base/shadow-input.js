@@ -79,6 +79,7 @@ function createInputElement(controlCallback) {
     let stopInput = false;
     let status = {
         ctrlOn: false,
+        shiftOn: false,
     }
 
     input.addEventListener('beforeinput', e => {
@@ -112,6 +113,7 @@ function createInputElement(controlCallback) {
         switch(event.key) {
             case "Shift":
                 controlCallback(KEYBOARD_COMMANDS.SHIFT_UP);
+                status.shiftOn = false;
                 break;
             case "Meta":
             case "Control":
@@ -151,6 +153,7 @@ function createInputElement(controlCallback) {
         switch(event.key) {
             case "Shift":
                 controlCallback(KEYBOARD_COMMANDS.SHIFT_DOWN);
+                status.shiftOn = true;
                 break;
             case "Meta":
             case "Control":
@@ -176,7 +179,20 @@ function createInputElement(controlCallback) {
                     controlCallback(KEYBOARD_COMMANDS.CTRLX);
                 }
                 break;
-        }
+            case 'y':
+                if(status.ctrlOn) {
+                    event.preventDefault();
+                    controlCallback(KEYBOARD_COMMANDS.REDO);
+                }
+                break;
+            case 'z':
+                if((status.ctrlOn && status.shiftOn)) {
+                    controlCallback(KEYBOARD_COMMANDS.REDO);
+                } else if(status.ctrlOn) {
+                    controlCallback(KEYBOARD_COMMANDS.UNDO);
+                }
+                break;
+        }   
     })
     return input;
 }

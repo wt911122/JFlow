@@ -4,7 +4,6 @@ import { KEYBOARD_COMMANDS, MOUSE_COMMANDS } from '../base/constants';
 export class ShiftUpCommand extends Command {
     static name = KEYBOARD_COMMANDS.SHIFT_UP;
     exec() {
-        console.log('ShiftUpCommand')
         const range = this._editor._range;
         range.setInitialRange(null);
         this._editor.toggleShift(false)
@@ -26,7 +25,6 @@ export class ShiftOnClickCommand extends Command {
     static name = MOUSE_COMMANDS.SHIFT_ON_CLICK;
 
     exec() {
-        console.log('ShiftOnClickCommand');
         const editor = this._editor;
         editor.moveCaretByHitPoint();
         const caret = this._editor._caret;

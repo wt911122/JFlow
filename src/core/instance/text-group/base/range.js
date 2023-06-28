@@ -59,7 +59,7 @@ class Range {
         return true;
     }
 
-    delete(editor) {
+    delete(editor, records) {
         if(this._enable) {
             const area = editor._area;
             const caret = editor._caret;
@@ -68,9 +68,13 @@ class Range {
             const elemFrom = area.get(rangeFrom[0]).get(rangeFrom[1]);
             const elemTo = area.get(rangeTo[0]).get(rangeTo[1]);
             let [row, elem_idx, offset] = rangeFrom;
+            records.push({
+                op: 'range',
+                args: [rangeFrom.slice(), rangeTo.slice()],
+            })
             if(elemFrom === elemTo) {
                 const c = elemFrom.source;
-                elemFrom.source = c.substring(0, rangeFrom[2]) + c.substring(rangeTo[2]);
+                elemFrom.setSource(c.substring(0, rangeFrom[2]) + c.substring(rangeTo[2]), records);
                 elemFrom.dirty = true;
             } else {
                 const flattenTxtElem = editor._flattenTxtElem
@@ -102,12 +106,12 @@ class Range {
                             elem_idx -= 1;
                         }
                         offset = preElement.source.length;
-                        preElement.source += afterContent;
+                        preElement.setSource(preElement.source + afterContent, records);
                         preElement.dirty = true;
-                        preElement.needWrap = endTextNeedWrap;
+                        preElement.setNeedWrap(endTextNeedWrap, records);
                     } else {
                         const t = new TextElement('text', preContent + afterContent);
-                        t.needWrap = endTextNeedWrap;
+                        t.setNeedWrap(endTextNeedWrap, records);
                         flattenTxtElem.splice(fromIdx, 0, t)
                     }
                 } else {
@@ -116,7 +120,7 @@ class Range {
                         const t = new TextElement('text', preContent);
                         flattenTxtElem.splice(fromIdx, 0, t);
                     } else {
-                        elemTo.source = preContent + afterContent;
+                        elemTo.setSource(preContent + afterContent, records);
                         elemTo.dirty = true;
                     }
                 }

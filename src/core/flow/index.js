@@ -1814,6 +1814,7 @@ export { default as Lowcodelayout } from '../layout/low-code-layout';
 export { default as ERLayout } from '../layout/er-layout/er-layout';
 // export { default as Orange } from '../instance/nodeWrapper/orange/orange'
 // export { default as TextEditor } from '../instance/text-editor';
-export { default as TextGroup} from '../instance/text-group';
-export { TextElement } from '../instance/text-group';
+// export { default as TextGroup} from '../instance/text-group';
+export { default as TextGroup} from '../instance/text-group/text-group';
+export { TextElement } from '../instance/text-group/storage';
 export { JFlowPath2D } from '../utils/path-2d';

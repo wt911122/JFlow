@@ -129,7 +129,7 @@ export default {
     },
     methods: {
         genTextElementMeta() {
-            this.nodes = this._jflowInstance._textElements.filter(elem => elem.type !== 'text');
+            this.nodes = this._jflowInstance._flattenTxtElem.filter(elem => elem.type !== 'text');
         },
         reflow() {
             this._jflowInstance.refreshTextElements();

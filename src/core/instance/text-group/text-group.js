@@ -31,8 +31,8 @@ import {
     DoubleClickCommand,
     // ReturnCommand,
     // DeleteCommand,
-    // UndoCommand,
-    // RedoCommand,
+    UndoCommand,
+    RedoCommand,
 } from './command'
 import { EDITOR_EVENTS, KEYBOARD_COMMANDS, MOUSE_COMMANDS } from './base/constants';
 
@@ -47,7 +47,8 @@ class TextGroup extends Node {
         this.initStack(configs);
         this.initLayout(configs);
 
-        this.undoredo = new UndoRedo();
+        this._undoredo = new UndoRedo();
+        this._undoredo._editor = this;
         this._caret = new Caret();
         this._range = new Range();
         this._shadowInput = undefined;
@@ -97,8 +98,8 @@ class TextGroup extends Node {
         this.registCommand(DoubleClickCommand);
         // this.registCommand(ReturnCommand);
         // this.registCommand(DeleteCommand);
-        // this.registCommand(UndoCommand);
-        // this.registCommand(RedoCommand);
+        this.registCommand(UndoCommand);
+        this.registCommand(RedoCommand);
         this._makeFunctional();
     }
 
