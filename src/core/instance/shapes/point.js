@@ -66,10 +66,12 @@ class Point extends Node {
         const lty = anchor[1] - r;
         const rbx = anchor[0] + r;
         const rby = anchor[1] + r;
-        return [
-            ltx, lty,
-            rbx, rby,
-        ]
+        const br = this._boundingrect;
+        br[0] = ltx;
+        br[1] = lty;
+        br[2] = rbx;
+        br[3] = rby;
+        return br
     }
 
     calculateIntersection(point) {

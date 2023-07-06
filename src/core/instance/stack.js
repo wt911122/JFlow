@@ -19,11 +19,12 @@ class InstanceStack extends Array {
                 return;
             }
             if(instance.visible && (!condition || condition(instance))) {
+                if(instance.beforeRender) {
+                    if(!instance.beforeRender(ctx)){
+                        return;
+                    }
+                }
                 ctx.save();
-                // if(instance.reflow && !instance._reflowed) {
-                //     instance.reflow();
-                //     instance._reflowed = true;
-                // }
                 instance.render(ctx);
                 ctx.restore();
             }

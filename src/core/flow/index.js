@@ -247,6 +247,8 @@ class JFlow extends EventTarget{
 
         this.canvasMeta = {}
 
+        this._cacheViewBox = []
+
         // this._allowZoom = true;
     }
 
@@ -381,10 +383,12 @@ class JFlow extends EventTarget{
         if(this.scrollBarBehavior.enable) {
             this.initScrollBar(this.scrollBarBehavior);
         }
-        this.initSchedule();
-        this.scheduleRender(() => {
-            this._createEventHandler();
-        });
+        // this.initSchedule();
+        // this.scheduleRender(() => {
+        //     this._createEventHandler();
+        // });
+        this.__render();
+        this._createEventHandler();
         
         listenOnDevicePixelRatio((dpr) => {
             this.dpr = dpr;
@@ -393,7 +397,8 @@ class JFlow extends EventTarget{
             this.scheduleRender();
         }, (handler) => {
             this.destroyDprListener = handler;
-        })
+        });
+        
     }
 
     /**
@@ -640,10 +645,6 @@ class JFlow extends EventTarget{
         }
         
         if(['pressStart', 'click', 'dblclick', 'contextclick'].includes(event)) {
-            // debugger
-            // if(event === 'click') {
-            //     debugger;
-            // }
             if(this._focus.instance && this._focus.instance !== target) {
                 this._focus.instance.dispatchEvent(new JFlowEvent('blur', {
                     relatedTarget: target,
@@ -1659,9 +1660,15 @@ class JFlow extends EventTarget{
         return [(p[0] - position.offsetX)/scale, (p[1] - position.offsetY) / scale];
     }
 
-    _calculateDistance(l) {
+    _calculatePointBackWithPoint(a, b, arr, idx1, idx2) {
         const scale = this.scale;
-        return scale * l;
+        const position = this.position;
+        arr[idx1] = (a - position.offsetX) / scale;
+        arr[idx2] = (b - position.offsetY) / scale
+    }
+
+    _calculateDistance(l) {
+        return this.scale * l;
     }
 
     _resetTransform() {
@@ -1688,11 +1695,16 @@ class JFlow extends EventTarget{
     }
 
     _getViewBox() {
-        const cacheViewBox = [
-            ...this._calculatePointBack([0,0]),
-            ...this._calculatePointBack([this.canvasMeta.actual_width,this.canvasMeta.actual_height]),
-        ];
-        this._cacheViewBox = cacheViewBox;
+        // const cacheViewBox = [
+        //     ...this._calculatePointBack([0,0]),
+        //     ...this._calculatePointBack([this.canvasMeta.actual_width,this.canvasMeta.actual_height]),
+        // ];
+        const cacheViewBox = this._cacheViewBox;
+        this._calculatePointBackWithPoint(0,0, cacheViewBox, 0, 1);
+        this._calculatePointBackWithPoint(
+            this.canvasMeta.actual_width,
+            this.canvasMeta.actual_height, 
+            cacheViewBox, 2, 3);
         return cacheViewBox;
     }
 
@@ -1726,17 +1738,8 @@ class JFlow extends EventTarget{
             ctx
         }));
         const br = this._getViewBox();
-        this._viewBox = br;
-        // console.log(this._viewBox)
+
         if(this.NodeRenderTop) {
-            // this._linkStack.render(ctx, (link) => !link.ON_TOP && link.isInViewBox(br));
-            // const limitation = 100;
-            // this._stack.render(ctx, (instance) => {
-            //     const bounding_rect = instance.getBoundingRect();
-            //     const result = doOverlap(br, bounding_rect);
-            //     instance._isInViewBox = result;
-            //     return result && (bounding_rect[2] - bounding_rect[0]) * (bounding_rect[3] - bounding_rect[1]) > limitation;
-            // }); 
             this._linkStack.render(ctx, (link) => !link.ON_TOP && link.isInViewBox(br));
             this._stack.render(ctx, (instance) => {
                 const result = doOverlap(br, instance.getBoundingRect());
@@ -1753,6 +1756,18 @@ class JFlow extends EventTarget{
             });
             this._linkStack.render(ctx, (link) => link.isInViewBox(br));
         }
+        // ctx.save();
+        // for(let i =0;i<2000;i++) {
+        //     ctx.beginPath();
+        //     ctx.fillStyle = `rgb(${parseInt(Math.random()*255)},${parseInt(Math.random()*255)},${parseInt(Math.random()*255)})`
+        //     ctx.fillRect(
+        //         Math.random()*250, 
+        //         Math.random()*240, 
+        //         Math.random()*200, 
+        //         Math.random()*300)
+        // }
+        
+        // ctx.restore();
 
         if(this._tempNode) {
             ctx.save();

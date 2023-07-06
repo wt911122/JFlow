@@ -101,6 +101,8 @@ class TextGroup extends Node {
         this.registCommand(UndoCommand);
         this.registCommand(RedoCommand);
         this._makeFunctional();
+
+        this._cacheViewBox = [];
     }
 
     registCommand(cmd) {
@@ -524,10 +526,25 @@ class TextGroup extends Node {
         const lty = anchor[1] - h;
         const rbx = anchor[0] + w;
         const rby = anchor[1] + h;
-        return [
-            ltx, lty,
-            rbx, rby,
-        ]
+        const br = this._boundingrect;
+        br[0] = ltx;
+        br[1] = lty;
+        br[2] = rbx;
+        br[3] = rby;
+        return br
+    }
+
+    _getViewBox() {
+        const belongs_vbox = this._belongs.getCacheViewBox();
+        const cacheViewBox = this._cacheViewBox;
+        
+        this._calculatePointBackWithPoint(belongs_vbox[0], belongs_vbox[1], cacheViewBox, 0, 1);
+        this._calculatePointBackWithPoint(belongs_vbox[2], belongs_vbox[3], cacheViewBox, 2, 3);
+        return this._cacheViewBox;
+    }
+    
+    getCacheViewBox() {
+        return this._cacheViewBox;
     }
 
     calculateToCoordination(point) {
@@ -556,6 +573,11 @@ class TextGroup extends Node {
         const [cx, cy] = this.anchor;
         const p = [gx - cx, gy - cy]
         return p
+    }
+
+    _calculatePointBackWithPoint(a, b, arr, idx1, idx2) {
+        arr[idx1] = a - this.anchor[0];
+        arr[idx2] = b - this.anchor[1];
     }
 
     isHit(point, condition) {

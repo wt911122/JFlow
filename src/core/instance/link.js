@@ -1,5 +1,9 @@
 import BaseLink from './base-link';
-import { distToSegmentSquared, isPolyLineIntersectionRectange } from '../utils/functions';
+import { distToSegmentSquared,
+    isPolyLineIntersectionRectange,
+    compareBoundingbox,
+    copyBoundingbox
+} from '../utils/functions';
 import { APPROXIMATE } from '../utils/constance';
 /**
  * @typedef {BaseLink~Configs} Link~Configs
@@ -24,12 +28,20 @@ class Link extends BaseLink {
         this.content       = configs.content || '';
         this.lineDash      = configs.lineDash;
         this.approximate  = configs.approximate || APPROXIMATE;
+
+        this._cacheAngle = undefined;
+        this._cachePoints = [];
+        this._cacheBoundingbox = {
+            from: [],
+            to: []
+        };
     }
 
     _calculateAnchorPoints() {
         const p0 = this.from.calculateIntersection(this.to.getCenter());
         const p1 = this.to.calculateIntersection(this.from.getCenter());
-        this._cachePoints = [p0, p1];
+        this._cachePoints[0] = p0;
+        this._cachePoints[1] = p1;
         const dx = p1[0] - p0[0];
         const dy = p1[1] - p0[1];
         const angle = Math.atan2(dy, dx);
@@ -37,7 +49,14 @@ class Link extends BaseLink {
     }
     
     isInViewBox(br) {
-        this._calculateAnchorPoints();
+        const frombox = this.from.getBoundingRect();
+        const tobox = this.to.getBoundingRect();
+        const _box = this._cacheBoundingbox;
+        if(!compareBoundingbox(_box.from, frombox) || compareBoundingbox(_box.to, tobox)) {
+            copyBoundingbox(_box.from, frombox);
+            copyBoundingbox(_box.to, tobox);
+            this._calculateAnchorPoints();
+        }
         return true;
     }
 

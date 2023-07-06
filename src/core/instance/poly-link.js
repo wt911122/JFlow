@@ -4,7 +4,7 @@ import {
     distToSegmentSquared, 
     makeRadiusFromVector, 
     minIntersectionBetweenNodes,
-    isPolyLineIntersectionRectange
+    isPolyLineIntersectionRectange,
 } from '../utils/functions';
 import { APPROXIMATE, DIRECTION } from '../utils/constance';
 // import { dist2, bezierPoint } from '../utils/functions';
@@ -57,13 +57,21 @@ class PolyLink extends BaseLink {
         this.isSelf        = !!configs.isSelf
 
         this.noArrow       = !!configs.noArrow 
+        this._cacheAngle = [];
+        this._cachePoints = [];
+        this._cacheBoundingbox = {
+            from: [],
+            to: []
+        };
     }
 
     _calculateAnchorPoints() {
         const dmsfrom = this.from.getIntersectionsInFourDimension();
         const dmsto = this.to.getIntersectionsInFourDimension();
+        const _cacheAngle = this._cacheAngle;
         if(this.isSelf){
-            const points = polylinePoints(
+            polylinePoints(
+                this._cachePoints,
                 dmsfrom[this.fromDir],
                 dmsto[DIRECTION.SELF],
                 this.fromDir,
@@ -71,27 +79,28 @@ class PolyLink extends BaseLink {
                 this.minSpanX, 
                 this.minSpanY,
                 true);
-
-            this._cachePoints = points
-            this._cacheAngle = [this.fromDir, this.toDir]
+            _cacheAngle[0] = this.fromDir;
+            _cacheAngle[1] = this.toDir;
         } else if(this.fromDir !== undefined && this.toDir !== undefined) {
-            const points = polylinePoints(
+            polylinePoints(
+                this._cachePoints,
                 dmsfrom[this.fromDir],
                 dmsto[this.toDir],
                 this.fromDir,
                 this.toDir, this.minSpanX , this.minSpanY);
-            this._cachePoints = points
-            this._cacheAngle = [this.fromDir, this.toDir]
+            _cacheAngle[0] = this.fromDir;
+            _cacheAngle[1] = this.toDir;
         } else {
             const meta = minIntersectionBetweenNodes(dmsfrom, dmsto);
-            const points = polylinePoints(
+            polylinePoints(
+                this._cachePoints,
                 meta.fromP,
                 meta.toP,
                 meta.fromDir,
                 meta.toDir,
                 this.minSpanX , this.minSpanY);
-            this._cachePoints = points
-            this._cacheAngle = [meta.fromDir, meta.toDir]
+            _cacheAngle[0] = meta.fromDir;
+            _cacheAngle[1] = meta.toDir;
         }
     }
     
@@ -99,7 +108,7 @@ class PolyLink extends BaseLink {
         if(this._static) {
             return true;
         }
-        this._calculateAnchorPoints();
+        this._calculateAnchorPoints();     
         return isPolyLineIntersectionRectange(this._cachePoints, br);
     }
 

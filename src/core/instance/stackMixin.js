@@ -1,5 +1,5 @@
 import InstanceStack from './stack';
-import { setUniqueId, getUniqueId } from '../utils/functions';
+// import { setUniqueId, getUniqueId } from '../utils/functions';
 /**
  * 对象栈 mixin 用于方便控制节点栈和连线栈
  *

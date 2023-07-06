@@ -212,12 +212,12 @@ export function getInstanceHeight(instance) {
     }
 }
 
-export function polylinePoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECTION.TOP, minSpanX = 10, minSpanY = 10, isSelf) {
+export function polylinePoints(points, p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRECTION.TOP, minSpanX = 10, minSpanY = 10, isSelf) {
     const dirSpan = Math.abs(start_dir - end_dir);
     // const spanx = Math.max(Math.abs((p1[0] - p2[0])/2), minSpanX);
     // const spany = Math.max(Math.abs((p1[1] - p2[1])/2), minSpanY);
     const isVerticalStart = (start_dir === DIRECTION.TOP || start_dir === DIRECTION.BOTTOM);
-    let points = [];
+    points.length = 0;
     switch (dirSpan) {
         case 0:
             // 都按向右好了
@@ -281,7 +281,6 @@ export function polylinePoints(p1, p2, start_dir = DIRECTION.TOP, end_dir = DIRE
     }
     points.unshift(p1);
     points.push(p2);
-    return points;
 }
 
 function minusVec(p1, p2) {
@@ -361,3 +360,13 @@ export function debounce(func, timeout = 300){
       timer = setTimeout(() => { func.call(this); }, timeout);
     };
   }
+
+export function compareBoundingbox(a, b) {
+    return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
+}
+export function copyBoundingbox(a, b) {
+    a[0] = b[0];
+    a[1] = b[1];
+    a[2] = b[2];
+    a[3] = b[3];
+}

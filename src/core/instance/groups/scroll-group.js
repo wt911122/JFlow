@@ -50,6 +50,7 @@ class ScrollGroup extends Node {
         this.reflow();
         this._getBoundingGroupRect();  
         this._resetOffset();
+        this._cacheViewBox = []
 
     }
 
@@ -234,6 +235,13 @@ class ScrollGroup extends Node {
         return p
     }
 
+    _calculatePointBackWithPoint(a, b, arr, idx1, idx2) {
+        const anchor = this.anchor;
+        const offset = this._offset;
+        arr[idx1] = a - anchor[0] - offset[0];
+        arr[idx2] = b - anchor[1] - offset[1];
+    }
+
     calculateToCoordination(point) {
         const [gx, gy] = point;
         const [cx, cy] = this.anchor;  
@@ -257,12 +265,14 @@ class ScrollGroup extends Node {
     }
 
     _getViewBox() {
-        const cacheViewBox = [
-            ...this._calculatePointBack([0,0]),
-            ...this._calculatePointBack([this.width, this.height]),
-        ];
-        this._cacheViewBox = cacheViewBox;
+        const cacheViewBox = this._cacheViewBox;
+        this._calculatePointBackWithPoint(0, 0, cacheViewBox, 0, 1);
+        this._calculatePointBackWithPoint(this.width, this.height, cacheViewBox, 2, 3);
         return cacheViewBox;
+    }
+
+    getCacheViewBox() {
+        return this._cacheViewBox;
     }
 
     _resetOffset() {
@@ -381,10 +391,12 @@ class ScrollGroup extends Node {
         const lty = anchor[1] - h;
         const rbx = anchor[0] + w;
         const rby = anchor[1] + h;
-        return [
-            ltx, lty,
-            rbx, rby,
-        ]
+        const br = this._boundingrect;
+        br[0] = ltx;
+        br[1] = lty;
+        br[2] = rbx;
+        br[3] = rby;
+        return br
     }
 
     getIntersectionsInFourDimension() {

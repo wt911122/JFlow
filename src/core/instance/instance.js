@@ -1,6 +1,6 @@
-import { setUniqueId, getUniqueId } from '../utils/functions';
-import { nextDirection } from '../utils/constance';
-const margin = 5;
+// import { setUniqueId, getUniqueId } from '../utils/functions';
+// import { nextDirection } from '../utils/constance';
+// const margin = 5;
 const ishitKey = Symbol('ishit');
 const isInViewBox = Symbol('isInViewBox');
 /**
@@ -50,6 +50,7 @@ class Instance extends EventTarget{
         /** @member {number}     - 透明度 */
         this.opacity  =         configs.opacity || 1
 
+        this._boundingrect = [0,0,0,0];
     }
     /**
      * @member {boolean} - 当前单元选中状态

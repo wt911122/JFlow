@@ -95,10 +95,12 @@ class Rhombus extends Node {
         const lty = anchor[1] - h;
         const rbx = anchor[0] + w;
         const rby = anchor[1] + h;
-        return [
-            ltx, lty,
-            rbx, rby,
-        ]
+        const br = this._boundingrect;
+        br[0] = ltx;
+        br[1] = lty;
+        br[2] = rbx;
+        br[3] = rby;
+        return br
     }
 
     getBoundingDimension() {

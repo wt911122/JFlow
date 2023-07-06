@@ -1,6 +1,6 @@
 import Node from '../node';
 import { DIRECTION, oppositeDirection } from '../../utils/constance';
-import { makeBezierPoints } from '../../utils/functions';
+// import { makeBezierPoints } from '../../utils/functions';
 /**
  * 钻石形单元 配置
  * @typedef {Node~Configs} Diamond~DiamondConfigs
@@ -142,10 +142,12 @@ class Diamond extends Node {
         const lty = anchor[1] - h;
         const rbx = anchor[0] + w;
         const rby = anchor[1] + h;
-        return [
-            ltx, lty,
-            rbx, rby,
-        ]
+        const br = this._boundingrect;
+        br[0] = ltx;
+        br[1] = lty;
+        br[2] = rbx;
+        br[3] = rby;
+        return br
     }
 
     getBoundingDimension() {

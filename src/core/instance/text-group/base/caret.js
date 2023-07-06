@@ -46,7 +46,7 @@ class Caret {
     }
 
     cancelAnimate() {
-        this._status.cursoranime.cancel()
+        this._status.anime.cancel()
         Object.assign(this._status, {
             show: true,
             anime: null,

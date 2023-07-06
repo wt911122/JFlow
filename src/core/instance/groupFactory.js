@@ -52,6 +52,13 @@ const GroupMixin = {
         const p = [gx - cx, gy - cy]
         return p
     },
+    _calculatePointBackWithPoint(a, b, arr, idx1, idx2) {
+        const anchor = this.anchor;
+        const padding = this.padding;
+        const margin = this.margin;
+        arr[idx1] = a - ( anchor[0] + (padding.left - padding.right)/2 + (margin.left - margin.right)/2 );
+        arr[idx2] = b - ( anchor[1] + (padding.top - padding.bottom)/2 + (margin.top - margin.bottom)/2 );
+    },
     /**
      * 反算回 canvas 顶层坐标
      * @param {Number[]} point
@@ -108,10 +115,12 @@ const GroupMixin = {
         const lty = anchor[1] - h;
         const rbx = anchor[0] + w;
         const rby = anchor[1] + h;
-        return [
-            ltx, lty,
-            rbx, rby,
-        ]
+        const br = this._boundingrect;
+        br[0] = ltx;
+        br[1] = lty;
+        br[2] = rbx;
+        br[3] = rby;
+        return br
     },
     getIntersectionsInFourDimension() {
         let p2 = this.anchor;
@@ -220,28 +229,29 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
         */
         constructor(configs) {
             super(configs);
-                this.initStack(configs);
-                this.initLayout(configs);
-                /** @member {Node}      - 壳绘图单元 */
-                this._shape = new jflowNodeConstructor(configs);
-                this._shape.anchor = [0, 0];
-                this._shape._belongs = this;
-                this._setPadding(configs);
-                this._setMargin(configs);  
-                /** @member {Number}      - 设定宽度 */
-                this.definedWidth =     configs.width;
-                /** @member {Number}      - 最小宽度 */
-                this.minWidth =         configs.minWidth;
-                /** @member {Number}      - 设定的高度 */
-                this.definedHeight =    configs.height;
-                /** @member {Boolean}      - 组内元素是否锁定， 默认true */
-                this.lock =             configs.lock ?? true ;
-                this.display =          configs.display || 'default';
-                /** @member {Boolean}      - 组本身是否进入形状判定范围 */
-                this.transparent =      configs.transparent ?? false;
-                this._getBoundingGroupRect();
-                this.reflow();
-                this._getBoundingGroupRect();  
+            this.initStack(configs);
+            this.initLayout(configs);
+            /** @member {Node}      - 壳绘图单元 */
+            this._shape = new jflowNodeConstructor(configs);
+            this._shape.anchor = [0, 0];
+            this._shape._belongs = this;
+            this._setPadding(configs);
+            this._setMargin(configs);  
+            /** @member {Number}      - 设定宽度 */
+            this.definedWidth =     configs.width;
+            /** @member {Number}      - 最小宽度 */
+            this.minWidth =         configs.minWidth;
+            /** @member {Number}      - 设定的高度 */
+            this.definedHeight =    configs.height;
+            /** @member {Boolean}      - 组内元素是否锁定， 默认true */
+            this.lock =             configs.lock ?? true ;
+            this.display =          configs.display || 'default';
+            /** @member {Boolean}      - 组本身是否进入形状判定范围 */
+            this.transparent =      configs.transparent ?? false;
+            this._getBoundingGroupRect();
+            this.reflow();
+            this._getBoundingGroupRect();  
+            this._cacheViewBox = [];
         }
     }
     Object.assign(t.prototype, GroupMixin);
@@ -292,6 +302,22 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             this.width = shapeWidth + margin.left + margin.right;
             this.height = shapeHeight + margin.top + margin.bottom;
         },
+
+        _getViewBox() {
+            const belongs_vbox = this._belongs.getCacheViewBox();
+            const cacheViewBox = this._cacheViewBox;
+            
+            this._calculatePointBackWithPoint(belongs_vbox[0], belongs_vbox[1], cacheViewBox, 0, 1);
+            this._calculatePointBackWithPoint(belongs_vbox[2], belongs_vbox[3], cacheViewBox, 2, 3);
+            return this._cacheViewBox;
+        },
+        getCacheViewBox() {
+            return this._cacheViewBox;
+        },
+
+        // beforeRender() {
+        //     return doOverlap(this._belongs.getCacheViewBox(), this._boundingrect)
+        // },
         
         render(ctx) {
             ctx.save();
@@ -304,7 +330,7 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             this._shape.render(ctx);
             ctx.translate(cx, cy);
             this._stack.render(ctx);
-            this._linkStack.render(ctx);    
+            // this._linkStack.render(ctx);    
             ctx.translate(-cx, -cy);
             ctx.restore();
 

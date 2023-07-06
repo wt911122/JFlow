@@ -1,5 +1,5 @@
 import Instance from './instance';
-import { nextDirection } from '../utils/constance';
+import { doOverlap } from '../utils/functions';
 
 /**
  * 绝对定位 配置， 绝对定位不受布局影响，相对于当前组来定位
@@ -50,6 +50,11 @@ class Node extends Instance {
         this.anchor[0] = x;
         this.anchor[1] = y;
     }
+
+    beforeRender() {
+        return doOverlap(this._belongs._getViewBox(), this.getBoundingRect())
+    }
+
     /**
      * 克隆当前节点.
      * @return {Node} 当前节点的副本
