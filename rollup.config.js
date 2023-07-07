@@ -4,6 +4,8 @@ import commonjs from '@rollup/plugin-commonjs';
 import { terser } from "rollup-plugin-terser"; // 压缩插件
 // import sourcemaps from 'rollup-plugin-sourcemaps'; // sourcemaps 插件
 // import visualizer from 'rollup-plugin-visualizer';  // 构建分析插件
+
+import packageVersionPlugin from './rollup-packagejson-version-inject-plugin';
 export default [
     {
         input: 'src/index.js', // 入口文件
@@ -15,6 +17,7 @@ export default [
         plugins: [
             resolve(),
             terser(), 
+            packageVersionPlugin(),
         ], 
     },
     {
@@ -23,7 +26,7 @@ export default [
             exports: 'named',
             file: 'dist/jflow.min.js', // 输出文件
             format: 'umd', // 输出格式
-            name: 'jflow', // 全局变量名称，用于在浏览器环境中使用.
+            name: 'jflow-core', // 全局变量名称，用于在浏览器环境中使用.
             sourcemap: true
         },
         plugins: [
@@ -32,6 +35,7 @@ export default [
                 exclude: 'node_modules/**' 
             }),
             terser(), 
+            packageVersionPlugin()
         ], 
     },
     
