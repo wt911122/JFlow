@@ -1,11 +1,12 @@
 {
   "name": "@jflow/core",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "",
-  "main": "dist/jflow.bundle.js",
+  "main": "dist/jflow.min.js",
   "files": [
     "dist/*.js"
   ],
+  "module": "dist/jflow.es.min.js",
   "scripts": {
     "dev:demo": "cd demo/vue-scopedslots && npm run serve",
     "build:doc": "rm -rf docs && cd jsdoc-plugin && npm run build && cd ../demo/vue-scopedslots && npm run build && cd ../../ && npm run build:jsdoc",
@@ -13,7 +14,7 @@
     "build:lib": "webpack --config configs/webpack.lib.config.js",
     "build:rollup": "rollup -c"
   },
-  "author": "",
+  "author": "joskii",
   "license": "ISC",
   "dependencies": {
     "bezier-js": "^4.1.1"
