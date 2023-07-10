@@ -1,12 +1,11 @@
 {
   "name": "@joskii/jflow-core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/jflow.min.js",
   "files": [
     "dist/*.js"
   ],
-  "module": "dist/jflow.es.min.js",
   "scripts": {
     "dev:demo": "cd demo/vue-scopedslots && npm run serve",
     "build:doc": "rm -rf docs && cd jsdoc-plugin && npm run build && cd ../demo/vue-scopedslots && npm run build && cd ../../ && npm run build:jsdoc",
