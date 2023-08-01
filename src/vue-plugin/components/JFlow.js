@@ -91,17 +91,43 @@ export default {
     },
     created() {
         this._jflowInstance = new JFlow(this.configs);
-        this.$emit('update:loading', true)
         this.genNodeLinkMeta();
-        this.syncNodeLink();
-    },
-    mounted() {
-        this.mountJFlow();
+        this.loadingNodes();
     },
     beforeDestroy() {
         this._jflowInstance?.destroy();
     },
     methods: {
+        loadingNodes() {
+            this.$emit('update:loading', true)
+            let i = 0;
+            const tl = () => {
+                const end = i + 100;
+                const linkPart = this.links.slice(i, end);
+                if(linkPart.length) {
+                    // this.renderLinks.splice(this.renderLinks.length,  0, ...linkPart);
+                    this.renderLinks = this.renderLinks.concat(linkPart); // faster
+                    i = end;
+                    requestAnimationFrame(tl);
+                } else {
+                    requestAnimationFrame(this.mountJFlow.bind(this));
+                }
+            }
+            const tn = () => {
+                const end = i + 100;
+                const part = this.nodes.slice(i, end);
+                if(part.length) {
+                    // this.renderNodes.splice(this.renderNodes.length,  0, ...part);
+                    this.renderNodes = this.renderNodes.concat(part);
+                    i = end;
+                    requestAnimationFrame(tn);
+                } else {
+                    i = 0;
+                    requestAnimationFrame(tl)
+                }
+            }
+            requestAnimationFrame(tn)
+        },
         mountJFlow() {
             this._jflowInstance.$mount(this.$el);
             Object.keys(this.$listeners).map(event => {
