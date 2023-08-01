@@ -74,8 +74,10 @@ class Range {
             })
             if(elemFrom === elemTo) {
                 const c = elemFrom.source;
-                elemFrom.setSource(c.substring(0, rangeFrom[2]) + c.substring(rangeTo[2]), records);
-                elemFrom.dirty = true;
+                elemFrom.setSourceWithRecord(
+                    c.substring(0, rangeFrom[2]) + c.substring(rangeTo[2]), 
+                    editor.spaceHolder,
+                    records);
             } else {
                 const flattenTxtElem = editor._flattenTxtElem
                 let preContent = '';
@@ -106,8 +108,7 @@ class Range {
                             elem_idx -= 1;
                         }
                         offset = preElement.source.length;
-                        preElement.setSource(preElement.source + afterContent, records);
-                        preElement.dirty = true;
+                        preElement.setSourceWithRecord(preElement.source + afterContent, editor.spaceHolder, records);
                         preElement.setNeedWrap(endTextNeedWrap, records);
                     } else {
                         const t = new TextElement('text', preContent + afterContent);
@@ -120,8 +121,10 @@ class Range {
                         const t = new TextElement('text', preContent);
                         flattenTxtElem.splice(fromIdx, 0, t);
                     } else {
-                        elemTo.setSource(preContent + afterContent, records);
-                        elemTo.dirty = true;
+                        elemTo.setSourceWithRecord(
+                            preContent + afterContent, 
+                            editor.spaceHolder,
+                            records);
                     }
                 }
                 

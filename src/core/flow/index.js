@@ -23,8 +23,8 @@ import CapsuleVertical from '../instance/shapes/capsule-vertical';
 import Rhombus from '../instance/shapes/rhombus';
 import Diamond from '../instance/shapes/diamond';
 import DiamondVertical from '../instance/shapes/diamond-vertical';
-import { createInputTextStyle } from '../instance/text';
-createInputTextStyle();
+// import { createInputTextStyle } from '../instance/text';
+// createInputTextStyle();
 /**
  * @funtion setInitialPosition
  * @param {Number} RealboxX - 内容映射到canvas上的 X
@@ -1823,8 +1823,8 @@ export { default as PolyLink } from '../instance/poly-link';
 export { default as BezierLink } from '../instance/bezier-link';
 export { default as LinearLayout} from '../layout/linear-layout';
 // export { default as TreeLayout } from '../ler-layouta;yout/tree-layout';
-export { default as Lowcodelayout } from '../layout/low-code-layout';
-export { default as ERLayout } from '../layout/er-layout/er-layout';
+// export { default as Lowcodelayout } from '../layout/low-code-layout';
+// export { default as ERLayout } from '../layout/er-layout/er-layout';
 // export { default as Orange } from '../instance/nodeWrapper/orange/orange'
 // export { default as TextEditor } from '../instance/text-editor';
 // export { default as TextGroup} from '../instance/text-group';

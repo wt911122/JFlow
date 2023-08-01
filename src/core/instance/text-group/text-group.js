@@ -64,13 +64,31 @@ class TextGroup extends Node {
         this.cursorColor = configs.cursorColor || '#60CFC4';
         this.textRangeColor = configs.textRangeColor || '#4E75EC1A';
         this.minWidth = configs.minWidth || 0;
-
         
+        this.spaceHolder = {
+            enable: false,
+        }
+        if(configs.spacePlaceholder) {
+            Object.assign(this.spaceHolder, {
+                enable: true,
+                spacePlaceholder: configs.spacePlaceholder,
+                spacePlaceholderColor: configs.spacePlaceholderColor,
+                returnFont: configs.returnFont,
+            })
+        }
+        
+
+
         this.resolver = () => {
             const elements = configs.resolver();
             if(elements.length === 0 || elements[elements.length-1].type !== 'text') {
                 elements.push(new TextElement('text', ''))
             }
+            elements.forEach(el => {
+                if(el.type === 'text') {
+                    el.setSource(el.source, this.spaceHolder);
+                }
+            })
             return elements;
         }
 
@@ -313,7 +331,7 @@ class TextGroup extends Node {
         const offsetY = y + h;
         const row = area.getLineAbove(offsetY)
         const currLine = area.get(row);
-        const column = currLine.getColumnNearest(offsetX, this.elementSpace, this.fontSize, this.fontFamily);
+        const column = currLine.getColumnNearest(offsetX, this.elementSpace, this.fontSize, this.fontFamily, this);
         return {
             row, 
             column,
@@ -331,7 +349,7 @@ class TextGroup extends Node {
         let cw;
         let c_len = this.currentLineHeight/2;
         if(meta.type === 'text') {
-            const c = meta.source.substring(0, offset);
+            const c = meta.getRenderSource(this.spaceHolder).substring(0, offset);
             requestCacheCanvas((ctx) => {
                 ctx.beginPath();
                 ctx.font = `${this.fontSize} ${this.fontFamily}`;
@@ -398,7 +416,8 @@ class TextGroup extends Node {
         area.forEach(line => {
             line.forEach(el => {
                 if(el.type === 'text') {
-                    ctx.fillText(el.source, el.anchorX, el.anchorY)
+                    el.render(ctx, this.spaceHolder, this.textColor);
+                    // ctx.fillText(el.source, el.anchorX, el.anchorY)
                 } 
             })
         })
@@ -499,7 +518,7 @@ class TextGroup extends Node {
         if(element.type !== 'text' || offset === 0){
             return element.anchorX - element.width/2;
         }
-        return element.anchorX - element.width/2 + ctx.measureText(element.source.substring(0, offset)).width;
+        return element.anchorX - element.width/2 + ctx.measureText(element.getRenderSource(this.spaceHolder).substring(0, offset)).width;
     }
 
     measureTextWidth(content) {
@@ -660,12 +679,12 @@ Object.assign(TextGroup.prototype, {
             return;
         }
         const jflow = this._jflow;
+        const spaceHolder = this.spaceHolder;
         requestCacheCanvas((ctx) => {
             ctx.font = `${this.fontSize} ${this.fontFamily}`;
             flattenTxtElem.forEach(element => {
                 if(element.type === 'text' && element.dirty) {
-                    element.width = ctx.measureText(element.source).width;
-                    element.dirty = false;
+                    element.preCalculateText(ctx, spaceHolder);
                 }
             });
         });

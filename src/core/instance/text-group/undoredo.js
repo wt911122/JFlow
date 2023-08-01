@@ -87,8 +87,7 @@ class BatchAction {
                     break;
                 case 'setSource':
                     const [elem, s, ls] = action.args;
-                    elem.source = ls;
-                    elem.dirty = true;
+                    elem.setSource(ls, editor.spaceHolder);
                     break;
                 case 'setNeedWrap':
                     const [o, p, q] = action.args;
@@ -116,8 +115,7 @@ class BatchAction {
             switch(action.op) {
                 case 'setSource':
                     const [elem, s, ls] = action.args;
-                    elem.source = s;
-                    elem.dirty = true;
+                    elem.setSource(s, editor.spaceHolder);
                     break;
                 case 'setNeedWrap':
                     const [o, p, q] = action.args;

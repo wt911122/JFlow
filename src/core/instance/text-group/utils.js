@@ -2,9 +2,10 @@ import { requestCacheCanvas } from '../../utils/canvas';
 export function calculateOffsetByWidth(
     offx, 
     textmeta,
-    fontSize, fontFamily
+    fontSize, fontFamily,
+    spaceHolder
 ) {
-    const content = textmeta.source;
+    const content = textmeta.getRenderSource(spaceHolder);
     const maxL = content.length - 1;
     if(textmeta.width === 0) {
         return 0;

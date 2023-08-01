@@ -8,6 +8,7 @@ const TEXT_ALIGN = {
     LEFT: 'left',
     RIGHT: 'right',
 };
+const SPACE_REG = /\s/g;
 
 class Text extends Rectangle {
     constructor(configs) {
@@ -38,6 +39,11 @@ class Text extends Rectangle {
 
         this.cursorColor =      configs.cursorColor || '#60CFC4';
         this.textRangeColor =   configs.textRangeColor || '#4E75EC1A';
+
+        this.spacePlaceholder = configs.spacePlaceholder;
+        this.spacePlaceholderColor = configs.spacePlaceholderColor;
+        this.spaceRecords = [];
+        this._spacedContentSegmnent = [];
 
         this._status = {
             editing: false,
@@ -70,6 +76,34 @@ class Text extends Rectangle {
         
     }
 
+    replaceSpaceHolder(content, useCache = false) {
+        if(useCache) {
+            return content.replace(/\s/g, this.spacePlaceholder)
+        }
+
+        const r = this.spaceRecords;
+        const p = this.spacePlaceholder
+        r.length = 0;
+        let lastOffset;
+        const c = content.replace(/\s/g, (_, offset) => {
+            if(lastOffset === undefined) {
+                lastOffset = offset;
+                r.push(offset);
+            }
+            if(offset - lastOffset > 1) {
+                r.push(lastOffset);
+                r.push(offset);
+            }
+            lastOffset = offset;
+           
+            return p;
+        })
+        if(lastOffset !== undefined) {
+            r.push(lastOffset);
+        }
+        return c;
+    }
+
     get currentContent() {
         return this.content || this.placeholder;
     }
@@ -81,11 +115,16 @@ class Text extends Rectangle {
     preCalculateText() {
         requestCacheCanvas((ctx) => {
             ctx.beginPath();
-            ctx.font = `${this.fontSize} ${this.fontFamily}`;
+            ctx.font = `${this.fontWeight} ${this.fontSize} ${this.fontFamily}`;
             ctx.textAlign = this.textAlign;
             ctx.textBaseline = this.textBaseline;
             const t_h = parseInt(this.fontSize);
-            const content = this.currentContent;
+            let content = this.currentContent;
+            if(this.spacePlaceholder) {
+                content = this.replaceSpaceHolder(content);
+            }
+            
+
             const {
                 // actualBoundingBoxLeft,
                 // actualBoundingBoxRight,
@@ -115,6 +154,49 @@ class Text extends Rectangle {
             } else{ 
                 this.width = Math.max(this.minWidth, this._textWidth);
             }
+
+
+            if(this.spacePlaceholder) {
+                const {
+                    width: s_width,
+                } = ctx.measureText(this.spacePlaceholder);
+                const r2 = this._spacedContentSegmnent;
+                const textColor = this.textColor;
+                let lastOffset = 0;
+                r2.length = 0;
+                if(this.spaceRecords.length) {
+                    const r = this.spaceRecords;
+                    const pcolor = this.spacePlaceholderColor;
+                    
+                    const l = r.length;
+                    let i = 0;
+                    while(i < l) {
+                        const f = r[i++];
+                        const t = r[i++];
+                        const q = content.substring(lastOffset, f);
+                        r2.push([
+                            q,
+                            ctx.measureText(q).width,
+                            textColor,
+                        ])
+                        r2.push([
+                            content.substring(f, t+1),
+                            (t - f + 1) * s_width,  
+                            pcolor,
+                        ])
+                        lastOffset = t+1
+                    }
+                }
+                if(lastOffset < content.length) {
+                    const q = content.substring(lastOffset);
+                    r2.push([
+                        q,
+                        ctx.measureText(q).width,
+                        textColor,
+                    ])
+                }
+            }
+            
             
             const height = (Math.abs(fontBoundingBoxAscent) + Math.abs(fontBoundingBoxDescent)) || t_h;
             this._textHeight = height;
@@ -145,21 +227,34 @@ class Text extends Rectangle {
                 ctx.textBaseline = this.textBaseline;
                 ctx.fillStyle = this.isEmpty ? this.placeholderColor : this.textColor;
                 let content = this.currentContent;
-                if(this.ellipsisContent) {
-                    content = this.ellipsisContent;
-                }
-                if(content) {
-                    if(this.textAlign === TEXT_ALIGN.LEFT){
-                        const hw = w / 2;
-                        ctx.fillText(content,  -hw + i / 2, 0);
-                    } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
-                        const hw = w / 2;
-                        ctx.fillText(content, hw, 0);
-                    } else {
-                        ctx.fillText(content, i / 2, 0);
+                if(this.spacePlaceholder) {
+                    if(this.textAlign === TEXT_ALIGN.LEFT) {
+                        const hw = w/2;
+                        let _w =  -hw + i/2;
+                        this._spacedContentSegmnent.forEach(seg => {
+                            ctx.fillStyle = seg[2];
+                            ctx.fillText(seg[0], _w, 0);
+                            _w += seg[1] * scale;
+                        })
+                    } 
+                } else {
+                    if(this.ellipsisContent) {
+                        content = this.ellipsisContent;
                     }
-                    
+                    if(content) {
+                        if(this.textAlign === TEXT_ALIGN.LEFT){
+                            const hw = w / 2;
+                            ctx.fillText(content,  -hw + i / 2, 0);
+                        } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
+                            const hw = w / 2;
+                            ctx.fillText(content, hw, 0);
+                        } else {
+                            ctx.fillText(content, i / 2, 0);
+                        }
+                        
+                    }
                 }
+                
             }
         });
         
@@ -357,7 +452,10 @@ class Text extends Rectangle {
     }
 
     _calculateOffset(offx) {
-        const content = this.content;
+        let content = this.currentContent;
+        if(this.spacePlaceholder) {
+            content = this.replaceSpaceHolder(content, true);
+        }
         const maxL = content.length - 1;
         const contentWidth = this._textWidth;
         if(contentWidth === 0) {
@@ -462,21 +560,34 @@ class Text extends Rectangle {
 
         ctx.fillStyle = this.isEmpty ? this.placeholderColor : this.textColor;
         let content = this.currentContent;
-        if(this.ellipsisContent) {
-            content = this.ellipsisContent;
-        }
-        if(content) {
+        if(this.spacePlaceholder) {
             if(this.textAlign === TEXT_ALIGN.LEFT){
                 const hw = this.width / 2;
-                ctx.fillText(content, this.anchor[0] - hw + this.indent / 2, this.anchor[1]);
-            } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
-                const hw = this.width / 2;
-                ctx.fillText(content, this.anchor[0] + hw, this.anchor[1]);
-            } else {
-                ctx.fillText(content, this.anchor[0] + this.indent / 2, this.anchor[1]);
+                let w = this.anchor[0] - hw + this.indent / 2;
+                const y = this.anchor[1];
+                this._spacedContentSegmnent.forEach(seg => {
+                    ctx.fillStyle = seg[2];
+                    ctx.fillText(seg[0], w, y);
+                    w += seg[1];
+                })
+            } 
+        } else {
+            if(this.ellipsisContent) {
+                content = this.ellipsisContent;
             }
-            
+            if(content) {
+                if(this.textAlign === TEXT_ALIGN.LEFT){
+                    const hw = this.width / 2;
+                    ctx.fillText(content, this.anchor[0] - hw + this.indent / 2, this.anchor[1]);
+                } else if(this.textAlign === TEXT_ALIGN.RIGHT) {
+                    const hw = this.width / 2;
+                    ctx.fillText(content, this.anchor[0] + hw, this.anchor[1]);
+                } else {
+                    ctx.fillText(content, this.anchor[0] + this.indent / 2, this.anchor[1]);
+                }
+            }
         }
+
 
         const hw = this.width/2;
         const textheight = this._textHeight
@@ -486,7 +597,10 @@ class Text extends Rectangle {
 
         if(this._status.cursorshow && this._status.editing) {
             const offset = this._cursorOffset;
-            const c = this.content.substring(0, offset);
+            let c = content.substring(0, offset);
+            if(this.spacePlaceholder) {
+                c = this.replaceSpaceHolder(c, true);
+            }
             const cw = lx + ctx.measureText(c).width;
             const c_len = this._textHeight/2;
             ctx.beginPath();

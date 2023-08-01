@@ -113,11 +113,11 @@ const _mixin = {
         let currElem = line.get(elemidx);
         let currElemReduceWidth = currElem.reduceWidth;
         if(offset > 0) {
-            currElemReduceWidth += editor.measureTextWidth(currElem.source.substring(0, offset))
+            currElemReduceWidth += editor.measureTextWidth(currElem.getRenderSource(editor.spaceHolder).substring(0, offset))
         }
         
         const nextLine = area.get(nextRow);
-        const nextColumn = nextLine.getColumnNearest(currElemReduceWidth, editor.elementSpace, editor.fontSize, editor.fontFamily)
+        const nextColumn = nextLine.getColumnNearest(currElemReduceWidth, editor.elementSpace, editor.fontSize, editor.fontFamily, editor)
         caret.setRow(nextRow);
         caret.setColumn(nextColumn);
         

@@ -75,7 +75,7 @@ export class Line {
         return this._elements.slice();
     }
 
-    getColumnNearest(offsetX, elementSpace, fontSize, fontFamily) {
+    getColumnNearest(offsetX, elementSpace, fontSize, fontFamily, editor) {
         const elements = this._elements;
         if(offsetX >= this.width) {
             const c = elements.length - 1;
@@ -115,7 +115,7 @@ export class Line {
             const textmeta = elements[elem_idx];
             if(textmeta.type === 'text') {
                 const offx = offsetX - last_c;
-                const idx = calculateOffsetByWidth(offx, textmeta, fontSize, fontFamily)
+                const idx = calculateOffsetByWidth(offx, textmeta, fontSize, fontFamily, editor.spaceHolder)
                 return [elem_idx, idx];
             } else {
                 const offx = offsetX - last_c;
@@ -241,20 +241,62 @@ export class TextElement {
     dirty = true;
     isTail = false;
 
+    _spaceRecords = [];
+    _spacedContentSegmnent = [];
+    _returnSymbol = {
+        symbol: '↲',
+        width: 0,
+    };
+
     constructor(type, source) {
         this.type = type;
         this.source = source;
     }
 
-    setSource(source, records) {
+    getRenderSource(spaceHolder) {
+        const content = this.source;
+        if(spaceHolder.enable) {
+            return content.replace(/\s/g, spaceHolder.spacePlaceholder);
+        }
+
+        return content;
+    }
+
+    setSourceWithRecord(source, spaceHolder, records) {
         const lastSource = this.source;
-        this.source = source;
-        this.dirty = true;
+        this.setSource(source, spaceHolder);
         if(records) {
             records.push({
                 op: 'setSource',
                 args: [this, source, lastSource],
+            });
+        }
+    }
+
+    setSource(source, spaceHolder) {
+        this.source = source;
+        this.dirty = true;
+        if(spaceHolder.enable) {
+            const r = this._spaceRecords;
+            const p = spaceHolder.spacePlaceholder
+            r.length = 0;
+            let lastOffset;
+            source.replace(/\s/g, (_, offset) => {
+                if(lastOffset === undefined) {
+                    lastOffset = offset;
+                    r.push(offset);
+                }
+                if(offset - lastOffset > 1) {
+                    r.push(lastOffset);
+                    r.push(offset);
+                }
+                lastOffset = offset;
+            
+                return p;
             })
+            if(lastOffset !== undefined) {
+                r.push(lastOffset);
+            }
         }
     }
 
@@ -305,5 +347,77 @@ export class TextElement {
 
     headOffset() {
         return 0;
+    }
+
+    preCalculateText(ctx, spaceHolder) {
+        const content = this.getRenderSource(spaceHolder);
+        this.width = ctx.measureText(content).width;
+        this.dirty = false;
+        if(spaceHolder.enable) {
+            const s_width = ctx.measureText(spaceHolder.spacePlaceholder).width;
+            this._returnSymbol.width = ctx.measureText(this._returnSymbol.symbol).width;
+            const r2 = this._spacedContentSegmnent;
+            let lastOffset = 0;
+            r2.length = 0;
+            if(this._spaceRecords.length) {
+                const r = this._spaceRecords;      
+                const l = r.length;
+                let i = 0;
+                while(i < l) {
+                    const f = r[i++];
+                    const t = r[i++];
+                    const q = content.substring(lastOffset, f);
+                    r2.push([
+                        q,
+                        ctx.measureText(q).width,
+                        'text',
+                    ])
+                    r2.push([
+                        content.substring(f, t+1),
+                        (t - f + 1) * s_width,  
+                        'placeholder',
+                    ])
+                    lastOffset = t+1
+                }
+            }
+            if(lastOffset < content.length) {
+                const q = content.substring(lastOffset);
+                r2.push([
+                    q,
+                    ctx.measureText(q).width,
+                    'text',
+                ])
+            }
+
+            if(this.needWrap) {
+                this.width += this._returnSymbol.width;
+            }
+        }
+        
+    }
+
+    render(ctx, spaceHolder, textColor) {
+        if(spaceHolder.enable) {
+            const hw = this.width/2;
+            let _w =  -hw + this.anchorX;
+            const spacePlaceholderColor = spaceHolder.spacePlaceholderColor;
+            this._spacedContentSegmnent.forEach(seg => {
+                ctx.fillStyle = seg[2] === 'text' ? textColor : spacePlaceholderColor;
+                const t = seg[1]/2;
+                _w += t;
+                ctx.fillText(seg[0], _w, this.anchorY);
+                _w += t;
+            })
+            if(this.needWrap) {
+                ctx.save();
+                ctx.font = spaceHolder.returnFont;
+                ctx.fillStyle = spacePlaceholderColor;
+                ctx.fillText(this._returnSymbol.symbol, 
+                    _w + this._returnSymbol.width/2, this.anchorY);
+                ctx.restore();
+            }
+            return;   
+        }
+        ctx.fillText(this.source, this.anchorX, this.anchorY)
     }
 }
