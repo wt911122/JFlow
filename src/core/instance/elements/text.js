@@ -105,7 +105,7 @@ class Text extends Rectangle {
     }
 
     get currentContent() {
-        return this.content || this.placeholder;
+        return this.content || this.placeholder || '';
     }
 
     get isEmpty() {
@@ -376,7 +376,7 @@ class Text extends Rectangle {
                 val: this.content,
             }));
             this._textRange.enable = false;
-            this._status.cursoranime.cancel()
+            this._status.cursoranime?.cancel()
             Object.assign(this._status, {
                 editing: false,
                 cursorshow: true,

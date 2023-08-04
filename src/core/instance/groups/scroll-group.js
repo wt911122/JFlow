@@ -264,11 +264,21 @@ class ScrollGroup extends Node {
         }
     }
 
+    calculateToRealWorldWithPointer(outpoint, inpoint) {
+        outpoint[0] = inpoint[0] + this.anchor[0] - this.offset[0];
+        outpoint[1] = inpoint[1] + this.anchor[1] - this.offset[1];
+        if(this._belongs && this._belongs.calculateToRealWorldWithPointer) {
+            return this._belongs.calculateToRealWorldWithPointer(outpoint, outpoint);
+        }
+    }
+
     _getViewBox() {
+        const belongs_vbox = this._belongs.getCacheViewBox();
         const cacheViewBox = this._cacheViewBox;
-        this._calculatePointBackWithPoint(0, 0, cacheViewBox, 0, 1);
-        this._calculatePointBackWithPoint(this.width, this.height, cacheViewBox, 2, 3);
-        return cacheViewBox;
+        
+        this._calculatePointBackWithPoint(belongs_vbox[0], belongs_vbox[1], cacheViewBox, 0, 1);
+        this._calculatePointBackWithPoint(belongs_vbox[2], belongs_vbox[3], cacheViewBox, 2, 3);
+        return this._cacheViewBox;
     }
 
     getCacheViewBox() {

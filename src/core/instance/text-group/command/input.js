@@ -69,9 +69,9 @@ export class Input extends Command {
 
         switch(kind){
             case KEYBOARD_INPUT.INPUT:
-                if(/\r?\n/.test(data)) {
-                    let source = data.split(/\r?\n/);
-                    source = source.replace(/\t/, '');
+                if(/\r?[\n\t]/.test(data)) {
+                    let source = data.split(/\r?[\n\t]/) || '';
+                    // source = source.replace(/\t/, '');
                     let idx = flattenTxtElem.findIndex(element);
                     let a = source.shift();
                     element.setSourceWithRecord(preContent + a, editor.spaceHolder, records);

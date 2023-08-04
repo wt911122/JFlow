@@ -44,6 +44,7 @@ class TextGroup extends Node {
 
     constructor(configs) {
         super(configs);
+        this.type = 'TextGroup';
         this.initStack(configs);
         this.initLayout(configs);
 
@@ -584,6 +585,14 @@ class TextGroup extends Node {
         const p = [gx + cx, gy + cy]
         if(this._belongs && this._belongs.calculateToRealWorld) {
             return this._belongs.calculateToRealWorld(p);
+        }
+    }
+
+    calculateToRealWorldWithPointer(outpoint, inpoint) {
+        outpoint[0] = inpoint[0] + this.anchor[0];
+        outpoint[1] = inpoint[1] + this.anchor[1];
+        if(this._belongs && this._belongs.calculateToRealWorldWithPointer) {
+            return this._belongs.calculateToRealWorldWithPointer(outpoint, outpoint);
         }
     }
 

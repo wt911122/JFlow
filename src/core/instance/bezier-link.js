@@ -36,6 +36,7 @@ class BezierLink extends BaseLink {
         this.minSpanY      = configs.minSpanY || 0;
         /** @member {Number[]}      - 虚线数组 */
         this.lineDash      = configs.lineDash;
+        this.lineWidth     = configs.lineWidth || 1;
         /** @member {Boolean}      - 双向箭头 */
         this.doubleLink    = configs.doubleLink;
         /** @member {String}      - 连线上的文字字体 */
@@ -125,6 +126,7 @@ class BezierLink extends BaseLink {
         const points = this._cachePoints;
         const angle = getBezierAngle.apply(null, [1, ...points])
         ctx.fillStyle = ctx.strokeStyle = this.backgroundColor;
+        ctx.lineWidth = this.lineWidth;
         if(this.doubleLink) {
             const beginAngle = ((this._cacheAngle[0] + 2) % 4) * 90 * PIINRATIO;
             ctx.beginPath();

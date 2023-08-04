@@ -31,7 +31,9 @@ const GroupMixin = {
         const centerX = (padding.left - padding.right)/2 + mx;
         const centerY = (padding.top - padding.bottom)/2 + my;
         this._shape.anchor = [anchor[0] + mx, anchor[1] + my];
-        return [anchor[0] + centerX, anchor[1] + centerY];
+        this._center[0] = anchor[0] + centerX;
+        this._center[1] = anchor[1] + centerY;
+        return this._center;
     },
     setAnchorX(x) {
         this.anchor[0] = x;
@@ -88,6 +90,15 @@ const GroupMixin = {
             return this._belongs.calculateToRealWorld(p);
         }
     },
+
+    calculateToRealWorldWithPointer(outpoint, inpoint) {
+        outpoint[0] = inpoint[0] + this._center[0];
+        outpoint[1] = inpoint[1] + this._center[1];
+        if(this._belongs && this._belongs.calculateToRealWorldWithPointer) {
+            return this._belongs.calculateToRealWorldWithPointer(outpoint, outpoint);
+        }
+    },
+    
     clone() {
         const C = this.constructor;
         const configs = Object.assign({}, this._rawConfigs, {
@@ -235,6 +246,7 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             this._shape = new jflowNodeConstructor(configs);
             this._shape.anchor = [0, 0];
             this._shape._belongs = this;
+            this._center = [0,0];
             this._setPadding(configs);
             this._setMargin(configs);  
             /** @member {Number}      - 设定宽度 */
@@ -314,10 +326,6 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
         getCacheViewBox() {
             return this._cacheViewBox;
         },
-
-        // beforeRender() {
-        //     return doOverlap(this._belongs.getCacheViewBox(), this._boundingrect)
-        // },
         
         render(ctx) {
             ctx.save();
@@ -351,19 +359,6 @@ function GroupFactory(jflowNodeConstructor, options = {}) {
             }
             return false;
         },    
-        /* renderCache(ctx) {
-            const rect = this.getBoundingRect();
-            const [a, b] = this._belongs.calculateToRealWorld([rect[0], rect[1]]);
-            const [c, d] = this._belongs.calculateToRealWorld([rect[2], rect[3]]);
-            ctx.putImageData(this._cached, a, b, 0, 0, c-a, d-b)
-        },
-        cache(ctx) {
-            const rect = this.getBoundingRect();
-            const [a, b] = this._belongs.calculateToRealWorld([rect[0], rect[1]]);
-            const [c, d] = this._belongs.calculateToRealWorld([rect[2], rect[3]]);
-            console.log(a, b, c-a ,d-b);
-            this._cached = ctx.getImageData(a, b, c-a, d-b)
-        }  */  
     });
     return t
 }

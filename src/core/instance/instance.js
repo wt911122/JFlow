@@ -241,6 +241,12 @@ class Instance extends EventTarget{
         }
     }
 
+    calculateToRealWorldWithPointer(outpoint, inpoint) {
+        if(this._belongs && this._belongs.calculateToRealWorldWithPointer) {
+            this._belongs.calculateToRealWorldWithPointer(outpoint, inpoint);
+        }
+    }
+
     calculateToRealWorldWithScalar(length){
         return this._jflow.scale * length;
     }

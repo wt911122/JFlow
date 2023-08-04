@@ -47,7 +47,11 @@ export default {
         if(!this.renderNodes.length) {
             return createElement('div', this.$slots.default);
         } else {
-            const vnodes = this.renderNodes.map(({ type, source, layoutNode }) => {
+            const vnodes = this.renderNodes.map((node) => {
+                if(!node) {
+                    return null
+                }
+                let { type, source, layoutNode } = node;
                 if(!this.$scopedSlots[type]) {
                     if(this.$scopedSlots['jflowcommon']){
                         type = 'jflowcommon';
