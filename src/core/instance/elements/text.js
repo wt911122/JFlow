@@ -452,7 +452,7 @@ class Text extends Rectangle {
     }
 
     _calculateOffset(offx) {
-        let content = this.currentContent;
+        let content = this.content;
         if(this.spacePlaceholder) {
             content = this.replaceSpaceHolder(content, true);
         }
@@ -696,6 +696,9 @@ class Text extends Rectangle {
          
                 break;
             case "Backspace":
+                if(this.cacheIdx) {
+                    return;
+                }
                 preContent = preContent.substring(0, preContent.length - 1);
                 this._cursorOffset = Math.max(0, this._cursorOffset-1);
                 this.content = preContent + afterContent;
