@@ -97,6 +97,9 @@ class InstanceStack extends Array {
             }
             i--
         }
+        if(this._currentHit) {
+            this._currentHit._isHit = false;
+        }
         this._currentHit = null;
         return null;
     }
