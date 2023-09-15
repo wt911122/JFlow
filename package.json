@@ -1,6 +1,6 @@
 {
   "name": "@joskii/jflow-core",
-  "version": "0.1.0",
+  "version": "0.1.21",
   "description": "",
   "main": "dist/jflow.min.js",
   "files": [
@@ -16,12 +16,14 @@
   "author": "joskii",
   "license": "ISC",
   "dependencies": {
-    "bezier-js": "^4.1.1"
+    "bezier-js": "^4.1.1",
+    "object-diff": "^0.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.22.6",
     "@babel/preset-env": "^7.22.6",
     "@rollup/plugin-commonjs": "^25.0.2",
+    "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@vue/compiler-sfc": "^3.2.26",
     "babel-loader": "^8.2.3",
