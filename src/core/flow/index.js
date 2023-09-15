@@ -1247,6 +1247,7 @@ class JFlow extends EventTarget{
         if(this.__processOverAnime) {
             this.__processOverAnime.cancel();
         }
+        this._dragOverTarget = null;
         this._cancelPanInBorder();
         // this.resetScollBarStatus();
         const meta = this._target.meta;
@@ -1314,6 +1315,7 @@ class JFlow extends EventTarget{
             if(this._layout.static) {
                 checkresult = this.staticCheck(this._getMovingTarget());
             }
+            
             if(!checkresult && this._target.link) {
                 
                 const {
@@ -1341,8 +1343,7 @@ class JFlow extends EventTarget{
                 }));
                 this._target.link = null;
                 this._target.instance = null;
-            }
-            if(this._target.moving) {
+            } else if(this._target.moving) {
                 if(this._target.instance) {
                     /**
                      * 拖动后放置到 Instance 上的事件，由被拖动到的对象触发
