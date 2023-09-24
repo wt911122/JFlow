@@ -24,3 +24,10 @@ export  {
     UndoCommand,
     RedoCommand
 } from './undoredo';
+
+
+export {
+    CopyCommand,
+    PasteCommand,
+    CutCommand,
+} from './clipboard'

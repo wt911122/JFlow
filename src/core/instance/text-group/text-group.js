@@ -33,6 +33,9 @@ import {
     // DeleteCommand,
     UndoCommand,
     RedoCommand,
+    CopyCommand,
+    PasteCommand,
+    CutCommand,
 } from './command'
 import { EDITOR_EVENTS, KEYBOARD_COMMANDS, MOUSE_COMMANDS } from './base/constants';
 
@@ -119,6 +122,9 @@ class TextGroup extends Node {
         // this.registCommand(DeleteCommand);
         this.registCommand(UndoCommand);
         this.registCommand(RedoCommand);
+        this.registCommand(CopyCommand);
+        this.registCommand(CutCommand);
+        this.registCommand(PasteCommand);
         this._makeFunctional();
 
         this._cacheViewBox = [];
@@ -281,9 +287,9 @@ class TextGroup extends Node {
         this._status.shiftOn = val;
     }
 
-    execCommand(kind) {
+    execCommand(kind, data) {
         const cmd = this.commands.get(kind);
-        cmd.exec();
+        cmd.exec(data);
     }
 
     createShadowInput() {
@@ -291,7 +297,8 @@ class TextGroup extends Node {
         this._shadowInput = new ShadowInput(jflow.DOMwrapper);
         this._shadowInput.addEventListener(EDITOR_EVENTS.CONTROL_CMD, e => {
             const kind = e.detail.kind;
-            this.execCommand(kind)
+            const data = e.detail.data;
+            this.execCommand(kind, data)
         });
 
         this._shadowInput.addEventListener(EDITOR_EVENTS.INPUT, e => {

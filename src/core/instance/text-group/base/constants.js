@@ -24,9 +24,9 @@ export const KEYBOARD_COMMANDS = {
     SHIFT_DOWN: 'shift_down',
     SHIFT_UP: 'shift_up',
     CTRLA: 'ctrla',
-    CTRLC: 'ctrlc',
-    CTRLV: 'ctrlv',
-    CTRLX: 'ctrlx',
+    COPY: 'copy',
+    CUT: 'cut',
+    PASTE: 'paste',
 }
 
 export const MOUSE_COMMANDS = {

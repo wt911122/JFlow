@@ -182,6 +182,9 @@ export class FlattenTextElements {
             removed,
         })
     }
+    slice(...args) {
+        return this._textElements.slice(...args)
+    }
     copy() {
         return this._textElements.slice();
     }

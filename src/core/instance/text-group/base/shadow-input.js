@@ -35,9 +35,13 @@ class ShadowInput extends EventTarget{
             case KEYBOARD_COMMANDS.SHIFT_UP:
             case KEYBOARD_COMMANDS.UNDO:
             case KEYBOARD_COMMANDS.REDO:
+            case KEYBOARD_COMMANDS.COPY:
+            case KEYBOARD_COMMANDS.CUT:
+            case KEYBOARD_COMMANDS.PASTE:
                 this.dispatchEvent(new CustomEvent(EDITOR_EVENTS.CONTROL_CMD, {
                     detail: {
                         kind,
+                        data
                     }
                 }))
             break;
@@ -92,6 +96,23 @@ function createInputElement(controlCallback) {
             }
         }
     })
+
+    input.addEventListener('paste', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        const pasteContent = (e.clipboardData || window.clipboardData).getData("text");
+        controlCallback(KEYBOARD_COMMANDS.PASTE, pasteContent);
+    });
+    input.addEventListener('copy', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        controlCallback(KEYBOARD_COMMANDS.COPY, e);
+    });
+    input.addEventListener('cut', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        controlCallback(KEYBOARD_COMMANDS.CUT, e);
+    });
 
     input.addEventListener('compositionstart', (e) => {
         controlCallback(KEYBOARD_INPUT.COMPOSITION_START);
@@ -164,21 +185,21 @@ function createInputElement(controlCallback) {
                     controlCallback(KEYBOARD_COMMANDS.CTRLA);
                 }
                 break;
-            case 'c':
-                if(status.ctrlOn) {
-                    controlCallback(KEYBOARD_COMMANDS.CTRLC);
-                }
-                break; 
-            case 'v':
-                if(status.ctrlOn) {
-                    controlCallback(KEYBOARD_COMMANDS.CTRLV);
-                }
-                break;   
-            case 'x':
-                if(status.ctrlOn) {
-                    controlCallback(KEYBOARD_COMMANDS.CTRLX);
-                }
-                break;
+            // case 'c':
+            //     if(status.ctrlOn) {
+            //         controlCallback(KEYBOARD_COMMANDS.CTRLC);
+            //     }
+            //     break; 
+            // case 'v':
+            //     if(status.ctrlOn) {
+            //         controlCallback(KEYBOARD_COMMANDS.CTRLV);
+            //     }
+            //     break;   
+            // case 'x':
+            //     if(status.ctrlOn) {
+            //         controlCallback(KEYBOARD_COMMANDS.CTRLX);
+            //     }
+            //     break;
             case 'y':
                 if(status.ctrlOn) {
                     event.preventDefault();

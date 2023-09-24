@@ -70,30 +70,30 @@ export class Input extends Command {
         switch(kind){
             case KEYBOARD_INPUT.INPUT:
                 if(/\r?[\n\t]/.test(data)) {
-                    let source = data.split(/\r?[\n\t]/) || '';
+                    let rows = data.split(/\r?[\n\t]/) || '';
                     // source = source.replace(/\t/, '');
-                    let idx = flattenTxtElem.findIndex(element);
-                    let a = source.shift();
-                    element.setSourceWithRecord(preContent + a, editor.spaceHolder, records);
-                    let _row = row + 1;
-                    idx++;
-                    while(source.length > 1) {
-                        const t = new TextElement('text', source.shift());
-                        t.setNeedWrap(true, records);
+                    const idx = flattenTxtElem.findIndex(element);
+                    const lastNeedWrap = element.needWrap;
+                    element.setSourceWithRecord(preContent + rows.shift(), editor.spaceHolder, records);
+                    element.setNeedWrap(true, records);
+                    const temp = [];
+                    let tn;
+                    let _row = row;
+                    let col;
+                    while(rows.length){
+                        tn = new TextElement('text', rows.shift());
+                        tn.needWrap = true;
+                        temp.push(tn);
                         _row++;
-                        flattenTxtElem.inersetAt(idx, t);
-                        idx++;
                     }
-                    a = source.shift();
-                    const curElem = flattenTxtElem.get(idx);
-                    if(curElem && curElem.type === 'text') {
-                        curElem.setSourceWithRecord(a + curElem.source, editor.spaceHolder, records);
-                    } else {
-                        const t = new TextElement('text', a);
-                        flattenTxtElem.inersetAt(idx, t);
-                    }
+                    col = tn.source.length;
+                    tn.source += afterContent;
+                    tn.needWrap = lastNeedWrap;
+                    temp.forEach((t, i) => {
+                        flattenTxtElem.inersetAt(idx + 1 + i, t);
+                    });
                     caret.setRow(_row);
-                    caret.setColumn([0, a.length])
+                    caret.setColumn([0, col])
                 } else {
                     preContent += data;
                     caret.setColumn(1, caret.getColumn(1) + data.length);

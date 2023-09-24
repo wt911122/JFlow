@@ -59,6 +59,43 @@ class Range {
         return true;
     }
 
+    // TODO 
+    getRangeCopy(editor) {
+        if(this._enable) {
+            const area = editor._area;
+            const caret = editor._caret;
+            const rangeFrom = this._rangeFrom;
+            const rangeTo = this._rangeTo;
+            const elemFrom = area.get(rangeFrom[0]).get(rangeFrom[1]);
+            const elemTo = area.get(rangeTo[0]).get(rangeTo[1]);
+            if(elemFrom === elemTo) {
+                const c = elemFrom.source;
+                return c.substring(rangeFrom[2], rangeTo[2]);
+            }
+
+            const flattenTxtElem = editor._flattenTxtElem
+            let preContent = '';
+            let afterContent = '';
+            const fromIdx = flattenTxtElem.findIndex(elemFrom);
+            const toIdx = flattenTxtElem.findIndex(elemTo);
+            const elems = flattenTxtElem.slice(fromIdx, toIdx+1);
+            const elements = elems.slice(1, elems.length-1).filter((el) => el.type === 'text');
+            preContent = elemFrom.source.substring(rangeFrom[2]);
+            afterContent = elemTo.source.substring(0, rangeTo[2]);
+            let content = preContent;
+            if(elemFrom.needWrap) {
+                content += '\n'
+            }
+            elements.forEach(el => {
+                content += el.source
+                if(el.needWrap) {
+                    content += '\n'
+                }
+            });
+            return content + afterContent;
+        }
+    }
+
     delete(editor, records) {
         if(this._enable) {
             const area = editor._area;
