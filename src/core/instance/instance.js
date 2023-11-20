@@ -261,8 +261,8 @@ class Instance extends EventTarget{
     // }
 
     recalculateUp() {
-        if(this.belongs) {
-            this.belongs.recalculateUp();
+        if(this._belongs) {
+            this._belongs.recalculateUp();
         }
     }
 

@@ -1,3 +1,4 @@
+import JFlowEvent from '../events';
 export class ScrollBar {
     constructor(dir, configs = {}) {
         this.anchor = [0,0];
@@ -92,9 +93,11 @@ export default {
             barInitX: 0,
             barInitY: 0,
         }
-        
+        this.stopZoompanWatch = false;
         this.addEventListener('zoompan', () => {
-            this.scrollBarOnPanAndZoom();
+            if(!this.stopZoompanWatch) {
+                this.scrollBarOnPanAndZoom();
+            }
         })
         
         this.scrollBarOnPanAndZoom();
@@ -108,6 +111,7 @@ export default {
         return this._scrollBarStatus && this._scrollBarStatus.dragging;
     },
     onScrollbarPressStart(offsetX, offsetY, clientX, clientY) {
+        this.stopZoompanWatch = true;
         const xhit = this._scrollbarX.isHit([offsetX, offsetY]);
         if(xhit) {
             Object.assign(this._scrollBarStatus, {
@@ -129,6 +133,7 @@ export default {
         const f = (e => {
             const { offsetX, offsetY, clientX, clientY } = e;
             this.onDraggingScrollbar(offsetX, offsetY, clientX, clientY)
+            
         }).bind(this);
         
         document.addEventListener('pointermove', f);
@@ -142,6 +147,7 @@ export default {
             document.removeEventListener('pointermove', f);
             document.removeEventListener('pointerup', t);
             this.canvas.removeEventListener('pointerup', t);
+            this.stopZoompanWatch = false;
         }).bind(this);
         this.canvas.addEventListener('pointerup', t, {
             once: true
@@ -173,8 +179,9 @@ export default {
                 y: p_y 
             } = this.bounding_box;
             // console.log(target.dir, realT, realB)
+            let deltaX = 0, deltaY = 0;
             if(target.dir === 'x') {
-                const deltaX = clientX - barInitX;
+                deltaX = clientX - barInitX;
                 const xnew = barStartX + deltaX;
                 const q = target.anchor[0] = Math.max(Math.min(xnew, actual_width - scollbarWidth), 0);
                 const ratioInX = q / actual_width;
@@ -188,7 +195,7 @@ export default {
             }
 
             if(target.dir === 'y') {      
-                const deltaY = clientY - barInitY;
+                deltaY = clientY - barInitY;
                 const ynew = barStartY + deltaY;
                 const q = target.anchor[1] = Math.max(Math.min(ynew, actual_height - scollbarHeight), 0);;
                 const ratioInY = q / actual_height;
@@ -200,6 +207,10 @@ export default {
                     y,
                 });
             }
+            this.dispatchEvent(new JFlowEvent('zoompan', {
+                deltaX,
+                deltaY
+            }));
             this.scheduleRender()
             return true;
         }
