@@ -148,11 +148,11 @@ export class FlattenTextElements {
         const idx = this.findIndex(anchor);
         this.inersetAt(idx, elem);
     }
-    insertAfter(anchor, elem) {
+    insertAfter(anchor, elem, needWrap) {
         const idx = this.findIndex(anchor);
-        const next = this.get(idx+1);
-        if(next) {
-            elem.setNeedWrap(anchor.needWrap || anchor.isTail);
+        // const next = this.get(idx+1);
+        if(needWrap) {
+            elem.setNeedWrap(true);
         }
         this.inersetAt(idx+1, elem);
     }

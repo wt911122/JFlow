@@ -52,7 +52,8 @@ export class Input extends Command {
             content = preElem.source;
             element = preElem;
             offset = content.length;
-            caret.setColumn([elem_idx-1, content.length]);
+            elem_idx -= 1;
+            caret.setColumn([elem_idx, content.length]);
         } else {
             const newElement = new TextElement('text', '');
             flattenTxtElem.insertBefore(element, newElement);
@@ -119,10 +120,11 @@ export class Input extends Command {
                 element.setSourceWithRecord(preContent + afterContent, editor.spaceHolder, records);
                 break;
             case KEYBOARD_INPUT.ENTER:
+                const lastNeedWrap = element.needWrap;
                 element.setSourceWithRecord(preContent, editor.spaceHolder, records);
                 element.setNeedWrap(true, records);
                 const t = new TextElement('text', afterContent);
-                flattenTxtElem.insertAfter(element, t);
+                flattenTxtElem.insertAfter(element, t, lastNeedWrap);
                 caret.setRow(row+1);
                 caret.setColumn([0, 0])
                 break;
