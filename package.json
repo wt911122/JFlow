@@ -1,6 +1,6 @@
 {
   "name": "@joskii/jflow-core",
-  "version": "0.1.21",
+  "version": "0.1.24",
   "description": "",
   "main": "dist/jflow.min.js",
   "files": [
