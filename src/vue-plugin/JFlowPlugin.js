@@ -162,12 +162,14 @@ const components = [
     }
 ];
 const componentPrefix = 'j';
-customElements.define('jflow-group', class extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({mode: 'open'});
-    }
-});
+if(!customElements.get('jflow-group')) {
+    customElements.define('jflow-group', class extends HTMLElement {
+        constructor() {
+            super();
+            this.attachShadow({mode: 'open'});
+        }
+    });
+}
 /**
  * @module JFlowVuePlugin 
  */
