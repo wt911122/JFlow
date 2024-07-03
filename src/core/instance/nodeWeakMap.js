@@ -9,7 +9,7 @@ function getMapObject() {
 }
 class NodeWeakMap {
     constructor() {
-        this._map = new WeakMap();
+        this._map = new Map();
     }
 
     get(source) {
@@ -83,16 +83,20 @@ export const NodeWeakMapMixin = {
         obj.jflowToLinks.push(link);
     },
     removeLinkNodeBySource(sourceFrom, sourceTo, link) {
-        let obj = this._getMap(sourceFrom);
-        let idx = obj.jflowFromLinks.findIndex(l => l === link);
-        if(idx !== -1) {
-            obj.jflowFromLinks.splice(idx, 1);
+        const map = this.source_Layout_Render_NodeMap;
+        let obj = map.get(sourceFrom);
+        if(obj) {
+            const idx = obj.jflowFromLinks.findIndex(l => l === link);
+            if(idx !== -1) {
+                obj.jflowFromLinks.splice(idx, 1);
+            }
         }
-
-        obj = this._getMap(sourceTo);
-        idx = obj.jflowToLinks.findIndex(l => l === link);
-        if(idx !== -1) {
-            obj.jflowToLinks.splice(idx, 1);
+        obj = map.get(sourceTo);
+        if(obj) {
+            const idx = obj.jflowToLinks.findIndex(l => l === link);
+            if(idx !== -1) {
+                obj.jflowToLinks.splice(idx, 1);
+            }
         }
     }
 }
