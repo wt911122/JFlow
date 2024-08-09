@@ -43,6 +43,19 @@ const LayoutMixin = {
         if(this._belongs && dirty) {
             this._belongs.recalculateUp();
         }
+        if(!dirty || this._belongs?.uniqueName === 'jflow') {
+            this.recalculateDown();
+        }
+    },
+    recalculateDown() {
+        if(this._layout && this._layout.reflowAfter) {
+            this._layout.reflowAfter(this);
+        }
+        this._stack.forEach(instance => {
+            if(instance.recalculateDown) {
+                instance.recalculateDown();
+            }
+        })
     },
     /**
      * 重新计算布局，相当于浏览器里面重排，并重算当前布局下的最小外接矩形
