@@ -27,6 +27,7 @@ export class Input extends Command {
         const undoredo = editor._undoredo;
         const records = flattenTxtElem.startRecord();
         flattenTxtElem.recordBeforeCaret(caret);
+        let _afterRangeDelete = false;
         if(range.isEnable()) {
             range.delete(editor, records);
             if(kind === KEYBOARD_INPUT.BACKSPACE || kind === KEYBOARD_INPUT.DELETE) {
@@ -35,6 +36,8 @@ export class Input extends Command {
                 this._editor.refresh();
                 undoredo.write(records, flattenTxtElem.getCaretRecord());
                 return;
+            } else {
+                _afterRangeDelete = true;
             }
         }
         
@@ -70,6 +73,11 @@ export class Input extends Command {
 
         switch(kind){
             case KEYBOARD_INPUT.INPUT:
+                if(_afterRangeDelete) {
+                    element = flattenTxtElem.get(0);
+                    afterContent = '';
+                    preContent = '';
+                }
                 if(/\r?[\n\t]/.test(data)) {
                     let rows = data.split(/\r?[\n\t]/) || '';
                     // source = source.replace(/\t/, '');
