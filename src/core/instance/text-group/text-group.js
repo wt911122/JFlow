@@ -167,7 +167,9 @@ class TextGroup extends Node {
         this.addEventListener('blur', (event) => {
             this._status.editing = false;
             if(this._shadowInput) {
+                // this._shadowInput.releaseEventListenr();
                 this._shadowInput.destroy();
+                this._shadowInput = undefined
             }
             if(this._belongs) {
                 this._jflow._render();
@@ -294,19 +296,27 @@ class TextGroup extends Node {
 
     createShadowInput() {
         const jflow = this._jflow;
-        this._shadowInput = new ShadowInput(jflow.DOMwrapper);
-        this._shadowInput.addEventListener(EDITOR_EVENTS.CONTROL_CMD, e => {
+        let shadowInput = new ShadowInput(jflow.DOMwrapper);
+        const _a = e => {
             const kind = e.detail.kind;
             const data = e.detail.data;
             this.execCommand(kind, data)
-        });
-
-        this._shadowInput.addEventListener(EDITOR_EVENTS.INPUT, e => {
+        };
+        const _b = e => {
             const kind = e.detail.kind;
             const data = e.detail.data;
             const cmd = this.commands.get(EDITOR_EVENTS.INPUT);
             cmd.exec(kind, data);
-        });
+        }
+        shadowInput.addEventListener(EDITOR_EVENTS.CONTROL_CMD, _a);
+        shadowInput.addEventListener(EDITOR_EVENTS.INPUT, _b);
+
+        shadowInput.removeLisenter = function() {
+            shadowInput.removeEventListener(EDITOR_EVENTS.CONTROL_CMD, _a);
+            shadowInput.removeEventListener(EDITOR_EVENTS.INPUT, _b);
+            shadowInput.removeLisenter = null;
+        }
+        this._shadowInput = shadowInput;
         this._status.editing = true;
         jflow.setFocusInstance(this);
     }

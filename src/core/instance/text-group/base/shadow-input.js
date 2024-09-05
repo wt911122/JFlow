@@ -58,6 +58,9 @@ class ShadowInput extends EventTarget{
     }
 
     destroy() {
+        if(this.removeLisenter) {
+            this.removeLisenter();
+        }
         this._inputElement.remove();
     }
 }
