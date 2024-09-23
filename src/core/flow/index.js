@@ -1740,19 +1740,10 @@ class JFlow extends EventTarget{
 
         if(this.NodeRenderTop) {
             this._linkStack.render(ctx, (link) => !link.ON_TOP && link.isInViewBox(br));
-            this._stack.render(ctx, (instance) => {
-                const result = doOverlap(br, instance.getBoundingRect());
-                instance._isInViewBox = result;
-                return result;
-            });
+            this._stack.render(ctx);
             this._linkStack.render(ctx, (link) => link.ON_TOP && link.isInViewBox(br));
         } else {
-            this._stack.render(ctx, (instance) => {
-                const result = doOverlap(br, instance.getBoundingRect());
-                // console.log(instance._layoutNode.type, result)
-                instance._isInViewBox = result;
-                return result;
-            });
+            this._stack.render(ctx);
             this._linkStack.render(ctx, (link) => link.isInViewBox(br));
         }
         // ctx.save();
