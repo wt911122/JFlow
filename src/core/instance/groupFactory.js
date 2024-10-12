@@ -172,14 +172,14 @@ const GroupMixin = {
         return [x, y];
     },
     onEnterViewbox() {
-        // this.interateNodeStack((instance) => {
-        //     instance.onEnterViewbox();
-        // })
+        this.interateNodeStack((instance) => {
+            instance.onEnterViewbox();
+        })
     },
     onLeaveViewbox() {
-        // this.interateNodeStack((instance) => {
-        //     instance.onLeaveViewbox();
-        // })
+        this.interateNodeStack((instance) => {
+            instance.onLeaveViewbox();
+        })
     },
     destroy() {
         this._shape.destroy();
