@@ -52,9 +52,7 @@ class Node extends Instance {
     }
 
     beforeRender() {
-        const result = doOverlap(this._belongs._getViewBox(), this.getBoundingRect());
-        this._isInViewBox = result;
-        return result;
+        return doOverlap(this._belongs._getViewBox(), this.getBoundingRect())
     }
 
     /**
