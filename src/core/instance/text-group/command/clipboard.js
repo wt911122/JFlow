@@ -34,14 +34,18 @@ export class PasteCommand extends Command {
     exec(pasteContent) {
         const editor = this._editor;
         if(pasteContent) {
-            const cmd = editor.commands.get(EDITOR_EVENTS.INPUT);
-            cmd.exec(KEYBOARD_INPUT.INPUT, pasteContent);   
+            let _preventDefault = false;
+            editor.dispatchEvent(new JFlowEvent('paste', {
+                content: pasteContent,
+                preventDefault: () => {
+                    _preventDefault = true;
+                }
+            }));
+            if(!_preventDefault) {
+                const cmd = editor.commands.get(EDITOR_EVENTS.INPUT);
+                cmd.exec(KEYBOARD_INPUT.INPUT, pasteContent);  
+            }
         }
-        // editor.dispatchEvent(new JFlowEvent('paste', {
-        //     textElements: flattenTxtElem.copy(),
-        //     idx, offset,
-        //     pasteContent,
-        // }));
     }
 }
 

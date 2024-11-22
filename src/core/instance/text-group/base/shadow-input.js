@@ -79,7 +79,6 @@ function createInputElement(controlCallback) {
         z-index: -1;
         contain: strict;`);
     input.setAttribute('tabindex', -1);
-    // input.setAttribute('aria-hidden', true);
     input.setAttribute('spellcheck', false);
     input.setAttribute('autocorrect', 'off');
 
