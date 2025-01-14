@@ -153,7 +153,7 @@ export class Input extends Command {
                             if(deleteop) {
                                 flattenTxtElem.remove(idx);
                             }
-                            caret.setColumn([elem_idx - (offset > 0?2:1), offset])
+                            caret.setColumn([elem_idx - ((offset > 0 || deleteop)?2:1), offset])
                             
                         } else if(idx > 0) {
                             // 换行了
