@@ -9,6 +9,7 @@ module.exports = {
             type: 'umd',
         },
     },
+    devtool: 'eval-source-map',
     module: {
        rules: [
             {

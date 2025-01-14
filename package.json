@@ -1,6 +1,6 @@
 {
   "name": "@joskii/jflow-core",
-  "version": "0.1.33",
+  "version": "0.1.35",
   "description": "",
   "main": "dist/jflow.bundle.js",
   "files": [
@@ -11,7 +11,8 @@
     "build:doc": "rm -rf docs && cd jsdoc-plugin && npm run build && cd ../demo/vue-scopedslots && npm run build && cd ../../ && npm run build:jsdoc",
     "build:jsdoc": "rm -rf docs &&  jsdoc -c conf.json -t ~/Documents/Source-Codes/docstrap/template -R README.md -r . && mv out docs",
     "build:lib": "webpack --config configs/webpack.lib.config.js",
-    "build:rollup": "rollup -c"
+    "build:rollup": "rollup -c",
+    "watch:lib": "webpack --watch --config configs/webpack.lib.config.js"
   },
   "author": "joskii",
   "license": "ISC",
