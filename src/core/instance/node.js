@@ -23,7 +23,7 @@ import { addReflowWork } from '../dirty-work/dirty-work'
  * @param {Node~Configs} configs - 节点配置
  */
 class Node extends Instance {
-
+    INSTANCE_TYPE = 'NODE'
     get nextSibling() {
         if(!this._belongs) {
             return null;

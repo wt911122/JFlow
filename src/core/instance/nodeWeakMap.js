@@ -47,7 +47,14 @@ export const NodeWeakMapMixin = {
         return undefined;
     }, 
     removeRenderNodeBySource(source) {
-        this.source_Layout_Render_NodeMap.delete(source);
+        const map = this.source_Layout_Render_NodeMap;
+        let obj = map.get(source);
+        if(obj) {
+            obj.jflowNode = undefined
+        }
+        if(obj.jflowFromLinks.size === 0 && obj.jflowToLinks.size === 0) {
+            this.source_Layout_Render_NodeMap.delete(source);
+        }
     },
     getLayoutNodeBySource(source) {
         const mapping = this.source_Layout_Render_NodeMap.get(source);
@@ -108,11 +115,17 @@ export const NodeWeakMapMixin = {
         const map = this.source_Layout_Render_NodeMap;
         let obj = map.get(sourceFrom);
         if(obj) {
-            obj.jflowFromLinks.delete(link)
+            obj.jflowFromLinks.delete(link);
+            if(obj.jflowFromLinks.size === 0 && obj.jflowToLinks.size === 0 && !obj.jflowNode) {
+                this.source_Layout_Render_NodeMap.delete(sourceFrom);
+            }
         }
         obj = map.get(sourceTo);
         if(obj) {
-            obj.jflowToLinks.delete(link)
+            obj.jflowToLinks.delete(link);
+            if(obj.jflowFromLinks.size === 0 && obj.jflowToLinks.size === 0 && !obj.jflowNode) {
+                this.source_Layout_Render_NodeMap.delete(sourceTo);
+            }
         }
     },
     changeLinkNodeBySource(prevSource, nextSource, link, dir) {

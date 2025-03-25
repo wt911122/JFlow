@@ -16,6 +16,7 @@ import Instance from './instance';
  * @param {BaseLink~Configs} configs - 配置
  */
 class BaseLink extends Instance{
+    INSTANCE_TYPE = 'LINK'
     get nextSibling() {
         if(!this._belongs) {
             return null;
