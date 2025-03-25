@@ -15,13 +15,14 @@ const LayoutMixin = {
      * 初始化布局
      * @param {LayoutMixin~LayoutConfigs} configs - 配置
      */
-    initLayout(configs) {
+    initLayout(configs = {}) {
         this._layout = configs.layout;
     },
     /**
      * 从当前层出发，向上层递归重排
      */
     recalculateUp() {
+        // console.log('----recalculateUp----')
         let dirty = true;
         if(this.getBoundingDimension) {
             const { width: wold, height: hold } = this.getBoundingDimension();
@@ -61,6 +62,7 @@ const LayoutMixin = {
      * 重新计算布局，相当于浏览器里面重排，并重算当前布局下的最小外接矩形
      */
     recalculate() {
+        // console.log('----recalculate----')
         this.reflow();
         if(this._getBoundingGroupRect){
             this._getBoundingGroupRect();

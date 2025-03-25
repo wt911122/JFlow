@@ -3,7 +3,7 @@ function isSetSourceBatch(x) {
     return x.length === 1 && x[0].op === 'setSource';
 }
 export default class UndoRedo {
-    static length = 50;
+    static _length = 50;
     _undo = [];
     _redo = [];
     _editor = null;
@@ -29,7 +29,7 @@ export default class UndoRedo {
         r._caretMetaTo = caretRecord.after;
         this._undo.push(r);
         
-        if(this._undo.length > UndoRedo.length) {
+        if(this._undo.length > UndoRedo._length) {
             this._undo.splice(0, 1);
         }
         if(this._redo.length) {

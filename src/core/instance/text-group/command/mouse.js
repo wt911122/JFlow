@@ -4,7 +4,7 @@ import { MOUSE_COMMANDS } from '../base/constants';
 import JFlowEvent from '../../../events/index';
 
 export class StartEditCommand extends Command {
-    static name = MOUSE_COMMANDS.START_EDIT;
+    static _name = MOUSE_COMMANDS.START_EDIT;
 
     exec() {
         const editor = this._editor;
@@ -31,7 +31,7 @@ export class StartEditCommand extends Command {
     }
 }
 export class EditClickCommand extends Command {
-    static name = MOUSE_COMMANDS.EDIT_CLICK;
+    static _name = MOUSE_COMMANDS.EDIT_CLICK;
 
     exec() {
         const editor = this._editor;
@@ -43,7 +43,7 @@ export class EditClickCommand extends Command {
 }
 
 export class DoubleClickCommand extends Command {
-    static name = MOUSE_COMMANDS.DOUBLE_CLICK;
+    static _name = MOUSE_COMMANDS.DOUBLE_CLICK;
 
     exec() {
         const editor = this._editor;

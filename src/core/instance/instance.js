@@ -74,6 +74,9 @@ class Instance extends EventTarget{
      * @member {JFlow}  - canvas上 jflow 实体
      */
     get _jflow() {
+        if(this._jflowRoot) {
+            return this._jflowRoot;
+        }
         if(!this._belongs) {
             return undefined
         }

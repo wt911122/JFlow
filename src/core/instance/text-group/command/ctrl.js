@@ -2,7 +2,7 @@ import Command from './base';
 import { KEYBOARD_COMMANDS } from '../base/constants';
 
 export class CtrlACommand extends Command {
-    static name = KEYBOARD_COMMANDS.CTRLA;
+    static _name = KEYBOARD_COMMANDS.CTRLA;
     exec() {
         const editor = this._editor;
         const caret = editor._caret;

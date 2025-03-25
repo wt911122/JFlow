@@ -15,7 +15,7 @@ function _blandAdjacentElement(editor, elem1, elem2, defaultOffset, records) {
 }
 
 export class Input extends Command {
-    static name = EDITOR_EVENTS.INPUT;
+    static _name = EDITOR_EVENTS.INPUT;
 
     cacheIdx = null;
 

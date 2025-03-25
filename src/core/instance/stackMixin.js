@@ -1,4 +1,6 @@
 import InstanceStack from './stack';
+import { addReflowWork } from '../dirty-work/dirty-work';
+
 // import { setUniqueId, getUniqueId } from '../utils/functions';
 /**
  * 对象栈 mixin 用于方便控制节点栈和连线栈
@@ -18,7 +20,7 @@ const StackMixin = {
      * 初始化对象栈
      * @param {JflowConfigs} configs - 配置
      */
-    initStack({ data }) {
+    initStack({ data } = {}) {
         this._stack = new InstanceStack();
         this._linkStack = new InstanceStack();
         if(!data) return;
@@ -38,9 +40,26 @@ const StackMixin = {
      * @param {Node} instance - 节点对象
      */
     addToStack(instance) {
+        // console.log('-----addToStack----', instance)
         instance._belongs = this;
         this._stack.push(instance);
+        addReflowWork(instance, this);
         // this.recalculate()
+    },
+
+    insertToStackBefore(instance, anchorNode) {
+        // console.log('-----insertToStackBefore----')
+        if(instance._belongs) {
+            instance._belongs.removeFromStack(instance);
+        }
+        instance._belongs = this;
+        const idx = this._stack.findIndex(s => s === anchorNode);
+        if(idx !== -1) {
+            this._stack.splice(idx, 0, instance)
+            addReflowWork(instance, this);
+        } else {
+            this.addToStack(instance);
+        }
     },
     /**
      * 替换对象
@@ -59,6 +78,9 @@ const StackMixin = {
      * @param {BaseLink} instance - 连线对象
      */
     addToLinkStack(link) {
+        if(this._linkStack.find(l => l === link)) {
+            return;
+        }
         link._belongs = this;
         this._linkStack.push(link);
     },
@@ -67,10 +89,12 @@ const StackMixin = {
      * @param {Node} target - 节点对象
      */
     removeFromStack(target) {
+        // console.log('-----removeFromStack----')
         // this.removeLinkOnInstance(target);
         const index = this._stack.findIndex(i => i === target);
         if(index !== -1) {
             this._stack.splice(index, 1);
+            addReflowWork(this);
         }
         // this.recalculate()
     },

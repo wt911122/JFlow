@@ -1,5 +1,6 @@
 import Instance from './instance';
 import { doOverlap } from '../utils/functions';
+import { addReflowWork } from '../dirty-work/dirty-work'
 
 /**
  * 绝对定位 配置， 绝对定位不受布局影响，相对于当前组来定位
@@ -22,6 +23,19 @@ import { doOverlap } from '../utils/functions';
  * @param {Node~Configs} configs - 节点配置
  */
 class Node extends Instance {
+
+    get nextSibling() {
+        if(!this._belongs) {
+            return null;
+        }
+        const stack = this._belongs._stack
+        const idx = stack.findIndex(s => s === this);
+        if(idx !== -1) {
+            return stack[idx+1];
+        } 
+        return null;
+    }
+
     constructor(configs = {}) {
         super(configs);
         this._rawConfigs = configs;
@@ -53,6 +67,10 @@ class Node extends Instance {
 
     beforeRender() {
         return doOverlap(this._belongs._getViewBox(), this.getBoundingRect())
+    }
+
+    addReflowWork() {
+        addReflowWork(this, this._belongs);
     }
 
     /**

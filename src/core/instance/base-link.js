@@ -16,6 +16,17 @@ import Instance from './instance';
  * @param {BaseLink~Configs} configs - 配置
  */
 class BaseLink extends Instance{
+    get nextSibling() {
+        if(!this._belongs) {
+            return null;
+        }
+        const stack = this._belongs._linkStack
+        const idx = stack.findIndex(s => s === this);
+        if(idx !== -1) {
+            return stack[idx+1];
+        } 
+        return null;
+    }
     constructor(configs = {}) {
         super();
         /** @member {Instance}      - 起始单元 */
@@ -33,7 +44,7 @@ class BaseLink extends Instance{
 
         this.isSelf        = !!configs.isSelf
     }
-
+    
     /**
      * 是否出现在当前视窗内
      * @param {number[]} viewbox

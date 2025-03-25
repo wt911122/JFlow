@@ -3,8 +3,8 @@ function getMapObject() {
         layoutNode: undefined,
         jflowNode: undefined,
         jflowlinks: [],
-        jflowFromLinks: [],
-        jflowToLinks: [],
+        jflowFromLinks: new Set(),
+        jflowToLinks: new Set(),
     }
 }
 class NodeWeakMap {
@@ -45,7 +45,10 @@ export const NodeWeakMapMixin = {
             return mapping.jflowNode;
         }
         return undefined;
-    },  
+    }, 
+    removeRenderNodeBySource(source) {
+        this.source_Layout_Render_NodeMap.delete(source);
+    },
     getLayoutNodeBySource(source) {
         const mapping = this.source_Layout_Render_NodeMap.get(source);
         if(mapping) {
@@ -55,9 +58,17 @@ export const NodeWeakMapMixin = {
     },
     getSourceRenderMeta(source) {
         const map = this.source_Layout_Render_NodeMap;
-        return map.get(source)
+        const _meta = map.get(source);
+        return {
+            ..._meta,
+            jflowFromLinks: Array.from(_meta.jflowFromLinks),
+            jflowToLinks: Array.from(_meta.jflowToLinks),
+        }
     },
     _getMap(source) {
+        if(!source) {
+            return null;
+        }
         const map = this.source_Layout_Render_NodeMap;
         let obj;
         if(map.has(source)) {
@@ -74,28 +85,60 @@ export const NodeWeakMapMixin = {
     setRenderNodeBySource(source, instance) {
         let obj = this._getMap(source);
         obj.jflowNode = instance;
+
+        if(obj.jflowFromLinks.size > 0) {
+            obj.jflowFromLinks.forEach(link => {
+                link.from = instance;
+            });
+        }
+        if(obj.jflowToLinks.size > 0) {
+            obj.jflowToLinks.forEach(link => {
+                link.to= instance;
+            });
+        }
     },
     addLinkNodeBySource(sourceFrom, sourceTo, link) {
         let obj = this._getMap(sourceFrom);
-        obj.jflowFromLinks.push(link);
+        obj.jflowFromLinks.add(link);
 
         obj = this._getMap(sourceTo);
-        obj.jflowToLinks.push(link);
+        obj.jflowToLinks.add(link);
     },
     removeLinkNodeBySource(sourceFrom, sourceTo, link) {
         const map = this.source_Layout_Render_NodeMap;
         let obj = map.get(sourceFrom);
         if(obj) {
-            const idx = obj.jflowFromLinks.findIndex(l => l === link);
-            if(idx !== -1) {
-                obj.jflowFromLinks.splice(idx, 1);
-            }
+            obj.jflowFromLinks.delete(link)
         }
         obj = map.get(sourceTo);
         if(obj) {
-            const idx = obj.jflowToLinks.findIndex(l => l === link);
-            if(idx !== -1) {
-                obj.jflowToLinks.splice(idx, 1);
+            obj.jflowToLinks.delete(link)
+        }
+    },
+    changeLinkNodeBySource(prevSource, nextSource, link, dir) {
+        let obj = this._getMap(prevSource);
+        if(obj) {
+            if(dir === 'from') {
+                obj.jflowFromLinks.delete(link)
+            }
+            if(dir === 'to') {
+                obj.jflowToLinks.delete(link)
+            }
+        }
+        obj = this._getMap(nextSource);
+        if(obj) {
+            if(dir === 'from') {
+                obj.jflowFromLinks.add(link);
+                if(obj.jflowNode) {
+                    link.from = obj.jflowNode;
+                }
+                
+            }
+            if(dir === 'to') {
+                obj.jflowToLinks.add(link);
+                if(obj.jflowNode) {
+                    link.to = obj.jflowNode;
+                }
             }
         }
     }

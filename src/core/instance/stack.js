@@ -1,3 +1,4 @@
+import { NodePlaceholder } from './node-placeholder';
 /**
  * 绘图栈
  * @extends Array
@@ -6,6 +7,33 @@ class InstanceStack extends Array {
     constructor() {
         super();
         this._currentHit = null;
+    }
+
+    forEach(cb) {
+        return super.forEach((i, idx) => {
+            if(i instanceof NodePlaceholder) { 
+                return;
+            }
+            cb(i, idx);
+        })
+    }
+    filter(cb) {
+        return Array.from(super.filter((i, idx) => {
+            if(i instanceof NodePlaceholder) { 
+                return false;
+            }
+            return cb(i, idx);
+        }))
+    }
+    slice() {
+        return Array.from(super.filter((i, idx) => {
+            return !(i instanceof NodePlaceholder)
+        }))
+    }
+    superfilter(cb) {
+        return super.filter((i, idx) => {
+            return cb(i, idx);
+        });
     }
     /**
      * 绘制当前栈
@@ -66,7 +94,10 @@ class InstanceStack extends Array {
         let i = this.length - 1;
         while(i >= 0) {
             const instance = this[i];
-            
+            if(instance instanceof NodePlaceholder) {
+                i--
+                continue;
+            }
             if(instance.visible && !instance.ignoreHit) {
                 if(condition && condition(instance)) {
                     i--

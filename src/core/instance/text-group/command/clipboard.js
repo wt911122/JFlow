@@ -2,7 +2,7 @@ import Command from './base';
 import { KEYBOARD_COMMANDS, EDITOR_EVENTS, KEYBOARD_INPUT } from '../base/constants';
 import JFlowEvent from '../../../events';
 export class CopyCommand extends Command {
-    static name = KEYBOARD_COMMANDS.COPY;
+    static _name = KEYBOARD_COMMANDS.COPY;
     exec(event) {
         const editor = this._editor;
         const range = editor._range;
@@ -14,7 +14,7 @@ export class CopyCommand extends Command {
 }
 
 export class CutCommand extends Command {
-    static name = KEYBOARD_COMMANDS.CUT;
+    static _name = KEYBOARD_COMMANDS.CUT;
     exec(event) {   
         const editor = this._editor;
         const range = editor._range;
@@ -30,7 +30,7 @@ export class CutCommand extends Command {
 }
 
 export class PasteCommand extends Command {
-    static name = KEYBOARD_COMMANDS.PASTE;
+    static _name = KEYBOARD_COMMANDS.PASTE;
     exec(pasteContent) {
         const editor = this._editor;
         if(pasteContent) {

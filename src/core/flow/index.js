@@ -247,6 +247,8 @@ class JFlow extends EventTarget{
 
         this._cacheViewBox = []
 
+        this.__mounted__ = false;
+
         // this._allowZoom = true;
     }
 
@@ -396,6 +398,7 @@ class JFlow extends EventTarget{
         }, (handler) => {
             this.destroyDprListener = handler;
         });
+        this.__mounted__ = true;
         
     }
 
@@ -782,7 +785,7 @@ class JFlow extends EventTarget{
         this._processDragOver(instance, event);
         if(this._target.isLinkDirty || this._target.isInstanceDirty) {
             Promise.resolve().then(() => {
-                this._render();    
+                // this._render();    
                 this._target.isLinkDirty = false; 
                 this._target.isInstanceDirty = false;
                 this._lastDragState.processing = false;
@@ -1790,6 +1793,14 @@ class JFlow extends EventTarget{
 Object.assign(JFlow.prototype, MessageMixin);
 Object.assign(JFlow.prototype, StackMixin);
 Object.assign(JFlow.prototype, LayoutMixin);
+Object.assign(JFlow.prototype, {
+    recalculateUp() {
+        if(this.__mounted__) {
+            this.reflow();
+        }
+    }
+})
+
 Object.assign(JFlow.prototype, NodeWeakMapMixin);
 Object.assign(JFlow.prototype, AnimeMixin);
 Object.assign(JFlow.prototype, MiniMapMixin);
@@ -1832,3 +1843,6 @@ export { default as LinearLayout} from '../layout/linear-layout';
 export { default as TextGroup} from '../instance/text-group/text-group';
 export { TextElement } from '../instance/text-group/storage';
 // export { JFlowPath2D } from '../utils/path-2d';
+
+export { NodePlaceholder } from '../instance/node-placeholder';
+export { addReflowWork } from '../dirty-work/dirty-work';

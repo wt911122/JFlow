@@ -2,7 +2,7 @@ import Command from './base';
 import { KEYBOARD_COMMANDS } from '../base/constants';
 
 export class ArrowLeftCommand extends Command {
-    static name = KEYBOARD_COMMANDS.ARROW_LEFT;
+    static _name = KEYBOARD_COMMANDS.ARROW_LEFT;
 
     exec() {
         const editor = this._editor;
@@ -39,7 +39,7 @@ export class ArrowLeftCommand extends Command {
     }
 }
 export class ArrowRightCommand extends Command {
-    static name = KEYBOARD_COMMANDS.ARROW_RIGHT;
+    static _name = KEYBOARD_COMMANDS.ARROW_RIGHT;
 
     exec() {
         const editor = this._editor;
@@ -80,7 +80,7 @@ export class ArrowRightCommand extends Command {
     }
 }
 export class ArrowUpCommand extends Command {
-    static name = KEYBOARD_COMMANDS.ARROW_UP;
+    static _name = KEYBOARD_COMMANDS.ARROW_UP;
 
     exec() {
         this._editor._range.disable();
@@ -91,7 +91,7 @@ export class ArrowUpCommand extends Command {
     }
 }
 export class ArrowDownCommand extends Command {
-    static name = KEYBOARD_COMMANDS.ARROW_DOWN;
+    static _name = KEYBOARD_COMMANDS.ARROW_DOWN;
 
     exec() {
         this._editor._range.disable();

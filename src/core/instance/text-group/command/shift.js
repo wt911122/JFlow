@@ -2,7 +2,7 @@ import Command from './base';
 import { KEYBOARD_COMMANDS, MOUSE_COMMANDS } from '../base/constants';
 
 export class ShiftUpCommand extends Command {
-    static name = KEYBOARD_COMMANDS.SHIFT_UP;
+    static _name = KEYBOARD_COMMANDS.SHIFT_UP;
     exec() {
         const range = this._editor._range;
         range.setInitialRange(null);
@@ -11,7 +11,7 @@ export class ShiftUpCommand extends Command {
 }
 
 export class ShiftDownCommand extends Command {
-    static name = KEYBOARD_COMMANDS.SHIFT_DOWN;
+    static _name = KEYBOARD_COMMANDS.SHIFT_DOWN;
     
     exec() {
         const range = this._editor._range;
@@ -22,7 +22,7 @@ export class ShiftDownCommand extends Command {
 }
 
 export class ShiftOnClickCommand extends Command {
-    static name = MOUSE_COMMANDS.SHIFT_ON_CLICK;
+    static _name = MOUSE_COMMANDS.SHIFT_ON_CLICK;
 
     exec() {
         const editor = this._editor;

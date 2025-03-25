@@ -131,8 +131,8 @@ class TextGroup extends Node {
     }
 
     registCommand(cmd) {
-        if(!this.commands.has(cmd.name)) {
-            this.commands.set(cmd.name, cmd.create(this));
+        if(!this.commands.has(cmd._name)) {
+            this.commands.set(cmd._name, cmd.create(this));
         }
     }
 
@@ -442,7 +442,7 @@ class TextGroup extends Node {
         flattenTxtElem.forEach(elem => {
             if(elem.type !== 'text') {
                 const instance = jflow.getRenderNodeBySource(elem.source);
-                if(instance.visible) {
+                if(instance && instance.visible) {
                     ctx.save();
                     instance.render(ctx);
                     ctx.restore();
@@ -787,6 +787,14 @@ Object.assign(TextGroup.prototype, {
         this._area = nextArea;
         this.width = allWidth;
         this.height = allHeight;
+    },
+    doRecalculate() {
+        if(this.__mounted__) {
+            this.recalculateUp()
+        } else {
+            this.recalculate();
+            this.__mounted__ = true
+        }
     }
 })
 export default TextGroup;

@@ -186,7 +186,16 @@ const GroupMixin = {
         this.interateNodeStack((instance) => {
             instance.destroy();
         })
-    }, 
+    },
+    
+    doRecalculate() {
+        if(this.__mounted__) {
+            this.recalculateUp()
+        } else {
+            this.recalculate();
+            this.__mounted__ = true
+        }
+    }
 }
 
 function defaultShift(width, height) {
