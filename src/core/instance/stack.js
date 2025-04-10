@@ -1,4 +1,4 @@
-import { NodePlaceholder } from './node-placeholder';
+// import { NodePlaceholder } from './node-placeholder';
 /**
  * 绘图栈
  * @extends Array
@@ -11,7 +11,7 @@ class InstanceStack extends Array {
 
     forEach(cb) {
         return super.forEach((i, idx) => {
-            if(i instanceof NodePlaceholder) { 
+            if(i.type !== 'NODE_PLACEHOLDER') { 
                 return;
             }
             cb(i, idx);
@@ -19,7 +19,7 @@ class InstanceStack extends Array {
     }
     filter(cb) {
         return Array.from(super.filter((i, idx) => {
-            if(i instanceof NodePlaceholder) { 
+            if(i.type !== 'NODE_PLACEHOLDER') { 
                 return false;
             }
             return cb(i, idx);
@@ -27,7 +27,7 @@ class InstanceStack extends Array {
     }
     slice() {
         return Array.from(super.filter((i, idx) => {
-            return !(i instanceof NodePlaceholder)
+            return i.type !== 'NODE_PLACEHOLDER'
         }))
     }
     superfilter(cb) {
@@ -94,7 +94,7 @@ class InstanceStack extends Array {
         let i = this.length - 1;
         while(i >= 0) {
             const instance = this[i];
-            if(instance instanceof NodePlaceholder) {
+            if(i.type !== 'NODE_PLACEHOLDER') { 
                 i--
                 continue;
             }
