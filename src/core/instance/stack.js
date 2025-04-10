@@ -11,7 +11,7 @@ class InstanceStack extends Array {
 
     forEach(cb) {
         return super.forEach((i, idx) => {
-            if(i.type !== 'NODE_PLACEHOLDER') { 
+            if(i.type === 'NODE_PLACEHOLDER') { 
                 return;
             }
             cb(i, idx);
@@ -19,7 +19,7 @@ class InstanceStack extends Array {
     }
     filter(cb) {
         return Array.from(super.filter((i, idx) => {
-            if(i.type !== 'NODE_PLACEHOLDER') { 
+            if(i.type === 'NODE_PLACEHOLDER') { 
                 return false;
             }
             return cb(i, idx);
@@ -94,7 +94,7 @@ class InstanceStack extends Array {
         let i = this.length - 1;
         while(i >= 0) {
             const instance = this[i];
-            if(i.type !== 'NODE_PLACEHOLDER') { 
+            if(instance.type === 'NODE_PLACEHOLDER') { 
                 i--
                 continue;
             }

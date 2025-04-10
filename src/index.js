@@ -1,4 +1,4 @@
-// import packageJson from '../package.json';
+import packageJson from '../package.json';
 import { default as JFlow } from './core/flow'; 
 export default JFlow;
 export * from './core/flow';
