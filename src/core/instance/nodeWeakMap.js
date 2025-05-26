@@ -154,6 +154,26 @@ export const NodeWeakMapMixin = {
                 }
             }
         }
+    },
+    changeNodeBySource(prevSource, nextSource, instance) {
+        if(prevSource && nextSource) {
+            const oldobj = this._getMap(prevSource);
+            const newobj = this._getMap(nextSource);
+            newobj.jflowNode = instance;
+            oldobj.jflowFromLinks.forEach(link => {
+                newobj.jflowFromLinks.add(link);
+            });
+            oldobj.jflowToLinks.forEach(link => {
+                newobj.jflowFromLinks.add(link);
+            });
+            newobj.jflowFromLinks.forEach(link => {
+                link.from = instance;
+            });
+            newobj.jflowToLinks.forEach(link => {
+                link.to = instance;
+            });
+            this.source_Layout_Render_NodeMap.delete(prevSource);
+        }
     }
 }
 
