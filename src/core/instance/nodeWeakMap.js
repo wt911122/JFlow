@@ -46,13 +46,13 @@ export const NodeWeakMapMixin = {
         }
         return undefined;
     }, 
-    removeRenderNodeBySource(source) {
+    removeRenderNodeBySource(source, instance) {
         const map = this.source_Layout_Render_NodeMap;
         let obj = map.get(source);
-        if(obj) {
+        if(obj && obj.jflowNode === instance) {
             obj.jflowNode = undefined
         }
-        if(obj.jflowFromLinks.size === 0 && obj.jflowToLinks.size === 0) {
+        if(obj && obj.jflowFromLinks.size === 0 && obj.jflowToLinks.size === 0) {
             this.source_Layout_Render_NodeMap.delete(source);
         }
     },
@@ -66,6 +66,9 @@ export const NodeWeakMapMixin = {
     getSourceRenderMeta(source) {
         const map = this.source_Layout_Render_NodeMap;
         const _meta = map.get(source);
+        if(!_meta) {
+            return null;   
+        }
         return {
             ..._meta,
             jflowFromLinks: Array.from(_meta.jflowFromLinks),
