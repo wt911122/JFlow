@@ -102,7 +102,7 @@ const flush = () => {
         sortByPath();
         while(queue.length) {
             const target = queue.shift();
-            if(target.doRecalculate) {
+            if(target.doRecalculate && target._jflow) {
                 target.doRecalculate();
                 roots.add(target._jflow);
             }
