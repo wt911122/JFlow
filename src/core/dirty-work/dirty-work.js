@@ -103,8 +103,10 @@ const flush = () => {
         while(queue.length) {
             const target = queue.shift();
             if(target.doRecalculate && target._jflow) {
-                target.doRecalculate();
-                roots.add(target._jflow);
+                try {
+                    target.doRecalculate();
+                    roots.add(target._jflow);
+                } catch(err) { console.error(err) }
             }
             // console.log(target.width, target.height)
         }
